@@ -1,7 +1,7 @@
 {
   "name": "stanza.io",
   "version": "0.0.1",
-  "description": "XMPP over websockets using JSON",
+  "description": "XMPP over socket.io using JSON",
   "main": "server.js",
   "dependencies": {
       "node-xmpp": "",
