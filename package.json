@@ -22,8 +22,8 @@
     "stanza.io"
   ],
   "contributors": [
-    "Lance Stout <lance@andyet.net>"
-    "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>",
+    "Lance Stout <lance@andyet.net>",
+    "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
   ],
   "license": "Apache 2.0",
   "engines": {
