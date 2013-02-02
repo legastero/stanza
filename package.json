@@ -1,0 +1,32 @@
+{
+  "name": "stanza.io",
+  "version": "0.0.1",
+  "description": "XMPP over websockets using JSON",
+  "main": "server.js",
+  "dependencies": {
+      "node-xmpp": "",
+      "node-uuid": "",
+      "express": "",
+      "socket.io": "",
+      "jade": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/legastero/stanza.io.git"
+  },
+  "keywords": [
+    "xmpp",
+    "json",
+    "websocket",
+    "socket.io",
+    "stanza.io"
+  ],
+  "contributors": [
+    "Lance Stout <lance@andyet.net>"
+    "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>",
+  ],
+  "license": "Apache 2.0",
+  "engines": {
+    "node": "0.8.x"
+  }
+}
