@@ -27,6 +27,7 @@ exports.XMPP = function (socket) {
     this.socket.on('chat', function (data) {
         data = data || {};
         data._ = 'message';
+        data.type = 'chat';
         self.send(data);
     });
 

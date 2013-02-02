@@ -21,9 +21,7 @@ exports.Presence = function (stanza) {
         },
         type: {
             xml: function (xml, value) {
-                if (value === 'unavailable') {
-                    return xml.attr('type', value);
-                }
+                return xml.attr('type', value);
             },
             json: function (json, xml) {
                 json.type = xml.attr('type');
