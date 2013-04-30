@@ -1,24 +1,23 @@
 {
   "name": "stanza.io",
   "version": "0.0.1",
-  "description": "XMPP over socket.io using JSON",
-  "main": "server.js",
+  "description": "XMPP + WebSocket",
+  "browserify": "index.js",
   "dependencies": {
-      "node-xmpp": "",
-      "node-uuid": "",
-      "express": "",
-      "socket.io": "",
-      "jade": ""
+      "async": "0.2.7",
+      "lodash": "1.2.0",
+      "wildemitter": "0.0.3",
+      "browserify": "",
+      "node-uuid": ""
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/legastero/stanza.io.git"
   },
+  "bugs": "https://github.com/legastero/stanza.io/issues",
   "keywords": [
     "xmpp",
-    "json",
     "websocket",
-    "socket.io",
     "stanza.io"
   ],
   "contributors": [
@@ -27,6 +26,9 @@
   ],
   "license": "Apache 2.0",
   "engines": {
-    "node": "0.8.x"
+    "node": "0.10.x"
+  },
+  "scripts": {
+      "postinstall": "browserify -d -o stanza.io.js index.js"
   }
 }

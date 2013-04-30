@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Stanza.io Demo</title>
+    <style>
+      html {
+        margin: 0px;
+        padding: 0px;
+      }
+      body {
+        font-family: 'Helvetica', 'Arial', sans-serif;
+        margin: 0px;
+        padding: 0px;
+        color: #224;
+        background-color: #fefefe;
+      }
+      #logTitle {
+        position: fixed;
+        font-size: 20px;
+        padding: 10px;
+        padding-left: 30px;
+        width: 100%;
+        background-color: #fafaff;
+        border-bottom: 1px solid #dedeee;
+        top: 0px;
+        margin: 0px;
+        height: 20px;
+        z-index: 10;
+      }
+      #log {
+        padding: 25px;
+        padding-top: 50px;
+        padding-bottom: 75px;
+      }
+      #log div {
+        padding: 10px;
+        padding-left: 25px;
+        padding-right: 25px;
+        z-index: 0;
+      }
+      #log h2 {
+        font-size: 16px;
+        position: relative;
+        left: -10px;
+        z-index: 0;
+      }
+      #log div:nth-child(2n+1) {
+        background-color: #efefff;
+        border-radius: 5px;
+        border: 1px solid #cfcfff;
+      }
+      #settings {
+        font-size: 14px;
+        position: fixed;
+        bottom: 0px;
+        width: 100%;
+        margin: 0px;
+        padding: 10px;
+        padding-left: 30px;
+        background-color: #efefef;
+        border-top: 1px solid #dedede;
+      }
+      #settings h1 {
+        font-size: 20px;
+        margin: 0px;
+      }
+      #settings label {
+        margin-right: 20px;
+      }
+    </style>
+    <script src="stanza.io.js"></script>
+  </head>
+  <body>
+    <h1 id="logTitle">Events &amp; Data</h1>
+    <div id="log"></div>
+    <div id="settings">
+      <h1>Connection Settings</h1>
+      <form id="loginInfo">
+        <label>Server: <input id="server" type="text" name="server" value="lance.im"/></label>
+        <label>Username: <input id="username" type="text" name="username" /></label>
+        <label>Password: <input id="password" type="password" name="password" /></label>
+        <label>WebSocket URL: <input id="wsURL" type="text" name="wsURL" value="wss://lance.im:5281/xmpp-websocket" /></label>
+        <input id="connect" type="submit" value="Connect" />
+      </form>
+    </div>
+
+    <script>
+      function log(name, data) {
+          var container = document.getElementById('log');
+          var logEntry = document.createElement('div'),
+              header = document.createElement('h2'),
+              entry = document.createElement('p'),
+              altEntry = document.createElement('p');
+
+          header.textContent = name;
+          logEntry.appendChild(header);
+
+
+          if (data && data.toJSON) {
+            var codeJSON = document.createElement('code');
+            codeJSON.textContent = JSON.stringify(data.toJSON());
+
+            altEntry.appendChild(codeJSON);
+            logEntry.appendChild(altEntry);
+            logEntry.appendChild(document.createElement('hr'));
+          }
+
+          var codeData = document.createElement('code');
+          codeData.textContent = data;
+          entry.appendChild(codeData);
+          logEntry.appendChild(entry);
+
+          container.appendChild(logEntry);
+          window.scrollTo(0, document.body.scrollHeight);
+      }
+
+      var client;
+      var loginInfo = document.getElementById('loginInfo');
+      loginInfo.onsubmit = function (e) {
+        if (e.preventDefault) e.preventDefault();
+
+        client = XMPP.createClient({
+          server: document.getElementById('server').value,
+          username: document.getElementById('username').value,
+          password: document.getElementById('password').value,
+          wsURL: document.getElementById('wsURL').value
+        });
+
+        client.on('*', log);
+
+        client.on('sessionBound', function () {
+          client.sendIq({
+            type: 'get',
+            roster: {}
+          }, function (resp) {
+            console.log(resp.roster.items);
+            client.sendPresence();
+          });
+        });
+
+        client.connect();
+        return false;
+      };
+    </script>
+  </body>
+</html>
