@@ -1,5 +1,3 @@
-var padlock = require('padlock');
-
 exports.stanza = require('./lib/stanza/stanza');
 exports.Stream = require('./lib/stanza/stream').Stream;
 exports.Message = require('./lib/stanza/message').Message;
