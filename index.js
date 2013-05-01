@@ -15,7 +15,12 @@ exports.TLS = require('./lib/stanza/starttls');
 
 
 exports.Client = require('./lib/client').Client;
-exports.createClient = require('./lib/client').createClient;
+exports.createClient = function (opts) {
+    var client = new exports.Client(opts);
 
+    client.use(require('./lib/disco').init);
+
+    return client;
+};
 
 window.XMPP = exports;
