@@ -8,8 +8,7 @@
       "lodash": "1.2.0",
       "wildemitter": "0.0.3",
       "browserify": "",
-      "node-uuid": "",
-      "Set": ""
+      "node-uuid": ""
   },
   "repository": {
     "type": "git",

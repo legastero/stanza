@@ -13,12 +13,19 @@ exports.Session = require('./lib/stanza/session').Session;
 exports.SASL = require('./lib/stanza/sasl');
 exports.TLS = require('./lib/stanza/starttls');
 
+exports.SOX = require('./lib/stanza/sox');
+
+exports.Jingle = require('./lib/stanza/jingle');
+exports.RTP = require('./lib/stanza/rtp.js');
+exports.ICEUDP = require('./lib/stanza/iceUdp.js');
+
 
 exports.Client = require('./lib/client').Client;
 exports.createClient = function (opts) {
     var client = new exports.Client(opts);
 
     client.use(require('./lib/disco').init);
+    client.use(require('./lib/webrtc').init);
 
     return client;
 };
