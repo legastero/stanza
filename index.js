@@ -13,6 +13,8 @@ exports.Session = require('./lib/stanza/session').Session;
 exports.SASL = require('./lib/stanza/sasl');
 exports.TLS = require('./lib/stanza/starttls');
 
+exports.SM = require('./lib/stanza/sm');
+
 exports.SOX = require('./lib/stanza/sox');
 
 exports.Jingle = require('./lib/stanza/jingle');
