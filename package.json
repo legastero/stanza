@@ -6,7 +6,7 @@
   "dependencies": {
       "async": "0.2.7",
       "lodash": "1.2.0",
-      "wildemitter": "0.0.3",
+      "wildemitter": "0.0.4",
       "browserify": "",
       "node-uuid": ""
   },
