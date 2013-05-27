@@ -15,6 +15,8 @@ exports.TLS = require('./lib/stanza/starttls');
 
 exports.SM = require('./lib/stanza/sm');
 
+exports.ChatState = require('./lib/stanza/chatState.js');
+
 exports.SOX = require('./lib/stanza/sox');
 
 exports.Jingle = require('./lib/stanza/jingle');
@@ -27,6 +29,7 @@ exports.createClient = function (opts) {
     var client = new exports.Client(opts);
 
     client.use(require('./lib/disco').init);
+    client.use(require('./lib/chatstates').init);
     client.use(require('./lib/webrtc').init);
 
     return client;
