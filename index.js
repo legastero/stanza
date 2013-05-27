@@ -28,9 +28,9 @@ exports.Client = require('./lib/client').Client;
 exports.createClient = function (opts) {
     var client = new exports.Client(opts);
 
-    client.use(require('./lib/disco').init);
-    client.use(require('./lib/chatstates').init);
-    client.use(require('./lib/webrtc').init);
+    client.use(require('./lib/plugins/disco').init);
+    client.use(require('./lib/plugins/chatstates').init);
+    client.use(require('./lib/plugins/webrtc').init);
 
     return client;
 };
