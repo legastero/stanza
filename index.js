@@ -18,6 +18,8 @@ exports.createClient = function (opts) {
     client.use(require('./lib/plugins/disco').init);
     client.use(require('./lib/plugins/chatstates').init);
     client.use(require('./lib/plugins/delayed').init);
+    client.use(require('./lib/plugins/forwarding').init);
+    client.use(require('./lib/plugins/carbons').init);
     client.use(require('./lib/plugins/webrtc').init);
 
     return client;

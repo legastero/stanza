@@ -129,13 +129,14 @@
 
         client.on('*', log);
 
-        client.on('sessionBound', function () {
+        client.on('session:started', function () {
           client.sendIq({
             type: 'get',
             roster: {}
           }, function (resp) {
             console.log(resp.roster.items);
             client.sendPresence();
+            client.carbons.enable();
           });
         });
 
