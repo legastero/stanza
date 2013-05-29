@@ -22,6 +22,7 @@ exports.createClient = function (opts) {
     client.use(require('./lib/plugins/carbons').init);
     client.use(require('./lib/plugins/time').init);
     client.use(require('./lib/plugins/mam').init);
+    client.use(require('./lib/plugins/receipts').init);
     client.use(require('./lib/plugins/webrtc').init);
 
     return client;
