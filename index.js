@@ -24,6 +24,7 @@ exports.createClient = function (opts) {
     client.use(require('./lib/plugins/mam').init);
     client.use(require('./lib/plugins/receipts').init);
     client.use(require('./lib/plugins/idle').init);
+    client.use(require('./lib/plugins/correction').init);
     client.use(require('./lib/plugins/webrtc').init);
 
     return client;
