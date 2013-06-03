@@ -115,6 +115,14 @@
           window.scrollTo(0, document.body.scrollHeight);
       }
 
+
+
+
+
+
+
+
+
       var client;
       var loginInfo = document.getElementById('loginInfo');
       loginInfo.onsubmit = function (e) {
@@ -130,13 +138,9 @@
         client.on('*', log);
 
         client.on('session:started', function () {
-          client.sendIq({
-            type: 'get',
-            roster: {}
-          }, function (resp) {
-            console.log(resp.roster.items);
+          client.enableCarbons();
+          client.getRoster(function (err, resp) {
             client.sendPresence();
-            client.enableCarbons();
           });
         });
 
