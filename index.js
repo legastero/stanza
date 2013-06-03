@@ -10,7 +10,6 @@ exports.Jingle = require('./lib/stanza/jingle');
 exports.RTP = require('./lib/stanza/rtp.js');
 exports.ICEUDP = require('./lib/stanza/iceUdp.js');
 
-
 exports.Client = require('./lib/client').Client;
 exports.createClient = function (opts) {
     var client = new exports.Client(opts);
