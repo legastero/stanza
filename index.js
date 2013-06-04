@@ -27,6 +27,7 @@ exports.createClient = function (opts) {
     client.use(require('./lib/plugins/attention').init);
     client.use(require('./lib/plugins/version').init);
     client.use(require('./lib/plugins/invisible').init);
+    client.use(require('./lib/plugins/muc').init);
     client.use(require('./lib/plugins/webrtc').init);
 
     return client;
