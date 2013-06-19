@@ -1,34 +1,34 @@
 exports.stanza = require('./lib/stanza/stanza');
-exports.Stream = require('./lib/stanza/stream').Stream;
-exports.Message = require('./lib/stanza/message').Message;
-exports.Presence = require('./lib/stanza/presence').Presence;
-exports.Iq = require('./lib/stanza/iq').Iq;
+exports.Stream = require('./lib/stanza/stream');
+exports.Message = require('./lib/stanza/message');
+exports.Presence = require('./lib/stanza/presence');
+exports.Iq = require('./lib/stanza/iq');
 
 exports.SOX = require('./lib/stanza/sox');
 
 exports.Jingle = require('./lib/stanza/jingle');
-exports.RTP = require('./lib/stanza/rtp.js');
-exports.ICEUDP = require('./lib/stanza/iceUdp.js');
+exports.RTP = require('./lib/stanza/rtp');
+exports.ICEUDP = require('./lib/stanza/iceUdp');
 
-exports.Client = require('./lib/client').Client;
+exports.Client = require('./lib/client');
 exports.createClient = function (opts) {
     var client = new exports.Client(opts);
 
-    client.use(require('./lib/plugins/disco').init);
-    client.use(require('./lib/plugins/chatstates').init);
-    client.use(require('./lib/plugins/delayed').init);
-    client.use(require('./lib/plugins/forwarding').init);
-    client.use(require('./lib/plugins/carbons').init);
-    client.use(require('./lib/plugins/time').init);
-    client.use(require('./lib/plugins/mam').init);
-    client.use(require('./lib/plugins/receipts').init);
-    client.use(require('./lib/plugins/idle').init);
-    client.use(require('./lib/plugins/correction').init);
-    client.use(require('./lib/plugins/attention').init);
-    client.use(require('./lib/plugins/version').init);
-    client.use(require('./lib/plugins/invisible').init);
-    client.use(require('./lib/plugins/muc').init);
-    client.use(require('./lib/plugins/webrtc').init);
+    client.use(require('./lib/plugins/disco'));
+    client.use(require('./lib/plugins/chatstates'));
+    client.use(require('./lib/plugins/delayed'));
+    client.use(require('./lib/plugins/forwarding'));
+    client.use(require('./lib/plugins/carbons'));
+    client.use(require('./lib/plugins/time'));
+    client.use(require('./lib/plugins/mam'));
+    client.use(require('./lib/plugins/receipts'));
+    client.use(require('./lib/plugins/idle'));
+    client.use(require('./lib/plugins/correction'));
+    client.use(require('./lib/plugins/attention'));
+    client.use(require('./lib/plugins/version'));
+    client.use(require('./lib/plugins/invisible'));
+    client.use(require('./lib/plugins/muc'));
+    client.use(require('./lib/plugins/webrtc'));
 
     return client;
 };
