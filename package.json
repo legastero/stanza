@@ -32,6 +32,6 @@
     "node": "0.10.x"
   },
   "scripts": {
-      "postinstall": "browserify -d -o build/stanza.io.js index.js && uglifyjs build/stanza.io.js > build/stanza.io.min.js"
+      "postinstall": "browserify --standalone XMPP -o build/stanza.io.js index.js && uglifyjs build/stanza.io.js > build/stanza.io.min.js"
   }
 }

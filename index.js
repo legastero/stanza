@@ -32,5 +32,3 @@ exports.createClient = function (opts) {
 
     return client;
 };
-
-window.XMPP = exports;
