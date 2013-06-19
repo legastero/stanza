@@ -1,18 +1,11 @@
 (function(e){if("function"==typeof bootstrap)bootstrap("xmpp",e);else if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else if("undefined"!=typeof ses){if(!ses.ok())return;ses.makeXMPP=e}else"undefined"!=typeof window?window.XMPP=e():global.XMPP=e()})(function(){var define,ses,bootstrap,module,exports;
 return (function(e,t,n){function i(n,s){if(!t[n]){if(!e[n]){var o=typeof require=="function"&&require;if(!s&&o)return o(n,!0);if(r)return r(n,!0);throw new Error("Cannot find module '"+n+"'")}var u=t[n]={exports:{}};e[n][0].call(u.exports,function(t){var r=e[n][1][t];return i(r?r:t)},u,u.exports)}return t[n].exports}var r=typeof require=="function"&&require;for(var s=0;s<n.length;s++)i(n[s]);return i})({1:[function(require,module,exports){
-exports.stanza = require('./lib/stanza/stanza');
-exports.Stream = require('./lib/stanza/stream');
 exports.Message = require('./lib/stanza/message');
 exports.Presence = require('./lib/stanza/presence');
 exports.Iq = require('./lib/stanza/iq');
 
-exports.SOX = require('./lib/stanza/sox');
-
-exports.Jingle = require('./lib/stanza/jingle');
-exports.RTP = require('./lib/stanza/rtp');
-exports.ICEUDP = require('./lib/stanza/iceUdp');
-
 exports.Client = require('./lib/client');
+
 exports.createClient = function (opts) {
     var client = new exports.Client(opts);
 
@@ -35,57 +28,7 @@ exports.createClient = function (opts) {
     return client;
 };
 
-},{"./lib/stanza/stanza":2,"./lib/stanza/stream":3,"./lib/stanza/message":4,"./lib/stanza/presence":5,"./lib/stanza/iq":6,"./lib/stanza/sox":7,"./lib/stanza/jingle":8,"./lib/stanza/rtp":9,"./lib/stanza/iceUdp":10,"./lib/client":11,"./lib/plugins/disco":12,"./lib/plugins/chatstates":13,"./lib/plugins/delayed":14,"./lib/plugins/forwarding":15,"./lib/plugins/carbons":16,"./lib/plugins/time":17,"./lib/plugins/mam":18,"./lib/plugins/receipts":19,"./lib/plugins/idle":20,"./lib/plugins/correction":21,"./lib/plugins/attention":22,"./lib/plugins/version":23,"./lib/plugins/invisible":24,"./lib/plugins/muc":25,"./lib/plugins/webrtc":26}],3:[function(require,module,exports){
-var stanza = require('./stanza');
-
-
-function Stream(data, xml) {
-    return stanza.init(this, xml, data);
-}
-Stream.prototype = {
-    constructor: {
-        value: Stream
-    },
-    _name: 'stream',
-    NS: 'http://etherx.jabber.org/streams',
-    EL: 'stream',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get lang() {
-        return this.xml.getAttributeNS(stanza.XML_NS, 'lang') || '';
-    },
-    set lang(value) {
-        this.xml.setAttributeNS(stanza.XML_NS, 'lang', value);
-    },
-    get id() {
-        return this.xml.getAttribute('id') || '';
-    },
-    set id(value) {
-        this.xml.setAttribute('id', value);
-    },
-    get version() {
-        return this.xml.getAttribute('version') || '1.0';
-    },
-    set version(value) {
-        this.xml.setAttribute('version', value);
-    },
-    get to() {
-        return this.xml.getAttribute('to') || '';
-    },
-    set to(value) {
-        this.xml.setAttribute('to', value);
-    },
-    get from() {
-        return this.xml.getAttribute('from') || '';
-    },
-    set from(value) {
-        this.xml.setAttribute('from', value);
-    }
-}; 
-
-module.exports = Stream;
-
-},{"./stanza":2}],6:[function(require,module,exports){
+},{"./lib/stanza/message":2,"./lib/stanza/presence":3,"./lib/stanza/iq":4,"./lib/client":5,"./lib/plugins/disco":6,"./lib/plugins/delayed":7,"./lib/plugins/forwarding":8,"./lib/plugins/chatstates":9,"./lib/plugins/carbons":10,"./lib/plugins/time":11,"./lib/plugins/mam":12,"./lib/plugins/receipts":13,"./lib/plugins/idle":14,"./lib/plugins/correction":15,"./lib/plugins/attention":16,"./lib/plugins/version":17,"./lib/plugins/invisible":18,"./lib/plugins/muc":19,"./lib/plugins/webrtc":20}],4:[function(require,module,exports){
 var stanza = require('./stanza');
 
 
@@ -150,15 +93,7 @@ stanza.topLevel(Iq);
 
 module.exports = Iq;
 
-},{"./stanza":2}],13:[function(require,module,exports){
-var stanzas = require('../stanza/chatstates');
-
-
-module.exports = function (client) {
-    client.disco.addFeature('', 'http://jabber.org/protocol/chatstates');
-};
-
-},{"../stanza/chatstates":27}],14:[function(require,module,exports){
+},{"./stanza":21}],7:[function(require,module,exports){
 var stanzas = require('../stanza/delayed');
 
 
@@ -166,7 +101,7 @@ module.exports = function (client) {
     client.disco.addFeature('', 'urn:xmpp:delay');
 };
 
-},{"../stanza/delayed":28}],15:[function(require,module,exports){
+},{"../stanza/delayed":22}],8:[function(require,module,exports){
 var stanzas = require('../stanza/forwarded');
 
 
@@ -174,7 +109,15 @@ module.exports = function (client) {
     client.disco.addFeature('', 'urn:xmpp:forward:0');
 };
 
-},{"../stanza/forwarded":29}],16:[function(require,module,exports){
+},{"../stanza/forwarded":23}],9:[function(require,module,exports){
+var stanzas = require('../stanza/chatstates');
+
+
+module.exports = function (client) {
+    client.disco.addFeature('', 'http://jabber.org/protocol/chatstates');
+};
+
+},{"../stanza/chatstates":24}],10:[function(require,module,exports){
 var stanzas = require('../stanza/carbons');
 
 
@@ -205,7 +148,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/carbons":30}],17:[function(require,module,exports){
+},{"../stanza/carbons":25}],11:[function(require,module,exports){
 var stanzas = require('../stanza/time');
 
 
@@ -231,7 +174,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/time":31}],18:[function(require,module,exports){
+},{"../stanza/time":26}],12:[function(require,module,exports){
 var stanzas = require('../stanza/mam');
 
 
@@ -273,7 +216,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/mam":32}],19:[function(require,module,exports){
+},{"../stanza/mam":27}],13:[function(require,module,exports){
 var stanzas = require('../stanza/receipts');
 
 
@@ -301,7 +244,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/receipts":33}],20:[function(require,module,exports){
+},{"../stanza/receipts":28}],14:[function(require,module,exports){
 var stanzas = require('../stanza/idle');
 
 
@@ -309,7 +252,7 @@ module.exports = function (client) {
     client.disco.addFeature('', 'urn:xmpp:idle:0');
 };
 
-},{"../stanza/idle":34}],21:[function(require,module,exports){
+},{"../stanza/idle":29}],15:[function(require,module,exports){
 var stanzas = require('../stanza/replace');
 
 
@@ -323,7 +266,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/replace":35}],22:[function(require,module,exports){
+},{"../stanza/replace":30}],16:[function(require,module,exports){
 require('../stanza/attention');
 
 
@@ -345,7 +288,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/attention":36}],23:[function(require,module,exports){
+},{"../stanza/attention":31}],17:[function(require,module,exports){
 require('../stanza/version');
 
 
@@ -369,7 +312,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/version":37}],24:[function(require,module,exports){
+},{"../stanza/version":32}],18:[function(require,module,exports){
 require('../stanza/visibility');
 
 
@@ -389,7 +332,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/visibility":38}],25:[function(require,module,exports){
+},{"../stanza/visibility":33}],19:[function(require,module,exports){
 require('../stanza/muc');
 
 
@@ -411,7 +354,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/muc":39}],40:[function(require,module,exports){
+},{"../stanza/muc":34}],35:[function(require,module,exports){
 var sha = require('./sha')
 var rng = require('./rng')
 var md5 = require('./md5')
@@ -487,7 +430,7 @@ exports.randomBytes = function(size, callback) {
   }
 })
 
-},{"./sha":41,"./rng":42,"./md5":43}],41:[function(require,module,exports){
+},{"./sha":36,"./rng":37,"./md5":38}],36:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -699,7 +642,7 @@ function binb2b64(binarray)
 }
 
 
-},{}],42:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 // Original code adapted from Robert Kieffer.
 // details at https://github.com/broofa/node-uuid
 (function() {
@@ -737,7 +680,7 @@ function binb2b64(binarray)
   module.exports = whatwgRNG || mathRNG;
 
 }())
-},{}],43:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
  * Digest Algorithm, as defined in RFC 1321.
@@ -1123,7 +1066,7 @@ exports.hex_md5 = hex_md5;
 exports.b64_md5 = b64_md5;
 exports.any_md5 = any_md5;
 
-},{}],11:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function(){var WildEmitter = require('wildemitter'),
     _ = require('lodash'),
     async = require('async'),
@@ -1516,7 +1459,57 @@ Client.prototype.denySubscription = function (jid) {
 module.exports = Client;
 
 })()
-},{"./stanza/stanza":2,"./stanza/sasl":44,"./stanza/message":4,"./stanza/presence":5,"./stanza/iq":6,"./websocket":45,"./stanza/stream":3,"./stanza/sm":46,"./stanza/roster":47,"./stanza/error":48,"./stanza/streamError":49,"./stanza/streamFeatures":50,"./stanza/bind":51,"./stanza/session":52,"wildemitter":53,"lodash":54,"node-uuid":55,"async":56}],46:[function(require,module,exports){
+},{"./stanza/stanza":21,"./stanza/sasl":39,"./stanza/message":2,"./stanza/presence":3,"./stanza/iq":4,"./websocket":40,"./stanza/stream":41,"./stanza/sm":42,"./stanza/roster":43,"./stanza/error":44,"./stanza/streamError":45,"./stanza/streamFeatures":46,"./stanza/bind":47,"./stanza/session":48,"wildemitter":49,"lodash":50,"node-uuid":51,"async":52}],41:[function(require,module,exports){
+var stanza = require('./stanza');
+
+
+function Stream(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Stream.prototype = {
+    constructor: {
+        value: Stream
+    },
+    _name: 'stream',
+    NS: 'http://etherx.jabber.org/streams',
+    EL: 'stream',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get lang() {
+        return this.xml.getAttributeNS(stanza.XML_NS, 'lang') || '';
+    },
+    set lang(value) {
+        this.xml.setAttributeNS(stanza.XML_NS, 'lang', value);
+    },
+    get id() {
+        return this.xml.getAttribute('id') || '';
+    },
+    set id(value) {
+        this.xml.setAttribute('id', value);
+    },
+    get version() {
+        return this.xml.getAttribute('version') || '1.0';
+    },
+    set version(value) {
+        this.xml.setAttribute('version', value);
+    },
+    get to() {
+        return this.xml.getAttribute('to') || '';
+    },
+    set to(value) {
+        this.xml.setAttribute('to', value);
+    },
+    get from() {
+        return this.xml.getAttribute('from') || '';
+    },
+    set from(value) {
+        this.xml.setAttribute('from', value);
+    }
+}; 
+
+module.exports = Stream;
+
+},{"./stanza":21}],42:[function(require,module,exports){
 var stanza = require('./stanza'),
     StreamFeatures = require('./streamFeatures');
 
@@ -1721,7 +1714,7 @@ exports.Failed = Failed;
 exports.Ack = Ack;
 exports.Request = Request;
 
-},{"./stanza":2,"./streamFeatures":50}],50:[function(require,module,exports){
+},{"./stanza":21,"./streamFeatures":46}],46:[function(require,module,exports){
 var stanza = require('./stanza');
 
 
@@ -1748,7 +1741,7 @@ stanza.topLevel(StreamFeatures);
 
 module.exports = StreamFeatures;
 
-},{"./stanza":2}],51:[function(require,module,exports){
+},{"./stanza":21}],47:[function(require,module,exports){
 var stanza = require('./stanza'),
     Iq = require('./iq'),
     StreamFeatures = require('./streamFeatures');
@@ -1787,7 +1780,7 @@ stanza.extend(StreamFeatures, Bind);
 
 module.exports = Bind;
 
-},{"./stanza":2,"./iq":6,"./streamFeatures":50}],52:[function(require,module,exports){
+},{"./stanza":21,"./iq":4,"./streamFeatures":46}],48:[function(require,module,exports){
 var stanza = require('./stanza'),
     Iq = require('./iq'),
     StreamFeatures = require('./streamFeatures');
@@ -1814,7 +1807,7 @@ stanza.extend(Iq, Session);
 
 module.exports = Session;
 
-},{"./stanza":2,"./iq":6,"./streamFeatures":50}],57:[function(require,module,exports){
+},{"./stanza":21,"./iq":4,"./streamFeatures":46}],53:[function(require,module,exports){
 var stanza = require('./stanza'),
     Presence = require('./presence'),
     StreamFeatures = require('./streamFeatures');
@@ -1865,7 +1858,85 @@ stanza.extend(StreamFeatures, Caps);
 
 module.exports = Caps;
 
-},{"./stanza":2,"./presence":5,"./streamFeatures":50}],27:[function(require,module,exports){
+},{"./stanza":21,"./presence":3,"./streamFeatures":46}],22:[function(require,module,exports){
+var stanza = require('./stanza'),
+    Message = require('./message'),
+    Presence = require('./presence');
+
+
+function DelayedDelivery(data, xml) {
+    return stanza.init(this, xml, data);
+}
+DelayedDelivery.prototype = {
+    constructor: {
+        value: DelayedDelivery
+    },
+    NS: 'urn:xmpp:delay',
+    EL: 'delay',
+    _name: 'delay',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get from() {
+        return this.xml.getAttribute('from') || '';
+    },
+    set from(value) {
+        this.xml.setAttribute('from', value);
+    },
+    get stamp() {
+        return new Date(this.xml.getAttribute('stamp') || '');
+    },
+    set stamp(value) {
+        this.xml.setAttribute('stamp', value.toISOString());
+    },
+    get reason() {
+        return this.xml.textContent || '';
+    },
+    set reason(value) {
+        this.xml.textContent = value;
+    }
+};
+
+
+stanza.extend(Message, DelayedDelivery);
+stanza.extend(Presence, DelayedDelivery);
+
+
+module.exports = DelayedDelivery;
+
+},{"./stanza":21,"./message":2,"./presence":3}],23:[function(require,module,exports){
+var stanza = require('./stanza'),
+    Message = require('./message'),
+    Presence = require('./presence'),
+    Iq = require('./iq'),
+    DelayedDelivery = require('./delayed');
+
+
+function Forwarded(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Forwarded.prototype = {
+    constructor: {
+        value: Forwarded 
+    },
+    NS: 'urn:xmpp:forward:0',
+    EL: 'forwarded',
+    _name: 'forwarded',
+    _eventname: 'forward',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON
+};
+
+
+stanza.extend(Message, Forwarded);
+stanza.extend(Forwarded, Message);
+stanza.extend(Forwarded, Presence);
+stanza.extend(Forwarded, Iq);
+stanza.extend(Forwarded, DelayedDelivery);
+
+
+module.exports = Forwarded;
+
+},{"./stanza":21,"./message":2,"./presence":3,"./iq":4,"./delayed":22}],24:[function(require,module,exports){
 var stanza = require('./stanza'),
     Message = require('./message');
 
@@ -1981,85 +2052,7 @@ Message.prototype.__defineSetter__('chatState', function (value) {
     }
 });
 
-},{"./stanza":2,"./message":4}],28:[function(require,module,exports){
-var stanza = require('./stanza'),
-    Message = require('./message'),
-    Presence = require('./presence');
-
-
-function DelayedDelivery(data, xml) {
-    return stanza.init(this, xml, data);
-}
-DelayedDelivery.prototype = {
-    constructor: {
-        value: DelayedDelivery
-    },
-    NS: 'urn:xmpp:delay',
-    EL: 'delay',
-    _name: 'delay',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get from() {
-        return this.xml.getAttribute('from') || '';
-    },
-    set from(value) {
-        this.xml.setAttribute('from', value);
-    },
-    get stamp() {
-        return new Date(this.xml.getAttribute('stamp') || '');
-    },
-    set stamp(value) {
-        this.xml.setAttribute('stamp', value.toISOString());
-    },
-    get reason() {
-        return this.xml.textContent || '';
-    },
-    set reason(value) {
-        this.xml.textContent = value;
-    }
-};
-
-
-stanza.extend(Message, DelayedDelivery);
-stanza.extend(Presence, DelayedDelivery);
-
-
-module.exports = DelayedDelivery;
-
-},{"./stanza":2,"./message":4,"./presence":5}],29:[function(require,module,exports){
-var stanza = require('./stanza'),
-    Message = require('./message'),
-    Presence = require('./presence'),
-    Iq = require('./iq'),
-    DelayedDelivery = require('./delayed');
-
-
-function Forwarded(data, xml) {
-    return stanza.init(this, xml, data);
-}
-Forwarded.prototype = {
-    constructor: {
-        value: Forwarded 
-    },
-    NS: 'urn:xmpp:forward:0',
-    EL: 'forwarded',
-    _name: 'forwarded',
-    _eventname: 'forward',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON
-};
-
-
-stanza.extend(Message, Forwarded);
-stanza.extend(Forwarded, Message);
-stanza.extend(Forwarded, Presence);
-stanza.extend(Forwarded, Iq);
-stanza.extend(Forwarded, DelayedDelivery);
-
-
-module.exports = Forwarded;
-
-},{"./stanza":2,"./message":4,"./presence":5,"./iq":6,"./delayed":28}],30:[function(require,module,exports){
+},{"./stanza":21,"./message":2}],25:[function(require,module,exports){
 var stanza = require('./stanza'),
     Message = require('./message'),
     Iq = require('./iq'),
@@ -2159,7 +2152,7 @@ exports.Private = Private;
 exports.Enable = Enable;
 exports.Disable = Disable;
 
-},{"./stanza":2,"./message":4,"./iq":6,"./forwarded":29}],31:[function(require,module,exports){
+},{"./stanza":21,"./message":2,"./iq":4,"./forwarded":23}],26:[function(require,module,exports){
 var stanza = require('./stanza'),
     Iq = require('./iq');
 
@@ -2223,7 +2216,7 @@ stanza.extend(Iq, EntityTime);
 
 module.exports = EntityTime;
 
-},{"./stanza":2,"./iq":6}],32:[function(require,module,exports){
+},{"./stanza":21,"./iq":4}],27:[function(require,module,exports){
 var stanza = require('./stanza'),
     Message = require('./message'),
     Iq = require('./iq'),
@@ -2335,7 +2328,7 @@ stanza.extend(MAMQuery, RSM);
 exports.MAMQuery = MAMQuery;
 exports.Result = Result;
 
-},{"./stanza":2,"./message":4,"./iq":6,"./forwarded":29,"./rsm":58}],33:[function(require,module,exports){
+},{"./stanza":21,"./message":2,"./iq":4,"./forwarded":23,"./rsm":54}],28:[function(require,module,exports){
 var stanza = require('./stanza'),
     Message = require('./message');
 
@@ -2395,7 +2388,7 @@ stanza.extend(Message, Request);
 exports.Request = Request;
 exports.Received = Received;
 
-},{"./stanza":2,"./message":4}],34:[function(require,module,exports){
+},{"./stanza":21,"./message":2}],29:[function(require,module,exports){
 var stanza = require('./stanza'),
     Presence = require('./presence');
 
@@ -2426,7 +2419,7 @@ stanza.extend(Presence, Idle);
 
 module.exports = Idle;
 
-},{"./stanza":2,"./presence":5}],35:[function(require,module,exports){
+},{"./stanza":21,"./presence":3}],30:[function(require,module,exports){
 var stanza = require('./stanza'),
     Message = require('./message');
 
@@ -2472,7 +2465,7 @@ Message.prototype.__defineSetter__('replace', function (value) {
 
 module.exports = Replace;
 
-},{"./stanza":2,"./message":4}],36:[function(require,module,exports){
+},{"./stanza":21,"./message":2}],31:[function(require,module,exports){
 var stanza = require('./stanza'),
     Message = require('./message');
 
@@ -2508,7 +2501,7 @@ stanza.extend(Message, Attention);
 
 module.exports = Attention;
 
-},{"./stanza":2,"./message":4}],37:[function(require,module,exports){
+},{"./stanza":21,"./message":2}],32:[function(require,module,exports){
 var stanza = require('./stanza'),
     Iq = require('./iq');
 
@@ -2551,7 +2544,7 @@ stanza.extend(Iq, Version);
 
 module.exports = Version;
 
-},{"./stanza":2,"./iq":6}],38:[function(require,module,exports){
+},{"./stanza":21,"./iq":4}],33:[function(require,module,exports){
 var stanza = require('./stanza'),
     Iq = require('./iq');
 
@@ -2619,7 +2612,7 @@ stanza.extend(Iq, Invisible);
 exports.Visible = Visible;
 exports.Invisible = Invisible;
 
-},{"./stanza":2,"./iq":6}],39:[function(require,module,exports){
+},{"./stanza":21,"./iq":4}],34:[function(require,module,exports){
 var stanza = require('./stanza'),
     Message = require('./message'),
     Presence = require('./presence'),
@@ -2701,7 +2694,7 @@ stanza.extend(Presence, MUCJoin);
 
 exports.MUCJoin = MUCJoin;
 
-},{"./stanza":2,"./message":4,"./presence":5,"./iq":6}],53:[function(require,module,exports){
+},{"./stanza":21,"./message":2,"./presence":3,"./iq":4}],49:[function(require,module,exports){
 /*
 WildEmitter.js is a slim little event emitter by @henrikjoreteg largely based 
 on @visionmedia's Emitter from UI Kit.
@@ -2838,7 +2831,7 @@ WildEmitter.prototype.getWildcardCallbacks = function (eventName) {
     return result;
 };
 
-},{}],59:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 require=(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){
 exports.readIEEE754 = function(buffer, offset, isBE, mLen, nBytes) {
   var e, m,
@@ -6703,7 +6696,7 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 },{}]},{},[])
 ;;module.exports=require("buffer-browserify")
 
-},{}],55:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 (function(Buffer){//     uuid.js
 //
 //     (c) 2010-2012 Robert Kieffer
@@ -6951,7 +6944,7 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 }());
 
 })(require("__browserify_buffer").Buffer)
-},{"crypto":40,"__browserify_buffer":59}],54:[function(require,module,exports){
+},{"crypto":35,"__browserify_buffer":55}],50:[function(require,module,exports){
 (function(global){/**
  * @license
  * Lo-Dash 1.2.0 (Custom Build) <http://lodash.com/>
@@ -12192,7 +12185,7 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 }(this));
 
 })(window)
-},{}],60:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -12246,7 +12239,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],56:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 (function(process){/*global setImmediate: false, setTimeout: false, console: false */
 (function () {
 
@@ -13201,300 +13194,7 @@ process.chdir = function (dir) {
 }());
 
 })(require("__browserify_process"))
-},{"__browserify_process":60}],2:[function(require,module,exports){
-var _ = require('lodash'),
-    serializer = new XMLSerializer(),
-    XML_NS = 'http://www.w3.org/XML/1998/namespace',
-    TOP_LEVEL_LOOKUP = {},
-    LOOKUP = {},
-    LOOKUP_EXT = {};
-
-
-var find = exports.find = function (xml, NS, selector) {
-    var children = xml.querySelectorAll(selector);
-    return _.filter(children, function (child) {
-        return child.namespaceURI === NS && child.parentNode == xml;
-    });
-};
-
-exports.init = function (self, xml, data) {
-    self.xml = xml || document.createElementNS(self.NS, self.EL);
-    self.xml.setAttribute('xmlns', self.NS);
-
-    self._extensions = {};
-    _.each(self.xml.childNodes, function (child) {
-        var childName = child.namespaceURI + '|' + child.localName;
-        var ChildStanza = LOOKUP[childName];
-        if (ChildStanza !== undefined) {
-            var name = ChildStanza.prototype._name;
-            self._extensions[name] = new ChildStanza(null, child);
-            self._extensions[name].parent = self;
-        }
-    });
-
-    _.extend(self, data);
-    return self;
-};
-
-exports.getSubText = function (xml, NS, element) {
-    var subs = find(xml, NS, element);
-    if (!subs) {
-        return '';
-    }
-
-    for (var i = 0; i < subs.length; i++) {
-        if (subs[i].namespaceURI === NS) {
-            return subs[i].textContent || '';
-        }
-    }
-    
-    return '';
-};
-
-exports.getMultiSubText = function (xml, NS, element, extractor) {
-    var subs = find(xml, NS, element),
-        results = [];
-    extractor = extractor || function (sub) {
-        return sub.textContent || '';
-    };
-
-    for (var i = 0; i < subs.length; i++) {
-        if (subs[i].namespaceURI === NS) {
-            results.push(extractor(subs[i]));
-        }
-    }
-    
-    return results;
-};
-
-exports.getSubLangText = function (xml, NS, element, defaultLang) {
-    var subs = find(xml, NS, element);
-    if (!subs) {
-        return {};
-    }
-
-    var results = {},
-        langs = [],
-        lang,
-        sub;
-
-    for (var i = 0; i < subs.length; i++) {
-        sub = subs[i];
-        if (sub.namespaceURI === NS) {
-            lang = sub.getAttributeNS(XML_NS, 'lang') || defaultLang;
-            langs.push(lang);
-            results[lang] = sub.textContent || '';
-        }
-    }
-    
-    return results;
-};
-
-
-exports.setSubText = function (xml, NS, element, value) {
-    var subs = find(xml, NS, element);
-    if (!subs.length) {
-        if (value) {
-            var sub = document.createElementNS(NS, element);
-            sub.textContent = value;
-            xml.appendChild(sub);
-        }
-    } else {
-        for (var i = 0; i < subs.length; i++) {
-            if (subs[i].namespaceURI === NS) {
-                if (value) {
-                    subs[i].textContent = value;
-                    return;
-                } else {
-                    xml.removeChild(subs[i]);
-                }
-            }
-        }
-    }
-};
-
-exports.setMultiSubText = function (xml, NS, element, value, builder) {
-    var subs = find(xml, NS, element),
-        values = [];
-    builder = builder || function (value) {
-        var sub = document.createElementNS(NS, element);
-        sub.textContent = value;
-        xml.appendChild(sub);
-    };
-    if (typeof value === 'string') {
-        values = (value || '').split('\n');
-    } else {
-        values = value;
-    }
-    _.forEach(subs, function (sub) {
-        xml.removeChild(sub);
-    });
-    _.forEach(values, function (val) {
-        if (val) {
-            builder(val);
-        }
-    });
-};
-
-exports.setSubLangText = function (xml, NS, element, value, defaultLang) {
-    var subs = find(xml, NS, element),
-        sub,
-        lang;
-    if (subs.length) {
-        for (var i = 0; i < subs.length; i++) {
-            sub = subs[i];
-            if (sub.namespaceURI === NS) {
-                xml.removeChild(sub);
-            }
-        }
-    }
-
-    if (typeof value === 'string') {
-        sub = document.createElementNS(NS, element);
-        sub.textContent = value;
-        xml.appendChild(sub);
-    } else if (typeof value === 'object') {
-        for (lang in value) {
-            if (value.hasOwnProperty(lang)) {
-                sub = document.createElementNS(NS, element);
-                if (lang !== defaultLang) {
-                    sub.setAttributeNS(XML_NS, 'lang', lang);
-                }
-                sub.textContent = value[lang];
-                xml.appendChild(sub);
-            }
-        }
-    }
-};
-
-exports.getAttribute = function (xml, attr, defaultVal) {
-    return xml.getAttribute(attr) || defaultVal || '';
-};
-
-exports.setAttribute = function (xml, attr, value) {
-    if (value) {
-        xml.setAttribute(attr, value);
-    } else {
-        xml.removeAttribute(attr);
-    }
-};
-
-exports.getSubAttribute = function (xml, NS, sub, attr, defaultVal) {
-    var subs = find(xml, NS, sub);
-    if (!subs) {
-        return '';
-    }
-
-    for (var i = 0; i < subs.length; i++) {
-        if (subs[i].namespaceURI === NS) {
-            return subs[i].getAttribute(attr) || defaultVal || '';
-        }
-    }
-    
-    return '';
-};
-
-exports.setSubAttribute = function (xml, NS, sub, attr, value) {
-    var subs = find(xml, NS, sub);
-    if (!subs.length) {
-        if (value) {
-            sub = document.createElementNS(NS, sub);
-            sub.setAttribute(attr, value);
-            xml.appendChild(sub);
-        }
-    } else {
-        for (var i = 0; i < subs.length; i++) {
-            if (subs[i].namespaceURI === NS) {
-                if (value) {
-                    subs[i].setAttribute(attr, value);
-                    return;
-                } else {
-                    subs[i].removeAttribute(attr);
-                }
-            }
-        }
-    }
-};
-
-exports.toString = function () {
-    return serializer.serializeToString(this.xml);
-};
-
-exports.toJSON = function () {
-    var result = {},
-        exclude = {
-            constructor: true,
-            NS: true,
-            EL: true,
-            toString: true,
-            toJSON: true,
-            _extensions: true,
-            prototype: true,
-            xml: true,
-            parent: true,
-            _name: true
-        },
-        prop;
-    for (prop in this._extensions) {
-        if (this._extensions[prop].toJSON) {
-            result[prop] = this._extensions[prop].toJSON();
-        }
-    }
-    for (prop in this) {
-        if (!exclude[prop] && !LOOKUP_EXT[prop] && !this._extensions[prop] && prop[0] !== '_') {
-            var val = this[prop];
-            if (typeof val != 'function' && ((typeof val == 'object' && Object.keys(val).length > 0) || !!val)) {
-                result[prop] = val;
-            }
-        }
-    }
-    return result;
-};
-
-exports.extend = function (ParentStanza, ChildStanza) {
-    var name = ChildStanza.prototype._name,
-        qName = ChildStanza.prototype.NS + '|' + ChildStanza.prototype.EL;
-    LOOKUP[qName] = ChildStanza;
-    LOOKUP_EXT[name] = ChildStanza;
-
-    ParentStanza.prototype.__defineGetter__(name, function () {
-        if (!this._extensions[name]) {
-            var existing = exports.find(this.xml, ChildStanza.prototype.NS, ChildStanza.prototype.EL);
-            if (!existing.length) {
-                this._extensions[name] = new ChildStanza();
-                this.xml.appendChild(this._extensions[name].xml);
-            } else {
-                this._extensions[name] = new ChildStanza(null, existing[0]);
-            }
-            this._extensions[name].parent = this;
-        }
-        return this._extensions[name];
-    });
-    ParentStanza.prototype.__defineSetter__(name, function (value) {
-        var child = this[name];
-        _.extend(child, value);
-    });
-};
-
-exports.topLevel = function (Stanza) {
-    var name = Stanza.prototype.NS + '|' + Stanza.prototype.EL;
-    LOOKUP[name] = Stanza;
-    TOP_LEVEL_LOOKUP[name] = Stanza;
-};
-
-exports.build = function (xml) {
-    var Stanza = TOP_LEVEL_LOOKUP[xml.namespaceURI + '|' + xml.localName];
-    if (Stanza) {
-        return new Stanza(null, xml);
-    }
-};
-
-exports.XML_NS = XML_NS;
-exports.TOP_LEVEL_LOOKUP = TOP_LEVEL_LOOKUP;
-exports.LOOKUP_EXT = LOOKUP_EXT;
-exports.LOOKUP = LOOKUP;
-
-},{"lodash":54}],4:[function(require,module,exports){
+},{"__browserify_process":56}],2:[function(require,module,exports){
 var _ = require('lodash'),
     stanza = require('./stanza');
 
@@ -13590,7 +13290,7 @@ stanza.topLevel(Message);
 
 module.exports = Message;
 
-},{"./stanza":2,"lodash":54}],5:[function(require,module,exports){
+},{"./stanza":21,"lodash":50}],3:[function(require,module,exports){
 var _ = require('lodash'),
     stanza = require('./stanza');
 
@@ -13666,552 +13366,7 @@ stanza.topLevel(Presence);
 
 module.exports = Presence;
 
-},{"./stanza":2,"lodash":54}],7:[function(require,module,exports){
-var _ = require('lodash'),
-    stanza = require('./stanza'),
-    Message = require('./message');
-
-
-function SOX(data, xml) {
-    return stanza.init(this, xml, data);
-}
-SOX.prototype = {
-    constructor: {
-        value: SOX
-    },
-    _name: 'sox',
-    NS: 'http://stanza.io/protocol/sox',
-    EL: 'sox',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get type() {
-        return stanza.getAttribute(this.xml, 'type');
-    },
-    set type(value) {
-        stanza.setAttribute(this.xml, 'type', value);
-    },
-    get label() {
-        return stanza.getAttribute(this.xml, 'label');
-    },
-    set label(value) {
-        stanza.setAttribute(this.xml, 'label', value);
-    },
-    get id() {
-        return stanza.getAttribute(this.xml, 'id');
-    },
-    set id(value) {
-        stanza.setAttribute(this.xml, 'id', value);
-    },
-    get sid() {
-        return stanza.getAttribute(this.xml, 'sid');
-    },
-    set sid(value) {
-        stanza.setAttribute(this.xml, 'sid', value);
-    },
-    get sdp() {
-        return this.xml.textContent;
-    },
-    set sdp(value) {
-        this.xml.textContent = value;
-    }
-};
-
-
-stanza.extend(Message, SOX);
-module.exports = SOX;
-
-},{"./stanza":2,"./message":4,"lodash":54}],8:[function(require,module,exports){
-var _ = require('lodash'),
-    stanza = require('./stanza'),
-    Iq = require('./iq');
-
-
-function Jingle(data, xml) {
-    return stanza.init(this, xml, data);
-}
-Jingle.prototype = {
-    constructor: {
-        value: Jingle,
-    },
-    _name: 'jingle',
-    NS: 'urn:xmpp:jingle:1',
-    EL: 'jingle',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get action() {
-        return stanza.getAttribute(this.xml, 'action');
-    },
-    set action(value) {
-        stanza.setAttribute(this.xml, 'action', value);
-    },
-    get initiator() {
-        return stanza.getAttribute(this.xml, 'initiator');
-    },
-    set initiator(value) {
-        stanza.setAttribute(this.xml, 'initiator', value);
-    },
-    get responder() {
-        return stanza.getAttribute(this.xml, 'responder');
-    },
-    set responder(value) {
-        stanza.setAttribute(this.xml, 'responder', value);
-    },
-    get sid() {
-        return stanza.getAttribute(this.xml, 'sid');
-    },
-    set sid(value) {
-        stanza.setAttribute(this.xml, 'sid', value);
-    },
-    get contents() {
-        var contents = stanza.find(this.xml, 'urn:xmpp:jingle:1', 'content'),
-            results = [];
-        _.forEach(contents, function (xml) {
-            results.push(new Content({}, xml).toJSON());
-        });
-        return results;
-    },
-    set contents(value) {
-        var self = this;
-        _.forEach(value, function (data) {
-            var content = new Content(data);
-            self.xml.appendChild(content.xml);
-        });
-    }
-};
-
-
-function Content(data, xml) {
-    return stanza.init(this, xml, data);
-}
-Content.prototype = {
-    constructor: {
-        value: Content
-    },
-    _name: 'jingleContent',
-    NS: 'urn:xmpp:jingle:1',
-    EL: 'content',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get creator() {
-        return stanza.getAttribute(this.xml, 'creator');
-    },
-    set creator(value) {
-        stanza.setAttribute(this.xml, 'creator', value);
-    },
-    get disposition() {
-        return stanza.getAttribute(this.xml, 'disposition', 'session');
-    },
-    set disposition(value) {
-        stanza.setAttribute(this.xml, 'disposition', value);
-    },
-    get name() {
-        return stanza.getAttribute(this.xml, 'name');
-    },
-    set name(value) {
-        stanza.setAttribute(this.xml, 'name', value);
-    },
-    get senders() {
-        return stanza.getAttribute(this.xml, 'senders', 'both');
-    },
-    set senders(value) {
-        stanza.setAttribute(this.xml, 'senders', value);
-    }
-};
-
-
-stanza.extend(Iq, Jingle);
-
-exports.Jingle = Jingle;
-exports.Content = Content;
-
-},{"./stanza":2,"./iq":6,"lodash":54}],9:[function(require,module,exports){
-var _ = require('lodash'),
-    stanza = require('./stanza'),
-    jingle = require('./jingle');
-
-
-function RTP(data, xml) {
-    return stanza.init(this, xml, data);
-}
-RTP.prototype = {
-    constructor: {
-        value: RTP
-    },
-    _name: 'rtp',
-    NS: 'urn:xmpp:jingle:apps:rtp:1',
-    EL: 'description',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get media() {
-        return stanza.getAttribute(this.xml, 'media');
-    },
-    set media(value) {
-        stanza.setAttribute(this.xml, 'media', value);
-    },
-    get ssrc() {
-        return stanza.getAttribute(this.xml, 'ssrc');
-    },
-    set ssrc(value) {
-        stanza.setAttribute(this.xml, 'ssrc', value);
-    },
-    get bandwidth() {
-        return stanza.getSubText(this.xml, this.NS, 'bandwidth');
-    },
-    set bandwidth(value) {
-        stanza.setSubText(this.xml, this.NS, 'bandwidth', value);
-    },
-    get bandwidthType() {
-        return stanza.getSubAttribute(this.xml, this.NS, 'bandwidth', 'type');
-    },
-    set bandwidthType(value) {
-        stanza.setSubAttribute(this.xml, this.NS, 'bandwidth', 'type', value);
-    },
-    get payloadTypes() {
-        var payloadTypes = stanza.find(this.xml, 'urn:xmpp:jingle:apps:rtp:1', 'payload-type'),
-            results = [];
-        _.forEach(payloadTypes, function (xml) {
-            results.push(new PayloadType({}, xml).toJSON());
-        });
-        return results;
-    },
-    set payloadTypes(value) {
-        var self = this;
-        _.forEach(value, function (data) {
-            var payloadType = new PayloadType(data);
-            self.xml.appendChild(payloadType.xml);
-        });
-    },
-    get cryptoRequired() {
-        var req = stanza.getSubAttribute(this.xml, this.NS, 'encryption', 'required');
-        return req === 'true' || req === '1';
-    },
-    set cryptoRequired(value) {
-        stanza.setSubAttribute(this.xml, this.NS, 'encryption', 'required', value ? 'true' : 'false');
-    },
-    get crypto() {
-        var encryption = stanza.find(this.xml, this.NS, 'encryption'),
-            results = [];
-        if (encryption) {
-            var encryptionOptions = stanza.find(encryption, this.NS, 'crypto');
-            _.forEach(encryptionOptions, function (xml) {
-                results.push(new Crypto({}, xml).toJSON());
-            });
-        }
-        return results;
-    },
-    set crypto(value) {
-        var self = this,
-            encryption = stanza.find(this.xml, this.NS, 'encryption');
-        if (!encryption) {
-            encryption = document.createElementNS(this.NS, 'encryption');
-        }
-        _.forEach(value, function (data) {
-            var crypto = new Crypto(data);
-            encryption.appendChild(crypto.xml);
-        });
-    }
-};
-
-
-function Crypto(data, xml) {
-    return stanza.init(this, xml, data);
-}
-Crypto.prototype = {
-    constructor: {
-        value: Crypto 
-    },
-    _name: '_crypto',
-    NS: 'urn:xmpp:jingle:apps:rtp:1',
-    EL: 'crypto',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get cipherSuite() {
-        return stanza.getAttribute(this.xml, 'cipher-suite');
-    },
-    set cipherSuite(value) {
-        stanza.setAttribute(this.xml, 'cipher-suite', value);
-    },
-    get keyParams() {
-        return stanza.getAttribute(this.xml, 'key-params');
-    },
-    set keyParams(value) {
-        stanza.setAttribute(this.xml, 'key-params', value);
-    },
-    get sessionParams() {
-        return stanza.getAttribute(this.xml, 'session-params');
-    },
-    set sessionParams(value) {
-        stanza.setAttribute(this.xml, 'session-params', value);
-    },
-    get tag() {
-        return stanza.getAttribute(this.xml, 'tag');
-    },
-    set tag(value) {
-        stanza.setAttribute(this.xml, 'tag', value);
-    }
-};
-
-
-function PayloadType(data, xml) {
-    return stanza.init(this, xml, data);
-}
-PayloadType.prototype = {
-    constructor: {
-        value: PayloadType
-    },
-    _name: 'payloadType',
-    NS: 'urn:xmpp:jingle:apps:rtp:1',
-    EL: 'payload-type',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get channels() {
-        return stanza.getAttribute(this.xml, 'channels');
-    },
-    set channels(value) {
-        stanza.setAttribute(this.xml, 'channels', value);
-    },
-    get clockrate() {
-        return stanza.getAttribute(this.xml, 'clockrate');
-    },
-    set clockrate(value) {
-        stanza.setAttribute(this.xml, 'clockrate', value);
-    },
-    get id() {
-        return stanza.getAttribute(this.xml, 'id');
-    },
-    set id(value) {
-        stanza.setAttribute(this.xml, 'id', value);
-    },
-    get maxptime() {
-        return stanza.getAttribute(this.xml, 'maxptime');
-    },
-    set maxptime(value) {
-        stanza.setAttribute(this.xml, 'maxptime', value);
-    },
-    get name() {
-        return stanza.getAttribute(this.xml, 'name');
-    },
-    set name(value) {
-        stanza.setAttribute(this.xml, 'name', value);
-    },
-    get ptime() {
-        return stanza.getAttribute(this.xml, 'ptime');
-    },
-    set ptime(value) {
-        stanza.setAttribute(this.xml, 'ptime', value);
-    },
-    get parameters() {
-        var result = {};
-        var params = stanza.find(this.xml, this.NS, 'parameter');
-        _.forEach(params, function (param) {
-            var key = stanza.getAttribute(param, 'name'),
-                value = stanza.getAttribute(param, 'value');
-            result[key] = value;
-        });
-        return result;
-    },
-    set parameters(value) {
-        var self = this;
-        _.forEach(value, function (key, value) {
-            var param = document.createElementNS(self.NS, 'parameter');
-            param.setAttribute('name', key);
-            param.setAttribute('value', value);
-            self.xml.appendChild(param);
-        });
-    }
-};
-
-
-stanza.extend(jingle.Content, RTP);
-
-exports.RTP = RTP;
-exports.Crypto = Crypto;
-exports.PayloadType = PayloadType;
-
-},{"./stanza":2,"./jingle":8,"lodash":54}],10:[function(require,module,exports){
-var _ = require('lodash'),
-    stanza = require('./stanza'),
-    jingle = require('./jingle');
-
-
-function ICEUDP(data, xml) {
-    return stanza.init(this, xml, data);
-}
-ICEUDP.prototype = {
-    constructor: {
-        value: ICEUDP
-    },
-    _name: 'iceUdp',
-    NS: 'urn:xmpp:jingle:transports:ice-udp:1',
-    EL: 'transport',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get pwd() {
-        return stanza.getAttribute(this.xml, 'pwd');
-    },
-    set pwd(value) {
-        stanza.setAttribute(this.xml, 'pwd', value);
-    },
-    get ufrag() {
-        return stanza.getAttribute(this.xml, 'ufrag');
-    },
-    set ufrag(value) {
-        stanza.setAttribute(this.xml, 'ufrag', value);
-    },
-    get candidates() {
-        var candidates = stanza.find(this.xml, 'urn:xmpp:jingle:transports:ice-udp:1', 'candidate'),
-            results = [];
-        _.forEach(candidates, function (xml) {
-            results.push(new Candidate({}, xml).toJSON());
-        });
-        return results;
-    },
-    set candidates(value) {
-        var self = this;
-        _.forEach(value, function (data) {
-            var candidate = new Candidate(data);
-            self.xml.appendChild(candidate.xml);
-        });
-    },
-    get remoteCandidate() {
-        return {
-            component: stanza.getSubAttribute(this.xml, this.NS, 'remote-candidate', 'component'),
-            ip: stanza.getSubAttribute(this.xml, this.NS, 'remote-candidate', 'ip'),
-            port: stanza.getSubAttribute(this.xml, this.NS, 'remote-candidate', 'port'),
-        };
-    },
-    set remoteCandidate(value) {
-        stanza.setSubAttribute(this.xml, this.NS, 'remote-candidate', 'component', value.component);
-        stanza.setSubAttribute(this.xml, this.NS, 'remote-candidate', 'ip', value.ip);
-        stanza.setSubAttribute(this.xml, this.NS, 'remote-candidate', 'port', value.port);
-    }
-};
-
-
-function Candidate(data, xml) {
-    return stanza.init(this, xml, data);
-}
-Candidate.prototype = {
-    constructor: {
-        value: Candidate
-    },
-    _name: 'iceUdpCandidate',
-    NS: 'urn:xmpp:jingle:transports:ice-udp:1',
-    EL: 'candidate',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get component() {
-        return stanza.getAttribute(this.xml, 'component');
-    },
-    set component(value) {
-        stanza.setAttribute(this.xml, 'component', value);
-    },
-    get foundation() {
-        return stanza.getAttribute(this.xml, 'foundation');
-    },
-    set foundation(value) {
-        stanza.setAttribute(this.xml, 'foundation', value);
-    },
-    get generation() {
-        return stanza.getAttribute(this.xml, 'generation');
-    },
-    set generation(value) {
-        stanza.setAttribute(this.xml, 'generation', value);
-    },
-    get id() {
-        return stanza.getAttribute(this.xml, 'id');
-    },
-    set id(value) {
-        stanza.setAttribute(this.xml, 'id', value);
-    },
-    get ip() {
-        return stanza.getAttribute(this.xml, 'ip');
-    },
-    set ip(value) {
-        stanza.setAttribute(this.xml, 'ip', value);
-    },
-    get network() {
-        return stanza.getAttribute(this.xml, 'network');
-    },
-    set network(value) {
-        stanza.setAttribute(this.xml, 'network', value);
-    },
-    get port() {
-        return stanza.getAttribute(this.xml, 'port');
-    },
-    set port(value) {
-        stanza.setAttribute(this.xml, 'port', value);
-    },
-    get priority() {
-        return stanza.getAttribute(this.xml, 'priority');
-    },
-    set priority(value) {
-        stanza.setAttribute(this.xml, 'priority', value);
-    },
-    get protocol() {
-        return stanza.getAttribute(this.xml, 'protocol');
-    },
-    set protocol(value) {
-        stanza.setAttribute(this.xml, 'protocol', value);
-    },
-    get relAddr() {
-        return stanza.getAttribute(this.xml, 'relAddr');
-    },
-    set relAddr(value) {
-        stanza.setAttribute(this.xml, 'relAddr', value);
-    },
-    get relPort() {
-        return stanza.getAttribute(this.xml, 'relPort');
-    },
-    set relPort(value) {
-        stanza.setAttribute(this.xml, 'relPort', value);
-    },
-    get type() {
-        return stanza.getAttribute(this.xml, 'type');
-    },
-    set type(value) {
-        stanza.setAttribute(this.xml, 'type', value);
-    }
-};
-
-
-function Fingerprint(data, xml) {
-    return stanza.init(this, xml, data);
-}
-Fingerprint.prototype = {
-    constructor: {
-        value: Fingerprint 
-    },
-    _name: 'fingerprint',
-    NS: 'urn:xmpp:tmp:jingle:apps:dtls:0',
-    EL: 'fingerprint',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get hash() {
-        return stanza.getAttribute(this.xml, 'hash');
-    },
-    set hash(value) {
-        stanza.setAttribute(this.xml, 'hash', value);
-    },
-    get required() {
-        var req = stanza.getAttribute(this.xml, 'required');
-        return req === '1' || req === 'true';
-    },
-    set required(value) {
-        if (value || (value !== '0' && value !== 'false')) {
-            stanza.setAttribute(this.xml, 'required', '1');
-        }
-    }
-};
-
-
-stanza.extend(jingle.Content, ICEUDP);
-stanza.extend(ICEUDP, Fingerprint);
-
-exports.ICEUDP = ICEUDP;
-exports.Candidate = Candidate;
-
-},{"./stanza":2,"./jingle":8,"lodash":54}],12:[function(require,module,exports){
+},{"./stanza":21,"lodash":50}],6:[function(require,module,exports){
 (function(){/*global unescape, escape */
 
 var _ = require('lodash'),
@@ -14446,7 +13601,7 @@ module.exports = function (client) {
 };
 
 })()
-},{"crypto":40,"../stanza/disco":61,"../stanza/caps":57,"lodash":54}],26:[function(require,module,exports){
+},{"crypto":35,"../stanza/disco":57,"../stanza/caps":53,"lodash":50}],20:[function(require,module,exports){
 var uuid = require('node-uuid');
 
 // normalize environment
@@ -14814,7 +13969,7 @@ module.exports = function (client) {
     client.webrtc = new WebRTC(client);
 };
 
-},{"node-uuid":55}],62:[function(require,module,exports){
+},{"node-uuid":51}],58:[function(require,module,exports){
 (function(){var SM = require('./stanza/sm'),
     MAX_SEQ = Math.pow(2, 32);
 
@@ -14921,7 +14076,7 @@ StreamManagement.prototype = {
 module.exports = StreamManagement;
 
 })()
-},{"./stanza/sm":46}],45:[function(require,module,exports){
+},{"./stanza/sm":42}],40:[function(require,module,exports){
 var WildEmitter = require('wildemitter'),
     _ = require('lodash'),
     async = require('async'),
@@ -15101,7 +14256,7 @@ WSConnection.prototype.send = function (data) {
 
 module.exports = WSConnection;
 
-},{"./stanza/stanza":2,"./stanza/stream":3,"./stanza/message":4,"./stanza/presence":5,"./stanza/iq":6,"./sm":62,"wildemitter":53,"lodash":54,"node-uuid":55,"async":56}],58:[function(require,module,exports){
+},{"./stanza/stanza":21,"./stanza/stream":41,"./stanza/message":2,"./stanza/presence":3,"./stanza/iq":4,"./sm":58,"wildemitter":49,"lodash":50,"node-uuid":51,"async":52}],54:[function(require,module,exports){
 var stanza = require('./stanza');
 
 
@@ -15170,7 +14325,300 @@ RSM.prototype = {
 
 module.exports = RSM;
 
-},{"./stanza":2}],44:[function(require,module,exports){
+},{"./stanza":21}],21:[function(require,module,exports){
+var _ = require('lodash'),
+    serializer = new XMLSerializer(),
+    XML_NS = 'http://www.w3.org/XML/1998/namespace',
+    TOP_LEVEL_LOOKUP = {},
+    LOOKUP = {},
+    LOOKUP_EXT = {};
+
+
+var find = exports.find = function (xml, NS, selector) {
+    var children = xml.querySelectorAll(selector);
+    return _.filter(children, function (child) {
+        return child.namespaceURI === NS && child.parentNode == xml;
+    });
+};
+
+exports.init = function (self, xml, data) {
+    self.xml = xml || document.createElementNS(self.NS, self.EL);
+    self.xml.setAttribute('xmlns', self.NS);
+
+    self._extensions = {};
+    _.each(self.xml.childNodes, function (child) {
+        var childName = child.namespaceURI + '|' + child.localName;
+        var ChildStanza = LOOKUP[childName];
+        if (ChildStanza !== undefined) {
+            var name = ChildStanza.prototype._name;
+            self._extensions[name] = new ChildStanza(null, child);
+            self._extensions[name].parent = self;
+        }
+    });
+
+    _.extend(self, data);
+    return self;
+};
+
+exports.getSubText = function (xml, NS, element) {
+    var subs = find(xml, NS, element);
+    if (!subs) {
+        return '';
+    }
+
+    for (var i = 0; i < subs.length; i++) {
+        if (subs[i].namespaceURI === NS) {
+            return subs[i].textContent || '';
+        }
+    }
+    
+    return '';
+};
+
+exports.getMultiSubText = function (xml, NS, element, extractor) {
+    var subs = find(xml, NS, element),
+        results = [];
+    extractor = extractor || function (sub) {
+        return sub.textContent || '';
+    };
+
+    for (var i = 0; i < subs.length; i++) {
+        if (subs[i].namespaceURI === NS) {
+            results.push(extractor(subs[i]));
+        }
+    }
+    
+    return results;
+};
+
+exports.getSubLangText = function (xml, NS, element, defaultLang) {
+    var subs = find(xml, NS, element);
+    if (!subs) {
+        return {};
+    }
+
+    var results = {},
+        langs = [],
+        lang,
+        sub;
+
+    for (var i = 0; i < subs.length; i++) {
+        sub = subs[i];
+        if (sub.namespaceURI === NS) {
+            lang = sub.getAttributeNS(XML_NS, 'lang') || defaultLang;
+            langs.push(lang);
+            results[lang] = sub.textContent || '';
+        }
+    }
+    
+    return results;
+};
+
+
+exports.setSubText = function (xml, NS, element, value) {
+    var subs = find(xml, NS, element);
+    if (!subs.length) {
+        if (value) {
+            var sub = document.createElementNS(NS, element);
+            sub.textContent = value;
+            xml.appendChild(sub);
+        }
+    } else {
+        for (var i = 0; i < subs.length; i++) {
+            if (subs[i].namespaceURI === NS) {
+                if (value) {
+                    subs[i].textContent = value;
+                    return;
+                } else {
+                    xml.removeChild(subs[i]);
+                }
+            }
+        }
+    }
+};
+
+exports.setMultiSubText = function (xml, NS, element, value, builder) {
+    var subs = find(xml, NS, element),
+        values = [];
+    builder = builder || function (value) {
+        var sub = document.createElementNS(NS, element);
+        sub.textContent = value;
+        xml.appendChild(sub);
+    };
+    if (typeof value === 'string') {
+        values = (value || '').split('\n');
+    } else {
+        values = value;
+    }
+    _.forEach(subs, function (sub) {
+        xml.removeChild(sub);
+    });
+    _.forEach(values, function (val) {
+        if (val) {
+            builder(val);
+        }
+    });
+};
+
+exports.setSubLangText = function (xml, NS, element, value, defaultLang) {
+    var subs = find(xml, NS, element),
+        sub,
+        lang;
+    if (subs.length) {
+        for (var i = 0; i < subs.length; i++) {
+            sub = subs[i];
+            if (sub.namespaceURI === NS) {
+                xml.removeChild(sub);
+            }
+        }
+    }
+
+    if (typeof value === 'string') {
+        sub = document.createElementNS(NS, element);
+        sub.textContent = value;
+        xml.appendChild(sub);
+    } else if (typeof value === 'object') {
+        for (lang in value) {
+            if (value.hasOwnProperty(lang)) {
+                sub = document.createElementNS(NS, element);
+                if (lang !== defaultLang) {
+                    sub.setAttributeNS(XML_NS, 'lang', lang);
+                }
+                sub.textContent = value[lang];
+                xml.appendChild(sub);
+            }
+        }
+    }
+};
+
+exports.getAttribute = function (xml, attr, defaultVal) {
+    return xml.getAttribute(attr) || defaultVal || '';
+};
+
+exports.setAttribute = function (xml, attr, value) {
+    if (value) {
+        xml.setAttribute(attr, value);
+    } else {
+        xml.removeAttribute(attr);
+    }
+};
+
+exports.getSubAttribute = function (xml, NS, sub, attr, defaultVal) {
+    var subs = find(xml, NS, sub);
+    if (!subs) {
+        return '';
+    }
+
+    for (var i = 0; i < subs.length; i++) {
+        if (subs[i].namespaceURI === NS) {
+            return subs[i].getAttribute(attr) || defaultVal || '';
+        }
+    }
+    
+    return '';
+};
+
+exports.setSubAttribute = function (xml, NS, sub, attr, value) {
+    var subs = find(xml, NS, sub);
+    if (!subs.length) {
+        if (value) {
+            sub = document.createElementNS(NS, sub);
+            sub.setAttribute(attr, value);
+            xml.appendChild(sub);
+        }
+    } else {
+        for (var i = 0; i < subs.length; i++) {
+            if (subs[i].namespaceURI === NS) {
+                if (value) {
+                    subs[i].setAttribute(attr, value);
+                    return;
+                } else {
+                    subs[i].removeAttribute(attr);
+                }
+            }
+        }
+    }
+};
+
+exports.toString = function () {
+    return serializer.serializeToString(this.xml);
+};
+
+exports.toJSON = function () {
+    var result = {},
+        exclude = {
+            constructor: true,
+            NS: true,
+            EL: true,
+            toString: true,
+            toJSON: true,
+            _extensions: true,
+            prototype: true,
+            xml: true,
+            parent: true,
+            _name: true
+        },
+        prop;
+    for (prop in this._extensions) {
+        if (this._extensions[prop].toJSON) {
+            result[prop] = this._extensions[prop].toJSON();
+        }
+    }
+    for (prop in this) {
+        if (!exclude[prop] && !LOOKUP_EXT[prop] && !this._extensions[prop] && prop[0] !== '_') {
+            var val = this[prop];
+            if (typeof val != 'function' && ((typeof val == 'object' && Object.keys(val).length > 0) || !!val)) {
+                result[prop] = val;
+            }
+        }
+    }
+    return result;
+};
+
+exports.extend = function (ParentStanza, ChildStanza) {
+    var name = ChildStanza.prototype._name,
+        qName = ChildStanza.prototype.NS + '|' + ChildStanza.prototype.EL;
+    LOOKUP[qName] = ChildStanza;
+    LOOKUP_EXT[name] = ChildStanza;
+
+    ParentStanza.prototype.__defineGetter__(name, function () {
+        if (!this._extensions[name]) {
+            var existing = exports.find(this.xml, ChildStanza.prototype.NS, ChildStanza.prototype.EL);
+            if (!existing.length) {
+                this._extensions[name] = new ChildStanza();
+                this.xml.appendChild(this._extensions[name].xml);
+            } else {
+                this._extensions[name] = new ChildStanza(null, existing[0]);
+            }
+            this._extensions[name].parent = this;
+        }
+        return this._extensions[name];
+    });
+    ParentStanza.prototype.__defineSetter__(name, function (value) {
+        var child = this[name];
+        _.extend(child, value);
+    });
+};
+
+exports.topLevel = function (Stanza) {
+    var name = Stanza.prototype.NS + '|' + Stanza.prototype.EL;
+    LOOKUP[name] = Stanza;
+    TOP_LEVEL_LOOKUP[name] = Stanza;
+};
+
+exports.build = function (xml) {
+    var Stanza = TOP_LEVEL_LOOKUP[xml.namespaceURI + '|' + xml.localName];
+    if (Stanza) {
+        return new Stanza(null, xml);
+    }
+};
+
+exports.XML_NS = XML_NS;
+exports.TOP_LEVEL_LOOKUP = TOP_LEVEL_LOOKUP;
+exports.LOOKUP_EXT = LOOKUP_EXT;
+exports.LOOKUP = LOOKUP;
+
+},{"lodash":50}],39:[function(require,module,exports){
 var stanza = require('./stanza'),
     _ = require('lodash'),
     StreamFeatures = require('./streamFeatures');
@@ -15407,7 +14855,7 @@ exports.Success = Success;
 exports.Failure = Failure;
 exports.Abort = Abort;
 
-},{"./stanza":2,"./streamFeatures":50,"lodash":54}],47:[function(require,module,exports){
+},{"./stanza":21,"./streamFeatures":46,"lodash":50}],43:[function(require,module,exports){
 var _ = require('lodash'),
     stanza = require('./stanza'),
     Iq = require('./iq');
@@ -15489,7 +14937,7 @@ stanza.extend(Iq, Roster);
 
 module.exports = Roster;
 
-},{"./stanza":2,"./iq":6,"lodash":54}],48:[function(require,module,exports){
+},{"./stanza":21,"./iq":4,"lodash":50}],44:[function(require,module,exports){
 var _ = require('lodash'),
     stanza = require('./stanza'),
     Message = require('./message'),
@@ -15604,7 +15052,7 @@ stanza.extend(Iq, Error);
 
 module.exports = Error;
 
-},{"./stanza":2,"./message":4,"./presence":5,"./iq":6,"lodash":54}],49:[function(require,module,exports){
+},{"./stanza":21,"./message":2,"./presence":3,"./iq":4,"lodash":50}],45:[function(require,module,exports){
 var _ = require('lodash'),
     stanza = require('./stanza');
 
@@ -15689,7 +15137,7 @@ stanza.topLevel(StreamError);
 
 module.exports = StreamError;
 
-},{"./stanza":2,"lodash":54}],61:[function(require,module,exports){
+},{"./stanza":21,"lodash":50}],57:[function(require,module,exports){
 var _ = require('lodash'),
     stanza = require('./stanza'),
     Iq = require('./iq'),
@@ -15865,7 +15313,7 @@ stanza.extend(DiscoItems, RSM);
 exports.DiscoInfo = DiscoInfo;
 exports.DiscoItems = DiscoItems;
 
-},{"./stanza":2,"./iq":6,"./rsm":58,"./dataforms":63,"lodash":54}],63:[function(require,module,exports){
+},{"./stanza":21,"./iq":4,"./rsm":54,"./dataforms":59,"lodash":50}],59:[function(require,module,exports){
 var _ = require('lodash'),
     stanza = require('./stanza'),
     Message = require('./message');
@@ -16023,6 +15471,6 @@ stanza.extend(Message, DataForm);
 exports.DataForm = DataForm;
 exports.Field = Field;
 
-},{"./stanza":2,"./message":4,"lodash":54}]},{},[1])(1)
+},{"./stanza":21,"./message":2,"lodash":50}]},{},[1])(1)
 });
 ;

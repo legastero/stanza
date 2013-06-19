@@ -1,16 +1,9 @@
-exports.stanza = require('./lib/stanza/stanza');
-exports.Stream = require('./lib/stanza/stream');
 exports.Message = require('./lib/stanza/message');
 exports.Presence = require('./lib/stanza/presence');
 exports.Iq = require('./lib/stanza/iq');
 
-exports.SOX = require('./lib/stanza/sox');
-
-exports.Jingle = require('./lib/stanza/jingle');
-exports.RTP = require('./lib/stanza/rtp');
-exports.ICEUDP = require('./lib/stanza/iceUdp');
-
 exports.Client = require('./lib/client');
+
 exports.createClient = function (opts) {
     var client = new exports.Client(opts);
 
