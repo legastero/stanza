@@ -24,40 +24,42 @@ exports.createClient = function (opts) {
     client.use(require('./lib/plugins/invisible'));
     client.use(require('./lib/plugins/muc'));
     client.use(require('./lib/plugins/webrtc'));
+    client.use(require('./lib/plugins/pubsub'));
+    client.use(require('./lib/plugins/avatar'));
 
     return client;
 };
 
-},{"./lib/stanza/message":2,"./lib/stanza/presence":3,"./lib/stanza/iq":4,"./lib/client":5,"./lib/plugins/disco":6,"./lib/plugins/chatstates":7,"./lib/plugins/delayed":8,"./lib/plugins/forwarding":9,"./lib/plugins/carbons":10,"./lib/plugins/time":11,"./lib/plugins/mam":12,"./lib/plugins/receipts":13,"./lib/plugins/idle":14,"./lib/plugins/correction":15,"./lib/plugins/attention":16,"./lib/plugins/version":17,"./lib/plugins/invisible":18,"./lib/plugins/muc":19,"./lib/plugins/webrtc":20}],7:[function(require,module,exports){
+},{"./lib/stanza/message":2,"./lib/stanza/presence":3,"./lib/stanza/iq":4,"./lib/client":5,"./lib/plugins/disco":6,"./lib/plugins/chatstates":7,"./lib/plugins/delayed":8,"./lib/plugins/forwarding":9,"./lib/plugins/carbons":10,"./lib/plugins/time":11,"./lib/plugins/mam":12,"./lib/plugins/receipts":13,"./lib/plugins/idle":14,"./lib/plugins/correction":15,"./lib/plugins/attention":16,"./lib/plugins/version":17,"./lib/plugins/invisible":18,"./lib/plugins/muc":19,"./lib/plugins/webrtc":20,"./lib/plugins/pubsub":21,"./lib/plugins/avatar":22}],7:[function(require,module,exports){
 var stanzas = require('../stanza/chatstates');
 
 
 module.exports = function (client) {
-    client.disco.addFeature('', 'http://jabber.org/protocol/chatstates');
+    client.disco.addFeature('http://jabber.org/protocol/chatstates');
 };
 
-},{"../stanza/chatstates":21}],8:[function(require,module,exports){
+},{"../stanza/chatstates":23}],8:[function(require,module,exports){
 var stanzas = require('../stanza/delayed');
 
 
 module.exports = function (client) {
-    client.disco.addFeature('', 'urn:xmpp:delay');
+    client.disco.addFeature('urn:xmpp:delay');
 };
 
-},{"../stanza/delayed":22}],9:[function(require,module,exports){
+},{"../stanza/delayed":24}],9:[function(require,module,exports){
 var stanzas = require('../stanza/forwarded');
 
 
 module.exports = function (client) {
-    client.disco.addFeature('', 'urn:xmpp:forward:0');
+    client.disco.addFeature('urn:xmpp:forward:0');
 };
 
-},{"../stanza/forwarded":23}],10:[function(require,module,exports){
+},{"../stanza/forwarded":25}],10:[function(require,module,exports){
 var stanzas = require('../stanza/carbons');
 
 
 module.exports = function (client) {
-    client.disco.addFeature('', 'urn:xmpp:carbons:2');
+    client.disco.addFeature('urn:xmpp:carbons:2');
 
     client.enableCarbons = function (cb) {
         this.sendIq({
@@ -83,12 +85,12 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/carbons":24}],11:[function(require,module,exports){
+},{"../stanza/carbons":26}],11:[function(require,module,exports){
 var stanzas = require('../stanza/time');
 
 
 module.exports = function (client) {
-    client.disco.addFeature('', 'urn:xmpp:time');
+    client.disco.addFeature('urn:xmpp:time');
 
     client.getTime = function (jid, cb) {
         this.sendIq({
@@ -109,12 +111,12 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/time":25}],12:[function(require,module,exports){
+},{"../stanza/time":27}],12:[function(require,module,exports){
 var stanzas = require('../stanza/mam');
 
 
 module.exports = function (client) {
-    client.disco.addFeature('', 'urn:xmpp:mam:tmp');
+    client.disco.addFeature('urn:xmpp:mam:tmp');
 
     client.getHistory = function (opts, cb) {
         var self = this;
@@ -152,12 +154,12 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/mam":26}],13:[function(require,module,exports){
+},{"../stanza/mam":28}],13:[function(require,module,exports){
 var stanzas = require('../stanza/receipts');
 
 
 module.exports = function (client) {
-    client.disco.addFeature('', 'urn:xmpp:receipts');
+    client.disco.addFeature('urn:xmpp:receipts');
 
     client.on('message', function (msg) {
         var ackTypes = {
@@ -180,20 +182,20 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/receipts":27}],14:[function(require,module,exports){
+},{"../stanza/receipts":29}],14:[function(require,module,exports){
 var stanzas = require('../stanza/idle');
 
 
 module.exports = function (client) {
-    client.disco.addFeature('', 'urn:xmpp:idle:0');
+    client.disco.addFeature('urn:xmpp:idle:0');
 };
 
-},{"../stanza/idle":28}],15:[function(require,module,exports){
+},{"../stanza/idle":30}],15:[function(require,module,exports){
 var stanzas = require('../stanza/replace');
 
 
 module.exports = function (client) {
-    client.disco.addFeature('', 'urn:xmpp:message-correct:0');
+    client.disco.addFeature('urn:xmpp:message-correct:0');
 
     client.on('message', function (msg) {
         if (msg.replace) {
@@ -202,15 +204,16 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/replace":29}],16:[function(require,module,exports){
+},{"../stanza/replace":31}],16:[function(require,module,exports){
 require('../stanza/attention');
 
 
 module.exports = function (client) {
-    client.disco.addFeature('', 'urn:xmpp:attention:0');
+    client.disco.addFeature('urn:xmpp:attention:0');
 
 
     client.getAttention = function (jid, opts) {
+        opts = opts || {};
         opts.to = jid;
         opts.type = 'headline';
         opts.attention = true;
@@ -224,12 +227,12 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/attention":30}],17:[function(require,module,exports){
+},{"../stanza/attention":32}],17:[function(require,module,exports){
 require('../stanza/version');
 
 
 module.exports = function (client) {
-    client.disco.addFeature('', 'jabber:iq:version');
+    client.disco.addFeature('jabber:iq:version');
 
     client.on('iq:get:version', function (iq) {
         client.sendIq(iq.resultReply({
@@ -248,7 +251,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/version":31}],18:[function(require,module,exports){
+},{"../stanza/version":33}],18:[function(require,module,exports){
 require('../stanza/visibility');
 
 
@@ -268,7 +271,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/visibility":32}],19:[function(require,module,exports){
+},{"../stanza/visibility":34}],19:[function(require,module,exports){
 require('../stanza/muc');
 
 
@@ -290,7 +293,170 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/muc":33}],34:[function(require,module,exports){
+},{"../stanza/muc":35}],21:[function(require,module,exports){
+var stanzas = require('../stanza/pubsub');
+
+
+module.exports = function (client) {
+
+    client.on('message', function (msg) {
+        if (msg._extensions.event) {
+            client.emit('pubsubEvent', msg);
+        }
+    });
+
+    client.subscribeToNode = function (jid, opts, cb) {
+        client.sendIq({
+            type: 'set',
+            to: jid,
+            pubsub: {
+                subscribe: {
+                    node: opts.node,
+                    jid: opts.jid || client.jid
+                }
+            }
+        }, cb);
+    };
+
+    client.unsubscribeFromNode = function (jid, opts, cb) {
+        client.sendIq({
+            type: 'set',
+            to: jid,
+            pubsub: {
+                unsubscribe: {
+                    node: opts.node,
+                    jid: opts.jid || client.jid.split('/')[0]
+                }
+            }
+        }, cb);
+    };
+
+    client.publish = function (jid, node, item, cb) {
+        client.sendIq({
+            type: 'set',
+            to: jid,
+            pubsub: {
+                publish: {
+                    node: node,
+                    item: item
+                }
+            }
+        }, cb);
+    };
+
+    client.getItem = function (jid, node, id, cb) {
+        client.sendIq({
+            type: 'get',
+            to: jid,
+            pubsub: {
+                retrieve: {
+                    node: node,
+                    item: id
+                }
+            }
+        }, cb);
+    };
+
+    client.getItems = function (jid, node, opts, cb) {
+        opts = opts || {};
+        opts.node = node;
+        client.sendIq({
+            type: 'get',
+            to: jid,
+            pubsub: {
+                retrieve: {
+                    node: node,
+                    max: opts.max 
+                },
+                rsm: opts.rsm
+            }
+        }, cb);
+    };
+
+    client.retract = function (jid, node, id, notify, cb) {
+        client.sendIq({
+            type: 'set',
+            to: jid,
+            pubsub: {
+                retract: {
+                    node: node,
+                    notify: notify,
+                    id: id
+                }
+            }
+        }, cb);
+    };
+
+    client.purgeNode = function (jid, node, cb) {
+        client.sendIq({
+            type: 'set',
+            to: jid,
+            pubsubOwner: {
+                purge: node
+            }
+        }, cb);
+    };
+
+    client.deleteNode = function (jid, node, cb) {
+        client.sendIq({
+            type: 'set',
+            to: jid,
+            pubsubOwner: {
+                del: node
+            }
+        }, cb);
+    };
+
+    client.createNode = function (jid, node, config, cb) {
+        var cmd = {
+            type: 'set',
+            to: jid,
+            pubsubOwner: {
+                create: node
+            }
+        };
+        
+        if (config) {
+            cmd.pubsubOwner.config = {form: config};
+        }
+
+        client.sendIq(cmd, cb);
+    };
+};
+
+},{"../stanza/pubsub":36}],22:[function(require,module,exports){
+var stanzas = require('../stanza/avatar');
+
+
+module.exports = function (client) {
+    client.disco.addFeature('urn:xmpp:avatar:metadata+notify');
+
+    client.on('pubsubEvent', function (msg) {
+        if (!msg.event._extensions.updated) return;
+        if (msg.event.updated.node !== 'urn:xmpp:avatar:metadata') return;
+
+        client.emit('avatar', {
+            jid: msg.from,
+            avatars: msg.updated.published[0].avatars
+        });
+    });
+
+    client.publishAvatar = function (id, data, cb) {
+        client.publish(null, 'urn:xmpp:avatar:data', {
+            id: id,
+            avatarData: data
+        }, cb);
+    };
+
+    client.useAvatars = function (info, cb) {
+        client.publish(null, 'urn:xmpp:avatar:metadata', {
+            id: 'current',
+            avatars: info
+        }, cb);
+    };
+};
+
+},{"../stanza/avatar":37}],38:[function(require,module,exports){
 (function(){var Buffer = require('buffer').Buffer
 var sha = require('./sha')
 var rng = require('./rng')
@@ -373,7 +539,7 @@ each(['createCredentials'
 })
 
 })()
-},{"buffer":35,"./sha":36,"./rng":37,"./md5":38}],39:[function(require,module,exports){
+},{"buffer":39,"./sha":40,"./rng":41,"./md5":42}],43:[function(require,module,exports){
 (function(){// UTILITY
 var util = require('util');
 var Buffer = require("buffer").Buffer;
@@ -690,45 +856,7 @@ assert.doesNotThrow = function(block, /*optional*/error, /*optional*/message) {
 assert.ifError = function(err) { if (err) {throw err;}};
 
 })()
-},{"util":40,"buffer":35}],37:[function(require,module,exports){
-// Original code adapted from Robert Kieffer.
-// details at https://github.com/broofa/node-uuid
-(function() {
-  var _global = this;
-
-  var mathRNG, whatwgRNG;
-
-  // NOTE: Math.random() does not guarantee "cryptographic quality"
-  mathRNG = function(size) {
-    var bytes = new Array(size);
-    var r;
-
-    for (var i = 0, r; i < size; i++) {
-      if ((i & 0x03) == 0) r = Math.random() * 0x100000000;
-      bytes[i] = r >>> ((i & 0x03) << 3) & 0xff;
-    }
-
-    return bytes;
-  }
-
-  // currently only available in webkit-based browsers.
-  if (_global.crypto && crypto.getRandomValues) {
-    var _rnds = new Uint32Array(4);
-    whatwgRNG = function(size) {
-      var bytes = new Array(size);
-      crypto.getRandomValues(_rnds);
-
-      for (var c = 0 ; c < size; c++) {
-        bytes[c] = _rnds[c >> 2] >>> ((c & 0x03) * 8) & 0xff;
-      }
-      return bytes;
-    }
-  }
-
-  module.exports = whatwgRNG || mathRNG;
-
-}())
-},{}],36:[function(require,module,exports){
+},{"util":44,"buffer":39}],40:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -940,7 +1068,45 @@ function binb2b64(binarray)
 }
 
 
-},{}],38:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
+// Original code adapted from Robert Kieffer.
+// details at https://github.com/broofa/node-uuid
+(function() {
+  var _global = this;
+
+  var mathRNG, whatwgRNG;
+
+  // NOTE: Math.random() does not guarantee "cryptographic quality"
+  mathRNG = function(size) {
+    var bytes = new Array(size);
+    var r;
+
+    for (var i = 0, r; i < size; i++) {
+      if ((i & 0x03) == 0) r = Math.random() * 0x100000000;
+      bytes[i] = r >>> ((i & 0x03) << 3) & 0xff;
+    }
+
+    return bytes;
+  }
+
+  // currently only available in webkit-based browsers.
+  if (_global.crypto && crypto.getRandomValues) {
+    var _rnds = new Uint32Array(4);
+    whatwgRNG = function(size) {
+      var bytes = new Array(size);
+      crypto.getRandomValues(_rnds);
+
+      for (var c = 0 ; c < size; c++) {
+        bytes[c] = _rnds[c >> 2] >>> ((c & 0x03) * 8) & 0xff;
+      }
+      return bytes;
+    }
+  }
+
+  module.exports = whatwgRNG || mathRNG;
+
+}())
+},{}],42:[function(require,module,exports){
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
  * Digest Algorithm, as defined in RFC 1321.
@@ -1326,7 +1492,7 @@ exports.hex_md5 = hex_md5;
 exports.b64_md5 = b64_md5;
 exports.any_md5 = any_md5;
 
-},{}],40:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 var events = require('events');
 
 exports.isArray = isArray;
@@ -1679,7 +1845,93 @@ exports.format = function(f) {
   return str;
 };
 
-},{"events":41}],5:[function(require,module,exports){
+},{"events":45}],46:[function(require,module,exports){
+exports.readIEEE754 = function(buffer, offset, isBE, mLen, nBytes) {
+  var e, m,
+      eLen = nBytes * 8 - mLen - 1,
+      eMax = (1 << eLen) - 1,
+      eBias = eMax >> 1,
+      nBits = -7,
+      i = isBE ? 0 : (nBytes - 1),
+      d = isBE ? 1 : -1,
+      s = buffer[offset + i];
+
+  i += d;
+
+  e = s & ((1 << (-nBits)) - 1);
+  s >>= (-nBits);
+  nBits += eLen;
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8);
+
+  m = e & ((1 << (-nBits)) - 1);
+  e >>= (-nBits);
+  nBits += mLen;
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8);
+
+  if (e === 0) {
+    e = 1 - eBias;
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity);
+  } else {
+    m = m + Math.pow(2, mLen);
+    e = e - eBias;
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
+};
+
+exports.writeIEEE754 = function(buffer, value, offset, isBE, mLen, nBytes) {
+  var e, m, c,
+      eLen = nBytes * 8 - mLen - 1,
+      eMax = (1 << eLen) - 1,
+      eBias = eMax >> 1,
+      rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0),
+      i = isBE ? (nBytes - 1) : 0,
+      d = isBE ? -1 : 1,
+      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
+
+  value = Math.abs(value);
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0;
+    e = eMax;
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2);
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--;
+      c *= 2;
+    }
+    if (e + eBias >= 1) {
+      value += rt / c;
+    } else {
+      value += rt * Math.pow(2, 1 - eBias);
+    }
+    if (value * c >= 2) {
+      e++;
+      c /= 2;
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0;
+      e = eMax;
+    } else if (e + eBias >= 1) {
+      m = (value * c - 1) * Math.pow(2, mLen);
+      e = e + eBias;
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
+      e = 0;
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8);
+
+  e = (e << mLen) | m;
+  eLen += mLen;
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8);
+
+  buffer[offset + i - d] |= s * 128;
+};
+
+},{}],5:[function(require,module,exports){
 (function(){var WildEmitter = require('wildemitter');
 var _ = require('lodash');
 var async = require('async');
@@ -2073,93 +2325,1331 @@ Client.prototype.denySubscription = function (jid) {
 module.exports = Client;
 
 })()
-},{"./stanza/sasl":42,"./stanza/message":2,"./stanza/presence":3,"./stanza/iq":4,"./websocket":43,"./stanza/stream":44,"./stanza/sm":45,"./stanza/roster":46,"./stanza/error":47,"./stanza/streamError":48,"./stanza/streamFeatures":49,"./stanza/bind":50,"./stanza/session":51,"wildemitter":52,"lodash":53,"node-uuid":54,"async":55}],56:[function(require,module,exports){
-exports.readIEEE754 = function(buffer, offset, isBE, mLen, nBytes) {
-  var e, m,
-      eLen = nBytes * 8 - mLen - 1,
-      eMax = (1 << eLen) - 1,
-      eBias = eMax >> 1,
-      nBits = -7,
-      i = isBE ? 0 : (nBytes - 1),
-      d = isBE ? 1 : -1,
-      s = buffer[offset + i];
+},{"./stanza/sasl":47,"./stanza/message":2,"./stanza/presence":3,"./stanza/iq":4,"./websocket":48,"./stanza/stream":49,"./stanza/sm":50,"./stanza/roster":51,"./stanza/error":52,"./stanza/streamError":53,"./stanza/streamFeatures":54,"./stanza/bind":55,"./stanza/session":56,"wildemitter":57,"lodash":58,"node-uuid":59,"async":60}],39:[function(require,module,exports){
+(function(){var assert = require('assert');
+exports.Buffer = Buffer;
+exports.SlowBuffer = Buffer;
+Buffer.poolSize = 8192;
+exports.INSPECT_MAX_BYTES = 50;
 
-  i += d;
-
-  e = s & ((1 << (-nBits)) - 1);
-  s >>= (-nBits);
-  nBits += eLen;
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8);
-
-  m = e & ((1 << (-nBits)) - 1);
-  e >>= (-nBits);
-  nBits += mLen;
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8);
-
-  if (e === 0) {
-    e = 1 - eBias;
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity);
-  } else {
-    m = m + Math.pow(2, mLen);
-    e = e - eBias;
+function Buffer(subject, encoding, offset) {
+  if (!(this instanceof Buffer)) {
+    return new Buffer(subject, encoding, offset);
   }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
-};
+  this.parent = this;
+  this.offset = 0;
 
-exports.writeIEEE754 = function(buffer, value, offset, isBE, mLen, nBytes) {
-  var e, m, c,
-      eLen = nBytes * 8 - mLen - 1,
-      eMax = (1 << eLen) - 1,
-      eBias = eMax >> 1,
-      rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0),
-      i = isBE ? (nBytes - 1) : 0,
-      d = isBE ? -1 : 1,
-      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
+  var type;
 
-  value = Math.abs(value);
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0;
-    e = eMax;
+  // Are we slicing?
+  if (typeof offset === 'number') {
+    this.length = coerce(encoding);
+    this.offset = offset;
   } else {
-    e = Math.floor(Math.log(value) / Math.LN2);
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--;
-      c *= 2;
-    }
-    if (e + eBias >= 1) {
-      value += rt / c;
-    } else {
-      value += rt * Math.pow(2, 1 - eBias);
-    }
-    if (value * c >= 2) {
-      e++;
-      c /= 2;
+    // Find the length
+    switch (type = typeof subject) {
+      case 'number':
+        this.length = coerce(subject);
+        break;
+
+      case 'string':
+        this.length = Buffer.byteLength(subject, encoding);
+        break;
+
+      case 'object': // Assume object is an array
+        this.length = coerce(subject.length);
+        break;
+
+      default:
+        throw new Error('First argument needs to be a number, ' +
+                        'array or string.');
     }
 
-    if (e + eBias >= eMax) {
-      m = 0;
-      e = eMax;
-    } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen);
-      e = e + eBias;
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
-      e = 0;
+    // Treat array-ish objects as a byte array.
+    if (isArrayIsh(subject)) {
+      for (var i = 0; i < this.length; i++) {
+        if (subject instanceof Buffer) {
+          this[i] = subject.readUInt8(i);
+        }
+        else {
+          this[i] = subject[i];
+        }
+      }
+    } else if (type == 'string') {
+      // We are a string
+      this.length = this.write(subject, 0, encoding);
+    } else if (type === 'number') {
+      for (var i = 0; i < this.length; i++) {
+        this[i] = 0;
+      }
     }
   }
+}
 
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8);
-
-  e = (e << mLen) | m;
-  eLen += mLen;
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8);
-
-  buffer[offset + i - d] |= s * 128;
+Buffer.prototype.get = function get(i) {
+  if (i < 0 || i >= this.length) throw new Error('oob');
+  return this[i];
 };
 
-},{}],52:[function(require,module,exports){
+Buffer.prototype.set = function set(i, v) {
+  if (i < 0 || i >= this.length) throw new Error('oob');
+  return this[i] = v;
+};
+
+Buffer.byteLength = function (str, encoding) {
+  switch (encoding || "utf8") {
+    case 'hex':
+      return str.length / 2;
+
+    case 'utf8':
+    case 'utf-8':
+      return utf8ToBytes(str).length;
+
+    case 'ascii':
+    case 'binary':
+      return str.length;
+
+    case 'base64':
+      return base64ToBytes(str).length;
+
+    default:
+      throw new Error('Unknown encoding');
+  }
+};
+
+Buffer.prototype.utf8Write = function (string, offset, length) {
+  var bytes, pos;
+  return Buffer._charsWritten =  blitBuffer(utf8ToBytes(string), this, offset, length);
+};
+
+Buffer.prototype.asciiWrite = function (string, offset, length) {
+  var bytes, pos;
+  return Buffer._charsWritten =  blitBuffer(asciiToBytes(string), this, offset, length);
+};
+
+Buffer.prototype.binaryWrite = Buffer.prototype.asciiWrite;
+
+Buffer.prototype.base64Write = function (string, offset, length) {
+  var bytes, pos;
+  return Buffer._charsWritten = blitBuffer(base64ToBytes(string), this, offset, length);
+};
+
+Buffer.prototype.base64Slice = function (start, end) {
+  var bytes = Array.prototype.slice.apply(this, arguments)
+  return require("base64-js").fromByteArray(bytes);
+};
+
+Buffer.prototype.utf8Slice = function () {
+  var bytes = Array.prototype.slice.apply(this, arguments);
+  var res = "";
+  var tmp = "";
+  var i = 0;
+  while (i < bytes.length) {
+    if (bytes[i] <= 0x7F) {
+      res += decodeUtf8Char(tmp) + String.fromCharCode(bytes[i]);
+      tmp = "";
+    } else
+      tmp += "%" + bytes[i].toString(16);
+
+    i++;
+  }
+
+  return res + decodeUtf8Char(tmp);
+}
+
+Buffer.prototype.asciiSlice = function () {
+  var bytes = Array.prototype.slice.apply(this, arguments);
+  var ret = "";
+  for (var i = 0; i < bytes.length; i++)
+    ret += String.fromCharCode(bytes[i]);
+  return ret;
+}
+
+Buffer.prototype.binarySlice = Buffer.prototype.asciiSlice;
+
+Buffer.prototype.inspect = function() {
+  var out = [],
+      len = this.length;
+  for (var i = 0; i < len; i++) {
+    out[i] = toHex(this[i]);
+    if (i == exports.INSPECT_MAX_BYTES) {
+      out[i + 1] = '...';
+      break;
+    }
+  }
+  return '<Buffer ' + out.join(' ') + '>';
+};
+
+
+Buffer.prototype.hexSlice = function(start, end) {
+  var len = this.length;
+
+  if (!start || start < 0) start = 0;
+  if (!end || end < 0 || end > len) end = len;
+
+  var out = '';
+  for (var i = start; i < end; i++) {
+    out += toHex(this[i]);
+  }
+  return out;
+};
+
+
+Buffer.prototype.toString = function(encoding, start, end) {
+  encoding = String(encoding || 'utf8').toLowerCase();
+  start = +start || 0;
+  if (typeof end == 'undefined') end = this.length;
+
+  // Fastpath empty strings
+  if (+end == start) {
+    return '';
+  }
+
+  switch (encoding) {
+    case 'hex':
+      return this.hexSlice(start, end);
+
+    case 'utf8':
+    case 'utf-8':
+      return this.utf8Slice(start, end);
+
+    case 'ascii':
+      return this.asciiSlice(start, end);
+
+    case 'binary':
+      return this.binarySlice(start, end);
+
+    case 'base64':
+      return this.base64Slice(start, end);
+
+    case 'ucs2':
+    case 'ucs-2':
+      return this.ucs2Slice(start, end);
+
+    default:
+      throw new Error('Unknown encoding');
+  }
+};
+
+
+Buffer.prototype.hexWrite = function(string, offset, length) {
+  offset = +offset || 0;
+  var remaining = this.length - offset;
+  if (!length) {
+    length = remaining;
+  } else {
+    length = +length;
+    if (length > remaining) {
+      length = remaining;
+    }
+  }
+
+  // must be an even number of digits
+  var strLen = string.length;
+  if (strLen % 2) {
+    throw new Error('Invalid hex string');
+  }
+  if (length > strLen / 2) {
+    length = strLen / 2;
+  }
+  for (var i = 0; i < length; i++) {
+    var byte = parseInt(string.substr(i * 2, 2), 16);
+    if (isNaN(byte)) throw new Error('Invalid hex string');
+    this[offset + i] = byte;
+  }
+  Buffer._charsWritten = i * 2;
+  return i;
+};
+
+
+Buffer.prototype.write = function(string, offset, length, encoding) {
+  // Support both (string, offset, length, encoding)
+  // and the legacy (string, encoding, offset, length)
+  if (isFinite(offset)) {
+    if (!isFinite(length)) {
+      encoding = length;
+      length = undefined;
+    }
+  } else {  // legacy
+    var swap = encoding;
+    encoding = offset;
+    offset = length;
+    length = swap;
+  }
+
+  offset = +offset || 0;
+  var remaining = this.length - offset;
+  if (!length) {
+    length = remaining;
+  } else {
+    length = +length;
+    if (length > remaining) {
+      length = remaining;
+    }
+  }
+  encoding = String(encoding || 'utf8').toLowerCase();
+
+  switch (encoding) {
+    case 'hex':
+      return this.hexWrite(string, offset, length);
+
+    case 'utf8':
+    case 'utf-8':
+      return this.utf8Write(string, offset, length);
+
+    case 'ascii':
+      return this.asciiWrite(string, offset, length);
+
+    case 'binary':
+      return this.binaryWrite(string, offset, length);
+
+    case 'base64':
+      return this.base64Write(string, offset, length);
+
+    case 'ucs2':
+    case 'ucs-2':
+      return this.ucs2Write(string, offset, length);
+
+    default:
+      throw new Error('Unknown encoding');
+  }
+};
+
+
+// slice(start, end)
+Buffer.prototype.slice = function(start, end) {
+  if (end === undefined) end = this.length;
+
+  if (end > this.length) {
+    throw new Error('oob');
+  }
+  if (start > end) {
+    throw new Error('oob');
+  }
+
+  return new Buffer(this, end - start, +start);
+};
+
+// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+Buffer.prototype.copy = function(target, target_start, start, end) {
+  var source = this;
+  start || (start = 0);
+  if (end === undefined || isNaN(end)) {
+    end = this.length;
+  }
+  target_start || (target_start = 0);
+
+  if (end < start) throw new Error('sourceEnd < sourceStart');
+
+  // Copy 0 bytes; we're done
+  if (end === start) return 0;
+  if (target.length == 0 || source.length == 0) return 0;
+
+  if (target_start < 0 || target_start >= target.length) {
+    throw new Error('targetStart out of bounds');
+  }
+
+  if (start < 0 || start >= source.length) {
+    throw new Error('sourceStart out of bounds');
+  }
+
+  if (end < 0 || end > source.length) {
+    throw new Error('sourceEnd out of bounds');
+  }
+
+  // Are we oob?
+  if (end > this.length) {
+    end = this.length;
+  }
+
+  if (target.length - target_start < end - start) {
+    end = target.length - target_start + start;
+  }
+
+  var temp = [];
+  for (var i=start; i<end; i++) {
+    assert.ok(typeof this[i] !== 'undefined', "copying undefined buffer bytes!");
+    temp.push(this[i]);
+  }
+
+  for (var i=target_start; i<target_start+temp.length; i++) {
+    target[i] = temp[i-target_start];
+  }
+};
+
+// fill(value, start=0, end=buffer.length)
+Buffer.prototype.fill = function fill(value, start, end) {
+  value || (value = 0);
+  start || (start = 0);
+  end || (end = this.length);
+
+  if (typeof value === 'string') {
+    value = value.charCodeAt(0);
+  }
+  if (!(typeof value === 'number') || isNaN(value)) {
+    throw new Error('value is not a number');
+  }
+
+  if (end < start) throw new Error('end < start');
+
+  // Fill 0 bytes; we're done
+  if (end === start) return 0;
+  if (this.length == 0) return 0;
+
+  if (start < 0 || start >= this.length) {
+    throw new Error('start out of bounds');
+  }
+
+  if (end < 0 || end > this.length) {
+    throw new Error('end out of bounds');
+  }
+
+  for (var i = start; i < end; i++) {
+    this[i] = value;
+  }
+}
+
+// Static methods
+Buffer.isBuffer = function isBuffer(b) {
+  return b instanceof Buffer || b instanceof Buffer;
+};
+
+Buffer.concat = function (list, totalLength) {
+  if (!isArray(list)) {
+    throw new Error("Usage: Buffer.concat(list, [totalLength])\n \
+      list should be an Array.");
+  }
+
+  if (list.length === 0) {
+    return new Buffer(0);
+  } else if (list.length === 1) {
+    return list[0];
+  }
+
+  if (typeof totalLength !== 'number') {
+    totalLength = 0;
+    for (var i = 0; i < list.length; i++) {
+      var buf = list[i];
+      totalLength += buf.length;
+    }
+  }
+
+  var buffer = new Buffer(totalLength);
+  var pos = 0;
+  for (var i = 0; i < list.length; i++) {
+    var buf = list[i];
+    buf.copy(buffer, pos);
+    pos += buf.length;
+  }
+  return buffer;
+};
+
+// helpers
+
+function coerce(length) {
+  // Coerce length to a number (possibly NaN), round up
+  // in case it's fractional (e.g. 123.456) then do a
+  // double negate to coerce a NaN to 0. Easy, right?
+  length = ~~Math.ceil(+length);
+  return length < 0 ? 0 : length;
+}
+
+function isArray(subject) {
+  return (Array.isArray ||
+    function(subject){
+      return {}.toString.apply(subject) == '[object Array]'
+    })
+    (subject)
+}
+
+function isArrayIsh(subject) {
+  return isArray(subject) || Buffer.isBuffer(subject) ||
+         subject && typeof subject === 'object' &&
+         typeof subject.length === 'number';
+}
+
+function toHex(n) {
+  if (n < 16) return '0' + n.toString(16);
+  return n.toString(16);
+}
+
+function utf8ToBytes(str) {
+  var byteArray = [];
+  for (var i = 0; i < str.length; i++)
+    if (str.charCodeAt(i) <= 0x7F)
+      byteArray.push(str.charCodeAt(i));
+    else {
+      var h = encodeURIComponent(str.charAt(i)).substr(1).split('%');
+      for (var j = 0; j < h.length; j++)
+        byteArray.push(parseInt(h[j], 16));
+    }
+
+  return byteArray;
+}
+
+function asciiToBytes(str) {
+  var byteArray = []
+  for (var i = 0; i < str.length; i++ )
+    // Node's code seems to be doing this and not & 0x7F..
+    byteArray.push( str.charCodeAt(i) & 0xFF );
+
+  return byteArray;
+}
+
+function base64ToBytes(str) {
+  return require("base64-js").toByteArray(str);
+}
+
+function blitBuffer(src, dst, offset, length) {
+  var pos, i = 0;
+  while (i < length) {
+    if ((i+offset >= dst.length) || (i >= src.length))
+      break;
+
+    dst[i + offset] = src[i];
+    i++;
+  }
+  return i;
+}
+
+function decodeUtf8Char(str) {
+  try {
+    return decodeURIComponent(str);
+  } catch (err) {
+    return String.fromCharCode(0xFFFD); // UTF 8 invalid char
+  }
+}
+
+// read/write bit-twiddling
+
+Buffer.prototype.readUInt8 = function(offset, noAssert) {
+  var buffer = this;
+
+  if (!noAssert) {
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset < buffer.length,
+        'Trying to read beyond buffer length');
+  }
+
+  if (offset >= buffer.length) return;
+
+  return buffer[offset];
+};
+
+function readUInt16(buffer, offset, isBigEndian, noAssert) {
+  var val = 0;
+
+
+  if (!noAssert) {
+    assert.ok(typeof (isBigEndian) === 'boolean',
+        'missing or invalid endian');
+
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset + 1 < buffer.length,
+        'Trying to read beyond buffer length');
+  }
+
+  if (offset >= buffer.length) return 0;
+
+  if (isBigEndian) {
+    val = buffer[offset] << 8;
+    if (offset + 1 < buffer.length) {
+      val |= buffer[offset + 1];
+    }
+  } else {
+    val = buffer[offset];
+    if (offset + 1 < buffer.length) {
+      val |= buffer[offset + 1] << 8;
+    }
+  }
+
+  return val;
+}
+
+Buffer.prototype.readUInt16LE = function(offset, noAssert) {
+  return readUInt16(this, offset, false, noAssert);
+};
+
+Buffer.prototype.readUInt16BE = function(offset, noAssert) {
+  return readUInt16(this, offset, true, noAssert);
+};
+
+function readUInt32(buffer, offset, isBigEndian, noAssert) {
+  var val = 0;
+
+  if (!noAssert) {
+    assert.ok(typeof (isBigEndian) === 'boolean',
+        'missing or invalid endian');
+
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset + 3 < buffer.length,
+        'Trying to read beyond buffer length');
+  }
+
+  if (offset >= buffer.length) return 0;
+
+  if (isBigEndian) {
+    if (offset + 1 < buffer.length)
+      val = buffer[offset + 1] << 16;
+    if (offset + 2 < buffer.length)
+      val |= buffer[offset + 2] << 8;
+    if (offset + 3 < buffer.length)
+      val |= buffer[offset + 3];
+    val = val + (buffer[offset] << 24 >>> 0);
+  } else {
+    if (offset + 2 < buffer.length)
+      val = buffer[offset + 2] << 16;
+    if (offset + 1 < buffer.length)
+      val |= buffer[offset + 1] << 8;
+    val |= buffer[offset];
+    if (offset + 3 < buffer.length)
+      val = val + (buffer[offset + 3] << 24 >>> 0);
+  }
+
+  return val;
+}
+
+Buffer.prototype.readUInt32LE = function(offset, noAssert) {
+  return readUInt32(this, offset, false, noAssert);
+};
+
+Buffer.prototype.readUInt32BE = function(offset, noAssert) {
+  return readUInt32(this, offset, true, noAssert);
+};
+
+
+/*
+ * Signed integer types, yay team! A reminder on how two's complement actually
+ * works. The first bit is the signed bit, i.e. tells us whether or not the
+ * number should be positive or negative. If the two's complement value is
+ * positive, then we're done, as it's equivalent to the unsigned representation.
+ *
+ * Now if the number is positive, you're pretty much done, you can just leverage
+ * the unsigned translations and return those. Unfortunately, negative numbers
+ * aren't quite that straightforward.
+ *
+ * At first glance, one might be inclined to use the traditional formula to
+ * translate binary numbers between the positive and negative values in two's
+ * complement. (Though it doesn't quite work for the most negative value)
+ * Mainly:
+ *  - invert all the bits
+ *  - add one to the result
+ *
+ * Of course, this doesn't quite work in Javascript. Take for example the value
+ * of -128. This could be represented in 16 bits (big-endian) as 0xff80. But of
+ * course, Javascript will do the following:
+ *
+ * > ~0xff80
+ * -65409
+ *
+ * Whoh there, Javascript, that's not quite right. But wait, according to
+ * Javascript that's perfectly correct. When Javascript ends up seeing the
+ * constant 0xff80, it has no notion that it is actually a signed number. It
+ * assumes that we've input the unsigned value 0xff80. Thus, when it does the
+ * binary negation, it casts it into a signed value, (positive 0xff80). Then
+ * when you perform binary negation on that, it turns it into a negative number.
+ *
+ * Instead, we're going to have to use the following general formula, that works
+ * in a rather Javascript friendly way. I'm glad we don't support this kind of
+ * weird numbering scheme in the kernel.
+ *
+ * (BIT-MAX - (unsigned)val + 1) * -1
+ *
+ * The astute observer, may think that this doesn't make sense for 8-bit numbers
+ * (really it isn't necessary for them). However, when you get 16-bit numbers,
+ * you do. Let's go back to our prior example and see how this will look:
+ *
+ * (0xffff - 0xff80 + 1) * -1
+ * (0x007f + 1) * -1
+ * (0x0080) * -1
+ */
+Buffer.prototype.readInt8 = function(offset, noAssert) {
+  var buffer = this;
+  var neg;
+
+  if (!noAssert) {
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset < buffer.length,
+        'Trying to read beyond buffer length');
+  }
+
+  if (offset >= buffer.length) return;
+
+  neg = buffer[offset] & 0x80;
+  if (!neg) {
+    return (buffer[offset]);
+  }
+
+  return ((0xff - buffer[offset] + 1) * -1);
+};
+
+function readInt16(buffer, offset, isBigEndian, noAssert) {
+  var neg, val;
+
+  if (!noAssert) {
+    assert.ok(typeof (isBigEndian) === 'boolean',
+        'missing or invalid endian');
+
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset + 1 < buffer.length,
+        'Trying to read beyond buffer length');
+  }
+
+  val = readUInt16(buffer, offset, isBigEndian, noAssert);
+  neg = val & 0x8000;
+  if (!neg) {
+    return val;
+  }
+
+  return (0xffff - val + 1) * -1;
+}
+
+Buffer.prototype.readInt16LE = function(offset, noAssert) {
+  return readInt16(this, offset, false, noAssert);
+};
+
+Buffer.prototype.readInt16BE = function(offset, noAssert) {
+  return readInt16(this, offset, true, noAssert);
+};
+
+function readInt32(buffer, offset, isBigEndian, noAssert) {
+  var neg, val;
+
+  if (!noAssert) {
+    assert.ok(typeof (isBigEndian) === 'boolean',
+        'missing or invalid endian');
+
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset + 3 < buffer.length,
+        'Trying to read beyond buffer length');
+  }
+
+  val = readUInt32(buffer, offset, isBigEndian, noAssert);
+  neg = val & 0x80000000;
+  if (!neg) {
+    return (val);
+  }
+
+  return (0xffffffff - val + 1) * -1;
+}
+
+Buffer.prototype.readInt32LE = function(offset, noAssert) {
+  return readInt32(this, offset, false, noAssert);
+};
+
+Buffer.prototype.readInt32BE = function(offset, noAssert) {
+  return readInt32(this, offset, true, noAssert);
+};
+
+function readFloat(buffer, offset, isBigEndian, noAssert) {
+  if (!noAssert) {
+    assert.ok(typeof (isBigEndian) === 'boolean',
+        'missing or invalid endian');
+
+    assert.ok(offset + 3 < buffer.length,
+        'Trying to read beyond buffer length');
+  }
+
+  return require('./buffer_ieee754').readIEEE754(buffer, offset, isBigEndian,
+      23, 4);
+}
+
+Buffer.prototype.readFloatLE = function(offset, noAssert) {
+  return readFloat(this, offset, false, noAssert);
+};
+
+Buffer.prototype.readFloatBE = function(offset, noAssert) {
+  return readFloat(this, offset, true, noAssert);
+};
+
+function readDouble(buffer, offset, isBigEndian, noAssert) {
+  if (!noAssert) {
+    assert.ok(typeof (isBigEndian) === 'boolean',
+        'missing or invalid endian');
+
+    assert.ok(offset + 7 < buffer.length,
+        'Trying to read beyond buffer length');
+  }
+
+  return require('./buffer_ieee754').readIEEE754(buffer, offset, isBigEndian,
+      52, 8);
+}
+
+Buffer.prototype.readDoubleLE = function(offset, noAssert) {
+  return readDouble(this, offset, false, noAssert);
+};
+
+Buffer.prototype.readDoubleBE = function(offset, noAssert) {
+  return readDouble(this, offset, true, noAssert);
+};
+
+
+/*
+ * We have to make sure that the value is a valid integer. This means that it is
+ * non-negative. It has no fractional component and that it does not exceed the
+ * maximum allowed value.
+ *
+ *      value           The number to check for validity
+ *
+ *      max             The maximum value
+ */
+function verifuint(value, max) {
+  assert.ok(typeof (value) == 'number',
+      'cannot write a non-number as a number');
+
+  assert.ok(value >= 0,
+      'specified a negative value for writing an unsigned value');
+
+  assert.ok(value <= max, 'value is larger than maximum value for type');
+
+  assert.ok(Math.floor(value) === value, 'value has a fractional component');
+}
+
+Buffer.prototype.writeUInt8 = function(value, offset, noAssert) {
+  var buffer = this;
+
+  if (!noAssert) {
+    assert.ok(value !== undefined && value !== null,
+        'missing value');
+
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset < buffer.length,
+        'trying to write beyond buffer length');
+
+    verifuint(value, 0xff);
+  }
+
+  if (offset < buffer.length) {
+    buffer[offset] = value;
+  }
+};
+
+function writeUInt16(buffer, value, offset, isBigEndian, noAssert) {
+  if (!noAssert) {
+    assert.ok(value !== undefined && value !== null,
+        'missing value');
+
+    assert.ok(typeof (isBigEndian) === 'boolean',
+        'missing or invalid endian');
+
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset + 1 < buffer.length,
+        'trying to write beyond buffer length');
+
+    verifuint(value, 0xffff);
+  }
+
+  for (var i = 0; i < Math.min(buffer.length - offset, 2); i++) {
+    buffer[offset + i] =
+        (value & (0xff << (8 * (isBigEndian ? 1 - i : i)))) >>>
+            (isBigEndian ? 1 - i : i) * 8;
+  }
+
+}
+
+Buffer.prototype.writeUInt16LE = function(value, offset, noAssert) {
+  writeUInt16(this, value, offset, false, noAssert);
+};
+
+Buffer.prototype.writeUInt16BE = function(value, offset, noAssert) {
+  writeUInt16(this, value, offset, true, noAssert);
+};
+
+function writeUInt32(buffer, value, offset, isBigEndian, noAssert) {
+  if (!noAssert) {
+    assert.ok(value !== undefined && value !== null,
+        'missing value');
+
+    assert.ok(typeof (isBigEndian) === 'boolean',
+        'missing or invalid endian');
+
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset + 3 < buffer.length,
+        'trying to write beyond buffer length');
+
+    verifuint(value, 0xffffffff);
+  }
+
+  for (var i = 0; i < Math.min(buffer.length - offset, 4); i++) {
+    buffer[offset + i] =
+        (value >>> (isBigEndian ? 3 - i : i) * 8) & 0xff;
+  }
+}
+
+Buffer.prototype.writeUInt32LE = function(value, offset, noAssert) {
+  writeUInt32(this, value, offset, false, noAssert);
+};
+
+Buffer.prototype.writeUInt32BE = function(value, offset, noAssert) {
+  writeUInt32(this, value, offset, true, noAssert);
+};
+
+
+/*
+ * We now move onto our friends in the signed number category. Unlike unsigned
+ * numbers, we're going to have to worry a bit more about how we put values into
+ * arrays. Since we are only worrying about signed 32-bit values, we're in
+ * slightly better shape. Unfortunately, we really can't do our favorite binary
+ * & in this system. It really seems to do the wrong thing. For example:
+ *
+ * > -32 & 0xff
+ * 224
+ *
+ * What's happening above is really: 0xe0 & 0xff = 0xe0. However, the results of
+ * this aren't treated as a signed number. Ultimately a bad thing.
+ *
+ * What we're going to want to do is basically create the unsigned equivalent of
+ * our representation and pass that off to the wuint* functions. To do that
+ * we're going to do the following:
+ *
+ *  - if the value is positive
+ *      we can pass it directly off to the equivalent wuint
+ *  - if the value is negative
+ *      we do the following computation:
+ *         mb + val + 1, where
+ *         mb   is the maximum unsigned value in that byte size
+ *         val  is the Javascript negative integer
+ *
+ *
+ * As a concrete value, take -128. In signed 16 bits this would be 0xff80. If
+ * you do out the computations:
+ *
+ * 0xffff - 128 + 1
+ * 0xffff - 127
+ * 0xff80
+ *
+ * You can then encode this value as the signed version. This is really rather
+ * hacky, but it should work and get the job done which is our goal here.
+ */
+
+/*
+ * A series of checks to make sure we actually have a signed 32-bit number
+ */
+function verifsint(value, max, min) {
+  assert.ok(typeof (value) == 'number',
+      'cannot write a non-number as a number');
+
+  assert.ok(value <= max, 'value larger than maximum allowed value');
+
+  assert.ok(value >= min, 'value smaller than minimum allowed value');
+
+  assert.ok(Math.floor(value) === value, 'value has a fractional component');
+}
+
+function verifIEEE754(value, max, min) {
+  assert.ok(typeof (value) == 'number',
+      'cannot write a non-number as a number');
+
+  assert.ok(value <= max, 'value larger than maximum allowed value');
+
+  assert.ok(value >= min, 'value smaller than minimum allowed value');
+}
+
+Buffer.prototype.writeInt8 = function(value, offset, noAssert) {
+  var buffer = this;
+
+  if (!noAssert) {
+    assert.ok(value !== undefined && value !== null,
+        'missing value');
+
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset < buffer.length,
+        'Trying to write beyond buffer length');
+
+    verifsint(value, 0x7f, -0x80);
+  }
+
+  if (value >= 0) {
+    buffer.writeUInt8(value, offset, noAssert);
+  } else {
+    buffer.writeUInt8(0xff + value + 1, offset, noAssert);
+  }
+};
+
+function writeInt16(buffer, value, offset, isBigEndian, noAssert) {
+  if (!noAssert) {
+    assert.ok(value !== undefined && value !== null,
+        'missing value');
+
+    assert.ok(typeof (isBigEndian) === 'boolean',
+        'missing or invalid endian');
+
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset + 1 < buffer.length,
+        'Trying to write beyond buffer length');
+
+    verifsint(value, 0x7fff, -0x8000);
+  }
+
+  if (value >= 0) {
+    writeUInt16(buffer, value, offset, isBigEndian, noAssert);
+  } else {
+    writeUInt16(buffer, 0xffff + value + 1, offset, isBigEndian, noAssert);
+  }
+}
+
+Buffer.prototype.writeInt16LE = function(value, offset, noAssert) {
+  writeInt16(this, value, offset, false, noAssert);
+};
+
+Buffer.prototype.writeInt16BE = function(value, offset, noAssert) {
+  writeInt16(this, value, offset, true, noAssert);
+};
+
+function writeInt32(buffer, value, offset, isBigEndian, noAssert) {
+  if (!noAssert) {
+    assert.ok(value !== undefined && value !== null,
+        'missing value');
+
+    assert.ok(typeof (isBigEndian) === 'boolean',
+        'missing or invalid endian');
+
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset + 3 < buffer.length,
+        'Trying to write beyond buffer length');
+
+    verifsint(value, 0x7fffffff, -0x80000000);
+  }
+
+  if (value >= 0) {
+    writeUInt32(buffer, value, offset, isBigEndian, noAssert);
+  } else {
+    writeUInt32(buffer, 0xffffffff + value + 1, offset, isBigEndian, noAssert);
+  }
+}
+
+Buffer.prototype.writeInt32LE = function(value, offset, noAssert) {
+  writeInt32(this, value, offset, false, noAssert);
+};
+
+Buffer.prototype.writeInt32BE = function(value, offset, noAssert) {
+  writeInt32(this, value, offset, true, noAssert);
+};
+
+function writeFloat(buffer, value, offset, isBigEndian, noAssert) {
+  if (!noAssert) {
+    assert.ok(value !== undefined && value !== null,
+        'missing value');
+
+    assert.ok(typeof (isBigEndian) === 'boolean',
+        'missing or invalid endian');
+
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset + 3 < buffer.length,
+        'Trying to write beyond buffer length');
+
+    verifIEEE754(value, 3.4028234663852886e+38, -3.4028234663852886e+38);
+  }
+
+  require('./buffer_ieee754').writeIEEE754(buffer, value, offset, isBigEndian,
+      23, 4);
+}
+
+Buffer.prototype.writeFloatLE = function(value, offset, noAssert) {
+  writeFloat(this, value, offset, false, noAssert);
+};
+
+Buffer.prototype.writeFloatBE = function(value, offset, noAssert) {
+  writeFloat(this, value, offset, true, noAssert);
+};
+
+function writeDouble(buffer, value, offset, isBigEndian, noAssert) {
+  if (!noAssert) {
+    assert.ok(value !== undefined && value !== null,
+        'missing value');
+
+    assert.ok(typeof (isBigEndian) === 'boolean',
+        'missing or invalid endian');
+
+    assert.ok(offset !== undefined && offset !== null,
+        'missing offset');
+
+    assert.ok(offset + 7 < buffer.length,
+        'Trying to write beyond buffer length');
+
+    verifIEEE754(value, 1.7976931348623157E+308, -1.7976931348623157E+308);
+  }
+
+  require('./buffer_ieee754').writeIEEE754(buffer, value, offset, isBigEndian,
+      52, 8);
+}
+
+Buffer.prototype.writeDoubleLE = function(value, offset, noAssert) {
+  writeDouble(this, value, offset, false, noAssert);
+};
+
+Buffer.prototype.writeDoubleBE = function(value, offset, noAssert) {
+  writeDouble(this, value, offset, true, noAssert);
+};
+
+})()
+},{"assert":43,"./buffer_ieee754":46,"base64-js":61}],62:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            if (ev.source === window && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],45:[function(require,module,exports){
+(function(process){if (!process.EventEmitter) process.EventEmitter = function () {};
+
+var EventEmitter = exports.EventEmitter = process.EventEmitter;
+var isArray = typeof Array.isArray === 'function'
+    ? Array.isArray
+    : function (xs) {
+        return Object.prototype.toString.call(xs) === '[object Array]'
+    }
+;
+function indexOf (xs, x) {
+    if (xs.indexOf) return xs.indexOf(x);
+    for (var i = 0; i < xs.length; i++) {
+        if (x === xs[i]) return i;
+    }
+    return -1;
+}
+
+// By default EventEmitters will print a warning if more than
+// 10 listeners are added to it. This is a useful default which
+// helps finding memory leaks.
+//
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+var defaultMaxListeners = 10;
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!this._events) this._events = {};
+  this._events.maxListeners = n;
+};
+
+
+EventEmitter.prototype.emit = function(type) {
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events || !this._events.error ||
+        (isArray(this._events.error) && !this._events.error.length))
+    {
+      if (arguments[1] instanceof Error) {
+        throw arguments[1]; // Unhandled 'error' event
+      } else {
+        throw new Error("Uncaught, unspecified 'error' event.");
+      }
+      return false;
+    }
+  }
+
+  if (!this._events) return false;
+  var handler = this._events[type];
+  if (!handler) return false;
+
+  if (typeof handler == 'function') {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        var args = Array.prototype.slice.call(arguments, 1);
+        handler.apply(this, args);
+    }
+    return true;
+
+  } else if (isArray(handler)) {
+    var args = Array.prototype.slice.call(arguments, 1);
+
+    var listeners = handler.slice();
+    for (var i = 0, l = listeners.length; i < l; i++) {
+      listeners[i].apply(this, args);
+    }
+    return true;
+
+  } else {
+    return false;
+  }
+};
+
+// EventEmitter is defined in src/node_events.cc
+// EventEmitter.prototype.emit() is also defined there.
+EventEmitter.prototype.addListener = function(type, listener) {
+  if ('function' !== typeof listener) {
+    throw new Error('addListener only takes instances of Function');
+  }
+
+  if (!this._events) this._events = {};
+
+  // To avoid recursion in the case that type == "newListeners"! Before
+  // adding it to the listeners, first emit "newListeners".
+  this.emit('newListener', type, listener);
+
+  if (!this._events[type]) {
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  } else if (isArray(this._events[type])) {
+
+    // Check for listener leak
+    if (!this._events[type].warned) {
+      var m;
+      if (this._events.maxListeners !== undefined) {
+        m = this._events.maxListeners;
+      } else {
+        m = defaultMaxListeners;
+      }
+
+      if (m && m > 0 && this._events[type].length > m) {
+        this._events[type].warned = true;
+        console.error('(node) warning: possible EventEmitter memory ' +
+                      'leak detected. %d listeners added. ' +
+                      'Use emitter.setMaxListeners() to increase limit.',
+                      this._events[type].length);
+        console.trace();
+      }
+    }
+
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  } else {
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.once = function(type, listener) {
+  var self = this;
+  self.on(type, function g() {
+    self.removeListener(type, g);
+    listener.apply(this, arguments);
+  });
+
+  return this;
+};
+
+EventEmitter.prototype.removeListener = function(type, listener) {
+  if ('function' !== typeof listener) {
+    throw new Error('removeListener only takes instances of Function');
+  }
+
+  // does not use listeners(), so no side effect of creating _events[type]
+  if (!this._events || !this._events[type]) return this;
+
+  var list = this._events[type];
+
+  if (isArray(list)) {
+    var i = indexOf(list, listener);
+    if (i < 0) return this;
+    list.splice(i, 1);
+    if (list.length == 0)
+      delete this._events[type];
+  } else if (this._events[type] === listener) {
+    delete this._events[type];
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  if (arguments.length === 0) {
+    this._events = {};
+    return this;
+  }
+
+  // does not use listeners(), so no side effect of creating _events[type]
+  if (type && this._events && this._events[type]) this._events[type] = null;
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  if (!this._events) this._events = {};
+  if (!this._events[type]) this._events[type] = [];
+  if (!isArray(this._events[type])) {
+    this._events[type] = [this._events[type]];
+  }
+  return this._events[type];
+};
+
+})(require("__browserify_process"))
+},{"__browserify_process":62}],57:[function(require,module,exports){
 /*
 WildEmitter.js is a slim little event emitter by @henrikjoreteg largely based 
 on @visionmedia's Emitter from UI Kit.
@@ -2296,7 +3786,7 @@ WildEmitter.prototype.getWildcardCallbacks = function (eventName) {
     return result;
 };
 
-},{}],57:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 require=(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){
 exports.readIEEE754 = function(buffer, offset, isBE, mLen, nBytes) {
   var e, m,
@@ -6161,7 +7651,7 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 },{}]},{},[])
 ;;module.exports=require("buffer-browserify")
 
-},{}],54:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 (function(Buffer){//     uuid.js
 //
 //     (c) 2010-2012 Robert Kieffer
@@ -6409,7 +7899,7 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 }());
 
 })(require("__browserify_buffer").Buffer)
-},{"crypto":34,"__browserify_buffer":57}],53:[function(require,module,exports){
+},{"crypto":38,"__browserify_buffer":63}],58:[function(require,module,exports){
 (function(global){/**
  * @license
  * Lo-Dash 1.3.1 (Custom Build) <http://lodash.com/>
@@ -11967,1331 +13457,7 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 }(this));
 
 })(window)
-},{}],35:[function(require,module,exports){
-(function(){var assert = require('assert');
-exports.Buffer = Buffer;
-exports.SlowBuffer = Buffer;
-Buffer.poolSize = 8192;
-exports.INSPECT_MAX_BYTES = 50;
-
-function Buffer(subject, encoding, offset) {
-  if (!(this instanceof Buffer)) {
-    return new Buffer(subject, encoding, offset);
-  }
-  this.parent = this;
-  this.offset = 0;
-
-  var type;
-
-  // Are we slicing?
-  if (typeof offset === 'number') {
-    this.length = coerce(encoding);
-    this.offset = offset;
-  } else {
-    // Find the length
-    switch (type = typeof subject) {
-      case 'number':
-        this.length = coerce(subject);
-        break;
-
-      case 'string':
-        this.length = Buffer.byteLength(subject, encoding);
-        break;
-
-      case 'object': // Assume object is an array
-        this.length = coerce(subject.length);
-        break;
-
-      default:
-        throw new Error('First argument needs to be a number, ' +
-                        'array or string.');
-    }
-
-    // Treat array-ish objects as a byte array.
-    if (isArrayIsh(subject)) {
-      for (var i = 0; i < this.length; i++) {
-        if (subject instanceof Buffer) {
-          this[i] = subject.readUInt8(i);
-        }
-        else {
-          this[i] = subject[i];
-        }
-      }
-    } else if (type == 'string') {
-      // We are a string
-      this.length = this.write(subject, 0, encoding);
-    } else if (type === 'number') {
-      for (var i = 0; i < this.length; i++) {
-        this[i] = 0;
-      }
-    }
-  }
-}
-
-Buffer.prototype.get = function get(i) {
-  if (i < 0 || i >= this.length) throw new Error('oob');
-  return this[i];
-};
-
-Buffer.prototype.set = function set(i, v) {
-  if (i < 0 || i >= this.length) throw new Error('oob');
-  return this[i] = v;
-};
-
-Buffer.byteLength = function (str, encoding) {
-  switch (encoding || "utf8") {
-    case 'hex':
-      return str.length / 2;
-
-    case 'utf8':
-    case 'utf-8':
-      return utf8ToBytes(str).length;
-
-    case 'ascii':
-    case 'binary':
-      return str.length;
-
-    case 'base64':
-      return base64ToBytes(str).length;
-
-    default:
-      throw new Error('Unknown encoding');
-  }
-};
-
-Buffer.prototype.utf8Write = function (string, offset, length) {
-  var bytes, pos;
-  return Buffer._charsWritten =  blitBuffer(utf8ToBytes(string), this, offset, length);
-};
-
-Buffer.prototype.asciiWrite = function (string, offset, length) {
-  var bytes, pos;
-  return Buffer._charsWritten =  blitBuffer(asciiToBytes(string), this, offset, length);
-};
-
-Buffer.prototype.binaryWrite = Buffer.prototype.asciiWrite;
-
-Buffer.prototype.base64Write = function (string, offset, length) {
-  var bytes, pos;
-  return Buffer._charsWritten = blitBuffer(base64ToBytes(string), this, offset, length);
-};
-
-Buffer.prototype.base64Slice = function (start, end) {
-  var bytes = Array.prototype.slice.apply(this, arguments)
-  return require("base64-js").fromByteArray(bytes);
-};
-
-Buffer.prototype.utf8Slice = function () {
-  var bytes = Array.prototype.slice.apply(this, arguments);
-  var res = "";
-  var tmp = "";
-  var i = 0;
-  while (i < bytes.length) {
-    if (bytes[i] <= 0x7F) {
-      res += decodeUtf8Char(tmp) + String.fromCharCode(bytes[i]);
-      tmp = "";
-    } else
-      tmp += "%" + bytes[i].toString(16);
-
-    i++;
-  }
-
-  return res + decodeUtf8Char(tmp);
-}
-
-Buffer.prototype.asciiSlice = function () {
-  var bytes = Array.prototype.slice.apply(this, arguments);
-  var ret = "";
-  for (var i = 0; i < bytes.length; i++)
-    ret += String.fromCharCode(bytes[i]);
-  return ret;
-}
-
-Buffer.prototype.binarySlice = Buffer.prototype.asciiSlice;
-
-Buffer.prototype.inspect = function() {
-  var out = [],
-      len = this.length;
-  for (var i = 0; i < len; i++) {
-    out[i] = toHex(this[i]);
-    if (i == exports.INSPECT_MAX_BYTES) {
-      out[i + 1] = '...';
-      break;
-    }
-  }
-  return '<Buffer ' + out.join(' ') + '>';
-};
-
-
-Buffer.prototype.hexSlice = function(start, end) {
-  var len = this.length;
-
-  if (!start || start < 0) start = 0;
-  if (!end || end < 0 || end > len) end = len;
-
-  var out = '';
-  for (var i = start; i < end; i++) {
-    out += toHex(this[i]);
-  }
-  return out;
-};
-
-
-Buffer.prototype.toString = function(encoding, start, end) {
-  encoding = String(encoding || 'utf8').toLowerCase();
-  start = +start || 0;
-  if (typeof end == 'undefined') end = this.length;
-
-  // Fastpath empty strings
-  if (+end == start) {
-    return '';
-  }
-
-  switch (encoding) {
-    case 'hex':
-      return this.hexSlice(start, end);
-
-    case 'utf8':
-    case 'utf-8':
-      return this.utf8Slice(start, end);
-
-    case 'ascii':
-      return this.asciiSlice(start, end);
-
-    case 'binary':
-      return this.binarySlice(start, end);
-
-    case 'base64':
-      return this.base64Slice(start, end);
-
-    case 'ucs2':
-    case 'ucs-2':
-      return this.ucs2Slice(start, end);
-
-    default:
-      throw new Error('Unknown encoding');
-  }
-};
-
-
-Buffer.prototype.hexWrite = function(string, offset, length) {
-  offset = +offset || 0;
-  var remaining = this.length - offset;
-  if (!length) {
-    length = remaining;
-  } else {
-    length = +length;
-    if (length > remaining) {
-      length = remaining;
-    }
-  }
-
-  // must be an even number of digits
-  var strLen = string.length;
-  if (strLen % 2) {
-    throw new Error('Invalid hex string');
-  }
-  if (length > strLen / 2) {
-    length = strLen / 2;
-  }
-  for (var i = 0; i < length; i++) {
-    var byte = parseInt(string.substr(i * 2, 2), 16);
-    if (isNaN(byte)) throw new Error('Invalid hex string');
-    this[offset + i] = byte;
-  }
-  Buffer._charsWritten = i * 2;
-  return i;
-};
-
-
-Buffer.prototype.write = function(string, offset, length, encoding) {
-  // Support both (string, offset, length, encoding)
-  // and the legacy (string, encoding, offset, length)
-  if (isFinite(offset)) {
-    if (!isFinite(length)) {
-      encoding = length;
-      length = undefined;
-    }
-  } else {  // legacy
-    var swap = encoding;
-    encoding = offset;
-    offset = length;
-    length = swap;
-  }
-
-  offset = +offset || 0;
-  var remaining = this.length - offset;
-  if (!length) {
-    length = remaining;
-  } else {
-    length = +length;
-    if (length > remaining) {
-      length = remaining;
-    }
-  }
-  encoding = String(encoding || 'utf8').toLowerCase();
-
-  switch (encoding) {
-    case 'hex':
-      return this.hexWrite(string, offset, length);
-
-    case 'utf8':
-    case 'utf-8':
-      return this.utf8Write(string, offset, length);
-
-    case 'ascii':
-      return this.asciiWrite(string, offset, length);
-
-    case 'binary':
-      return this.binaryWrite(string, offset, length);
-
-    case 'base64':
-      return this.base64Write(string, offset, length);
-
-    case 'ucs2':
-    case 'ucs-2':
-      return this.ucs2Write(string, offset, length);
-
-    default:
-      throw new Error('Unknown encoding');
-  }
-};
-
-
-// slice(start, end)
-Buffer.prototype.slice = function(start, end) {
-  if (end === undefined) end = this.length;
-
-  if (end > this.length) {
-    throw new Error('oob');
-  }
-  if (start > end) {
-    throw new Error('oob');
-  }
-
-  return new Buffer(this, end - start, +start);
-};
-
-// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
-Buffer.prototype.copy = function(target, target_start, start, end) {
-  var source = this;
-  start || (start = 0);
-  if (end === undefined || isNaN(end)) {
-    end = this.length;
-  }
-  target_start || (target_start = 0);
-
-  if (end < start) throw new Error('sourceEnd < sourceStart');
-
-  // Copy 0 bytes; we're done
-  if (end === start) return 0;
-  if (target.length == 0 || source.length == 0) return 0;
-
-  if (target_start < 0 || target_start >= target.length) {
-    throw new Error('targetStart out of bounds');
-  }
-
-  if (start < 0 || start >= source.length) {
-    throw new Error('sourceStart out of bounds');
-  }
-
-  if (end < 0 || end > source.length) {
-    throw new Error('sourceEnd out of bounds');
-  }
-
-  // Are we oob?
-  if (end > this.length) {
-    end = this.length;
-  }
-
-  if (target.length - target_start < end - start) {
-    end = target.length - target_start + start;
-  }
-
-  var temp = [];
-  for (var i=start; i<end; i++) {
-    assert.ok(typeof this[i] !== 'undefined', "copying undefined buffer bytes!");
-    temp.push(this[i]);
-  }
-
-  for (var i=target_start; i<target_start+temp.length; i++) {
-    target[i] = temp[i-target_start];
-  }
-};
-
-// fill(value, start=0, end=buffer.length)
-Buffer.prototype.fill = function fill(value, start, end) {
-  value || (value = 0);
-  start || (start = 0);
-  end || (end = this.length);
-
-  if (typeof value === 'string') {
-    value = value.charCodeAt(0);
-  }
-  if (!(typeof value === 'number') || isNaN(value)) {
-    throw new Error('value is not a number');
-  }
-
-  if (end < start) throw new Error('end < start');
-
-  // Fill 0 bytes; we're done
-  if (end === start) return 0;
-  if (this.length == 0) return 0;
-
-  if (start < 0 || start >= this.length) {
-    throw new Error('start out of bounds');
-  }
-
-  if (end < 0 || end > this.length) {
-    throw new Error('end out of bounds');
-  }
-
-  for (var i = start; i < end; i++) {
-    this[i] = value;
-  }
-}
-
-// Static methods
-Buffer.isBuffer = function isBuffer(b) {
-  return b instanceof Buffer || b instanceof Buffer;
-};
-
-Buffer.concat = function (list, totalLength) {
-  if (!isArray(list)) {
-    throw new Error("Usage: Buffer.concat(list, [totalLength])\n \
-      list should be an Array.");
-  }
-
-  if (list.length === 0) {
-    return new Buffer(0);
-  } else if (list.length === 1) {
-    return list[0];
-  }
-
-  if (typeof totalLength !== 'number') {
-    totalLength = 0;
-    for (var i = 0; i < list.length; i++) {
-      var buf = list[i];
-      totalLength += buf.length;
-    }
-  }
-
-  var buffer = new Buffer(totalLength);
-  var pos = 0;
-  for (var i = 0; i < list.length; i++) {
-    var buf = list[i];
-    buf.copy(buffer, pos);
-    pos += buf.length;
-  }
-  return buffer;
-};
-
-// helpers
-
-function coerce(length) {
-  // Coerce length to a number (possibly NaN), round up
-  // in case it's fractional (e.g. 123.456) then do a
-  // double negate to coerce a NaN to 0. Easy, right?
-  length = ~~Math.ceil(+length);
-  return length < 0 ? 0 : length;
-}
-
-function isArray(subject) {
-  return (Array.isArray ||
-    function(subject){
-      return {}.toString.apply(subject) == '[object Array]'
-    })
-    (subject)
-}
-
-function isArrayIsh(subject) {
-  return isArray(subject) || Buffer.isBuffer(subject) ||
-         subject && typeof subject === 'object' &&
-         typeof subject.length === 'number';
-}
-
-function toHex(n) {
-  if (n < 16) return '0' + n.toString(16);
-  return n.toString(16);
-}
-
-function utf8ToBytes(str) {
-  var byteArray = [];
-  for (var i = 0; i < str.length; i++)
-    if (str.charCodeAt(i) <= 0x7F)
-      byteArray.push(str.charCodeAt(i));
-    else {
-      var h = encodeURIComponent(str.charAt(i)).substr(1).split('%');
-      for (var j = 0; j < h.length; j++)
-        byteArray.push(parseInt(h[j], 16));
-    }
-
-  return byteArray;
-}
-
-function asciiToBytes(str) {
-  var byteArray = []
-  for (var i = 0; i < str.length; i++ )
-    // Node's code seems to be doing this and not & 0x7F..
-    byteArray.push( str.charCodeAt(i) & 0xFF );
-
-  return byteArray;
-}
-
-function base64ToBytes(str) {
-  return require("base64-js").toByteArray(str);
-}
-
-function blitBuffer(src, dst, offset, length) {
-  var pos, i = 0;
-  while (i < length) {
-    if ((i+offset >= dst.length) || (i >= src.length))
-      break;
-
-    dst[i + offset] = src[i];
-    i++;
-  }
-  return i;
-}
-
-function decodeUtf8Char(str) {
-  try {
-    return decodeURIComponent(str);
-  } catch (err) {
-    return String.fromCharCode(0xFFFD); // UTF 8 invalid char
-  }
-}
-
-// read/write bit-twiddling
-
-Buffer.prototype.readUInt8 = function(offset, noAssert) {
-  var buffer = this;
-
-  if (!noAssert) {
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset < buffer.length,
-        'Trying to read beyond buffer length');
-  }
-
-  if (offset >= buffer.length) return;
-
-  return buffer[offset];
-};
-
-function readUInt16(buffer, offset, isBigEndian, noAssert) {
-  var val = 0;
-
-
-  if (!noAssert) {
-    assert.ok(typeof (isBigEndian) === 'boolean',
-        'missing or invalid endian');
-
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset + 1 < buffer.length,
-        'Trying to read beyond buffer length');
-  }
-
-  if (offset >= buffer.length) return 0;
-
-  if (isBigEndian) {
-    val = buffer[offset] << 8;
-    if (offset + 1 < buffer.length) {
-      val |= buffer[offset + 1];
-    }
-  } else {
-    val = buffer[offset];
-    if (offset + 1 < buffer.length) {
-      val |= buffer[offset + 1] << 8;
-    }
-  }
-
-  return val;
-}
-
-Buffer.prototype.readUInt16LE = function(offset, noAssert) {
-  return readUInt16(this, offset, false, noAssert);
-};
-
-Buffer.prototype.readUInt16BE = function(offset, noAssert) {
-  return readUInt16(this, offset, true, noAssert);
-};
-
-function readUInt32(buffer, offset, isBigEndian, noAssert) {
-  var val = 0;
-
-  if (!noAssert) {
-    assert.ok(typeof (isBigEndian) === 'boolean',
-        'missing or invalid endian');
-
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset + 3 < buffer.length,
-        'Trying to read beyond buffer length');
-  }
-
-  if (offset >= buffer.length) return 0;
-
-  if (isBigEndian) {
-    if (offset + 1 < buffer.length)
-      val = buffer[offset + 1] << 16;
-    if (offset + 2 < buffer.length)
-      val |= buffer[offset + 2] << 8;
-    if (offset + 3 < buffer.length)
-      val |= buffer[offset + 3];
-    val = val + (buffer[offset] << 24 >>> 0);
-  } else {
-    if (offset + 2 < buffer.length)
-      val = buffer[offset + 2] << 16;
-    if (offset + 1 < buffer.length)
-      val |= buffer[offset + 1] << 8;
-    val |= buffer[offset];
-    if (offset + 3 < buffer.length)
-      val = val + (buffer[offset + 3] << 24 >>> 0);
-  }
-
-  return val;
-}
-
-Buffer.prototype.readUInt32LE = function(offset, noAssert) {
-  return readUInt32(this, offset, false, noAssert);
-};
-
-Buffer.prototype.readUInt32BE = function(offset, noAssert) {
-  return readUInt32(this, offset, true, noAssert);
-};
-
-
-/*
- * Signed integer types, yay team! A reminder on how two's complement actually
- * works. The first bit is the signed bit, i.e. tells us whether or not the
- * number should be positive or negative. If the two's complement value is
- * positive, then we're done, as it's equivalent to the unsigned representation.
- *
- * Now if the number is positive, you're pretty much done, you can just leverage
- * the unsigned translations and return those. Unfortunately, negative numbers
- * aren't quite that straightforward.
- *
- * At first glance, one might be inclined to use the traditional formula to
- * translate binary numbers between the positive and negative values in two's
- * complement. (Though it doesn't quite work for the most negative value)
- * Mainly:
- *  - invert all the bits
- *  - add one to the result
- *
- * Of course, this doesn't quite work in Javascript. Take for example the value
- * of -128. This could be represented in 16 bits (big-endian) as 0xff80. But of
- * course, Javascript will do the following:
- *
- * > ~0xff80
- * -65409
- *
- * Whoh there, Javascript, that's not quite right. But wait, according to
- * Javascript that's perfectly correct. When Javascript ends up seeing the
- * constant 0xff80, it has no notion that it is actually a signed number. It
- * assumes that we've input the unsigned value 0xff80. Thus, when it does the
- * binary negation, it casts it into a signed value, (positive 0xff80). Then
- * when you perform binary negation on that, it turns it into a negative number.
- *
- * Instead, we're going to have to use the following general formula, that works
- * in a rather Javascript friendly way. I'm glad we don't support this kind of
- * weird numbering scheme in the kernel.
- *
- * (BIT-MAX - (unsigned)val + 1) * -1
- *
- * The astute observer, may think that this doesn't make sense for 8-bit numbers
- * (really it isn't necessary for them). However, when you get 16-bit numbers,
- * you do. Let's go back to our prior example and see how this will look:
- *
- * (0xffff - 0xff80 + 1) * -1
- * (0x007f + 1) * -1
- * (0x0080) * -1
- */
-Buffer.prototype.readInt8 = function(offset, noAssert) {
-  var buffer = this;
-  var neg;
-
-  if (!noAssert) {
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset < buffer.length,
-        'Trying to read beyond buffer length');
-  }
-
-  if (offset >= buffer.length) return;
-
-  neg = buffer[offset] & 0x80;
-  if (!neg) {
-    return (buffer[offset]);
-  }
-
-  return ((0xff - buffer[offset] + 1) * -1);
-};
-
-function readInt16(buffer, offset, isBigEndian, noAssert) {
-  var neg, val;
-
-  if (!noAssert) {
-    assert.ok(typeof (isBigEndian) === 'boolean',
-        'missing or invalid endian');
-
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset + 1 < buffer.length,
-        'Trying to read beyond buffer length');
-  }
-
-  val = readUInt16(buffer, offset, isBigEndian, noAssert);
-  neg = val & 0x8000;
-  if (!neg) {
-    return val;
-  }
-
-  return (0xffff - val + 1) * -1;
-}
-
-Buffer.prototype.readInt16LE = function(offset, noAssert) {
-  return readInt16(this, offset, false, noAssert);
-};
-
-Buffer.prototype.readInt16BE = function(offset, noAssert) {
-  return readInt16(this, offset, true, noAssert);
-};
-
-function readInt32(buffer, offset, isBigEndian, noAssert) {
-  var neg, val;
-
-  if (!noAssert) {
-    assert.ok(typeof (isBigEndian) === 'boolean',
-        'missing or invalid endian');
-
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset + 3 < buffer.length,
-        'Trying to read beyond buffer length');
-  }
-
-  val = readUInt32(buffer, offset, isBigEndian, noAssert);
-  neg = val & 0x80000000;
-  if (!neg) {
-    return (val);
-  }
-
-  return (0xffffffff - val + 1) * -1;
-}
-
-Buffer.prototype.readInt32LE = function(offset, noAssert) {
-  return readInt32(this, offset, false, noAssert);
-};
-
-Buffer.prototype.readInt32BE = function(offset, noAssert) {
-  return readInt32(this, offset, true, noAssert);
-};
-
-function readFloat(buffer, offset, isBigEndian, noAssert) {
-  if (!noAssert) {
-    assert.ok(typeof (isBigEndian) === 'boolean',
-        'missing or invalid endian');
-
-    assert.ok(offset + 3 < buffer.length,
-        'Trying to read beyond buffer length');
-  }
-
-  return require('./buffer_ieee754').readIEEE754(buffer, offset, isBigEndian,
-      23, 4);
-}
-
-Buffer.prototype.readFloatLE = function(offset, noAssert) {
-  return readFloat(this, offset, false, noAssert);
-};
-
-Buffer.prototype.readFloatBE = function(offset, noAssert) {
-  return readFloat(this, offset, true, noAssert);
-};
-
-function readDouble(buffer, offset, isBigEndian, noAssert) {
-  if (!noAssert) {
-    assert.ok(typeof (isBigEndian) === 'boolean',
-        'missing or invalid endian');
-
-    assert.ok(offset + 7 < buffer.length,
-        'Trying to read beyond buffer length');
-  }
-
-  return require('./buffer_ieee754').readIEEE754(buffer, offset, isBigEndian,
-      52, 8);
-}
-
-Buffer.prototype.readDoubleLE = function(offset, noAssert) {
-  return readDouble(this, offset, false, noAssert);
-};
-
-Buffer.prototype.readDoubleBE = function(offset, noAssert) {
-  return readDouble(this, offset, true, noAssert);
-};
-
-
-/*
- * We have to make sure that the value is a valid integer. This means that it is
- * non-negative. It has no fractional component and that it does not exceed the
- * maximum allowed value.
- *
- *      value           The number to check for validity
- *
- *      max             The maximum value
- */
-function verifuint(value, max) {
-  assert.ok(typeof (value) == 'number',
-      'cannot write a non-number as a number');
-
-  assert.ok(value >= 0,
-      'specified a negative value for writing an unsigned value');
-
-  assert.ok(value <= max, 'value is larger than maximum value for type');
-
-  assert.ok(Math.floor(value) === value, 'value has a fractional component');
-}
-
-Buffer.prototype.writeUInt8 = function(value, offset, noAssert) {
-  var buffer = this;
-
-  if (!noAssert) {
-    assert.ok(value !== undefined && value !== null,
-        'missing value');
-
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset < buffer.length,
-        'trying to write beyond buffer length');
-
-    verifuint(value, 0xff);
-  }
-
-  if (offset < buffer.length) {
-    buffer[offset] = value;
-  }
-};
-
-function writeUInt16(buffer, value, offset, isBigEndian, noAssert) {
-  if (!noAssert) {
-    assert.ok(value !== undefined && value !== null,
-        'missing value');
-
-    assert.ok(typeof (isBigEndian) === 'boolean',
-        'missing or invalid endian');
-
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset + 1 < buffer.length,
-        'trying to write beyond buffer length');
-
-    verifuint(value, 0xffff);
-  }
-
-  for (var i = 0; i < Math.min(buffer.length - offset, 2); i++) {
-    buffer[offset + i] =
-        (value & (0xff << (8 * (isBigEndian ? 1 - i : i)))) >>>
-            (isBigEndian ? 1 - i : i) * 8;
-  }
-
-}
-
-Buffer.prototype.writeUInt16LE = function(value, offset, noAssert) {
-  writeUInt16(this, value, offset, false, noAssert);
-};
-
-Buffer.prototype.writeUInt16BE = function(value, offset, noAssert) {
-  writeUInt16(this, value, offset, true, noAssert);
-};
-
-function writeUInt32(buffer, value, offset, isBigEndian, noAssert) {
-  if (!noAssert) {
-    assert.ok(value !== undefined && value !== null,
-        'missing value');
-
-    assert.ok(typeof (isBigEndian) === 'boolean',
-        'missing or invalid endian');
-
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset + 3 < buffer.length,
-        'trying to write beyond buffer length');
-
-    verifuint(value, 0xffffffff);
-  }
-
-  for (var i = 0; i < Math.min(buffer.length - offset, 4); i++) {
-    buffer[offset + i] =
-        (value >>> (isBigEndian ? 3 - i : i) * 8) & 0xff;
-  }
-}
-
-Buffer.prototype.writeUInt32LE = function(value, offset, noAssert) {
-  writeUInt32(this, value, offset, false, noAssert);
-};
-
-Buffer.prototype.writeUInt32BE = function(value, offset, noAssert) {
-  writeUInt32(this, value, offset, true, noAssert);
-};
-
-
-/*
- * We now move onto our friends in the signed number category. Unlike unsigned
- * numbers, we're going to have to worry a bit more about how we put values into
- * arrays. Since we are only worrying about signed 32-bit values, we're in
- * slightly better shape. Unfortunately, we really can't do our favorite binary
- * & in this system. It really seems to do the wrong thing. For example:
- *
- * > -32 & 0xff
- * 224
- *
- * What's happening above is really: 0xe0 & 0xff = 0xe0. However, the results of
- * this aren't treated as a signed number. Ultimately a bad thing.
- *
- * What we're going to want to do is basically create the unsigned equivalent of
- * our representation and pass that off to the wuint* functions. To do that
- * we're going to do the following:
- *
- *  - if the value is positive
- *      we can pass it directly off to the equivalent wuint
- *  - if the value is negative
- *      we do the following computation:
- *         mb + val + 1, where
- *         mb   is the maximum unsigned value in that byte size
- *         val  is the Javascript negative integer
- *
- *
- * As a concrete value, take -128. In signed 16 bits this would be 0xff80. If
- * you do out the computations:
- *
- * 0xffff - 128 + 1
- * 0xffff - 127
- * 0xff80
- *
- * You can then encode this value as the signed version. This is really rather
- * hacky, but it should work and get the job done which is our goal here.
- */
-
-/*
- * A series of checks to make sure we actually have a signed 32-bit number
- */
-function verifsint(value, max, min) {
-  assert.ok(typeof (value) == 'number',
-      'cannot write a non-number as a number');
-
-  assert.ok(value <= max, 'value larger than maximum allowed value');
-
-  assert.ok(value >= min, 'value smaller than minimum allowed value');
-
-  assert.ok(Math.floor(value) === value, 'value has a fractional component');
-}
-
-function verifIEEE754(value, max, min) {
-  assert.ok(typeof (value) == 'number',
-      'cannot write a non-number as a number');
-
-  assert.ok(value <= max, 'value larger than maximum allowed value');
-
-  assert.ok(value >= min, 'value smaller than minimum allowed value');
-}
-
-Buffer.prototype.writeInt8 = function(value, offset, noAssert) {
-  var buffer = this;
-
-  if (!noAssert) {
-    assert.ok(value !== undefined && value !== null,
-        'missing value');
-
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset < buffer.length,
-        'Trying to write beyond buffer length');
-
-    verifsint(value, 0x7f, -0x80);
-  }
-
-  if (value >= 0) {
-    buffer.writeUInt8(value, offset, noAssert);
-  } else {
-    buffer.writeUInt8(0xff + value + 1, offset, noAssert);
-  }
-};
-
-function writeInt16(buffer, value, offset, isBigEndian, noAssert) {
-  if (!noAssert) {
-    assert.ok(value !== undefined && value !== null,
-        'missing value');
-
-    assert.ok(typeof (isBigEndian) === 'boolean',
-        'missing or invalid endian');
-
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset + 1 < buffer.length,
-        'Trying to write beyond buffer length');
-
-    verifsint(value, 0x7fff, -0x8000);
-  }
-
-  if (value >= 0) {
-    writeUInt16(buffer, value, offset, isBigEndian, noAssert);
-  } else {
-    writeUInt16(buffer, 0xffff + value + 1, offset, isBigEndian, noAssert);
-  }
-}
-
-Buffer.prototype.writeInt16LE = function(value, offset, noAssert) {
-  writeInt16(this, value, offset, false, noAssert);
-};
-
-Buffer.prototype.writeInt16BE = function(value, offset, noAssert) {
-  writeInt16(this, value, offset, true, noAssert);
-};
-
-function writeInt32(buffer, value, offset, isBigEndian, noAssert) {
-  if (!noAssert) {
-    assert.ok(value !== undefined && value !== null,
-        'missing value');
-
-    assert.ok(typeof (isBigEndian) === 'boolean',
-        'missing or invalid endian');
-
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset + 3 < buffer.length,
-        'Trying to write beyond buffer length');
-
-    verifsint(value, 0x7fffffff, -0x80000000);
-  }
-
-  if (value >= 0) {
-    writeUInt32(buffer, value, offset, isBigEndian, noAssert);
-  } else {
-    writeUInt32(buffer, 0xffffffff + value + 1, offset, isBigEndian, noAssert);
-  }
-}
-
-Buffer.prototype.writeInt32LE = function(value, offset, noAssert) {
-  writeInt32(this, value, offset, false, noAssert);
-};
-
-Buffer.prototype.writeInt32BE = function(value, offset, noAssert) {
-  writeInt32(this, value, offset, true, noAssert);
-};
-
-function writeFloat(buffer, value, offset, isBigEndian, noAssert) {
-  if (!noAssert) {
-    assert.ok(value !== undefined && value !== null,
-        'missing value');
-
-    assert.ok(typeof (isBigEndian) === 'boolean',
-        'missing or invalid endian');
-
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset + 3 < buffer.length,
-        'Trying to write beyond buffer length');
-
-    verifIEEE754(value, 3.4028234663852886e+38, -3.4028234663852886e+38);
-  }
-
-  require('./buffer_ieee754').writeIEEE754(buffer, value, offset, isBigEndian,
-      23, 4);
-}
-
-Buffer.prototype.writeFloatLE = function(value, offset, noAssert) {
-  writeFloat(this, value, offset, false, noAssert);
-};
-
-Buffer.prototype.writeFloatBE = function(value, offset, noAssert) {
-  writeFloat(this, value, offset, true, noAssert);
-};
-
-function writeDouble(buffer, value, offset, isBigEndian, noAssert) {
-  if (!noAssert) {
-    assert.ok(value !== undefined && value !== null,
-        'missing value');
-
-    assert.ok(typeof (isBigEndian) === 'boolean',
-        'missing or invalid endian');
-
-    assert.ok(offset !== undefined && offset !== null,
-        'missing offset');
-
-    assert.ok(offset + 7 < buffer.length,
-        'Trying to write beyond buffer length');
-
-    verifIEEE754(value, 1.7976931348623157E+308, -1.7976931348623157E+308);
-  }
-
-  require('./buffer_ieee754').writeIEEE754(buffer, value, offset, isBigEndian,
-      52, 8);
-}
-
-Buffer.prototype.writeDoubleLE = function(value, offset, noAssert) {
-  writeDouble(this, value, offset, false, noAssert);
-};
-
-Buffer.prototype.writeDoubleBE = function(value, offset, noAssert) {
-  writeDouble(this, value, offset, true, noAssert);
-};
-
-})()
-},{"assert":39,"./buffer_ieee754":56,"base64-js":58}],59:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-    && window.setImmediate;
-    var canPost = typeof window !== 'undefined'
-    && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    if (canPost) {
-        var queue = [];
-        window.addEventListener('message', function (ev) {
-            if (ev.source === window && ev.data === 'process-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('process-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-}
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-
-},{}],41:[function(require,module,exports){
-(function(process){if (!process.EventEmitter) process.EventEmitter = function () {};
-
-var EventEmitter = exports.EventEmitter = process.EventEmitter;
-var isArray = typeof Array.isArray === 'function'
-    ? Array.isArray
-    : function (xs) {
-        return Object.prototype.toString.call(xs) === '[object Array]'
-    }
-;
-function indexOf (xs, x) {
-    if (xs.indexOf) return xs.indexOf(x);
-    for (var i = 0; i < xs.length; i++) {
-        if (x === xs[i]) return i;
-    }
-    return -1;
-}
-
-// By default EventEmitters will print a warning if more than
-// 10 listeners are added to it. This is a useful default which
-// helps finding memory leaks.
-//
-// Obviously not all Emitters should be limited to 10. This function allows
-// that to be increased. Set to zero for unlimited.
-var defaultMaxListeners = 10;
-EventEmitter.prototype.setMaxListeners = function(n) {
-  if (!this._events) this._events = {};
-  this._events.maxListeners = n;
-};
-
-
-EventEmitter.prototype.emit = function(type) {
-  // If there is no 'error' event listener then throw.
-  if (type === 'error') {
-    if (!this._events || !this._events.error ||
-        (isArray(this._events.error) && !this._events.error.length))
-    {
-      if (arguments[1] instanceof Error) {
-        throw arguments[1]; // Unhandled 'error' event
-      } else {
-        throw new Error("Uncaught, unspecified 'error' event.");
-      }
-      return false;
-    }
-  }
-
-  if (!this._events) return false;
-  var handler = this._events[type];
-  if (!handler) return false;
-
-  if (typeof handler == 'function') {
-    switch (arguments.length) {
-      // fast cases
-      case 1:
-        handler.call(this);
-        break;
-      case 2:
-        handler.call(this, arguments[1]);
-        break;
-      case 3:
-        handler.call(this, arguments[1], arguments[2]);
-        break;
-      // slower
-      default:
-        var args = Array.prototype.slice.call(arguments, 1);
-        handler.apply(this, args);
-    }
-    return true;
-
-  } else if (isArray(handler)) {
-    var args = Array.prototype.slice.call(arguments, 1);
-
-    var listeners = handler.slice();
-    for (var i = 0, l = listeners.length; i < l; i++) {
-      listeners[i].apply(this, args);
-    }
-    return true;
-
-  } else {
-    return false;
-  }
-};
-
-// EventEmitter is defined in src/node_events.cc
-// EventEmitter.prototype.emit() is also defined there.
-EventEmitter.prototype.addListener = function(type, listener) {
-  if ('function' !== typeof listener) {
-    throw new Error('addListener only takes instances of Function');
-  }
-
-  if (!this._events) this._events = {};
-
-  // To avoid recursion in the case that type == "newListeners"! Before
-  // adding it to the listeners, first emit "newListeners".
-  this.emit('newListener', type, listener);
-
-  if (!this._events[type]) {
-    // Optimize the case of one listener. Don't need the extra array object.
-    this._events[type] = listener;
-  } else if (isArray(this._events[type])) {
-
-    // Check for listener leak
-    if (!this._events[type].warned) {
-      var m;
-      if (this._events.maxListeners !== undefined) {
-        m = this._events.maxListeners;
-      } else {
-        m = defaultMaxListeners;
-      }
-
-      if (m && m > 0 && this._events[type].length > m) {
-        this._events[type].warned = true;
-        console.error('(node) warning: possible EventEmitter memory ' +
-                      'leak detected. %d listeners added. ' +
-                      'Use emitter.setMaxListeners() to increase limit.',
-                      this._events[type].length);
-        console.trace();
-      }
-    }
-
-    // If we've already got an array, just append.
-    this._events[type].push(listener);
-  } else {
-    // Adding the second element, need to change to array.
-    this._events[type] = [this._events[type], listener];
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-EventEmitter.prototype.once = function(type, listener) {
-  var self = this;
-  self.on(type, function g() {
-    self.removeListener(type, g);
-    listener.apply(this, arguments);
-  });
-
-  return this;
-};
-
-EventEmitter.prototype.removeListener = function(type, listener) {
-  if ('function' !== typeof listener) {
-    throw new Error('removeListener only takes instances of Function');
-  }
-
-  // does not use listeners(), so no side effect of creating _events[type]
-  if (!this._events || !this._events[type]) return this;
-
-  var list = this._events[type];
-
-  if (isArray(list)) {
-    var i = indexOf(list, listener);
-    if (i < 0) return this;
-    list.splice(i, 1);
-    if (list.length == 0)
-      delete this._events[type];
-  } else if (this._events[type] === listener) {
-    delete this._events[type];
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.removeAllListeners = function(type) {
-  if (arguments.length === 0) {
-    this._events = {};
-    return this;
-  }
-
-  // does not use listeners(), so no side effect of creating _events[type]
-  if (type && this._events && this._events[type]) this._events[type] = null;
-  return this;
-};
-
-EventEmitter.prototype.listeners = function(type) {
-  if (!this._events) this._events = {};
-  if (!this._events[type]) this._events[type] = [];
-  if (!isArray(this._events[type])) {
-    this._events[type] = [this._events[type]];
-  }
-  return this._events[type];
-};
-
-})(require("__browserify_process"))
-},{"__browserify_process":59}],55:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 (function(process){/*global setImmediate: false, setTimeout: false, console: false */
 (function () {
 
@@ -14249,7 +14415,86 @@ EventEmitter.prototype.listeners = function(type) {
 }());
 
 })(require("__browserify_process"))
-},{"__browserify_process":59}],2:[function(require,module,exports){
+},{"__browserify_process":62}],3:[function(require,module,exports){
+var _ = require('lodash');
+var stanza = require('jxt');
+
+
+function Presence(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Presence.prototype = {
+    constructor: {
+        value: Presence
+    },
+    _name: 'presence',
+    NS: 'jabber:client',
+    EL: 'presence',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get lang() {
+        return this.xml.getAttributeNS(stanza.XML_NS, 'lang') || '';
+    },
+    set lang(value) {
+        this.xml.setAttributeNS(stanza.XML_NS, 'lang', value);
+    },
+    get id() {
+        return stanza.getAttribute(this.xml, 'id');
+    },
+    set id(value) {
+        stanza.setAttribute(this.xml, 'id', value);
+    },
+    get to() {
+        return stanza.getAttribute(this.xml, 'to');
+    },
+    set to(value) {
+        stanza.setAttribute(this.xml, 'to', value);
+    },
+    get from() {
+        return stanza.getAttribute(this.xml, 'from');
+    },
+    set from(value) {
+        stanza.setAttribute(this.xml, 'from', value);
+    },
+    get type() {
+        return stanza.getAttribute(this.xml, 'type', 'available');
+    },
+    set type(value) {
+        if (value === 'available') {
+            value = false;
+        }
+        stanza.setAttribute(this.xml, 'type', value);
+    },
+    get status() {
+        var statuses = this.$status;
+        return statuses[this.lang] || '';
+    },
+    get $status() {
+        return stanza.getSubLangText(this.xml, this.NS, 'status', this.lang);
+    },
+    set status(value) {
+        stanza.setSubLangText(this.xml, this.NS, 'status', value, this.lang);
+    },
+    get priority() {
+        return stanza.getSubText(this.xml, this.NS, 'priority');
+    },
+    set priority(value) {
+        stanza.setSubText(this.xml, this.NS, 'priority', value);
+    },
+    get show() {
+        return stanza.getSubText(this.xml, this.NS, 'show');
+    },
+    set show(value) {
+        stanza.setSubText(this.xml, this.NS, 'show', value);
+    }
+};
+
+stanza.topLevel(Presence);
+
+
+module.exports = Presence;
+
+},{"lodash":58,"jxt":64}],2:[function(require,module,exports){
 var _ = require('lodash');
 var stanza = require('jxt');
 
@@ -14273,28 +14518,28 @@ Message.prototype = {
         this.xml.setAttributeNS(stanza.XML_NS, 'lang', value);
     },
     get id() {
-        return this.xml.getAttribute('id') || '';
+        return stanza.getAttribute(this.xml, 'id');
     },
     set id(value) {
-        this.xml.setAttribute('id', value);
+        stanza.setAttribute(this.xml, 'id', value);
     },
     get to() {
-        return this.xml.getAttribute('to') || '';
+        return stanza.getAttribute(this.xml, 'to');
     },
     set to(value) {
-        this.xml.setAttribute('to', value);
+        stanza.setAttribute(this.xml, 'to', value);
     },
     get from() {
-        return this.xml.getAttribute('from') || '';
+        return stanza.getAttribute(this.xml, 'from');
     },
     set from(value) {
-        this.xml.setAttribute('from', value);
+        stanza.setAttribute(this.xml, 'from', value);
     },
     get type() {
-        return this.xml.getAttribute('type') || 'normal';
+        return stanza.getAttribute(this.xml, 'type', 'normal');
     },
     set type(value) {
-        this.xml.setAttribute('type', value);
+        stanza.setAttribute(this.xml, 'type', value);
     },
     get body() {
         var bodies = this.$body;
@@ -14313,30 +14558,10 @@ Message.prototype = {
         stanza.setSubText(this.xml, this.NS, 'thread', value);
     },
     get parentThread() {
-        var threads = stanza.find(this.xml, this.NS, 'thread');
-            
-        if (!threads.length) {
-            return '';
-        }
-
-        return threads[0].getAttribute('parent') || '';
+        return stanza.getSubAttribute(this.xml, this.NS, 'thread', 'parent');
     },
     set parentThread(value) {
-        var threads = stanza.find(this.xml, this.NS, 'thread');
-        if (!threads.length) {
-            if (!value) {
-                return;
-            }
-            var thread = document.createElementNS(this.NS, 'thread');
-            thread.setAttribute('parent', value);
-            this.xml.appendChild(thread);
-        } else {
-            if (value) {
-                threads[0].setAttribute('parent', value);
-            } else {
-                threads[0].removeAttribute('parent');
-            }
-        }
+        stanza.setSubAttribute(this.xml, this.NS, 'thread', 'parent', value);
     }
 };
 
@@ -14345,7 +14570,7 @@ stanza.topLevel(Message);
 
 module.exports = Message;
 
-},{"lodash":53,"jxt":60}],4:[function(require,module,exports){
+},{"lodash":58,"jxt":64}],4:[function(require,module,exports){
 var stanza = require('jxt');
 
 
@@ -14380,28 +14605,28 @@ Iq.prototype = {
         this.xml.setAttributeNS(stanza.XML_NS, 'lang', value);
     },
     get id() {
-        return this.xml.getAttribute('id') || '';
+        return stanza.getAttribute(this.xml, 'id');
     },
     set id(value) {
-        this.xml.setAttribute('id', value);
+        stanza.setAttribute(this.xml, 'id', value);
     },
     get to() {
-        return this.xml.getAttribute('to') || '';
+        return stanza.getAttribute(this.xml, 'to');
     },
     set to(value) {
-        this.xml.setAttribute('to', value);
+        stanza.setAttribute(this.xml, 'to', value);
     },
     get from() {
-        return this.xml.getAttribute('from') || '';
+        return stanza.getAttribute(this.xml, 'from');
     },
     set from(value) {
-        this.xml.setAttribute('from', value);
+        stanza.setAttribute(this.xml, 'from', value);
     },
     get type() {
-        return this.xml.getAttribute('type') || '';
+        return stanza.getAttribute(this.xml, 'type');
     },
     set type(value) {
-        this.xml.setAttribute('type', value);
+        stanza.setAttribute(this.xml, 'type', value);
     }
 };
 
@@ -14410,83 +14635,7 @@ stanza.topLevel(Iq);
 
 module.exports = Iq;
 
-},{"jxt":60}],3:[function(require,module,exports){
-var _ = require('lodash');
-var stanza = require('jxt');
-
-
-function Presence(data, xml) {
-    return stanza.init(this, xml, data);
-}
-Presence.prototype = {
-    constructor: {
-        value: Presence
-    },
-    _name: 'presence',
-    NS: 'jabber:client',
-    EL: 'presence',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get lang() {
-        return this.xml.getAttributeNS(stanza.XML_NS, 'lang') || '';
-    },
-    set lang(value) {
-        this.xml.setAttributeNS(stanza.XML_NS, 'lang', value);
-    },
-    get id() {
-        return this.xml.getAttribute('id') || '';
-    },
-    set id(value) {
-        this.xml.setAttribute('id', value);
-    },
-    get to() {
-        return this.xml.getAttribute('to') || '';
-    },
-    set to(value) {
-        this.xml.setAttribute('to', value);
-    },
-    get from() {
-        return this.xml.getAttribute('from') || '';
-    },
-    set from(value) {
-        this.xml.setAttribute('from', value);
-    },
-    get type() {
-        return this.xml.getAttribute('type') || '';
-    },
-    set type(value) {
-        this.xml.setAttribute('type', value);
-    },
-    get status() {
-        var statuses = this.$status;
-        return statuses[this.lang] || '';
-    },
-    get $status() {
-        return stanza.getSubLangText(this.xml, this.NS, 'status', this.lang);
-    },
-    set status(value) {
-        stanza.setSubLangText(this.xml, this.NS, 'status', value, this.lang);
-    },
-    get priority() {
-        return stanza.getSubText(this.xml, this.NS, 'priority');
-    },
-    set priority(value) {
-        stanza.setSubText(this.xml, this.NS, 'priority', value);
-    },
-    get show() {
-        return stanza.getSubText(this.xml, this.NS, 'show');
-    },
-    set show(value) {
-        stanza.setSubText(this.xml, this.NS, 'show', value);
-    }
-};
-
-stanza.topLevel(Presence);
-
-
-module.exports = Presence;
-
-},{"lodash":53,"jxt":60}],6:[function(require,module,exports){
+},{"jxt":64}],6:[function(require,module,exports){
 (function(){/*global unescape, escape */
 
 var _ = require('lodash');
@@ -14624,28 +14773,28 @@ Disco.prototype = {
     constructor: {
         value: Disco
     },
-    addFeature: function (node, feature) {
+    addFeature: function (feature, node) {
         node = node || ''; 
         if (!this.features[node]) {
             this.features[node] = [];
         }
         this.features[node].push(feature);
     },
-    addIdentity: function (node, identity) {
+    addIdentity: function (identity, node) {
         node = node || ''; 
         if (!this.identities[node]) {
             this.identities[node] = [];
         }
         this.identities[node].push(identity);
     },
-    addItem: function (node, item) {
+    addItem: function (item, node) {
         node = node || ''; 
         if (!this.items[node]) {
             this.items[node] = [];
         }
         this.items[node].push(item);
     },
-    addExtension: function (node, form) {
+    addExtension: function (form, node) {
         node = node || ''; 
         if (!this.extensions[node]) {
             this.extensions[node] = [];
@@ -14657,8 +14806,8 @@ Disco.prototype = {
 module.exports = function (client) {
     client.disco = new Disco(client);
 
-    client.disco.addFeature('', 'http://jabber.org/protocol/disco#info');
-    client.disco.addIdentity('', {
+    client.disco.addFeature('http://jabber.org/protocol/disco#info');
+    client.disco.addIdentity({
         category: 'client',
         type: 'web'
     });
@@ -14725,7 +14874,93 @@ module.exports = function (client) {
 };
 
 })()
-},{"crypto":34,"../stanza/disco":61,"../stanza/caps":62,"lodash":53}],20:[function(require,module,exports){
+},{"crypto":38,"../stanza/disco":65,"../stanza/caps":66,"lodash":58}],61:[function(require,module,exports){
+(function (exports) {
+	'use strict';
+
+	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+	function b64ToByteArray(b64) {
+		var i, j, l, tmp, placeHolders, arr;
+	
+		if (b64.length % 4 > 0) {
+			throw 'Invalid string. Length must be a multiple of 4';
+		}
+
+		// the number of equal signs (place holders)
+		// if there are two placeholders, than the two characters before it
+		// represent one byte
+		// if there is only one, then the three characters before it represent 2 bytes
+		// this is just a cheap hack to not do indexOf twice
+		placeHolders = b64.indexOf('=');
+		placeHolders = placeHolders > 0 ? b64.length - placeHolders : 0;
+
+		// base64 is 4/3 + up to two characters of the original data
+		arr = [];//new Uint8Array(b64.length * 3 / 4 - placeHolders);
+
+		// if there are placeholders, only get up to the last complete 4 chars
+		l = placeHolders > 0 ? b64.length - 4 : b64.length;
+
+		for (i = 0, j = 0; i < l; i += 4, j += 3) {
+			tmp = (lookup.indexOf(b64[i]) << 18) | (lookup.indexOf(b64[i + 1]) << 12) | (lookup.indexOf(b64[i + 2]) << 6) | lookup.indexOf(b64[i + 3]);
+			arr.push((tmp & 0xFF0000) >> 16);
+			arr.push((tmp & 0xFF00) >> 8);
+			arr.push(tmp & 0xFF);
+		}
+
+		if (placeHolders === 2) {
+			tmp = (lookup.indexOf(b64[i]) << 2) | (lookup.indexOf(b64[i + 1]) >> 4);
+			arr.push(tmp & 0xFF);
+		} else if (placeHolders === 1) {
+			tmp = (lookup.indexOf(b64[i]) << 10) | (lookup.indexOf(b64[i + 1]) << 4) | (lookup.indexOf(b64[i + 2]) >> 2);
+			arr.push((tmp >> 8) & 0xFF);
+			arr.push(tmp & 0xFF);
+		}
+
+		return arr;
+	}
+
+	function uint8ToBase64(uint8) {
+		var i,
+			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
+			output = "",
+			temp, length;
+
+		function tripletToBase64 (num) {
+			return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F];
+		};
+
+		// go through the array every three bytes, we'll deal with trailing stuff later
+		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
+			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2]);
+			output += tripletToBase64(temp);
+		}
+
+		// pad the end with zeros, but make sure to not forget the extra bytes
+		switch (extraBytes) {
+			case 1:
+				temp = uint8[uint8.length - 1];
+				output += lookup[temp >> 2];
+				output += lookup[(temp << 4) & 0x3F];
+				output += '==';
+				break;
+			case 2:
+				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1]);
+				output += lookup[temp >> 10];
+				output += lookup[(temp >> 4) & 0x3F];
+				output += lookup[(temp << 2) & 0x3F];
+				output += '=';
+				break;
+		}
+
+		return output;
+	}
+
+	module.exports.toByteArray = b64ToByteArray;
+	module.exports.fromByteArray = uint8ToBase64;
+}());
+
+},{}],20:[function(require,module,exports){
 var uuid = require('node-uuid');
 
 // normalize environment
@@ -14848,7 +15083,7 @@ function WebRTC(client) {
     } else {
         client.emit('webrtc:supported');
 
-        client.disco.addFeature('', 'http://stanza.io/protocol/sox');
+        client.disco.addFeature('http://stanza.io/protocol/sox');
 
         client.on('message', function (msg) {
             if (msg.type !== 'error' && msg._extensions.sox) {
@@ -15095,93 +15330,7 @@ module.exports = function (client) {
     client.webrtc = new WebRTC(client);
 };
 
-},{"node-uuid":54}],58:[function(require,module,exports){
-(function (exports) {
-	'use strict';
-
-	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-
-	function b64ToByteArray(b64) {
-		var i, j, l, tmp, placeHolders, arr;
-	
-		if (b64.length % 4 > 0) {
-			throw 'Invalid string. Length must be a multiple of 4';
-		}
-
-		// the number of equal signs (place holders)
-		// if there are two placeholders, than the two characters before it
-		// represent one byte
-		// if there is only one, then the three characters before it represent 2 bytes
-		// this is just a cheap hack to not do indexOf twice
-		placeHolders = b64.indexOf('=');
-		placeHolders = placeHolders > 0 ? b64.length - placeHolders : 0;
-
-		// base64 is 4/3 + up to two characters of the original data
-		arr = [];//new Uint8Array(b64.length * 3 / 4 - placeHolders);
-
-		// if there are placeholders, only get up to the last complete 4 chars
-		l = placeHolders > 0 ? b64.length - 4 : b64.length;
-
-		for (i = 0, j = 0; i < l; i += 4, j += 3) {
-			tmp = (lookup.indexOf(b64[i]) << 18) | (lookup.indexOf(b64[i + 1]) << 12) | (lookup.indexOf(b64[i + 2]) << 6) | lookup.indexOf(b64[i + 3]);
-			arr.push((tmp & 0xFF0000) >> 16);
-			arr.push((tmp & 0xFF00) >> 8);
-			arr.push(tmp & 0xFF);
-		}
-
-		if (placeHolders === 2) {
-			tmp = (lookup.indexOf(b64[i]) << 2) | (lookup.indexOf(b64[i + 1]) >> 4);
-			arr.push(tmp & 0xFF);
-		} else if (placeHolders === 1) {
-			tmp = (lookup.indexOf(b64[i]) << 10) | (lookup.indexOf(b64[i + 1]) << 4) | (lookup.indexOf(b64[i + 2]) >> 2);
-			arr.push((tmp >> 8) & 0xFF);
-			arr.push(tmp & 0xFF);
-		}
-
-		return arr;
-	}
-
-	function uint8ToBase64(uint8) {
-		var i,
-			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
-			output = "",
-			temp, length;
-
-		function tripletToBase64 (num) {
-			return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F];
-		};
-
-		// go through the array every three bytes, we'll deal with trailing stuff later
-		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
-			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2]);
-			output += tripletToBase64(temp);
-		}
-
-		// pad the end with zeros, but make sure to not forget the extra bytes
-		switch (extraBytes) {
-			case 1:
-				temp = uint8[uint8.length - 1];
-				output += lookup[temp >> 2];
-				output += lookup[(temp << 4) & 0x3F];
-				output += '==';
-				break;
-			case 2:
-				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1]);
-				output += lookup[temp >> 10];
-				output += lookup[(temp >> 4) & 0x3F];
-				output += lookup[(temp << 2) & 0x3F];
-				output += '=';
-				break;
-		}
-
-		return output;
-	}
-
-	module.exports.toByteArray = b64ToByteArray;
-	module.exports.fromByteArray = uint8ToBase64;
-}());
-
-},{}],63:[function(require,module,exports){
+},{"node-uuid":59}],67:[function(require,module,exports){
 (function(){var SM = require('./stanza/sm');
 var MAX_SEQ = Math.pow(2, 32);
 
@@ -15290,7 +15439,7 @@ StreamManagement.prototype = {
 module.exports = StreamManagement;
 
 })()
-},{"./stanza/sm":45}],43:[function(require,module,exports){
+},{"./stanza/sm":50}],48:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 var _ = require('lodash');
 var async = require('async');
@@ -15469,7 +15618,7 @@ WSConnection.prototype.send = function (data) {
 
 module.exports = WSConnection;
 
-},{"./stanza/stream":44,"./stanza/message":2,"./stanza/presence":3,"./stanza/iq":4,"./sm":63,"wildemitter":52,"lodash":53,"node-uuid":54,"async":55}],42:[function(require,module,exports){
+},{"./stanza/stream":49,"./stanza/message":2,"./stanza/presence":3,"./stanza/iq":4,"./sm":67,"wildemitter":57,"lodash":58,"node-uuid":59,"async":60}],47:[function(require,module,exports){
 var stanza = require('jxt');
 var _ = require('lodash');
 var StreamFeatures = require('./streamFeatures');
@@ -15535,10 +15684,10 @@ Auth.prototype = {
         this.xml.textContent = btoa(value) || '=';
     },
     get mechanism() {
-        return this.xml.getAttribute('mechanism') || '';
+        return stanza.getAttribute(this.xml, 'mechanism');
     },
     set mechanism(value) {
-        this.xml.setAttribute('mechanism', value);
+        stanza.setAttribute(this.xml, 'mechanism', value);
     }
 };
 
@@ -15706,7 +15855,7 @@ exports.Success = Success;
 exports.Failure = Failure;
 exports.Abort = Abort;
 
-},{"./streamFeatures":49,"jxt":60,"lodash":53}],44:[function(require,module,exports){
+},{"./streamFeatures":54,"jxt":64,"lodash":58}],49:[function(require,module,exports){
 var stanza = require('jxt');
 
 
@@ -15729,34 +15878,34 @@ Stream.prototype = {
         this.xml.setAttributeNS(stanza.XML_NS, 'lang', value);
     },
     get id() {
-        return this.xml.getAttribute('id') || '';
+        return stanza.getAttribute(this.xml, 'id');
     },
     set id(value) {
-        this.xml.setAttribute('id', value);
+        stanza.setAttribute(this.xml, 'id', value);
     },
     get version() {
-        return this.xml.getAttribute('version') || '1.0';
+        return stanza.getAttribute(this.xml, 'version', '1.0');
     },
     set version(value) {
-        this.xml.setAttribute('version', value);
+        stanza.setAttribute(this.xml, 'version', value);
     },
     get to() {
-        return this.xml.getAttribute('to') || '';
+        return stanza.getAttribute(this.xml, 'to');
     },
     set to(value) {
-        this.xml.setAttribute('to', value);
+        stanza.setAttribute(this.xml, 'to', value);
     },
     get from() {
-        return this.xml.getAttribute('from') || '';
+        return stanza.getAttribute(this.xml, 'from');
     },
     set from(value) {
-        this.xml.setAttribute('from', value);
+        stanza.setAttribute(this.xml, 'from', value);
     }
 }; 
 
 module.exports = Stream;
 
-},{"jxt":60}],45:[function(require,module,exports){
+},{"jxt":64}],50:[function(require,module,exports){
 var stanza = require('jxt');
 var StreamFeatures = require('./streamFeatures');
 
@@ -15790,13 +15939,10 @@ Enable.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get resume() {
-        var val = this.xml.getAttribute('resume');
-        return val == 'true' || val == '1';
+        return stanza.getBoolAttribute(this.xml, 'resume');
     },
     set resume(val) {
-        if (val) {
-            this.xml.setAttribute('resume', 'true');
-        }
+        stanza.setBoolAttribute(this.xml, 'resume', val);
     }
 };
 
@@ -15815,19 +15961,16 @@ Enabled.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get id() {
-        return this.xml.getAttribute('id') || '';
+        return stanza.getAttribute(this.xml, 'id');
     },
     set id(value) {
-        this.xml.setAttribute('id', value);
+        stanza.setAttribute(this.xml, 'id', value);
     },
     get resume() {
-        var val = this.xml.getAttribute('resume');
-        return val == 'true' || val == '1';
+        return stanza.getBoolAttribute(this.xml, 'resume');
     },
     set resume(val) {
-        if (val) {
-            this.xml.setAttribute('resume', 'true');
-        }
+        stanza.setBoolAttribute(this.xml, 'resume', val);
     }
 };
 
@@ -15846,16 +15989,16 @@ Resume.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get h() {
-        return parseInt(this.xml.getAttribute('h') || '0', 10);
+        return parseInt(stanza.getAttribute(this.xml, 'h', '0'), 10);
     },
     set h(value) {
-        this.xml.setAttribute('h', '' + value);
+        stanza.setAttribute(this.xml, 'h', '' + value);
     },
     get previd() {
-        return this.xml.getAttribute('previd') || '';
+        return stanza.getAttribute(this.xml, 'previd');
     },
     set previd(value) {
-        this.xml.setAttribute('previd', value);
+        stanza.setAttribute(this.xml, 'previd', value);
     }
 };
 
@@ -15874,16 +16017,16 @@ Resumed.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get h() {
-        return parseInt(this.xml.getAttribute('h') || '0', 10);
+        return parseInt(stanza.getAttribute(this.xml, 'h', '0'), 10);
     },
     set h(value) {
-        this.xml.setAttribute('h', '' + value);
+        stanza.setAttribute(this.xml, 'h', '' + value);
     },
     get previd() {
-        return this.xml.getAttribute('previd') || '';
+        return stanza.getAttribute(this.xml, 'previd');
     },
     set previd(value) {
-        this.xml.setAttribute('previd', value);
+        stanza.setAttribute(this.xml, 'previd', value);
     }
 };
 
@@ -15918,10 +16061,10 @@ Ack.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get h() {
-        return parseInt(this.xml.getAttribute('h') || '0', 10);
+        return parseInt(stanza.getAttribute(this.xml, 'h', '0'), 10);
     },
     set h(value) {
-        this.xml.setAttribute('h', '' + value);
+        stanza.setAttribute(this.xml, 'h', '' + value);
     }
 };
 
@@ -15961,7 +16104,7 @@ exports.Failed = Failed;
 exports.Ack = Ack;
 exports.Request = Request;
 
-},{"./streamFeatures":49,"jxt":60}],46:[function(require,module,exports){
+},{"./streamFeatures":54,"jxt":64}],51:[function(require,module,exports){
 var _ = require('lodash');
 var stanza = require('jxt');
 var Iq = require('./iq');
@@ -15980,12 +16123,11 @@ Roster.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get ver() {
-        return this.xml.getAttribute('ver') || '';
+        return stanza.getAttribute(this.xml, 'ver');
     },
     set ver(value) {
-        if (value) {
-            this.xml.setAttribute('ver', value);
-        }
+        var force = (value === '');
+        stanza.setAttribute(this.xml, 'ver', value, force);
     },
     get items() {
         var self = this;
@@ -15997,10 +16139,10 @@ Roster.prototype = {
         var results = [];
         _.each(items, function (item) {
             var data = {
-                jid: item.getAttribute('jid') || undefined,
-                _name: item.getAttribute('name') || undefined,
-                subscription: item.getAttribute('subscription') || 'none',
-                ask: item.getAttribute('ask') || undefined,
+                jid: stanza.getAttribute(item, 'jid', undefined),
+                _name: stanza.getAttribute(item, 'name', undefined),
+                subscription: stanza.getAttribute(item, 'subscription', 'none'),
+                ask: stanza.getAttribute(item, 'ask', undefined),
                 groups: []
             };
             var groups = stanza.find(item, self.NS, 'group');
@@ -16015,18 +16157,10 @@ Roster.prototype = {
         var self = this;
         _.each(values, function (value) {
             var item = document.createElementNS(self.NS, 'item');
-            if (value.jid) { 
-                item.setAttribute('jid', value.jid); 
-            }
-            if (value.name) { 
-                item.setAttribute('name', value.name); 
-            }
-            if (value.subscription) { 
-                item.setAttribute('subscription', value.subscription); 
-            }
-            if (value.ask) { 
-                item.setAttribute('ask', value.ask); 
-            }
+            stanza.setAttribute(item, 'jid', value.jid);
+            stanza.setAttribute(item, 'name', value.name);
+            stanza.setAttribute(item, 'subscription', value.subscription);
+            stanza.setAttribute(item, 'ask', value.ask);
             _.each(value.groups || [], function (name) {
                 var group = document.createElementNS(self.NS, 'group');
                 group.textContent = name;
@@ -16043,7 +16177,7 @@ stanza.extend(Iq, Roster);
 
 module.exports = Roster;
 
-},{"./iq":4,"lodash":53,"jxt":60}],47:[function(require,module,exports){
+},{"./iq":4,"lodash":58,"jxt":64}],52:[function(require,module,exports){
 var _ = require('lodash');
 var stanza = require('jxt');
 var Message = require('./message');
@@ -16122,22 +16256,22 @@ Error.prototype = {
         stanza.setSubText(this.xml, this._ERR_NS, 'redirect', value);
     },
     get code() {
-        return this.xml.getAttribute('code') || '';
+        return stanza.getAttribute(this.xml, 'code');
     },
     set code(value) {
-        this.xml.setAttribute('code', value);
+        stanza.setAttribute(this.xml, 'code', value);
     },
     get type() {
-        return this.xml.getAttribute('type') || '';
+        return stanza.getAttribute(this.xml, 'type');
     },
     set type(value) {
-        this.xml.setAttribute('type', value);
+        stanza.setAttribute(this.xml, 'type', value);
     },
     get by() {
-        return this.xml.getAttribute('by') || '';
+        return stanza.getAttribute(this.xml, 'by');
     },
     set by(value) {
-        this.xml.setAttribute('by', value);
+        stanza.setAttribute(this.xml, 'by', value);
     },
     get $text() {
         return stanza.getSubLangText(this.xml, this._ERR_NS, 'text', this.lang);
@@ -16158,7 +16292,7 @@ stanza.extend(Iq, Error);
 
 module.exports = Error;
 
-},{"./message":2,"./presence":3,"./iq":4,"lodash":53,"jxt":60}],48:[function(require,module,exports){
+},{"./message":2,"./presence":3,"./iq":4,"lodash":58,"jxt":64}],53:[function(require,module,exports){
 var _ = require('lodash');
 var stanza = require('jxt');
 
@@ -16243,7 +16377,7 @@ stanza.topLevel(StreamError);
 
 module.exports = StreamError;
 
-},{"lodash":53,"jxt":60}],49:[function(require,module,exports){
+},{"lodash":58,"jxt":64}],54:[function(require,module,exports){
 var stanza = require('jxt');
 
 
@@ -16270,7 +16404,7 @@ stanza.topLevel(StreamFeatures);
 
 module.exports = StreamFeatures;
 
-},{"jxt":60}],50:[function(require,module,exports){
+},{"jxt":64}],55:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var StreamFeatures = require('./streamFeatures');
@@ -16309,7 +16443,7 @@ stanza.extend(StreamFeatures, Bind);
 
 module.exports = Bind;
 
-},{"./iq":4,"./streamFeatures":49,"jxt":60}],51:[function(require,module,exports){
+},{"./iq":4,"./streamFeatures":54,"jxt":64}],56:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var StreamFeatures = require('./streamFeatures');
@@ -16336,7 +16470,7 @@ stanza.extend(Iq, Session);
 
 module.exports = Session;
 
-},{"./iq":4,"./streamFeatures":49,"jxt":60}],61:[function(require,module,exports){
+},{"./iq":4,"./streamFeatures":54,"jxt":64}],65:[function(require,module,exports){
 var _ = require('lodash');
 var stanza = require('jxt');
 var Iq = require('./iq');
@@ -16357,24 +16491,20 @@ DiscoInfo.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get node() {
-        return this.xml.getAttribute('node') || '';
+        return stanza.getAttribute(this.xml, 'node');
     },
     set node(value) {
-        if (!value) {
-            this.xml.removeAttribute('node');
-        } else {
-            this.xml.setAttribute('node', value);
-        }
+        stanza.setAttribute(this.xml, 'node', value);
     },
     get identities() {
         var result = [];
         var identities = stanza.find(this.xml, this.NS, 'identity');
         _.each(identities, function (identity) {
             result.push({
-                category: identity.getAttribute('category'),
-                type: identity.getAttribute('type'),
+                category: stanza.getAttribute(identity, 'category'),
+                type: stanza.getAttribute(identity, 'type'),
                 lang: identity.getAttributeNS(stanza.XML_NS, 'lang'),
-                _name: identity.getAttribute('name')
+                name: stanza.getAttribute(identity, 'name')
             });
         });
         return result;
@@ -16388,15 +16518,9 @@ DiscoInfo.prototype = {
         });
         _.each(values, function (value) {
             var identity = document.createElementNS(self.NS, 'identity');
-            if (value.category) {
-                identity.setAttribute('category', value.category);
-            }
-            if (value.type) {
-                identity.setAttribute('type', value.type);
-            }
-            if (value.name) {
-                identity.setAttribute('name', value.name);
-            }
+            stanza.setAttribute(identity, 'category', value.category);
+            stanza.setAttribute(identity, 'type', value.type);
+            stanza.setAttribute(identity, 'name', value.name);
             if (value.lang) {
                 identity.setAttributeNS(stanza.XML_NS, 'lang', value.lang);
             }
@@ -16464,19 +16588,19 @@ DiscoItems.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get node() {
-        return this.xml.getAttribute('node') || '';
+        return stanza.getAttribute(this.xml, 'node');
     },
     set node(value) {
-        this.xml.setAttribute('node', value);
+        stanza.setAttribute(this.xml, 'node', value);
     },
     get items() {
         var result = [];
         var items = stanza.find(this.xml, this.NS, 'item');
         _.each(items, function (item) {
             result.push({
-                jid: item.getAttribute('jid'),
-                node: item.getAttribute('node'),
-                _name: item.getAttribute('name')
+                jid: stanza.getAttribute(item, 'jid'),
+                node: stanza.getAttribute(item, 'node'),
+                name: stanza.getAttribute(item, 'name')
             });
         });
         return result;
@@ -16490,15 +16614,9 @@ DiscoItems.prototype = {
         });
         _.each(values, function (value) {
             var item = document.createElementNS(self.NS, 'item');
-            if (value.jid) {
-                item.setAttribute('jid', value.jid);
-            }
-            if (value.node) {
-                item.setAttribute('node', value.node);
-            }
-            if (value.name) {
-                item.setAttribute('name', value.name);
-            }
+            stanza.setAttribute(item, 'jid', value.jid);
+            stanza.setAttribute(item, 'node', value.node);
+            stanza.setAttribute(item, 'name', value.name);
             self.xml.appendChild(item);
         });
     }
@@ -16512,7 +16630,7 @@ stanza.extend(DiscoItems, RSM);
 exports.DiscoInfo = DiscoInfo;
 exports.DiscoItems = DiscoItems;
 
-},{"./iq":4,"./rsm":64,"./dataforms":65,"lodash":53,"jxt":60}],62:[function(require,module,exports){
+},{"./iq":4,"./rsm":68,"./dataforms":69,"lodash":58,"jxt":64}],66:[function(require,module,exports){
 var stanza = require('jxt');
 var Presence = require('./presence');
 var StreamFeatures = require('./streamFeatures');
@@ -16531,28 +16649,28 @@ Caps.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get ver() {
-        return this.xml.getAttribute('ver') || '';
+        return stanza.getAttribute(this.xml, 'ver');
     },
     set ver(value) {
-        this.xml.setAttribute('ver', value);
+        stanza.setAttribute(this.xml, 'ver', value);
     },
     get node() {
-        return this.xml.getAttribute('node') || '';
+        return stanza.getAttribute(this.xml, 'node');
     },
     set node(value) {
-        this.xml.setAttribute('node', value);
+        stanza.setAttribute(this.xml, 'node', value);
     },
     get hash() {
-        return this.xml.getAttribute('hash') || '';
+        return stanza.getAttribute(this.xml, 'hash');
     },
     set hash(value) {
-        this.xml.setAttribute('hash', value);
+        stanza.setAttribute(this.xml, 'hash', value);
     },
     get ext() {
-        return this.xml.getAttribute('ext') || '';
+        return stanza.getAttribute(this.xml, 'ext');
     },
     set ext(value) {
-        this.xml.setAttribute('ext', value);
+        stanza.setAttribute(this.xml, 'ext', value);
     }
 };
 
@@ -16563,40 +16681,7 @@ stanza.extend(StreamFeatures, Caps);
 
 module.exports = Caps;
 
-},{"./presence":3,"./streamFeatures":49,"jxt":60}],23:[function(require,module,exports){
-var stanza = require('jxt');
-var Message = require('./message');
-var Presence = require('./presence');
-var Iq = require('./iq');
-var DelayedDelivery = require('./delayed');
-
-
-function Forwarded(data, xml) {
-    return stanza.init(this, xml, data);
-}
-Forwarded.prototype = {
-    constructor: {
-        value: Forwarded 
-    },
-    NS: 'urn:xmpp:forward:0',
-    EL: 'forwarded',
-    _name: 'forwarded',
-    _eventname: 'forward',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON
-};
-
-
-stanza.extend(Message, Forwarded);
-stanza.extend(Forwarded, Message);
-stanza.extend(Forwarded, Presence);
-stanza.extend(Forwarded, Iq);
-stanza.extend(Forwarded, DelayedDelivery);
-
-
-module.exports = Forwarded;
-
-},{"./message":2,"./presence":3,"./iq":4,"./delayed":22,"jxt":60}],21:[function(require,module,exports){
+},{"./presence":3,"./streamFeatures":54,"jxt":64}],23:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -16714,7 +16799,7 @@ Message.prototype.__defineSetter__('chatState', function (value) {
     }
 });
 
-},{"./message":2,"jxt":60}],22:[function(require,module,exports){
+},{"./message":2,"jxt":64}],24:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -16733,16 +16818,16 @@ DelayedDelivery.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get from() {
-        return this.xml.getAttribute('from') || '';
+        return stanza.getAttribute(this.xml, 'from');
     },
     set from(value) {
-        this.xml.setAttribute('from', value);
+        stanza.setAttribute(this.xml, 'from', value);
     },
     get stamp() {
-        return new Date(this.xml.getAttribute('stamp') || '');
+        return new Date(stanza.getAttribute(this.xml, 'stamp'));
     },
     set stamp(value) {
-        this.xml.setAttribute('stamp', value.toISOString());
+        stanza.setAttribute(this.xml, 'stamp', value.toISOString());
     },
     get reason() {
         return this.xml.textContent || '';
@@ -16759,7 +16844,40 @@ stanza.extend(Presence, DelayedDelivery);
 
 module.exports = DelayedDelivery;
 
-},{"./message":2,"./presence":3,"jxt":60}],24:[function(require,module,exports){
+},{"./message":2,"./presence":3,"jxt":64}],25:[function(require,module,exports){
+var stanza = require('jxt');
+var Message = require('./message');
+var Presence = require('./presence');
+var Iq = require('./iq');
+var DelayedDelivery = require('./delayed');
+
+
+function Forwarded(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Forwarded.prototype = {
+    constructor: {
+        value: Forwarded 
+    },
+    NS: 'urn:xmpp:forward:0',
+    EL: 'forwarded',
+    _name: 'forwarded',
+    _eventname: 'forward',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON
+};
+
+
+stanza.extend(Message, Forwarded);
+stanza.extend(Forwarded, Message);
+stanza.extend(Forwarded, Presence);
+stanza.extend(Forwarded, Iq);
+stanza.extend(Forwarded, DelayedDelivery);
+
+
+module.exports = Forwarded;
+
+},{"./message":2,"./presence":3,"./iq":4,"./delayed":24,"jxt":64}],26:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Iq = require('./iq');
@@ -16859,7 +16977,119 @@ exports.Private = Private;
 exports.Enable = Enable;
 exports.Disable = Disable;
 
-},{"./message":2,"./iq":4,"./forwarded":23,"jxt":60}],25:[function(require,module,exports){
+},{"./message":2,"./iq":4,"./forwarded":25,"jxt":64}],28:[function(require,module,exports){
+var stanza = require('jxt');
+var Message = require('./message');
+var Iq = require('./iq');
+var Forwarded = require('./forwarded');
+var RSM = require('./rsm');
+
+
+function MAMQuery(data, xml) {
+    return stanza.init(this, xml, data);
+}
+MAMQuery.prototype = {
+    constructor: {
+        value: MAMQuery
+    },
+    NS: 'urn:xmpp:mam:tmp',
+    EL: 'query',
+    _name: 'mamQuery',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get queryid() {
+        return stanza.getAttribute(this.xml, 'queryid');
+    },
+    set queryid(value) {
+        stanza.setAttribute(this.xml, 'queryid', value);
+    },
+    get start() {
+        return new Date(stanza.getSubText(this.xml, this.NS, 'start') || '');
+    },
+    set start(value) {
+        stanza.setSubText(this.xml, this.NS, 'start', value.toISOString());
+    },
+    get end() {
+        return new Date(stanza.getSubText(this.xml, this.NS, 'end') || '');
+    },
+    set end(value) {
+        stanza.setSubText(this.xml, this.NS, 'end', value.toISOString());
+    }
+};
+MAMQuery.prototype.__defineGetter__('with', function () {
+    return stanza.getSubText(this.xml, this.NS, 'with');
+});
+MAMQuery.prototype.__defineSetter__('with', function (value) {
+    stanza.setSubText(this.xml, this.NS, 'with', value);
+});
+
+
+function Result(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Result.prototype = {
+    constructor: {
+        value: Result
+    },
+    NS: 'urn:xmpp:mam:tmp',
+    EL: 'result',
+    _name: 'mam',
+    _eventname: 'mam:result',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get queryid() {
+        return stanza.getAttribute(this.xml, 'queryid');
+    },
+    set queryid(value) {
+        stanza.setAttribute(this.xml, 'queryid', value);
+    },
+    get id() {
+        return stanza.getAttribute(this.xml, 'id');
+    },
+    set id(value) {
+        stanza.setAttribute(this.xml, 'id', value);
+    }
+};
+
+
+function Archived(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Archived.prototype = {
+    constructor: {
+        value: Result
+    },
+    NS: 'urn:xmpp:mam:tmp',
+    EL: 'archived',
+    _name: 'archived',
+    _eventname: 'mam:archived',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get by() {
+        return stanza.getAttribute(this.xml, 'by');
+    },
+    set by(value) {
+        stanza.setAttribute(this.xml, 'by', value);
+    },
+    get id() {
+        return stanza.getAttribute(this.xml, 'id');
+    },
+    set id(value) {
+        stanza.setAttribute(this.xml, 'id', value);
+    }
+};
+
+
+stanza.extend(Iq, MAMQuery);
+stanza.extend(Message, Result);
+stanza.extend(Message, Archived);
+stanza.extend(Result, Forwarded);
+stanza.extend(MAMQuery, RSM);
+
+exports.MAMQuery = MAMQuery;
+exports.Result = Result;
+
+},{"./message":2,"./iq":4,"./forwarded":25,"./rsm":68,"jxt":64}],27:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -16926,119 +17156,7 @@ stanza.extend(Iq, EntityTime);
 
 module.exports = EntityTime;
 
-},{"./iq":4,"jxt":60}],26:[function(require,module,exports){
-var stanza = require('jxt');
-var Message = require('./message');
-var Iq = require('./iq');
-var Forwarded = require('./forwarded');
-var RSM = require('./rsm');
-
-
-function MAMQuery(data, xml) {
-    return stanza.init(this, xml, data);
-}
-MAMQuery.prototype = {
-    constructor: {
-        value: MAMQuery
-    },
-    NS: 'urn:xmpp:mam:tmp',
-    EL: 'query',
-    _name: 'mamQuery',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get queryid() {
-        return this.xml.getAttribute('queryid') || '';
-    },
-    set queryid(value) {
-        this.xml.setAttribute('queryid', value);
-    },
-    get start() {
-        return new Date(stanza.getSubText(this.xml, this.NS, 'start') || '');
-    },
-    set start(value) {
-        stanza.setSubText(this.xml, this.NS, 'start', value.toISOString());
-    },
-    get end() {
-        return new Date(stanza.getSubText(this.xml, this.NS, 'end') || '');
-    },
-    set end(value) {
-        stanza.setSubText(this.xml, this.NS, 'end', value.toISOString());
-    }
-};
-MAMQuery.prototype.__defineGetter__('with', function () {
-    return stanza.getSubText(this.xml, this.NS, 'with');
-});
-MAMQuery.prototype.__defineSetter__('with', function (value) {
-    stanza.setSubText(this.xml, this.NS, 'with', value);
-});
-
-
-function Result(data, xml) {
-    return stanza.init(this, xml, data);
-}
-Result.prototype = {
-    constructor: {
-        value: Result
-    },
-    NS: 'urn:xmpp:mam:tmp',
-    EL: 'result',
-    _name: 'mam',
-    _eventname: 'mam:result',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get queryid() {
-        return this.xml.getAttribute('queryid') || '';
-    },
-    set queryid(value) {
-        this.xml.setAttribute('queryid', value);
-    },
-    get id() {
-        return this.xml.getAttribute('id') || '';
-    },
-    set id(value) {
-        this.xml.setAttribute('id', value);
-    }
-};
-
-
-function Archived(data, xml) {
-    return stanza.init(this, xml, data);
-}
-Archived.prototype = {
-    constructor: {
-        value: Result
-    },
-    NS: 'urn:xmpp:mam:tmp',
-    EL: 'archived',
-    _name: 'archived',
-    _eventname: 'mam:archived',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get by() {
-        return this.xml.getAttribute('queryid') || '';
-    },
-    set by(value) {
-        this.xml.setAttribute('queryid', value);
-    },
-    get id() {
-        return this.xml.getAttribute('id') || '';
-    },
-    set id(value) {
-        this.xml.setAttribute('id', value);
-    }
-};
-
-
-stanza.extend(Iq, MAMQuery);
-stanza.extend(Message, Result);
-stanza.extend(Message, Archived);
-stanza.extend(Result, Forwarded);
-stanza.extend(MAMQuery, RSM);
-
-exports.MAMQuery = MAMQuery;
-exports.Result = Result;
-
-},{"./message":2,"./iq":4,"./forwarded":23,"./rsm":64,"jxt":60}],27:[function(require,module,exports){
+},{"./iq":4,"jxt":64}],29:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -17071,10 +17189,10 @@ Received.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get id() {
-        return this.xml.getAttribute('id') || '';
+        return stanza.getAttribute(this.xml, 'id');
     },
     set id(value) {
-        this.xml.setAttribute('id', value);
+        stanza.setAttribute(this.xml, 'id', value);
     }
 };
 
@@ -17098,7 +17216,7 @@ stanza.extend(Message, Request);
 exports.Request = Request;
 exports.Received = Received;
 
-},{"./message":2,"jxt":60}],28:[function(require,module,exports){
+},{"./message":2,"jxt":64}],30:[function(require,module,exports){
 var stanza = require('jxt');
 var Presence = require('./presence');
 
@@ -17116,10 +17234,10 @@ Idle.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get since() {
-        return new Date(this.xml.getAttribute('since') || '');
+        return new Date(stanza.getAttribute(this.xml, 'since'));
     },
     set since(value) {
-        this.xml.setAttribute('since', value.toISOString());
+        stanza.setAttribute(this.xml, 'since', value.toISOString());
     }
 };
 
@@ -17129,7 +17247,7 @@ stanza.extend(Presence, Idle);
 
 module.exports = Idle;
 
-},{"./presence":3,"jxt":60}],29:[function(require,module,exports){
+},{"./presence":3,"jxt":64}],31:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -17147,10 +17265,10 @@ Replace.prototype = {
     toString: stanza.toString,
     toJSON: undefined,
     get id() {
-        return this.xml.getAttribute('id') || '';
+        return stanza.getAttribute(this.xml, 'id');
     },
     set id(value) {
-        this.xml.setAttribute('id', value);
+        stanza.setAttribute(this.xml, 'id', value);
     }
 };
 
@@ -17175,7 +17293,7 @@ Message.prototype.__defineSetter__('replace', function (value) {
 
 module.exports = Replace;
 
-},{"./message":2,"jxt":60}],30:[function(require,module,exports){
+},{"./message":2,"jxt":64}],32:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -17211,7 +17329,7 @@ stanza.extend(Message, Attention);
 
 module.exports = Attention;
 
-},{"./message":2,"jxt":60}],31:[function(require,module,exports){
+},{"./message":2,"jxt":64}],33:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -17254,7 +17372,7 @@ stanza.extend(Iq, Version);
 
 module.exports = Version;
 
-},{"./iq":4,"jxt":60}],32:[function(require,module,exports){
+},{"./iq":4,"jxt":64}],34:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -17322,7 +17440,7 @@ stanza.extend(Iq, Invisible);
 exports.Visible = Visible;
 exports.Invisible = Invisible;
 
-},{"./iq":4,"jxt":60}],33:[function(require,module,exports){
+},{"./iq":4,"jxt":64}],35:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -17406,7 +17524,548 @@ stanza.extend(Presence, MUCJoin);
 
 exports.MUCJoin = MUCJoin;
 
-},{"./message":2,"./presence":3,"./iq":4,"jxt":60}],60:[function(require,module,exports){
+},{"./message":2,"./presence":3,"./iq":4,"jxt":64}],36:[function(require,module,exports){
+var _ = require('lodash');
+var stanza = require('jxt');
+var Iq = require('./iq');
+var Message = require('./message');
+var Form = require('./dataforms').DataForm;
+var RSM = require('./rsm');
+
+
+function Pubsub(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Pubsub.prototype = {
+    constructor: {
+        value: Pubsub
+    },
+    _name: 'pubsub',
+    NS: 'http://jabber.org/protocol/pubsub',
+    EL: 'pubsub',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get publishOptions() {
+        var conf = stanza.find(this.xml, this.NS, 'publish-options');
+        if (conf.length && conf[0].childNodes.length) {
+            return new Form({}, conf[0].childNodes[0]);
+        }
+    },
+    set publishOptions(value) {
+        var conf = stanza.findOrCreate(this.xml, this.NS, 'publish-options');
+        if (value) {
+            var form = new Form(value);
+            conf.appendChild(form.xml);
+        }
+    }
+};
+
+
+function PubsubOwner(data, xml) {
+    return stanza.init(this, xml, data);
+}
+PubsubOwner.prototype = {
+    constructor: {
+        value: PubsubOwner
+    },
+    _name: 'pubsubOwner',
+    NS: 'http://jabber.org/protocol/pubsub#owner',
+    EL: 'pubsub',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get create() {
+        return stanza.getSubAttribute(this.xml, this.NS, 'create', 'node');
+    },
+    set create(value) {
+        stanza.setSubAttribute(this.xml, this.NS, 'create', 'node', value);
+    },
+    get purge() {
+        return stanza.getSubAttribute(this.xml, this.NS, 'purge', 'node');
+    },
+    set purge(value) {
+        stanza.setSubAttribute(this.xml, this.NS, 'purge', 'node', value);
+    },
+    get del() {
+        return stanza.getSubAttribute(this.xml, this.NS, 'delete', 'node');
+    },
+    set del(value) {
+        stanza.setSubAttribute(this.xml, this.NS, 'delete', 'node', value);
+    },
+    get redirect() {
+        var del = stanza.find(this.xml, this.NS, 'delete');
+        if (del.length) {
+            return stanza.getSubAttribute(del, this.NS, 'redirect', 'uri');
+        }
+        return '';
+    },
+    set redirect(value) {
+        var del = stanza.findOrCreate(this.xml, this.NS, 'delete');
+        stanza.setSubAttribute(del, this.NS, 'redirect', 'uri', value);
+    }
+};
+
+
+function Configure(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Configure.prototype = {
+    constructor: {
+        value: Configure
+    },
+    _name: 'config',
+    NS: 'http://jabber.org/protocol/pubsub#owner',
+    EL: 'configure',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get node() {
+        return stanza.getAttribute(this.xml, 'node');
+    },
+    set node(value) {
+        stanza.setAttribute(this.xml, 'node', value);
+    }
+};
+
+
+function Event(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Event.prototype = {
+    constructor: {
+        value: Event
+    },
+    _name: 'event',
+    NS: 'http://jabber.org/protocol/pubsub#event',
+    EL: 'event',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON
+};
+
+
+function Subscribe(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Subscribe.prototype = {
+    constructor: {
+        value: Subscribe
+    },
+    _name: 'subscribe',
+    NS: 'http://jabber.org/protocol/pubsub',
+    EL: 'subscribe',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get node() {
+        return stanza.getAttribute(this.xml, 'node');
+    },
+    set node(value) {
+        stanza.setAttribute(this.xml, 'node', value);
+    },
+    get jid() {
+        return stanza.getAttribute(this.xml, 'jid');
+    },
+    set jid(value) {
+        stanza.setAttribute(this.xml, 'jid', value);
+    }
+};
+
+
+function Subscription(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Subscription.prototype = {
+    constructor: {
+        value: Subscription
+    },
+    _name: 'subscription',
+    NS: 'http://jabber.org/protocol/pubsub',
+    EL: 'subscription',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get node() {
+        return stanza.getAttribute(this.xml, 'node');
+    },
+    set node(value) {
+        stanza.setAttribute(this.xml, 'node', value);
+    },
+    get jid() {
+        return stanza.getAttribute(this.xml, 'jid');
+    },
+    set jid(value) {
+        stanza.setAttribute(this.xml, 'jid', value);
+    },
+    get subid() {
+        return stanza.getAttribute(this.xml, 'subid');
+    },
+    set subid(value) {
+        stanza.setAttribute(this.xml, 'subid', value);
+    },
+    get type() {
+        return stanza.getAttribute(this.xml, 'subscription');
+    },
+    set type(value) {
+        stanza.setAttribute(this.xml, 'subscription', value);
+    }
+};
+
+
+function Unsubscribe(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Unsubscribe.prototype = {
+    constructor: {
+        value: Unsubscribe
+    },
+    _name: 'unsubscribe',
+    NS: 'http://jabber.org/protocol/pubsub',
+    EL: 'unsubscribe',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get node() {
+        return stanza.getAttribute(this.xml, 'node');
+    },
+    set node(value) {
+        stanza.setAttribute(this.xml, 'node', value);
+    },
+    get jid() {
+        return stanza.getAttribute(this.xml, 'jid');
+    },
+    set jid(value) {
+        stanza.setAttribute(this.xml, 'jid', value);
+    }
+};
+
+
+function Publish(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Publish.prototype = {
+    constructor: {
+        value: Publish
+    },
+    _name: 'publish',
+    NS: 'http://jabber.org/protocol/pubsub',
+    EL: 'publish',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get node() {
+        return stanza.getAttribute(this.xml, 'node');
+    },
+    set node(value) {
+        stanza.setAttribute(this.xml, 'node', value);
+    },
+    get item() {
+        var items = this.items;
+        if (items.length) {
+            return items[0];
+        }
+    },
+    set item(value) {
+        this.items = [value];
+    }
+};
+
+
+function Retract(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Retract.prototype = {
+    constructor: {
+        value: Retract 
+    },
+    _name: 'retract',
+    NS: 'http://jabber.org/protocol/pubsub',
+    EL: 'retract',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get node() {
+        return stanza.getAttribute(this.xml, 'node');
+    },
+    set node(value) {
+        stanza.setAttribute(this.xml, 'node', value);
+    },
+    get notify() {
+        var notify = stanza.getAttribute(this.xml, 'notify');
+        return notify === 'true' || notify === '1';
+    },
+    set notify(value) {
+        if (value) {
+            value = '1';
+        }
+        stanza.setAttribute(this.xml, 'notify', value);
+    },
+    get id() {
+        return stanza.getSubAttribute(this.xml, this.NS, 'item', 'id');
+    },
+    set id(value) {
+        stanza.setSubAttribute(this.xml, this.NS, 'item', 'id', value);
+    }
+};
+
+
+function Retrieve(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Retrieve.prototype = {
+    constructor: {
+        value: Retrieve
+    },
+    _name: 'retrieve',
+    NS: 'http://jabber.org/protocol/pubsub',
+    EL: 'items',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get node() {
+        return stanza.getAttribute(this.xml, 'node');
+    },
+    set node(value) {
+        stanza.setAttribute(this.xml, 'node', value);
+    },
+    get max() {
+        return stanza.getAttribute(this.xml, 'max_items');
+    },
+    set max(value) {
+        stanza.setAttribute(this.xml, 'max_items', value);
+    }
+};
+
+
+function Item(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Item.prototype = {
+    constructor: {
+        value: Item 
+    },
+    _name: 'item',
+    NS: 'http://jabber.org/protocol/pubsub',
+    EL: 'item',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get id() {
+        return stanza.getAttribute(this.xml, 'id');
+    },
+    set id(value) {
+        stanza.setAttribute(this.xml, 'id', value);
+    }
+};
+
+
+function EventItems(data, xml) {
+    return stanza.init(this, xml, data);
+}
+EventItems.prototype = {
+    constructor: {
+        value: EventItems
+    },
+    _name: 'updated',
+    NS: 'http://jabber.org/protocol/pubsub#event',
+    EL: 'items',
+    toString: stanza.toString,
+    toJSON: function () {
+        var json = stanza.toJSON.apply(this);
+        var items = [];
+        _.forEach(json.published, function (item) {
+            items.push(item.toJSON());
+        });
+        json.published = items;
+        return json;
+    },
+    get node() {
+        return stanza.getAttribute(this.xml, 'node');
+    },
+    set node(value) {
+        stanza.setAttribute(this.xml, 'node', value);
+    },
+    get published() {
+        var results = [];
+        var items = stanza.find(this.xml, this.NS, 'item');
+
+        _.forEach(items, function (xml) {
+            results.push(new EventItem({}, xml));
+        });
+        return results;
+    },
+    set published(value) {
+        var self = this;
+        _.forEach(value, function (data) {
+            var item = new EventItem(data);
+            this.xml.appendChild(item.xml);
+        });
+    },
+    get retracted() {
+        var results = [];
+        var retracted = stanza.find(this.xml, this.NS, 'retract');
+
+        _.forEach(retracted, function (xml) {
+            results.push(xml.getAttribute('id'));
+        });
+        return results;
+    },
+    set retracted(value) {
+        var self = this;
+        _.forEach(value, function (id) {
+            var retracted = document.createElementNS(self.NS, 'retract');
+            retracted.setAttribute('id', id);
+            this.xml.appendChild(retracted);
+        });
+    }
+};
+
+
+function EventItem(data, xml) {
+    return stanza.init(this, xml, data);
+}
+EventItem.prototype = {
+    constructor: {
+        value: EventItem
+    },
+    _name: 'eventItem',
+    NS: 'http://jabber.org/protocol/pubsub#event',
+    EL: 'item',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get id() {
+        return stanza.getAttribute(this.xml, 'id');
+    },
+    set id(value) {
+        stanza.setAttribute(this.xml, 'id', value);
+    },
+    get node() {
+        return stanza.getAttribute(this.xml, 'node');
+    },
+    set node(value) {
+        stanza.setAttribute(this.xml, 'node', value);
+    },
+    get publisher() {
+        return stanza.getAttribute(this.xml, 'publisher');
+    },
+    set publisher(value) {
+        stanza.setAttribute(this.xml, 'publisher', value);
+    }
+};
+
+
+stanza.extend(Pubsub, Subscribe);
+stanza.extend(Pubsub, Unsubscribe);
+stanza.extend(Pubsub, Publish);
+stanza.extend(Pubsub, Retrieve);
+stanza.extend(Pubsub, Subscription);
+stanza.extend(PubsubOwner, Configure);
+stanza.extend(Publish, Item);
+stanza.extend(Configure, Form);
+stanza.extend(Pubsub, RSM);
+stanza.extend(Event, EventItems);
+stanza.extend(Message, Event);
+stanza.extend(Iq, Pubsub);
+stanza.extend(Iq, PubsubOwner);
+
+exports.Pubsub = Pubsub;
+exports.Item = Item;
+exports.EventItem = EventItem;
+
+},{"./iq":4,"./message":2,"./dataforms":69,"./rsm":68,"lodash":58,"jxt":64}],37:[function(require,module,exports){
+var _ = require('lodash');
+var stanza = require('jxt');
+var Item = require('./pubsub').Item;
+var EventItem = require('./pubsub').EventItem;
+
+
+function getAvatarData() {
+    return stanza.getSubText(this.xml, 'urn:xmpp:avatar:data', 'data');
+}
+
+function setAvatarData(value) {
+    stanza.setSubText(this.xml, 'urn:xmpp:avatar:data', 'data', value);
+    stanza.setSubAttribute(this.xml, 'urn:xmpp:avatar:data', 'data', 'xmlns', 'urn:xmpp:avatar:data');
+}
+
+function getAvatars() {
+    var metadata = stanza.find(this.xml, 'urn:xmpp:avatar:metadata', 'metadata'); 
+    var results = [];
+    if (metadata.length) {
+        var avatars = stanza.find(metadata[0], 'urn:xmpp:avatar:metadata', 'info');
+        _.forEach(avatars, function (info) {
+            results.push(new Avatar({}, info));
+        });
+    }
+    return results;
+}
+
+function setAvatars(value) {
+    var metadata = stanza.findOrCreate(this.xml, 'urn:xmpp:avatar:metadata', 'metadata');
+    stanza.setAttribute(metadata, 'xmlns', 'urn:xmpp:avatar:metadata');
+    _.forEach(value, function (info) {
+        var avatar = new Avatar(info);
+        metadata.appendChild(avatar.xml);
+    });
+}
+
+
+Item.prototype.__defineGetter__('avatarData', getAvatarData);
+Item.prototype.__defineSetter__('avatarData', setAvatarData);
+EventItem.prototype.__defineGetter__('avatarData', getAvatarData);
+EventItem.prototype.__defineSetter__('avatarData', setAvatarData);
+
+Item.prototype.__defineGetter__('avatars', getAvatars);
+Item.prototype.__defineSetter__('avatars', setAvatars);
+EventItem.prototype.__defineGetter__('avatars', getAvatars);
+EventItem.prototype.__defineSetter__('avatars', setAvatars);
+
+
+
+function Avatar(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Avatar.prototype = {
+    constructor: {
+        value: Avatar
+    },
+    _name: 'avatars',
+    NS: 'urn:xmpp:avatar:metadata',
+    EL: 'info',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get id() {
+        return stanza.getAttribute(this.xml, 'id');
+    },
+    set id(value) {
+        stanza.setAttribute(this.xml, 'id', value);
+    },
+    get bytes() {
+        return stanza.getAttribute(this.xml, 'bytes');
+    },
+    set bytes(value) {
+        stanza.setAttribute(this.xml, 'bytes', value);
+    },
+    get height() {
+        return stanza.getAttribute(this.xml, 'height');
+    },
+    set height(value) {
+        stanza.setAttribute(this.xml, 'height', value);
+    },
+    get width() {
+        return stanza.getAttribute(this.xml, 'width');
+    },
+    set width(value) {
+        stanza.setAttribute(this.xml, 'width', value);
+    },
+    get type() {
+        return stanza.getAttribute(this.xml, 'type', 'image/png');
+    },
+    set type(value) {
+        stanza.setAttribute(this.xml, 'type', value);
+    },
+    get url() {
+        return stanza.getAttribute(this.xml, 'url');
+    },
+    set url(value) {
+        stanza.setAttribute(this.xml, 'url', value);
+    }
+};
+
+
+module.exports = Avatar;
+
+},{"./pubsub":36,"lodash":58,"jxt":64}],64:[function(require,module,exports){
 var _ = require('lodash');
 var serializer = new XMLSerializer();
 var XML_NS = 'http://www.w3.org/XML/1998/namespace';
@@ -17422,9 +18081,22 @@ var find = exports.find = function (xml, NS, selector) {
     });
 };
 
+exports.findOrCreate = function (xml, NS, selector) {
+    var existing = find(xml, NS, selector);
+    if (existing.length) {
+        return existing[0];
+    } else {
+        var created = document.createElementNS(NS, selector);
+        xml.appendChild(created);
+        return created;
+    }
+};
+
 exports.init = function (self, xml, data) {
     self.xml = xml || document.createElementNS(self.NS, self.EL);
-    self.xml.setAttribute('xmlns', self.NS);
+    if (!self.xml.parentNode || self.xml.parentNode.namespaceURI !== self.NS) {
+        self.xml.setAttribute('xmlns', self.NS);
+    }
 
     self._extensions = {};
     _.each(self.xml.childNodes, function (child) {
@@ -17574,9 +18246,22 @@ exports.getAttribute = function (xml, attr, defaultVal) {
     return xml.getAttribute(attr) || defaultVal || '';
 };
 
-exports.setAttribute = function (xml, attr, value) {
-    if (value) {
+exports.setAttribute = function (xml, attr, value, force) {
+    if (value || force) {
         xml.setAttribute(attr, value);
+    } else {
+        xml.removeAttribute(attr);
+    }
+};
+
+exports.getBoolAttribute = function (xml, attr, defaultVal) {
+    var val = xml.getAttribute(attr) || defaultVal || '';
+    return val === 'true' || val === '1';
+};
+
+exports.setBoolAttribute = function (xml, attr, value) {
+    if (value) {
+        xml.setAttribute(attr, '1');
     } else {
         xml.removeAttribute(attr);
     }
@@ -17644,9 +18329,19 @@ exports.toJSON = function () {
         }
     }
     for (prop in this) {
-        if (!exclude[prop] && !LOOKUP_EXT[prop] && !this._extensions[prop] && prop[0] !== '_') {
+        if (!exclude[prop] && !((LOOKUP_EXT[this.NS + '|' + this.EL] || {})[prop]) && !this._extensions[prop] && prop[0] !== '_') {
             var val = this[prop];
-            if (typeof val != 'function' && ((typeof val == 'object' && Object.keys(val).length > 0) || !!val)) {
+            if (typeof val == 'function') continue;
+            var type = Object.prototype.toString.call(val);
+            if (type.indexOf('Object') >= 0) {
+                if (Object.keys(val).length > 0) {
+                    result[prop] = val;
+                }
+            } else if (type.indexOf('Array') >= 0) {
+                if (val.length > 0) {
+                    result[prop] = val;
+                }
+            } else if (!!val) {
                 result[prop] = val;
             }
         }
@@ -17655,11 +18350,18 @@ exports.toJSON = function () {
 };
 
 exports.extend = function (ParentJXT, ChildJXT) {
+    var parentName = ParentJXT.prototype.NS + '|' + ParentJXT.prototype.EL;
     var name = ChildJXT.prototype._name;
     var qName = ChildJXT.prototype.NS + '|' + ChildJXT.prototype.EL;
 
     LOOKUP[qName] = ChildJXT;
-    LOOKUP_EXT[name] = ChildJXT;
+    if (!LOOKUP_EXT[qName]) {
+        LOOKUP_EXT[qName] = {};
+    }
+    if (!LOOKUP_EXT[parentName]) {
+        LOOKUP_EXT[parentName] = {};
+    }
+    LOOKUP_EXT[parentName][name] = ChildJXT;
 
     ParentJXT.prototype.__defineGetter__(name, function () {
         if (!this._extensions[name]) {
@@ -17698,7 +18400,7 @@ exports.TOP_LEVEL_LOOKUP = TOP_LEVEL_LOOKUP;
 exports.LOOKUP_EXT = LOOKUP_EXT;
 exports.LOOKUP = LOOKUP;
 
-},{"lodash":53}],64:[function(require,module,exports){
+},{"lodash":58}],68:[function(require,module,exports){
 var stanza = require('jxt');
 
 
@@ -17767,7 +18469,7 @@ RSM.prototype = {
 
 module.exports = RSM;
 
-},{"jxt":60}],65:[function(require,module,exports){
+},{"jxt":64}],69:[function(require,module,exports){
 var _ = require('lodash');
 var stanza = require('jxt');
 var Message = require('./message');
@@ -17798,10 +18500,10 @@ DataForm.prototype = {
         stanza.setMultiSubText(this.xml, this.NS, 'title', value.split('\n'));
     },
     get type() {
-        return this.xml.getAttribute('type') || 'form';
+        return stanza.getAttribute(this.xml, 'type', 'form');
     },
     set type(value) {
-        this.xml.setAttribute('type', value);
+        stanza.setAttribute(this.xml, 'type', value);
     },
     get fields() {
         var fields = stanza.find(this.xml, this.NS, 'field');
@@ -17839,17 +18541,17 @@ Field.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get type() {
-        return this.xml.getAttribute('type') || 'text-single';
+        return stanza.getAttribute(this.xml, 'type', 'text-single');
     },
     set type(value) {
         this._type = value;
-        this.xml.setAttribute('type', value);
+        stanza.setAttribute(this.xml, 'type', value);
     },
     get name() {
-        return this.xml.getAttribute('var') || '';
+        return stanza.getAttribute(this.xml, 'var');
     },
     set name(value) {
-        this.xml.setAttribute('var', value);
+        stanza.setAttribute(this.xml, 'var', value);
     },
     get desc() {
         return stanza.getSubText(this.xml, this.NS, 'desc');
@@ -17896,10 +18598,10 @@ Field.prototype = {
         }
     },
     get label() {
-        return this.xml.getAttribute('label') || '';
+        return stanza.getAttribute(this.xml, 'label');
     },
     set label(value) {
-        this.xml.setAttribute('label', value);
+        stanza.setAttribute(this.xml, 'label', value);
     },
     get options() {
         var self = this;
@@ -17927,6 +18629,6 @@ stanza.extend(Message, DataForm);
 exports.DataForm = DataForm;
 exports.Field = Field;
 
-},{"./message":2,"lodash":53,"jxt":60}]},{},[1])(1)
+},{"./message":2,"lodash":58,"jxt":64}]},{},[1])(1)
 });
 ;
