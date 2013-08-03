@@ -77,10 +77,9 @@
     <div id="settings">
       <h1>Connection Settings</h1>
       <form id="loginInfo">
-        <label>Server: <input id="server" type="text" name="server" value="lance.im"/></label>
-        <label>Username: <input id="username" type="text" name="username" /></label>
+        <label>JID: <input id="jid" type="text" name="jid" value="stanzaio@lance.im"/></label>
         <label>Password: <input id="password" type="password" name="password" /></label>
-        <label>WebSocket URL: <input id="wsURL" type="text" name="wsURL" value="wss://lance.im:5281/xmpp-websocket" /></label>
+        <label>WebSocket URL: <input id="wsURL" type="text" name="wsURL" value="" /></label>
         <input id="connect" type="submit" value="Connect" />
       </form>
     </div>
@@ -117,20 +116,18 @@
 
 
 
-
-
-
-
-
-
       var client;
       var loginInfo = document.getElementById('loginInfo');
       loginInfo.onsubmit = function (e) {
         if (e.preventDefault) e.preventDefault();
 
+        var jid = document.getElementById('jid').value;
+        var username = jid.slice(0, jid.indexOf('@'));
+        var server = jid.slice(jid.indexOf('@') + 1);
+
         client = XMPP.createClient({
-          server: document.getElementById('server').value,
-          username: document.getElementById('username').value,
+          server: server,
+          username: username,
           password: document.getElementById('password').value,
           wsURL: document.getElementById('wsURL').value
         });
@@ -145,6 +142,7 @@
         });
 
         client.connect();
+
         return false;
       };
     </script>

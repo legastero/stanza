@@ -1,6 +1,6 @@
 {
   "name": "stanza.io",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "XMPP + WebSocket",
   "browserify": "index.js",
   "dependencies": {
@@ -8,12 +8,13 @@
       "wildemitter": "0.0.5",
       "node-uuid": "1.4.0",
       "jxt": "0.0.7",
-      "sdp": "0.0.2"
+      "sdp": "0.0.2",
+      "hostmeta": "0.1.0"
   },
   "devDependencies": {
       "precommit-hook": "0.3.5",
       "uglify-js": "2.3.6",
-      "browserify": "2.18.1"
+      "browserify": "2.25.1"
   },
   "repository": {
     "type": "git",
