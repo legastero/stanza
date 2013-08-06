@@ -5,6 +5,7 @@ exports.Presence = require('./lib/stanza/presence');
 exports.Iq = require('./lib/stanza/iq');
 
 exports.Client = require('./lib/client');
+exports.crypto = require('crypto');
 
 exports.createClient = function (opts) {
     var client = new exports.Client(opts);
@@ -30,7 +31,7 @@ exports.createClient = function (opts) {
     return client;
 };
 
-},{"./lib/client":2,"./lib/plugins/attention":3,"./lib/plugins/avatar":4,"./lib/plugins/carbons":5,"./lib/plugins/chatstates":6,"./lib/plugins/correction":7,"./lib/plugins/delayed":8,"./lib/plugins/disco":9,"./lib/plugins/forwarding":10,"./lib/plugins/idle":11,"./lib/plugins/invisible":12,"./lib/plugins/mam":13,"./lib/plugins/muc":14,"./lib/plugins/pubsub":15,"./lib/plugins/receipts":16,"./lib/plugins/time":17,"./lib/plugins/version":18,"./lib/plugins/webrtc":19,"./lib/stanza/iq":33,"./lib/stanza/message":35,"./lib/stanza/presence":37}],2:[function(require,module,exports){
+},{"./lib/client":2,"./lib/plugins/attention":3,"./lib/plugins/avatar":4,"./lib/plugins/carbons":5,"./lib/plugins/chatstates":6,"./lib/plugins/correction":7,"./lib/plugins/delayed":8,"./lib/plugins/disco":9,"./lib/plugins/forwarding":10,"./lib/plugins/idle":11,"./lib/plugins/invisible":12,"./lib/plugins/mam":13,"./lib/plugins/muc":14,"./lib/plugins/pubsub":15,"./lib/plugins/receipts":16,"./lib/plugins/time":17,"./lib/plugins/version":18,"./lib/plugins/webrtc":19,"./lib/stanza/iq":33,"./lib/stanza/message":35,"./lib/stanza/presence":37,"crypto":60}],2:[function(require,module,exports){
 (function(){var WildEmitter = require('wildemitter');
 var _ = require('../vendor/lodash');
 var async = require('async');
@@ -41,6 +42,13 @@ var Presence = require('./stanza/presence');
 var Iq = require('./stanza/iq');
 var WSConnection = require('./websocket');
 var getHostMeta = require('hostmeta');
+var SASLFactory = require('saslmechanisms');
+
+SASLFactory = new SASLFactory();
+SASLFactory.use(require('sasl-external'));
+SASLFactory.use(require('sasl-digest-md5'));
+SASLFactory.use(require('sasl-plain'));
+SASLFactory.use(require('sasl-anonymous'));
 
 
 // Ensure that all basic stanza relationships are established
@@ -85,7 +93,7 @@ function Client(opts) {
         self.featureOrder.forEach(function (name) {
             if (features._extensions[name] && !self.negotiatedFeatures[name]) {
                 series.push(function (features, cb) {
-                    if (!self.negotiatedFeatures[name]) {
+                    if (!self.negotiatedFeatures[name] && self.features[name]) {
                         self.features[name](features, cb);
                     } else {
                         cb(null, features);
@@ -105,11 +113,21 @@ function Client(opts) {
     });
 
     this.features.sasl = function (features, cb) {
+        var mech = SASLFactory.create(features.sasl.mechanisms);
+
         self.on('sasl:success', 'sasl', function () {
             self.negotiatedFeatures.sasl = true;
             self.releaseGroup('sasl');
             self.emit('auth:success');
             cb('restart');
+        });
+        self.on('sasl:challenge', 'sasl', function (challenge) {
+            mech = mech.challenge(challenge.value);
+            var val = mech.response(self.getCredentials());
+            console.log(val);
+            self.send(new SASL.Response({
+                value: val
+            }));
         });
         self.on('sasl:failure', 'sasl', function () {
             self.releaseGroup('sasl');
@@ -121,12 +139,15 @@ function Client(opts) {
             self.emit('auth:failed');
             cb('disconnect');
         });
-   
-        // Needs to extract mechs and pick the best one, but we need mech implementations first.
-        self.send(new SASL.Auth({
-            mechanism: 'PLAIN',
-            value: '\x00' + self.config.username + '\x00' + self.config.password
-        }));
+
+        var auth = {
+            mechanism: mech.name
+        };
+
+        if (mech.clientFirst) {
+            auth.value = mech.response(self.getCredentials());
+        }
+        self.send(new SASL.Auth(auth));
     };
 
     this.features.bind = function (features, cb) {
@@ -322,7 +343,7 @@ Client.prototype.discoverBindings = function (server, cb) {
         var results = [];
         var links = data.links || [];
 
-        _.each(links, function (link) {
+        links.forEach(function (link) {
             if (link.href && link.rel === 'urn:xmpp:altconnect:websocket') {
                 results.push(link.href);
             }
@@ -330,6 +351,26 @@ Client.prototype.discoverBindings = function (server, cb) {
 
         cb(false, results);
     });
+};
+
+Client.prototype.getCredentials = function () {
+    var creds = this.config.credentials || {};
+    var requestedJID = this.config.jid;
+
+    var username = creds.username || requestedJID.slice(0, requestedJID.indexOf('@'));
+    var server = creds.server || requestedJID.slice(requestedJID.indexOf('@') + 1);
+
+    var defaultCreds = {
+        username: username,
+        password: this.config.password,
+        server: server,
+        host: server,
+        realm: server,
+        serviceType: 'xmpp',
+        serviceName: server
+    };
+
+    return _.extend(defaultCreds, creds);
 };
 
 Client.prototype.connect = function () {
@@ -455,7 +496,7 @@ Client.prototype.denySubscription = function (jid) {
 module.exports = Client;
 
 })()
-},{"../vendor/lodash":77,"./stanza/bind":23,"./stanza/error":30,"./stanza/iq":33,"./stanza/message":35,"./stanza/presence":37,"./stanza/roster":41,"./stanza/sasl":43,"./stanza/session":44,"./stanza/sm":45,"./stanza/stream":46,"./stanza/streamError":47,"./stanza/streamFeatures":48,"./websocket":52,"async":53,"hostmeta":66,"node-uuid":75,"wildemitter":76}],3:[function(require,module,exports){
+},{"../vendor/lodash":88,"./stanza/bind":23,"./stanza/error":30,"./stanza/iq":33,"./stanza/message":35,"./stanza/presence":37,"./stanza/roster":41,"./stanza/sasl":43,"./stanza/session":44,"./stanza/sm":45,"./stanza/stream":46,"./stanza/streamError":47,"./stanza/streamFeatures":48,"./websocket":52,"async":53,"hostmeta":67,"node-uuid":76,"sasl-anonymous":78,"sasl-digest-md5":80,"sasl-external":82,"sasl-plain":84,"saslmechanisms":86,"wildemitter":87}],3:[function(require,module,exports){
 require('../stanza/attention');
 
 
@@ -810,7 +851,7 @@ module.exports = function (client) {
 };
 
 })()
-},{"../../vendor/lodash":77,"../stanza/caps":24,"../stanza/disco":29,"crypto":60}],10:[function(require,module,exports){
+},{"../../vendor/lodash":88,"../stanza/caps":24,"../stanza/disco":29,"crypto":60}],10:[function(require,module,exports){
 var stanzas = require('../stanza/forwarded');
 
 
@@ -1490,7 +1531,7 @@ module.exports = function (client) {
     client.webrtc = new WebRTC(client);
 };
 
-},{"node-uuid":75}],20:[function(require,module,exports){
+},{"node-uuid":76}],20:[function(require,module,exports){
 (function(){var SM = require('./stanza/sm');
 var MAX_SEQ = Math.pow(2, 32);
 
@@ -1635,7 +1676,7 @@ stanza.extend(Message, Attention);
 
 module.exports = Attention;
 
-},{"./message":35,"jxt":73}],22:[function(require,module,exports){
+},{"./message":35,"jxt":74}],22:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 var Item = require('./pubsub').Item;
@@ -1738,7 +1779,7 @@ Avatar.prototype = {
 
 module.exports = Avatar;
 
-},{"../../vendor/lodash":77,"./pubsub":38,"jxt":73}],23:[function(require,module,exports){
+},{"../../vendor/lodash":88,"./pubsub":38,"jxt":74}],23:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var StreamFeatures = require('./streamFeatures');
@@ -1777,7 +1818,7 @@ stanza.extend(StreamFeatures, Bind);
 
 module.exports = Bind;
 
-},{"./iq":33,"./streamFeatures":48,"jxt":73}],24:[function(require,module,exports){
+},{"./iq":33,"./streamFeatures":48,"jxt":74}],24:[function(require,module,exports){
 var stanza = require('jxt');
 var Presence = require('./presence');
 var StreamFeatures = require('./streamFeatures');
@@ -1828,7 +1869,7 @@ stanza.extend(StreamFeatures, Caps);
 
 module.exports = Caps;
 
-},{"./presence":37,"./streamFeatures":48,"jxt":73}],25:[function(require,module,exports){
+},{"./presence":37,"./streamFeatures":48,"jxt":74}],25:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Iq = require('./iq');
@@ -1928,7 +1969,7 @@ exports.Private = Private;
 exports.Enable = Enable;
 exports.Disable = Disable;
 
-},{"./forwarded":31,"./iq":33,"./message":35,"jxt":73}],26:[function(require,module,exports){
+},{"./forwarded":31,"./iq":33,"./message":35,"jxt":74}],26:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -2046,7 +2087,7 @@ Message.prototype.__defineSetter__('chatState', function (value) {
     }
 });
 
-},{"./message":35,"jxt":73}],27:[function(require,module,exports){
+},{"./message":35,"jxt":74}],27:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 var Message = require('./message');
@@ -2206,7 +2247,7 @@ stanza.extend(Message, DataForm);
 exports.DataForm = DataForm;
 exports.Field = Field;
 
-},{"../../vendor/lodash":77,"./message":35,"jxt":73}],28:[function(require,module,exports){
+},{"../../vendor/lodash":88,"./message":35,"jxt":74}],28:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -2251,7 +2292,7 @@ stanza.extend(Presence, DelayedDelivery);
 
 module.exports = DelayedDelivery;
 
-},{"./message":35,"./presence":37,"jxt":73}],29:[function(require,module,exports){
+},{"./message":35,"./presence":37,"jxt":74}],29:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 var Iq = require('./iq');
@@ -2411,7 +2452,7 @@ stanza.extend(DiscoItems, RSM);
 exports.DiscoInfo = DiscoInfo;
 exports.DiscoItems = DiscoItems;
 
-},{"../../vendor/lodash":77,"./dataforms":27,"./iq":33,"./rsm":42,"jxt":73}],30:[function(require,module,exports){
+},{"../../vendor/lodash":88,"./dataforms":27,"./iq":33,"./rsm":42,"jxt":74}],30:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 var Message = require('./message');
@@ -2526,7 +2567,7 @@ stanza.extend(Iq, Error);
 
 module.exports = Error;
 
-},{"../../vendor/lodash":77,"./iq":33,"./message":35,"./presence":37,"jxt":73}],31:[function(require,module,exports){
+},{"../../vendor/lodash":88,"./iq":33,"./message":35,"./presence":37,"jxt":74}],31:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -2559,7 +2600,7 @@ stanza.extend(Forwarded, DelayedDelivery);
 
 module.exports = Forwarded;
 
-},{"./delayed":28,"./iq":33,"./message":35,"./presence":37,"jxt":73}],32:[function(require,module,exports){
+},{"./delayed":28,"./iq":33,"./message":35,"./presence":37,"jxt":74}],32:[function(require,module,exports){
 var stanza = require('jxt');
 var Presence = require('./presence');
 
@@ -2590,7 +2631,7 @@ stanza.extend(Presence, Idle);
 
 module.exports = Idle;
 
-},{"./presence":37,"jxt":73}],33:[function(require,module,exports){
+},{"./presence":37,"jxt":74}],33:[function(require,module,exports){
 var stanza = require('jxt');
 
 
@@ -2655,7 +2696,7 @@ stanza.topLevel(Iq);
 
 module.exports = Iq;
 
-},{"jxt":73}],34:[function(require,module,exports){
+},{"jxt":74}],34:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Iq = require('./iq');
@@ -2767,7 +2808,7 @@ stanza.extend(MAMQuery, RSM);
 exports.MAMQuery = MAMQuery;
 exports.Result = Result;
 
-},{"./forwarded":31,"./iq":33,"./message":35,"./rsm":42,"jxt":73}],35:[function(require,module,exports){
+},{"./forwarded":31,"./iq":33,"./message":35,"./rsm":42,"jxt":74}],35:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 
@@ -2843,7 +2884,7 @@ stanza.topLevel(Message);
 
 module.exports = Message;
 
-},{"../../vendor/lodash":77,"jxt":73}],36:[function(require,module,exports){
+},{"../../vendor/lodash":88,"jxt":74}],36:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -2927,7 +2968,7 @@ stanza.extend(Presence, MUCJoin);
 
 exports.MUCJoin = MUCJoin;
 
-},{"./iq":33,"./message":35,"./presence":37,"jxt":73}],37:[function(require,module,exports){
+},{"./iq":33,"./message":35,"./presence":37,"jxt":74}],37:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 
@@ -3006,7 +3047,7 @@ stanza.topLevel(Presence);
 
 module.exports = Presence;
 
-},{"../../vendor/lodash":77,"jxt":73}],38:[function(require,module,exports){
+},{"../../vendor/lodash":88,"jxt":74}],38:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 var Iq = require('./iq');
@@ -3444,7 +3485,7 @@ exports.Pubsub = Pubsub;
 exports.Item = Item;
 exports.EventItem = EventItem;
 
-},{"../../vendor/lodash":77,"./dataforms":27,"./iq":33,"./message":35,"./rsm":42,"jxt":73}],39:[function(require,module,exports){
+},{"../../vendor/lodash":88,"./dataforms":27,"./iq":33,"./message":35,"./rsm":42,"jxt":74}],39:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -3504,7 +3545,7 @@ stanza.extend(Message, Request);
 exports.Request = Request;
 exports.Received = Received;
 
-},{"./message":35,"jxt":73}],40:[function(require,module,exports){
+},{"./message":35,"jxt":74}],40:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -3550,7 +3591,7 @@ Message.prototype.__defineSetter__('replace', function (value) {
 
 module.exports = Replace;
 
-},{"./message":35,"jxt":73}],41:[function(require,module,exports){
+},{"./message":35,"jxt":74}],41:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 var Iq = require('./iq');
@@ -3623,7 +3664,7 @@ stanza.extend(Iq, Roster);
 
 module.exports = Roster;
 
-},{"../../vendor/lodash":77,"./iq":33,"jxt":73}],42:[function(require,module,exports){
+},{"../../vendor/lodash":88,"./iq":33,"jxt":74}],42:[function(require,module,exports){
 var stanza = require('jxt');
 
 
@@ -3692,7 +3733,7 @@ RSM.prototype = {
 
 module.exports = RSM;
 
-},{"jxt":73}],43:[function(require,module,exports){
+},{"jxt":74}],43:[function(require,module,exports){
 var stanza = require('jxt');
 var _ = require('../../vendor/lodash');
 var StreamFeatures = require('./streamFeatures');
@@ -3752,7 +3793,10 @@ Auth.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get value() {
-        return atob(this.xml.textContent);
+        if (this.xml.textContent && this.xml.textContent != '=') {
+            return atob(this.xml.textContent);
+        }
+        return '';
     },
     set value(value) {
         this.xml.textContent = btoa(value) || '=';
@@ -3780,7 +3824,10 @@ Challenge.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get value() {
-        return atob(this.xml.textContent);
+        if (this.xml.textContent && this.xml.textContent != '=') {
+            return atob(this.xml.textContent);
+        }
+        return '';
     },
     set value(value) {
         this.xml.textContent = btoa(value) || '=';
@@ -3802,7 +3849,10 @@ Response.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get value() {
-        return atob(this.xml.textContent);
+        if (this.xml.textContent && this.xml.textContent != '=') {
+            return atob(this.xml.textContent);
+        }
+        return '';
     },
     set value(value) {
         this.xml.textContent = btoa(value) || '=';
@@ -3824,7 +3874,10 @@ Success.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get value() {
-        return atob(this.xml.textContent);
+        if (this.xml.textContent && this.xml.textContent != '=') {
+            return atob(this.xml.textContent);
+        }
+        return '';
     },
     set value(value) {
         this.xml.textContent = btoa(value) || '=';
@@ -3929,7 +3982,7 @@ exports.Success = Success;
 exports.Failure = Failure;
 exports.Abort = Abort;
 
-},{"../../vendor/lodash":77,"./streamFeatures":48,"jxt":73}],44:[function(require,module,exports){
+},{"../../vendor/lodash":88,"./streamFeatures":48,"jxt":74}],44:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var StreamFeatures = require('./streamFeatures');
@@ -3956,7 +4009,7 @@ stanza.extend(Iq, Session);
 
 module.exports = Session;
 
-},{"./iq":33,"./streamFeatures":48,"jxt":73}],45:[function(require,module,exports){
+},{"./iq":33,"./streamFeatures":48,"jxt":74}],45:[function(require,module,exports){
 var stanza = require('jxt');
 var StreamFeatures = require('./streamFeatures');
 
@@ -4155,7 +4208,7 @@ exports.Failed = Failed;
 exports.Ack = Ack;
 exports.Request = Request;
 
-},{"./streamFeatures":48,"jxt":73}],46:[function(require,module,exports){
+},{"./streamFeatures":48,"jxt":74}],46:[function(require,module,exports){
 var stanza = require('jxt');
 
 
@@ -4205,7 +4258,7 @@ Stream.prototype = {
 
 module.exports = Stream;
 
-},{"jxt":73}],47:[function(require,module,exports){
+},{"jxt":74}],47:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 
@@ -4290,7 +4343,7 @@ stanza.topLevel(StreamError);
 
 module.exports = StreamError;
 
-},{"../../vendor/lodash":77,"jxt":73}],48:[function(require,module,exports){
+},{"../../vendor/lodash":88,"jxt":74}],48:[function(require,module,exports){
 var stanza = require('jxt');
 
 
@@ -4317,7 +4370,7 @@ stanza.topLevel(StreamFeatures);
 
 module.exports = StreamFeatures;
 
-},{"jxt":73}],49:[function(require,module,exports){
+},{"jxt":74}],49:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -4384,7 +4437,7 @@ stanza.extend(Iq, EntityTime);
 
 module.exports = EntityTime;
 
-},{"./iq":33,"jxt":73}],50:[function(require,module,exports){
+},{"./iq":33,"jxt":74}],50:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -4427,7 +4480,7 @@ stanza.extend(Iq, Version);
 
 module.exports = Version;
 
-},{"./iq":33,"jxt":73}],51:[function(require,module,exports){
+},{"./iq":33,"jxt":74}],51:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -4495,7 +4548,7 @@ stanza.extend(Iq, Invisible);
 exports.Visible = Visible;
 exports.Invisible = Invisible;
 
-},{"./iq":33,"jxt":73}],52:[function(require,module,exports){
+},{"./iq":33,"jxt":74}],52:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 var _ = require('../vendor/lodash');
 var async = require('async');
@@ -4674,7 +4727,7 @@ WSConnection.prototype.send = function (data) {
 
 module.exports = WSConnection;
 
-},{"../vendor/lodash":77,"./sm":20,"./stanza/iq":33,"./stanza/message":35,"./stanza/presence":37,"./stanza/stream":46,"async":53,"node-uuid":75,"wildemitter":76}],53:[function(require,module,exports){
+},{"../vendor/lodash":88,"./sm":20,"./stanza/iq":33,"./stanza/message":35,"./stanza/presence":37,"./stanza/stream":46,"async":53,"node-uuid":76,"wildemitter":87}],53:[function(require,module,exports){
 (function(process){/*global setImmediate: false, setTimeout: false, console: false */
 (function () {
 
@@ -4693,10 +4746,10 @@ module.exports = WSConnection;
         return async;
     };
 
-    function only_once(fn) {
+    function only_once(fn, name) {
         var called = false;
         return function() {
-            if (called) throw new Error("Callback was already called.");
+            if (called) throw new Error("Callback was already called: " + name);
             called = true;
             fn.apply(root, arguments);
         }
@@ -4793,7 +4846,7 @@ module.exports = WSConnection;
                         callback(null);
                     }
                 }
-            }));
+            }, '_each'));
         });
     };
     async.forEach = async.each;
@@ -5401,7 +5454,7 @@ module.exports = WSConnection;
                         }
                         q.process();
                     };
-                    var cb = only_once(next);
+                    var cb = only_once(next, 'queue_next');
                     worker(task.data, cb);
                 }
             },
@@ -5632,7 +5685,7 @@ module.exports = WSConnection;
 }());
 
 })(require("__browserify_process"))
-},{"__browserify_process":65}],54:[function(require,module,exports){
+},{"__browserify_process":66}],54:[function(require,module,exports){
 (function(){// UTILITY
 var util = require('util');
 var Buffer = require("buffer").Buffer;
@@ -6135,7 +6188,7 @@ EventEmitter.prototype.listeners = function(type) {
 };
 
 })(require("__browserify_process"))
-},{"__browserify_process":65}],56:[function(require,module,exports){
+},{"__browserify_process":66}],56:[function(require,module,exports){
 var events = require('events');
 
 exports.isArray = isArray;
@@ -7747,21 +7800,46 @@ Buffer.prototype.writeDoubleBE = function(value, offset, noAssert) {
 },{}],60:[function(require,module,exports){
 (function(){var Buffer = require('buffer').Buffer
 var sha = require('./sha')
+var sha256 = require('./sha256')
 var rng = require('./rng')
 var md5 = require('./md5')
 
 var algorithms = {
   sha1: {
     hex: sha.hex_sha1,
-    binary: sha.b64_sha1,
-    ascii: sha.str_sha1
+    base64: sha.b64_sha1,
+    binary: sha.str_sha1
+  },
+  sha256: {
+    hex: sha256.hex_sha256,
+    base64: sha256.b64_sha256,
+    binary: sha256.str_sha256
   },
   md5: {
     hex: md5.hex_md5,
-    binary: md5.b64_md5,
-    ascii: md5.any_md5
+    base64: md5.b64_md5,
+    binary: md5.bin_md5
   }
 }
+
+var algorithmsHmac = {
+  sha1: {
+    hex: sha.hex_hmac_sha1,
+    base64: sha.b64_hmac_sha1,
+    binary: sha.str_hmac_sha1
+  },
+  sha256: {
+    hex: sha256.hex_hmac_sha256,
+    base64: sha256.b64_hmac_sha256,
+    binary: sha256.str_hmac_sha256
+  },
+  md5: {
+    hex: md5.hex_hmac_md5,
+    base64: md5.b64_hmac_md5,
+    binary: md5.bin_hmac_md5
+  }
+}
+
 
 function error () {
   var m = [].slice.call(arguments).join(' ')
@@ -7795,6 +7873,30 @@ exports.createHash = function (alg) {
   }
 }
 
+exports.createHmac = function (alg, key) {
+  if (!algorithmsHmac[alg])
+    error('algorithm:', alg, 'is not yet supported')
+  if (typeof key != 'string')
+    key = key.toString('binary')
+  var s = ''
+  var _alg = algorithmsHmac[alg]
+  return {
+    update: function (data) {
+      s += data
+      return this
+    },
+    digest: function (enc) {
+      enc = enc || 'binary'
+      var fn
+      if (!(fn = _alg[enc]))
+        error('encoding:', enc, 'is not yet support for algorithm', alg)
+      var r = fn(key, s)
+      s = null
+      return r
+    }
+  }
+}
+
 exports.randomBytes = function(size, callback) {
   if (callback && callback.call) {
     try {
@@ -7812,14 +7914,13 @@ function each(a, f) {
 
 // the least I can do is make error messages for the rest of the node.js/crypto api.
 each(['createCredentials'
-, 'createHmac'
-, 'createCypher'
-, 'createCypheriv'
+, 'createCipher'
+, 'createCipheriv'
 , 'createDecipher'
 , 'createDecipheriv'
 , 'createSign'
 , 'createVerify'
-, 'createDeffieHellman'
+, 'createDiffieHellman'
 , 'pbkdf2'], function (name) {
   exports[name] = function () {
     error('sorry,', name, 'is not implemented yet')
@@ -7827,11 +7928,11 @@ each(['createCredentials'
 })
 
 })()
-},{"./md5":61,"./rng":62,"./sha":63,"buffer":58}],61:[function(require,module,exports){
+},{"./md5":61,"./rng":62,"./sha":63,"./sha256":64,"buffer":58}],61:[function(require,module,exports){
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
  * Digest Algorithm, as defined in RFC 1321.
- * Version 2.2 Copyright (C) Paul Johnston 1999 - 2009
+ * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
  * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
  * Distributed under the BSD License
  * See http://pajhome.org.uk/crypt/md5 for more info.
@@ -7842,236 +7943,32 @@ each(['createCredentials'
  * the server-side, but the defaults work in most cases.
  */
 var hexcase = 0;   /* hex output format. 0 - lowercase; 1 - uppercase        */
-var b64pad  = "";  /* base-64 pad character. "=" for strict RFC compliance   */
+var b64pad  = "="; /* base-64 pad character. "=" for strict RFC compliance   */
+var chrsz   = 8;   /* bits per input character. 8 - ASCII; 16 - Unicode      */
 
 /*
  * These are the functions you'll usually want to call
  * They take string arguments and return either hex or base-64 encoded strings
  */
-function hex_md5(s)    { return rstr2hex(rstr_md5(str2rstr_utf8(s))); }
-function b64_md5(s)    { return rstr2b64(rstr_md5(str2rstr_utf8(s))); }
-function any_md5(s, e) { return rstr2any(rstr_md5(str2rstr_utf8(s)), e); }
-function hex_hmac_md5(k, d)
-  { return rstr2hex(rstr_hmac_md5(str2rstr_utf8(k), str2rstr_utf8(d))); }
-function b64_hmac_md5(k, d)
-  { return rstr2b64(rstr_hmac_md5(str2rstr_utf8(k), str2rstr_utf8(d))); }
-function any_hmac_md5(k, d, e)
-  { return rstr2any(rstr_hmac_md5(str2rstr_utf8(k), str2rstr_utf8(d)), e); }
+function hex_md5(s){ return binl2hex(core_md5(str2binl(s), s.length * chrsz));}
+function b64_md5(s){ return binl2b64(core_md5(str2binl(s), s.length * chrsz));}
+function str_md5(s){ return binl2str(core_md5(str2binl(s), s.length * chrsz));}
+function hex_hmac_md5(key, data) { return binl2hex(core_hmac_md5(key, data)); }
+function b64_hmac_md5(key, data) { return binl2b64(core_hmac_md5(key, data)); }
+function str_hmac_md5(key, data) { return binl2str(core_hmac_md5(key, data)); }
 
 /*
  * Perform a simple self-test to see if the VM is working
  */
 function md5_vm_test()
 {
-  return hex_md5("abc").toLowerCase() == "900150983cd24fb0d6963f7d28e17f72";
+  return hex_md5("abc") == "900150983cd24fb0d6963f7d28e17f72";
 }
 
 /*
- * Calculate the MD5 of a raw string
+ * Calculate the MD5 of an array of little-endian words, and a bit length
  */
-function rstr_md5(s)
-{
-  return binl2rstr(binl_md5(rstr2binl(s), s.length * 8));
-}
-
-/*
- * Calculate the HMAC-MD5, of a key and some data (raw strings)
- */
-function rstr_hmac_md5(key, data)
-{
-  var bkey = rstr2binl(key);
-  if(bkey.length > 16) bkey = binl_md5(bkey, key.length * 8);
-
-  var ipad = Array(16), opad = Array(16);
-  for(var i = 0; i < 16; i++)
-  {
-    ipad[i] = bkey[i] ^ 0x36363636;
-    opad[i] = bkey[i] ^ 0x5C5C5C5C;
-  }
-
-  var hash = binl_md5(ipad.concat(rstr2binl(data)), 512 + data.length * 8);
-  return binl2rstr(binl_md5(opad.concat(hash), 512 + 128));
-}
-
-/*
- * Convert a raw string to a hex string
- */
-function rstr2hex(input)
-{
-  try { hexcase } catch(e) { hexcase=0; }
-  var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
-  var output = "";
-  var x;
-  for(var i = 0; i < input.length; i++)
-  {
-    x = input.charCodeAt(i);
-    output += hex_tab.charAt((x >>> 4) & 0x0F)
-           +  hex_tab.charAt( x        & 0x0F);
-  }
-  return output;
-}
-
-/*
- * Convert a raw string to a base-64 string
- */
-function rstr2b64(input)
-{
-  try { b64pad } catch(e) { b64pad=''; }
-  var tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  var output = "";
-  var len = input.length;
-  for(var i = 0; i < len; i += 3)
-  {
-    var triplet = (input.charCodeAt(i) << 16)
-                | (i + 1 < len ? input.charCodeAt(i+1) << 8 : 0)
-                | (i + 2 < len ? input.charCodeAt(i+2)      : 0);
-    for(var j = 0; j < 4; j++)
-    {
-      if(i * 8 + j * 6 > input.length * 8) output += b64pad;
-      else output += tab.charAt((triplet >>> 6*(3-j)) & 0x3F);
-    }
-  }
-  return output;
-}
-
-/*
- * Convert a raw string to an arbitrary string encoding
- */
-function rstr2any(input, encoding)
-{
-  var divisor = encoding.length;
-  var i, j, q, x, quotient;
-
-  /* Convert to an array of 16-bit big-endian values, forming the dividend */
-  var dividend = Array(Math.ceil(input.length / 2));
-  for(i = 0; i < dividend.length; i++)
-  {
-    dividend[i] = (input.charCodeAt(i * 2) << 8) | input.charCodeAt(i * 2 + 1);
-  }
-
-  /*
-   * Repeatedly perform a long division. The binary array forms the dividend,
-   * the length of the encoding is the divisor. Once computed, the quotient
-   * forms the dividend for the next step. All remainders are stored for later
-   * use.
-   */
-  var full_length = Math.ceil(input.length * 8 /
-                                    (Math.log(encoding.length) / Math.log(2)));
-  var remainders = Array(full_length);
-  for(j = 0; j < full_length; j++)
-  {
-    quotient = Array();
-    x = 0;
-    for(i = 0; i < dividend.length; i++)
-    {
-      x = (x << 16) + dividend[i];
-      q = Math.floor(x / divisor);
-      x -= q * divisor;
-      if(quotient.length > 0 || q > 0)
-        quotient[quotient.length] = q;
-    }
-    remainders[j] = x;
-    dividend = quotient;
-  }
-
-  /* Convert the remainders to the output string */
-  var output = "";
-  for(i = remainders.length - 1; i >= 0; i--)
-    output += encoding.charAt(remainders[i]);
-
-  return output;
-}
-
-/*
- * Encode a string as utf-8.
- * For efficiency, this assumes the input is valid utf-16.
- */
-function str2rstr_utf8(input)
-{
-  var output = "";
-  var i = -1;
-  var x, y;
-
-  while(++i < input.length)
-  {
-    /* Decode utf-16 surrogate pairs */
-    x = input.charCodeAt(i);
-    y = i + 1 < input.length ? input.charCodeAt(i + 1) : 0;
-    if(0xD800 <= x && x <= 0xDBFF && 0xDC00 <= y && y <= 0xDFFF)
-    {
-      x = 0x10000 + ((x & 0x03FF) << 10) + (y & 0x03FF);
-      i++;
-    }
-
-    /* Encode output as utf-8 */
-    if(x <= 0x7F)
-      output += String.fromCharCode(x);
-    else if(x <= 0x7FF)
-      output += String.fromCharCode(0xC0 | ((x >>> 6 ) & 0x1F),
-                                    0x80 | ( x         & 0x3F));
-    else if(x <= 0xFFFF)
-      output += String.fromCharCode(0xE0 | ((x >>> 12) & 0x0F),
-                                    0x80 | ((x >>> 6 ) & 0x3F),
-                                    0x80 | ( x         & 0x3F));
-    else if(x <= 0x1FFFFF)
-      output += String.fromCharCode(0xF0 | ((x >>> 18) & 0x07),
-                                    0x80 | ((x >>> 12) & 0x3F),
-                                    0x80 | ((x >>> 6 ) & 0x3F),
-                                    0x80 | ( x         & 0x3F));
-  }
-  return output;
-}
-
-/*
- * Encode a string as utf-16
- */
-function str2rstr_utf16le(input)
-{
-  var output = "";
-  for(var i = 0; i < input.length; i++)
-    output += String.fromCharCode( input.charCodeAt(i)        & 0xFF,
-                                  (input.charCodeAt(i) >>> 8) & 0xFF);
-  return output;
-}
-
-function str2rstr_utf16be(input)
-{
-  var output = "";
-  for(var i = 0; i < input.length; i++)
-    output += String.fromCharCode((input.charCodeAt(i) >>> 8) & 0xFF,
-                                   input.charCodeAt(i)        & 0xFF);
-  return output;
-}
-
-/*
- * Convert a raw string to an array of little-endian words
- * Characters >255 have their high-byte silently ignored.
- */
-function rstr2binl(input)
-{
-  var output = Array(input.length >> 2);
-  for(var i = 0; i < output.length; i++)
-    output[i] = 0;
-  for(var i = 0; i < input.length * 8; i += 8)
-    output[i>>5] |= (input.charCodeAt(i / 8) & 0xFF) << (i%32);
-  return output;
-}
-
-/*
- * Convert an array of little-endian words to a string
- */
-function binl2rstr(input)
-{
-  var output = "";
-  for(var i = 0; i < input.length * 32; i += 8)
-    output += String.fromCharCode((input[i>>5] >>> (i % 32)) & 0xFF);
-  return output;
-}
-
-/*
- * Calculate the MD5 of an array of little-endian words, and a bit length.
- */
-function binl_md5(x, len)
+function core_md5(x, len)
 {
   /* append padding */
   x[len >> 5] |= 0x80 << ((len) % 32);
@@ -8163,6 +8060,7 @@ function binl_md5(x, len)
     d = safe_add(d, oldd);
   }
   return Array(a, b, c, d);
+
 }
 
 /*
@@ -8190,6 +8088,25 @@ function md5_ii(a, b, c, d, x, s, t)
 }
 
 /*
+ * Calculate the HMAC-MD5, of a key and some data
+ */
+function core_hmac_md5(key, data)
+{
+  var bkey = str2binl(key);
+  if(bkey.length > 16) bkey = core_md5(bkey, key.length * chrsz);
+
+  var ipad = Array(16), opad = Array(16);
+  for(var i = 0; i < 16; i++)
+  {
+    ipad[i] = bkey[i] ^ 0x36363636;
+    opad[i] = bkey[i] ^ 0x5C5C5C5C;
+  }
+
+  var hash = core_md5(ipad.concat(str2binl(data)), 512 + data.length * chrsz);
+  return core_md5(opad.concat(hash), 512 + 128);
+}
+
+/*
  * Add integers, wrapping at 2^32. This uses 16-bit operations internally
  * to work around bugs in some JS interpreters.
  */
@@ -8208,10 +8125,73 @@ function bit_rol(num, cnt)
   return (num << cnt) | (num >>> (32 - cnt));
 }
 
+/*
+ * Convert a string to an array of little-endian words
+ * If chrsz is ASCII, characters >255 have their hi-byte silently ignored.
+ */
+function str2binl(str)
+{
+  var bin = Array();
+  var mask = (1 << chrsz) - 1;
+  for(var i = 0; i < str.length * chrsz; i += chrsz)
+    bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (i%32);
+  return bin;
+}
+
+/*
+ * Convert an array of little-endian words to a string
+ */
+function binl2str(bin)
+{
+  var str = "";
+  var mask = (1 << chrsz) - 1;
+  for(var i = 0; i < bin.length * 32; i += chrsz)
+    str += String.fromCharCode((bin[i>>5] >>> (i % 32)) & mask);
+  return str;
+}
+
+/*
+ * Convert an array of little-endian words to a hex string.
+ */
+function binl2hex(binarray)
+{
+  var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
+  var str = "";
+  for(var i = 0; i < binarray.length * 4; i++)
+  {
+    str += hex_tab.charAt((binarray[i>>2] >> ((i%4)*8+4)) & 0xF) +
+           hex_tab.charAt((binarray[i>>2] >> ((i%4)*8  )) & 0xF);
+  }
+  return str;
+}
+
+/*
+ * Convert an array of little-endian words to a base-64 string
+ */
+function binl2b64(binarray)
+{
+  var tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  var str = "";
+  for(var i = 0; i < binarray.length * 4; i += 3)
+  {
+    var triplet = (((binarray[i   >> 2] >> 8 * ( i   %4)) & 0xFF) << 16)
+                | (((binarray[i+1 >> 2] >> 8 * ((i+1)%4)) & 0xFF) << 8 )
+                |  ((binarray[i+2 >> 2] >> 8 * ((i+2)%4)) & 0xFF);
+    for(var j = 0; j < 4; j++)
+    {
+      if(i * 8 + j * 6 > binarray.length * 32) str += b64pad;
+      else str += tab.charAt((triplet >> 6*(3-j)) & 0x3F);
+    }
+  }
+  return str;
+}
 
 exports.hex_md5 = hex_md5;
 exports.b64_md5 = b64_md5;
-exports.any_md5 = any_md5;
+exports.bin_md5 = str_md5;
+exports.hex_hmac_md5 = hex_hmac_md5;
+exports.b64_hmac_md5 = b64_hmac_md5;
+exports.bin_hmac_md5 = str_hmac_md5;
 
 },{}],62:[function(require,module,exports){
 // Original code adapted from Robert Kieffer.
@@ -8234,7 +8214,6 @@ exports.any_md5 = any_md5;
     return bytes;
   }
 
-  // currently only available in webkit-based browsers.
   if (_global.crypto && crypto.getRandomValues) {
     var _rnds = new Uint32Array(4);
     whatwgRNG = function(size) {
@@ -8251,6 +8230,7 @@ exports.any_md5 = any_md5;
   module.exports = whatwgRNG || mathRNG;
 
 }())
+
 },{}],63:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
@@ -8272,9 +8252,9 @@ exports.str_hmac_sha1 = str_hmac_sha1;
  * Configurable variables. You may need to tweak these to be compatible with
  * the server-side, but the defaults work in most cases.
  */
-var hexcase = 0;  /* hex output format. 0 - lowercase; 1 - uppercase        */
-var b64pad  = ""; /* base-64 pad character. "=" for strict RFC compliance   */
-var chrsz   = 8;  /* bits per input character. 8 - ASCII; 16 - Unicode      */
+var hexcase = 0;   /* hex output format. 0 - lowercase; 1 - uppercase        */
+var b64pad  = "="; /* base-64 pad character. "=" for strict RFC compliance   */
+var chrsz   = 8;   /* bits per input character. 8 - ASCII; 16 - Unicode      */
 
 /*
  * These are the functions you'll usually want to call
@@ -8464,6 +8444,182 @@ function binb2b64(binarray)
 
 
 },{}],64:[function(require,module,exports){
+
+/**
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
+ * in FIPS 180-2
+ * Version 2.2-beta Copyright Angel Marin, Paul Johnston 2000 - 2009.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ *
+ */
+
+exports.hex_sha256 = hex_sha256;
+exports.b64_sha256 = b64_sha256;
+exports.str_sha256 = str_sha256;
+exports.hex_hmac_sha256 = hex_hmac_sha256;
+exports.b64_hmac_sha256 = b64_hmac_sha256;
+exports.str_hmac_sha256 = str_hmac_sha256;
+
+/*
+ * Configurable variables. You may need to tweak these to be compatible with
+ * the server-side, but the defaults work in most cases.
+ */
+var hexcase = 0;   /* hex output format. 0 - lowercase; 1 - uppercase        */
+var b64pad  = "="; /* base-64 pad character. "=" for strict RFC compliance   */
+var chrsz   = 8;   /* bits per input character. 8 - ASCII; 16 - Unicode      */
+
+/*
+ * These are the functions you'll usually want to call
+ * They take string arguments and return either hex or base-64 encoded strings
+ */
+function hex_sha256(s){return binb2hex(core_sha256(str2binb(s),s.length * chrsz));}
+function b64_sha256(s){return binb2b64(core_sha256(str2binb(s),s.length * chrsz));}
+function str_sha256(s){return binb2str(core_sha256(str2binb(s),s.length * chrsz));}
+function hex_hmac_sha256(key, data){ return binb2hex(core_hmac_sha256(key, data));}
+function b64_hmac_sha256(key, data){ return binb2b64(core_hmac_sha256(key, data));}
+function str_hmac_sha256(key, data){ return binb2str(core_hmac_sha256(key, data));}
+
+var safe_add = function(x, y) {
+  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+  return (msw << 16) | (lsw & 0xFFFF);
+};
+
+var S = function(X, n) {
+  return (X >>> n) | (X << (32 - n));
+};
+
+var R = function(X, n) {
+  return (X >>> n);
+};
+
+var Ch = function(x, y, z) {
+  return ((x & y) ^ ((~x) & z));
+};
+
+var Maj = function(x, y, z) {
+  return ((x & y) ^ (x & z) ^ (y & z));
+};
+
+var Sigma0256 = function(x) {
+  return (S(x, 2) ^ S(x, 13) ^ S(x, 22));
+};
+
+var Sigma1256 = function(x) {
+  return (S(x, 6) ^ S(x, 11) ^ S(x, 25));
+};
+
+var Gamma0256 = function(x) {
+  return (S(x, 7) ^ S(x, 18) ^ R(x, 3));
+};
+
+var Gamma1256 = function(x) {
+  return (S(x, 17) ^ S(x, 19) ^ R(x, 10));
+};
+
+var core_sha256 = function(m, l) {
+  var K = new Array(0x428A2F98,0x71374491,0xB5C0FBCF,0xE9B5DBA5,0x3956C25B,0x59F111F1,0x923F82A4,0xAB1C5ED5,0xD807AA98,0x12835B01,0x243185BE,0x550C7DC3,0x72BE5D74,0x80DEB1FE,0x9BDC06A7,0xC19BF174,0xE49B69C1,0xEFBE4786,0xFC19DC6,0x240CA1CC,0x2DE92C6F,0x4A7484AA,0x5CB0A9DC,0x76F988DA,0x983E5152,0xA831C66D,0xB00327C8,0xBF597FC7,0xC6E00BF3,0xD5A79147,0x6CA6351,0x14292967,0x27B70A85,0x2E1B2138,0x4D2C6DFC,0x53380D13,0x650A7354,0x766A0ABB,0x81C2C92E,0x92722C85,0xA2BFE8A1,0xA81A664B,0xC24B8B70,0xC76C51A3,0xD192E819,0xD6990624,0xF40E3585,0x106AA070,0x19A4C116,0x1E376C08,0x2748774C,0x34B0BCB5,0x391C0CB3,0x4ED8AA4A,0x5B9CCA4F,0x682E6FF3,0x748F82EE,0x78A5636F,0x84C87814,0x8CC70208,0x90BEFFFA,0xA4506CEB,0xBEF9A3F7,0xC67178F2);
+  var HASH = new Array(0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19);
+    var W = new Array(64);
+    var a, b, c, d, e, f, g, h, i, j;
+    var T1, T2;
+  /* append padding */
+  m[l >> 5] |= 0x80 << (24 - l % 32);
+  m[((l + 64 >> 9) << 4) + 15] = l;
+  for (var i = 0; i < m.length; i += 16) {
+    a = HASH[0]; b = HASH[1]; c = HASH[2]; d = HASH[3]; e = HASH[4]; f = HASH[5]; g = HASH[6]; h = HASH[7];
+    for (var j = 0; j < 64; j++) {
+      if (j < 16) {
+        W[j] = m[j + i];
+      } else {
+        W[j] = safe_add(safe_add(safe_add(Gamma1256(W[j - 2]), W[j - 7]), Gamma0256(W[j - 15])), W[j - 16]);
+      }
+      T1 = safe_add(safe_add(safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
+      T2 = safe_add(Sigma0256(a), Maj(a, b, c));
+      h = g; g = f; f = e; e = safe_add(d, T1); d = c; c = b; b = a; a = safe_add(T1, T2);
+    }
+    HASH[0] = safe_add(a, HASH[0]); HASH[1] = safe_add(b, HASH[1]); HASH[2] = safe_add(c, HASH[2]); HASH[3] = safe_add(d, HASH[3]);
+    HASH[4] = safe_add(e, HASH[4]); HASH[5] = safe_add(f, HASH[5]); HASH[6] = safe_add(g, HASH[6]); HASH[7] = safe_add(h, HASH[7]);
+  }
+  return HASH;
+};
+
+var str2binb = function(str) {
+  var bin = Array();
+  var mask = (1 << chrsz) - 1;
+  for (var i = 0; i < str.length * chrsz; i += chrsz) {
+    bin[i >> 5] |= (str.charCodeAt(i / chrsz) & mask) << (24 - i % 32);
+  }
+  return bin;
+};
+
+/*
+ * Convert an array of big-endian words to a string
+ */
+function binb2str(bin)
+{
+  var str = "";
+  var mask = (1 << chrsz) - 1;
+  for (var i = 0; i < bin.length * 32; i += chrsz)
+    str += String.fromCharCode((bin[i >> 5] >>> (32 - chrsz - i % 32)) & mask);
+  return str;
+}
+
+var hex2binb = function(a) {
+  var b = [], length = a.length, i, num;
+  for (i = 0; i < length; i += 2) {
+    num = parseInt(a.substr(i, 2), 16);
+    if (!isNaN(num)) {
+      b[i >> 3] |= num << (24 - (4 * (i % 8)));
+    } else {
+      return "INVALID HEX STRING";
+    }
+  }
+  return b;
+};
+
+var binb2hex = function(binarray) {
+  //var hexcase = 0; /* hex output format. 0 - lowercase; 1 - uppercase */
+  var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
+  var str = "";
+  for (var i = 0; i < binarray.length * 4; i++) {
+    str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) + hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
+  }
+  return str;
+};
+
+var binb2b64 = function(a) {
+  var b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" + "0123456789+/", str = "", length = a.length * 4, i, j, triplet;
+  var b64pad = "=";
+  for (i = 0; i < length; i += 3) {
+    triplet = (((a[i >> 2] >> 8 * (3 - i % 4)) & 0xFF) << 16) | (((a[i + 1 >> 2] >> 8 * (3 - (i + 1) % 4)) & 0xFF) << 8) | ((a[i + 2 >> 2] >> 8 * (3 - (i + 2) % 4)) & 0xFF);
+    for (j = 0; j < 4; j += 1) {
+      if (i * 8 + j * 6 <= a.length * 32) {
+        str += b.charAt((triplet >> 6 * (3 - j)) & 0x3F);
+      } else {
+        str += b64pad;
+      }
+    }
+}
+  return str;
+};
+
+var core_hmac_sha256 = function(key, data) {
+  var bkey = str2binb(key);
+  if (bkey.length > 16) {
+    bkey = core_sha256(bkey, key.length * chrsz);
+  }
+  var ipad = Array(16), opad = Array(16);
+  for (var i = 0; i < 16; i++) {
+    ipad[i] = bkey[i] ^ 0x36363636;
+    opad[i] = bkey[i] ^ 0x5C5C5C5C;
+  }
+  var hash = core_sha256(ipad.concat(str2binb(data)), 512 + data.length * chrsz);
+  return core_sha256(opad.concat(hash), 512 + 256);
+};
+
+
+},{}],65:[function(require,module,exports){
 require=(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){
 // UTILITY
 var util = require('util');
@@ -12325,7 +12481,7 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 },{}]},{},[])
 ;;module.exports=require("buffer-browserify")
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -12379,7 +12535,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 var _ = require('./vendor/lodash');
 var async = require('async');
 var jxt = require('jxt');
@@ -12492,7 +12648,7 @@ module.exports = function (opts, cb) {
     });
 };
 
-},{"./vendor/lodash":72,"async":53,"jxt":67,"xhr":69}],67:[function(require,module,exports){
+},{"./vendor/lodash":73,"async":53,"jxt":68,"xhr":70}],68:[function(require,module,exports){
 var _ = require('./vendor/lodash');
 var serializer = new XMLSerializer();
 var XML_NS = 'http://www.w3.org/XML/1998/namespace';
@@ -12827,7 +12983,7 @@ exports.TOP_LEVEL_LOOKUP = TOP_LEVEL_LOOKUP;
 exports.LOOKUP_EXT = LOOKUP_EXT;
 exports.LOOKUP = LOOKUP;
 
-},{"./vendor/lodash":68}],68:[function(require,module,exports){
+},{"./vendor/lodash":69}],69:[function(require,module,exports){
 (function(global){/**
  * @license
  * Lo-Dash 1.3.1 (Custom Build) lodash.com/license
@@ -12848,7 +13004,7 @@ try{K.nodeClass=!(M.call(document)==w&&!({toString:0}+""))}catch(n){K.nodeClass=
 var n=typeof t;if("function"!=n){if("object"!=n)return function(r){return r[t]};var o=X(t);return function(r){for(var e=o.length,n=!1;e--&&(n=c(r[o[e]],t[o[e]],b)););return n}}return typeof r=="undefined"||d&&!d.test(q.call(t))?t:1===e?function(e){return t.call(r,e)}:2===e?function(e,n){return t.call(r,e,n)}:4===e?function(e,n,o,u){return t.call(r,e,n,o,u)}:function(e,n,o){return t.call(r,e,n,o)}},o.filter=s,o.forEach=p,o.forIn=Z,o.keys=X,o.each=p,o.extend=H,o.select=s,o.identity=m,o.isArguments=a,o.isArray=U,o.isEqual=c,o.isFunction=f,o.isObject=i,o.isString=l,o.VERSION="1.3.1",typeof define=="function"&&typeof define.amd=="object"&&define.amd?(t._=o, define(function(){return o
 })):I&&!I.nodeType?B?(B.exports=o)._=o:I._=o:t._=o}(this);
 })(self)
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 (function(){var window = require("global/window")
 var once = require("once")
 
@@ -12953,7 +13109,7 @@ function createXHR(options, callback) {
 function noop() {}
 
 })()
-},{"global/window":70,"once":71}],70:[function(require,module,exports){
+},{"global/window":71,"once":72}],71:[function(require,module,exports){
 (function(global){if (typeof window !== "undefined") {
     module.exports = window
 } else if (typeof global !== "undefined") {
@@ -12963,7 +13119,7 @@ function noop() {}
 }
 
 })(self)
-},{}],71:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 module.exports = once
 
 once.proto = once(function () {
@@ -12984,7 +13140,7 @@ function once (fn) {
   }
 }
 
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 (function(global){/**
  * @license
  * Lo-Dash 1.3.1 (Custom Build) lodash.com/license
@@ -13004,7 +13160,7 @@ try{V.nodeClass=!($.call(document)==x&&!({toString:0}+""))}catch(n){V.nodeClass=
 var n=typeof t;if("function"!=n){if("object"!=n)return function(r){return r[t]};var o=W(t);return function(r){for(var e=o.length,n=!1;e--&&(n=c(r[o[e]],t[o[e]],h)););return n}}return typeof r=="undefined"||b&&!b.test(N.call(t))?t:1===e?function(e){return t.call(r,e)}:2===e?function(e,n){return t.call(r,e,n)}:4===e?function(e,n,o,u){return t.call(r,e,n,o,u)}:function(e,n,o){return t.call(r,e,n,o)}},o.forEach=s,o.forIn=Y,o.keys=W,o.each=s,o.extend=G,o.identity=p,o.isArguments=a,o.isArray=Q,o.isEqual=c,o.isFunction=f,o.isObject=i,o.isString=l,o.VERSION="1.3.1",typeof define=="function"&&typeof define.amd=="object"&&define.amd?(t._=o, define(function(){return o
 })):P&&!P.nodeType?I?(I.exports=o)._=o:P._=o:t._=o}(this);
 })(self)
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 var _ = require('./vendor/lodash');
 var serializer = new XMLSerializer();
 var XML_NS = 'http://www.w3.org/XML/1998/namespace';
@@ -13339,7 +13495,7 @@ exports.TOP_LEVEL_LOOKUP = TOP_LEVEL_LOOKUP;
 exports.LOOKUP_EXT = LOOKUP_EXT;
 exports.LOOKUP = LOOKUP;
 
-},{"./vendor/lodash":74}],74:[function(require,module,exports){
+},{"./vendor/lodash":75}],75:[function(require,module,exports){
 (function(global){/**
  * @license
  * Lo-Dash 1.3.1 (Custom Build) lodash.com/license
@@ -13360,7 +13516,7 @@ try{K.nodeClass=!(M.call(document)==w&&!({toString:0}+""))}catch(n){K.nodeClass=
 var n=typeof t;if("function"!=n){if("object"!=n)return function(r){return r[t]};var o=X(t);return function(r){for(var e=o.length,n=!1;e--&&(n=c(r[o[e]],t[o[e]],b)););return n}}return typeof r=="undefined"||d&&!d.test(q.call(t))?t:1===e?function(e){return t.call(r,e)}:2===e?function(e,n){return t.call(r,e,n)}:4===e?function(e,n,o,u){return t.call(r,e,n,o,u)}:function(e,n,o){return t.call(r,e,n,o)}},o.filter=s,o.forEach=p,o.forIn=Z,o.keys=X,o.each=p,o.extend=H,o.select=s,o.identity=m,o.isArguments=a,o.isArray=U,o.isEqual=c,o.isFunction=f,o.isObject=i,o.isString=l,o.VERSION="1.3.1",typeof define=="function"&&typeof define.amd=="object"&&define.amd?(t._=o, define(function(){return o
 })):I&&!I.nodeType?B?(B.exports=o)._=o:I._=o:t._=o}(this);
 })(self)
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 (function(Buffer){//     uuid.js
 //
 //     (c) 2010-2012 Robert Kieffer
@@ -13608,7 +13764,549 @@ var n=typeof t;if("function"!=n){if("object"!=n)return function(r){return r[t]};
 }());
 
 })(require("__browserify_Buffer").Buffer)
-},{"__browserify_Buffer":64,"crypto":60}],76:[function(require,module,exports){
+},{"__browserify_Buffer":65,"crypto":60}],77:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports, module);
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports', 'module'], factory);
+  }
+}(this, function(exports, module) {
+
+  /**
+   * ANONYMOUS `Mechanism` constructor.
+   *
+   * This class implements the ANONYMOUS SASL mechanism.
+   *
+   * The ANONYMOUS SASL mechanism provides support for permitting anonymous
+   * access to various services
+   *
+   * References:
+   *  - [RFC 4505](http://tools.ietf.org/html/rfc4505)
+   *
+   * @api public
+   */
+  function Mechanism() {
+  }
+  
+  Mechanism.prototype.name = 'ANONYMOUS';
+  Mechanism.prototype.clientFirst = true;
+  
+  /**
+   * Encode a response using optional trace information.
+   *
+   * Options:
+   *  - `trace`  trace information (optional)
+   *
+   * @param {Object} cred
+   * @api public
+   */
+  Mechanism.prototype.response = function(cred) {
+    return cred.trace || '';
+  };
+  
+  /**
+   * Decode a challenge issued by the server.
+   *
+   * @param {String} chal
+   * @api public
+   */
+  Mechanism.prototype.challenge = function(chal) {
+  };
+
+  exports = module.exports = Mechanism;
+  
+}));
+
+},{}],78:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports,
+            module,
+            require('./lib/mechanism'));
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports',
+            'module',
+            './lib/mechanism'], factory);
+  }
+}(this, function(exports, module, Mechanism) {
+
+  exports = module.exports = Mechanism;
+  exports.Mechanism = Mechanism;
+  
+}));
+
+},{"./lib/mechanism":77}],79:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports, module, require('crypto'));
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports', 'module', 'crypto'], factory);
+  }
+}(this, function(exports, module, crypto) {
+  
+  /**
+   * DIGEST-MD5 `Mechanism` constructor.
+   *
+   * This class implements the DIGEST-MD5 SASL mechanism.
+   *
+   * References:
+   *  - [RFC 2831](http://tools.ietf.org/html/rfc2831)
+   *
+   * @api public
+   */
+  function Mechanism(options) {
+    options = options || {};
+    this._genNonce = options.genNonce || genNonce(32);
+  }
+  
+  Mechanism.prototype.name = 'DIGEST-MD5';
+  Mechanism.prototype.clientFirst = false;
+  
+  /**
+   * Encode a response using given credential.
+   *
+   * Options:
+   *  - `username`
+   *  - `password`
+   *  - `host`
+   *  - `serviceType`
+   *  - `authzid`   authorization identity (optional)
+   *
+   * @param {Object} cred
+   * @api public
+   */
+  Mechanism.prototype.response = function(cred) {
+    // TODO: Implement support for subsequent authentication.  This requires
+    //       that the client be able to store username, realm, nonce,
+    //       nonce-count, cnonce, and qop values from prior authentication.
+    //       The impact of this requirement needs to be investigated.
+    //
+    //       See RFC 2831 (Section 2.2) for further details.
+    
+    // TODO: Implement support for auth-int and auth-conf, as defined in RFC
+    //       2831 sections 2.3 Integrity Protection and 2.4 Confidentiality
+    //       Protection, respectively.
+    //
+    //       Note that supporting this functionality has implications
+    //       regarding the negotiation of security layers via SASL.  Due to
+    //       the fact that TLS has largely superseded this functionality,
+    //       implementing it is a low priority.
+  
+    var uri = cred.serviceType + '/' + cred.host;
+    if (cred.serviceName && cred.host !== cred.serviceName) {
+      uri += '/' + serviceName;
+    }
+    var realm = cred.realm || this._realm || ''
+      , cnonce = this._genNonce()
+      , nc = '00000001'
+      , qop = 'auth'
+      , ha1
+      , ha2
+      , digest;
+  
+    var str = '';
+    str += 'username="' + cred.username + '"';
+    if (realm) { str += ',realm="' + realm + '"'; };
+    str += ',nonce="' + this._nonce + '"';
+    str += ',cnonce="' + cnonce + '"';
+    str += ',nc=' + nc;
+    str += ',qop=' + qop;
+    str += ',digest-uri="' + uri + '"';
+    
+    if (cred.authzid) {
+      ha1 = md5(md5(cred.username + ":" + realm + ":" + cred.password, 'binary') + ":" + this._nonce + ":" + cnonce + ":" + cred.authzid);
+    } else {
+      ha1 = md5(md5(cred.username + ":" + realm + ":" + cred.password, 'binary') + ":" + this._nonce + ":" + cnonce);
+    }
+    
+    if (qop == 'auth') {
+      ha2 = md5('AUTHENTICATE:' + uri);
+    } else if (qop == 'auth-int' || qop == 'auth-conf') {
+      ha2 = md5('AUTHENTICATE:' + uri + ':00000000000000000000000000000000');
+    }
+    
+    digest = md5(ha1 + ":" + this._nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + ha2);
+    str += ',response=' + digest;
+    
+    if (this._charset == 'utf-8') { str += ',charset=utf-8'; }
+    if (cred.authzid) { str += 'authzid="' + cred.authzid + '"'; }
+    
+    return str;
+  };
+  
+  /**
+   * Decode a challenge issued by the server.
+   *
+   * @param {String} chal
+   * @return {Mechanism} for chaining
+   * @api public
+   */
+  Mechanism.prototype.challenge = function(chal) {
+    var dtives = parse(chal);
+    
+    // TODO: Implement support for multiple realm directives, as allowed by the
+    //       DIGEST-MD5 specification.
+    this._realm = dtives['realm'];
+    this._nonce = dtives['nonce'];
+    this._qop = (dtives['qop'] || 'auth').split(',');
+    this._stale = dtives['stale'];
+    this._maxbuf = parseInt(dtives['maxbuf']) || 65536;
+    this._charset = dtives['charset'];
+    this._algo = dtives['algorithm'];
+    this._cipher = dtives['cipher'];
+    if (this._cipher) { this._cipher.split(','); }
+    return this;
+  };
+  
+  
+  /**
+   * Parse challenge.
+   *
+   * @api private
+   */
+  function parse(chal) {
+    var dtives = {};
+    var tokens = chal.split(/,(?=(?:[^"]|"[^"]*")*$)/);
+    for (var i = 0, len = tokens.length; i < len; i++) {
+      var dtiv = /(\w+)=["]?([^"]+)["]?$/.exec(tokens[i]);
+      if (dtiv) {
+        dtives[dtiv[1]] = dtiv[2];
+      }
+    }
+    return dtives;
+  }
+  
+  /**
+   * Return a unique nonce with the given `len`.
+   *
+   *     genNonce(10)();
+   *     // => "FDaS435D2z"
+   *
+   * @param {Number} len
+   * @return {Function}
+   * @api private
+   */
+  function genNonce(len) {
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+      , charlen = chars.length;
+  
+    return function() {
+      var buf = [];
+      for (var i = 0; i < len; ++i) {
+        buf.push(chars[Math.random() * charlen | 0]);
+      }
+      return buf.join('');
+    }
+  }
+  
+  /**
+   * Return md5 hash of the given string and optional encoding,
+   * defaulting to hex.
+   *
+   *     md5('wahoo');
+   *     // => "e493298061761236c96b02ea6aa8a2ad"
+   *
+   * @param {String} str
+   * @param {String} encoding
+   * @return {String}
+   * @api private
+   */
+  function md5(str, encoding){
+    return crypto
+      .createHash('md5')
+      .update(str)
+      .digest(encoding || 'hex');
+  }
+
+
+  exports = module.exports = Mechanism;
+  
+}));
+
+},{"crypto":60}],80:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports,
+            module,
+            require('./lib/mechanism'));
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports',
+            'module',
+            './lib/mechanism'], factory);
+  }
+}(this, function(exports, module, Mechanism) {
+
+  exports = module.exports = Mechanism;
+  exports.Mechanism = Mechanism;
+  
+}));
+
+},{"./lib/mechanism":79}],81:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports, module);
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports', 'module'], factory);
+  }
+}(this, function(exports, module) {
+
+  /**
+   * EXTERNAL `Mechanism` constructor.
+   *
+   * This class implements the EXTERNAL SASL mechanism.
+   *
+   * The EXTERNAL SASL mechanism provides support for authentication using
+   * credentials established by external means. 
+   *
+   * References:
+   *  - [RFC 4422](http://tools.ietf.org/html/rfc4422)
+   *
+   * @api public
+   */
+  function Mechanism() {
+  }
+  
+  Mechanism.prototype.name = 'EXTERNAL';
+  Mechanism.prototype.clientFirst = true;
+  
+  /**
+   * Encode a response using given credential.
+   *
+   * Options:
+   *  - `authzid`   authorization identity (optional)
+   *
+   * @param {Object} cred
+   * @api public
+   */
+  Mechanism.prototype.response = function(cred) {
+    return cred.authzid || '';
+  };
+  
+  /**
+   * Decode a challenge issued by the server.
+   *
+   * @param {String} chal
+   * @api public
+   */
+  Mechanism.prototype.challenge = function(chal) {
+  };
+
+  exports = module.exports = Mechanism;
+  
+}));
+
+},{}],82:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports,
+            module,
+            require('./lib/mechanism'));
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports',
+            'module',
+            './lib/mechanism'], factory);
+  }
+}(this, function(exports, module, Mechanism) {
+
+  exports = module.exports = Mechanism;
+  exports.Mechanism = Mechanism;
+  
+}));
+
+},{"./lib/mechanism":81}],83:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports, module);
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports', 'module'], factory);
+  }
+}(this, function(exports, module) {
+
+  /**
+   * PLAIN `Mechanism` constructor.
+   *
+   * This class implements the PLAIN SASL mechanism.
+   *
+   * The PLAIN SASL mechanism provides support for exchanging a clear-text
+   * username and password.  This mechanism should not be used without adequate
+   * security provided by an underlying transport layer. 
+   *
+   * References:
+   *  - [RFC 4616](http://tools.ietf.org/html/rfc4616)
+   *
+   * @api public
+   */
+  function Mechanism() {
+  }
+  
+  Mechanism.prototype.name = 'PLAIN';
+  Mechanism.prototype.clientFirst = true;
+  
+  /**
+   * Encode a response using given credential.
+   *
+   * Options:
+   *  - `username`
+   *  - `password`
+   *  - `authzid`   authorization identity (optional)
+   *
+   * @param {Object} cred
+   * @api public
+   */
+  Mechanism.prototype.response = function(cred) {
+    var str = '';
+    str += cred.authzid || '';
+    str += '\0';
+    str += cred.username;
+    str += '\0';
+    str += cred.password;
+    return str;
+  };
+  
+  /**
+   * Decode a challenge issued by the server.
+   *
+   * @param {String} chal
+   * @return {Mechanism} for chaining
+   * @api public
+   */
+  Mechanism.prototype.challenge = function(chal) {
+    return this;
+  };
+
+  exports = module.exports = Mechanism;
+  
+}));
+
+},{}],84:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports,
+            module,
+            require('./lib/mechanism'));
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports',
+            'module',
+            './lib/mechanism'], factory);
+  }
+}(this, function(exports, module, Mechanism) {
+
+  exports = module.exports = Mechanism;
+  exports.Mechanism = Mechanism;
+  
+}));
+
+},{"./lib/mechanism":83}],85:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports, module);
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports', 'module'], factory);
+  }
+}(this, function(exports, module) {
+  
+  /**
+   * `Factory` constructor.
+   *
+   * @api public
+   */
+  function Factory() {
+    this._mechs = [];
+  }
+  
+  /**
+   * Utilize the given `mech` with optional `name`, overridding the mechanism's
+   * default name.
+   *
+   * Examples:
+   *
+   *     factory.use(FooMechanism);
+   *
+   *     factory.use('XFOO', FooMechanism);
+   *
+   * @param {String|Mechanism} name
+   * @param {Mechanism} mech
+   * @return {Factory} for chaining
+   * @api public
+   */
+  Factory.prototype.use = function(name, mech) {
+    if (!mech) {
+      mech = name;
+      name = mech.prototype.name;
+    }
+    this._mechs.push({ name: name, mech: mech });
+    return this;
+  };
+  
+  /**
+   * Create a new mechanism from supported list of `mechs`.
+   *
+   * If no mechanisms are supported, returns `null`.
+   *
+   * Examples:
+   *
+   *     var mech = factory.create(['FOO', 'BAR']);
+   *
+   * @param {Array} mechs
+   * @return {Mechanism}
+   * @api public
+   */
+  Factory.prototype.create = function(mechs) {
+    for (var i = 0, len = this._mechs.length; i < len; i++) {
+      for (var j = 0, jlen = mechs.length; j < jlen; j++) {
+        var entry = this._mechs[i];
+        if (entry.name == mechs[j]) {
+          return new entry.mech();
+        }
+      }
+    }
+    return null;
+  };
+
+  exports = module.exports = Factory;
+  
+}));
+
+},{}],86:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports,
+            module,
+            require('./lib/factory'));
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports',
+            'module',
+            './lib/factory'], factory);
+  }
+}(this, function(exports, module, Factory) {
+  
+  exports = module.exports = Factory;
+  exports.Factory = Factory;
+  
+}));
+
+},{"./lib/factory":85}],87:[function(require,module,exports){
 /*
 WildEmitter.js is a slim little event emitter by @henrikjoreteg largely based 
 on @visionmedia's Emitter from UI Kit.
@@ -13745,30 +14443,25 @@ WildEmitter.prototype.getWildcardCallbacks = function (eventName) {
     return result;
 };
 
-},{}],77:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 (function(global){/**
  * @license
- * Lo-Dash 1.3.1 (Custom Build) ../../vendor/lodash.com/license
- * Build: `../../vendor/lodash include="each,unique"`
+ * Lo-Dash 1.3.1 (Custom Build) lodash.com/license
+ * Build: `lodash include="each,extend,unqiue"`
  * Underscore.js 1.4.4 underscorejs.org/LICENSE
  */
-;(function(G){function H(a,d,b){b=(b||0)-1;for(var c=a.length;++b<c;)if(a[b]===d)return b;return-1}function oa(a,d){var b=typeof d;a=a.k;if("boolean"==b||null==d)return a[d];"number"!=b&&"string"!=b&&(b="object");var c="number"==b?d:Z+d;a=a[b]||(a[b]={});return"object"==b?a[c]&&-1<H(a[c],d)?0:-1:a[c]?0:-1}function pa(a){var d=this.k,b=typeof a;if("boolean"==b||null==a)d[a]=!0;else{"number"!=b&&"string"!=b&&(b="object");var c="number"==b?a:Z+a,e=d[b]||(d[b]={});if("object"==b){if((e[c]||(e[c]=[])).push(a)==
-this.b.length)d[b]=!1}else e[c]=!0}}function O(){return P.pop()||{a:"",b:null,c:"",k:null,"false":!1,d:"",e:"",f:"","null":!1,number:null,object:null,push:null,g:null,string:null,h:"","true":!1,undefined:!1,i:!1,j:!1}}function $(a){return typeof a.toString!="function"&&typeof(a+"")=="string"}function y(a){a.length=0;z.length<aa&&z.push(a)}function I(a){var d=a.k;d&&I(d);a.b=a.k=a.object=a.number=a.string=null;P.length<aa&&P.push(a)}function g(){}function Q(){var a=O();a.g=R;a.b=a.c=a.f=a.h="";a.e=
-"r";a.i=!0;a.j=!!J;for(var d,b=0;d=arguments[b];b++)for(var c in d)a[c]=d[c];b=a.a;a.d=/^[^,]+/.exec(b)[0];d=Function;b="return function("+b+"){";c="var m,r="+a.d+",C="+a.e+";if(!r)return C;"+a.h+";";a.b?(c+="var s=r.length;m=-1;if("+a.b+"){",h.unindexedChars&&(c+="if(q(r)){r=r.split('')}"),c+="while(++m<s){"+a.f+";}}else{"):h.nonEnumArgs&&(c+="var s=r.length;m=-1;if(s&&n(r)){while(++m<s){m+='';"+a.f+";}}else{");h.enumPrototypes&&(c+="var E=typeof r=='function';");h.enumErrorProps&&(c+="var D=r===j||r instanceof Error;");
-var e=[];h.enumPrototypes&&e.push('!(E&&m=="prototype")');h.enumErrorProps&&e.push('!(D&&(m=="message"||m=="name"))');if(a.i&&a.j)c+="var A=-1,B=z[typeof r]&&t(r),s=B?B.length:0;while(++A<s){m=B[A];",e.length&&(c+="if("+e.join("&&")+"){"),c+=a.f+";",e.length&&(c+="}"),c+="}";else if(c+="for(m in r){",a.i&&e.push("l.call(r, m)"),e.length&&(c+="if("+e.join("&&")+"){"),c+=a.f+";",e.length&&(c+="}"),c+="}",h.nonEnumShadows){c+="if(r!==y){var h=r.constructor,p=r===(h&&h.prototype),e=r===H?G:r===j?i:J.call(r),v=w[e];";
-for(k=0;7>k;k++)c+="m='"+a.g[k]+"';if((!(p&&v[m])&&l.call(r,m))",a.i||(c+="||(!v[m]&&r[m]!==y[m])"),c+="){"+a.f+"}";c+="}"}if(a.b||h.nonEnumArgs)c+="}";c+=a.c+";return C";d=d("i,j,l,n,o,q,t,u,y,z,w,G,H,J",b+c+"}");I(a);return d(ba,S,p,v,T,ca,J,g,A,B,l,K,qa,q)}function v(a){return q.call(a)==U}function w(a,d,b,c,e,r){var L=b===da;if(typeof b=="function"&&!L){b=g.createCallback(b,c,2);var n=b(a,d);if(typeof n!="undefined")return!!n}if(a===d)return 0!==a||1/a==1/d;var m=typeof a,f=typeof d;if(a===a&&
-(!a||"function"!=m&&"object"!=m)&&(!d||"function"!=f&&"object"!=f))return!1;if(null==a||null==d)return a===d;f=q.call(a);m=q.call(d);f==U&&(f=C);m==U&&(m=C);if(f!=m)return!1;switch(f){case ea:case fa:return+a==+d;case ga:return a!=+a?d!=+d:0==a?1/a==1/d:a==+d;case ha:case K:return a==String(d)}m=f==V;if(!m){if(p.call(a,"__wrapped__")||p.call(d,"__wrapped__"))return w(a.__wrapped__||a,d.__wrapped__||d,b,c,e,r);if(f!=C||!h.nodeClass&&($(a)||$(d)))return!1;var f=!h.argsObject&&v(a)?Object:a.constructor,
-t=!h.argsObject&&v(d)?Object:d.constructor;if(f!=t&&(!D(f)||!(f instanceof f&&D(t)&&t instanceof t)))return!1}t=!e;e||(e=z.pop()||[]);r||(r=z.pop()||[]);for(f=e.length;f--;)if(e[f]==a)return r[f]==d;var l=0,n=!0;e.push(a);r.push(d);if(m){f=a.length;l=d.length;n=l==a.length;if(!n&&!L)return n;for(;l--;)if(m=f,t=d[l],L)for(;m--&&!(n=w(a[m],t,b,c,e,r)););else if(!(n=w(a[l],t,b,c,e,r)))break;return n}W(d,function(d,f,g){if(p.call(g,f))return l++,n=p.call(a,f)&&w(a[f],d,b,c,e,r)});n&&!L&&W(a,function(a,
-b,c){if(p.call(c,b))return n=-1<--l});t&&(y(e),y(r));return n}function D(a){return typeof a=="function"}function ia(a){return!(!a||!B[typeof a])}function ca(a){return typeof a=="string"||q.call(a)==K}function ja(a,d,b){if(d&&typeof b=="undefined"&&T(a)){b=-1;for(var c=a.length;++b<c&&false!==d(a[b],b,a););}else ra(a,d,b);return a}function ka(a,d,b){if(typeof b=="number"){var c=a?a.length:0;b=0>b?sa(0,c+b):b||0}else if(b)return b=la(a,d),a[b]===d?b:-1;return a?H(a,d,b):-1}function la(a,d,b,c){var e=0,r=
-a?a.length:e;b=b?g.createCallback(b,c,1):X;for(d=b(d);e<r;)c=e+r>>>1,b(a[c])<d?e=c+1:r=c;return e}function X(a){return a}var z=[],P=[],da={},Z=+new Date+"",aa=40,E=(E=/\bthis\b/)&&E.test(function(){return this})&&E,R="constructor hasOwnProperty isPrototypeOf propertyIsEnumerable toLocaleString toString valueOf".split(" "),U="[object Arguments]",V="[object Array]",ea="[object Boolean]",fa="[object Date]",ba="[object Error]",ga="[object Number]",C="[object Object]",ha="[object RegExp]",K="[object String]",
-B={"boolean":!1,"function":!0,object:!0,number:!1,string:!1,undefined:!1},M=B[typeof exports]&&exports,ma=B[typeof module]&&module&&module.exports==M&&module,s=B[typeof global]&&global;if(s&&(s.global===s||s.window===s))G=s;var S=Error.prototype,A=Object.prototype,qa=String.prototype,s=RegExp("^"+String(A.valueOf).replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/valueOf|for [^\]]+/g,".+?")+"$"),ta=Function.prototype.toString,p=A.hasOwnProperty,Y=A.propertyIsEnumerable,q=A.toString,F=s.test(F=q.bind)&&
-F,u=s.test(u=Object.create)&&u,x=s.test(x=Array.isArray)&&x,N=s.test(N=Object.keys)&&N,sa=Math.max,u=s.test(G.attachEvent),ua=F&&!/\n|true/.test(F+u),l={};l[V]=l[fa]=l[ga]={constructor:!0,toLocaleString:!0,toString:!0,valueOf:!0};l[ea]=l[K]={constructor:!0,toString:!0,valueOf:!0};l[ba]=l["[object Function]"]=l[ha]={constructor:!0,toString:!0};l[C]={constructor:!0};(function(){for(var a=R.length;a--;){var d=R[a],b;for(b in l)p.call(l,b)&&!p.call(l[b],d)&&(l[b][d]=!1)}})();var h=g.support={};(function(){var a=
-function(){this.x=1},d=[];a.prototype={valueOf:1,y:1};for(var b in new a)d.push(b);for(b in arguments);h.argsObject=arguments.constructor==Object&&!(arguments instanceof Array);h.argsClass=v(arguments);h.enumErrorProps=Y.call(S,"message")||Y.call(S,"name");h.enumPrototypes=Y.call(a,"prototype");h.fastBind=F&&!ua;h.nonEnumArgs=0!=b;h.nonEnumShadows=!/valueOf/.test(d);h.unindexedChars="xx"!="x"[0]+Object("x")[0];try{h.nodeClass=!(q.call(document)==C&&!({toString:0}+""))}catch(c){h.nodeClass=!0}})(1);u={a:"f,d,I",h:"d=d&&typeof I=='undefined'?d:u.createCallback(d,I)",
-b:"typeof s=='number'",f:"if(d(r[m],m,f)===false)return C"};s={h:"if(!z[typeof r])return C;"+u.h,b:!1};h.argsClass||(v=function(a){return a?p.call(a,"callee"):!1});var T=x||function(a){return a?typeof a=="object"&&q.call(a)==V:!1},na=Q({a:"x",e:"[]",h:"if(!(z[typeof x]))return C",f:"C.push(m)"}),J=!N?na:function(a){return!ia(a)?[]:h.enumPrototypes&&typeof a=="function"||h.nonEnumArgs&&a.length&&v(a)?na(a):N(a)},ra=Q(u),W=Q(u,s,{i:!1});D(/x/)&&(D=function(a){return typeof a=="function"&&"[object Function]"==
-q.call(a)});x=function(a){return function(d,b,c,e){typeof b!="boolean"&&null!=b&&(e=c,c=!(e&&e[b]===d)?b:void 0,b=!1);null!=c&&(c=g.createCallback(c,e));return a(d,b,c,e)}}(function(a,d,b){var c=-1,e;e=(e=g.indexOf)===ka?H:e;var r=a?a.length:0,h=[],n=!d&&75<=r&&e===H,m=b||n?z.pop()||[]:h;if(n){var f;f=m;var l=-1,s=f.length,p=O();p["false"]=p["null"]=p["true"]=p.undefined=!1;var q=O();q.b=f;q.k=p;for(q.push=pa;++l<s;)q.push(f[l]);(f=false===p.object?(I(q),null):q)?(e=oa,m=f):(n=!1,m=b?m:(y(m),h))}for(;++c<
-r;)if(f=a[c],l=b?b(f,c,a):f,d?!c||m[m.length-1]!==l:0>e(m,l))(b||n)&&m.push(l),h.push(f);n?(y(m.b),I(m)):b&&y(m);return h});g.createCallback=function(a,d,b){if(null==a)return X;var c=typeof a;if("function"!=c){if("object"!=c)return function(b){return b[a]};var e=J(a);return function(b){for(var c=e.length,d=!1;c--&&(d=w(b[e[c]],a[e[c]],da)););return d}}return typeof d=="undefined"||E&&!E.test(ta.call(a))?a:1===b?function(b){return a.call(d,b)}:2===b?function(b,c){return a.call(d,b,c)}:4===b?function(b,
-c,e,g){return a.call(d,b,c,e,g)}:function(b,c,e){return a.call(d,b,c,e)}};g.forEach=ja;g.forIn=W;g.keys=J;g.uniq=x;g.each=ja;g.unique=x;g.identity=X;g.indexOf=ka;g.isArguments=v;g.isArray=T;g.isEqual=w;g.isFunction=D;g.isObject=ia;g.isString=ca;g.sortedIndex=la;g.VERSION="1.3.1";typeof define=="function"&&typeof define.amd=="object"&&define.amd?(G._=g, define(function(){return g})):M&&!M.nodeType?ma?(ma.exports=g)._=g:M._=g:G._=g})(this);
-
+;!function(t){function r(t){return typeof t.toString!="function"&&typeof(t+"")=="string"}function e(t){t.length=0,m.length<y&&m.push(t)}function n(t){var r=t.k;r&&n(r),t.b=t.k=t.object=t.number=t.string=null,g.length<y&&g.push(t)}function o(){}function u(){var t=g.pop()||{a:"",b:null,c:"",k:null,"false":!1,d:"",e:"",f:"","null":!1,number:null,object:null,push:null,g:null,string:null,h:"","true":!1,undefined:!1,i:!1,j:!1};t.g=d,t.b=t.c=t.f=t.h="",t.e="r",t.i=!0,t.j=!!W;for(var r,e=0;r=arguments[e];e++)for(var u in r)t[u]=r[u];
+e=t.a,t.d=/^[^,]+/.exec(e)[0],r=Function,e="return function("+e+"){",u="var m,r="+t.d+",C="+t.e+";if(!r)return C;"+t.h+";",t.b?(u+="var s=r.length;m=-1;if("+t.b+"){",V.unindexedChars&&(u+="if(q(r)){r=r.split('')}"),u+="while(++m<s){"+t.f+";}}else{"):V.nonEnumArgs&&(u+="var s=r.length;m=-1;if(s&&n(r)){while(++m<s){m+='';"+t.f+";}}else{"),V.enumPrototypes&&(u+="var E=typeof r=='function';"),V.enumErrorProps&&(u+="var D=r===j||r instanceof Error;");var c=[];if(V.enumPrototypes&&c.push('!(E&&m=="prototype")'),V.enumErrorProps&&c.push('!(D&&(m=="message"||m=="name"))'),t.i&&t.j)u+="var A=-1,B=z[typeof r]&&t(r),s=B?B.length:0;while(++A<s){m=B[A];",c.length&&(u+="if("+c.join("&&")+"){"),u+=t.f+";",c.length&&(u+="}"),u+="}";
+else if(u+="for(m in r){",t.i&&c.push("l.call(r, m)"),c.length&&(u+="if("+c.join("&&")+"){"),u+=t.f+";",c.length&&(u+="}"),u+="}",V.nonEnumShadows){for(u+="if(r!==y){var h=r.constructor,p=r===(h&&h.prototype),e=r===H?G:r===j?i:J.call(r),v=w[e];",k=0;7>k;k++)u+="m='"+t.g[k]+"';if((!(p&&v[m])&&l.call(r,m))",t.i||(u+="||(!v[m]&&r[m]!==y[m])"),u+="){"+t.f+"}";u+="}"}return(t.b||V.nonEnumArgs)&&(u+="}"),u+=t.c+";return C",r=r("i,j,l,n,o,q,t,u,y,z,w,G,H,J",e+u+"}"),n(t),r(E,F,q,a,Q,l,W,o,z,A,L,S,D,$)}function a(t){return $.call(t)==v
+}function c(t,n,u,i,l,s){var p=u===h;if(typeof u=="function"&&!p){u=o.createCallback(u,i,2);var g=u(t,n);if(typeof g!="undefined")return!!g}if(t===n)return 0!==t||1/t==1/n;var y=typeof t,b=typeof n;if(t===t&&(!t||"function"!=y&&"object"!=y)&&(!n||"function"!=b&&"object"!=b))return!1;if(null==t||null==n)return t===n;if(b=$.call(t),y=$.call(n),b==v&&(b=x),y==v&&(y=x),b!=y)return!1;switch(b){case O:case C:return+t==+n;case _:return t!=+t?n!=+n:0==t?1/t==1/n:t==+n;case w:case S:return t==n+""}if(y=b==j,!y){if(q.call(t,"__wrapped__")||q.call(n,"__wrapped__"))return c(t.__wrapped__||t,n.__wrapped__||n,u,i,l,s);
+if(b!=x||!V.nodeClass&&(r(t)||r(n)))return!1;var b=!V.argsObject&&a(t)?Object:t.constructor,d=!V.argsObject&&a(n)?Object:n.constructor;if(b!=d&&(!f(b)||!(b instanceof b&&f(d)&&d instanceof d)))return!1}for(d=!l,l||(l=m.pop()||[]),s||(s=m.pop()||[]),b=l.length;b--;)if(l[b]==t)return s[b]==n;var E=0,g=!0;if(l.push(t),s.push(n),y){if(b=t.length,E=n.length,g=E==t.length,!g&&!p)return g;for(;E--;)if(y=b,d=n[E],p)for(;y--&&!(g=c(t[y],d,u,i,l,s)););else if(!(g=c(t[E],d,u,i,l,s)))break;return g}return Y(n,function(r,e,n){return q.call(n,e)?(E++,g=q.call(t,e)&&c(t[e],r,u,i,l,s)):void 0
+}),g&&!p&&Y(t,function(t,r,e){return q.call(e,r)?g=-1<--E:void 0}),d&&(e(l),e(s)),g}function f(t){return typeof t=="function"}function i(t){return!(!t||!A[typeof t])}function l(t){return typeof t=="string"||$.call(t)==S}function s(t,r,e){if(r&&typeof e=="undefined"&&Q(t)){e=-1;for(var n=t.length;++e<n&&false!==r(t[e],e,t););}else X(t,r,e);return t}function p(t){return t}var m=[],g=[],h={},y=40,b=(b=/\bthis\b/)&&b.test(function(){return this})&&b,d="constructor hasOwnProperty isPrototypeOf propertyIsEnumerable toLocaleString toString valueOf".split(" "),v="[object Arguments]",j="[object Array]",O="[object Boolean]",C="[object Date]",E="[object Error]",_="[object Number]",x="[object Object]",w="[object RegExp]",S="[object String]",A={"boolean":!1,"function":!0,object:!0,number:!1,string:!1,undefined:!1},P=A[typeof exports]&&exports,I=A[typeof module]&&module&&module.exports==P&&module,B=A[typeof global]&&global;
+!B||B.global!==B&&B.window!==B||(t=B);var F=Error.prototype,z=Object.prototype,D=String.prototype,B=RegExp("^"+(z.valueOf+"").replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/valueOf|for [^\]]+/g,".+?")+"$"),N=Function.prototype.toString,q=z.hasOwnProperty,R=z.propertyIsEnumerable,$=z.toString,M=B.test(M=$.bind)&&M,T=B.test(T=Object.create)&&T,G=B.test(G=Array.isArray)&&G,H=B.test(H=Object.keys)&&H,T=B.test(t.attachEvent),J=M&&!/\n|true/.test(M+T),L={};L[j]=L[C]=L[_]={constructor:!0,toLocaleString:!0,toString:!0,valueOf:!0},L[O]=L[S]={constructor:!0,toString:!0,valueOf:!0},L[E]=L["[object Function]"]=L[w]={constructor:!0,toString:!0},L[x]={constructor:!0},function(){for(var t=d.length;t--;){var r,e=d[t];
+for(r in L)q.call(L,r)&&!q.call(L[r],e)&&(L[r][e]=!1)}}();var V=o.support={};!function(){var t=function(){this.x=1},r=[];t.prototype={valueOf:1,y:1};for(var e in new t)r.push(e);for(e in arguments);V.argsObject=arguments.constructor==Object&&!(arguments instanceof Array),V.argsClass=a(arguments),V.enumErrorProps=R.call(F,"message")||R.call(F,"name"),V.enumPrototypes=R.call(t,"prototype"),V.fastBind=M&&!J,V.nonEnumArgs=0!=e,V.nonEnumShadows=!/valueOf/.test(r),V.unindexedChars="xx"!="x"[0]+Object("x")[0];
+try{V.nodeClass=!($.call(document)==x&&!({toString:0}+""))}catch(n){V.nodeClass=!0}}(1);var K={a:"x,F,k",h:"var a=arguments,b=0,c=typeof k=='number'?2:a.length;while(++b<c){r=a[b];if(r&&z[typeof r]){",f:"if(typeof C[m]=='undefined')C[m]=r[m]",c:"}}"},T={a:"f,d,I",h:"d=d&&typeof I=='undefined'?d:u.createCallback(d,I)",b:"typeof s=='number'",f:"if(d(r[m],m,f)===false)return C"},B={h:"if(!z[typeof r])return C;"+T.h,b:!1};V.argsClass||(a=function(t){return t?q.call(t,"callee"):!1});var Q=G||function(t){return t?typeof t=="object"&&$.call(t)==j:!1
+},U=u({a:"x",e:"[]",h:"if(!(z[typeof x]))return C",f:"C.push(m)"}),W=H?function(t){return i(t)?V.enumPrototypes&&typeof t=="function"||V.nonEnumArgs&&t.length&&a(t)?U(t):H(t):[]}:U,X=u(T),G=u(K,{h:K.h.replace(";",";if(c>3&&typeof a[c-2]=='function'){var d=u.createCallback(a[--c-1],a[c--],2)}else if(c>2&&typeof a[c-1]=='function'){d=a[--c]}"),f:"C[m]=d?d(C[m],r[m]):r[m]"}),Y=u(T,B,{i:!1});f(/x/)&&(f=function(t){return typeof t=="function"&&"[object Function]"==$.call(t)}),o.assign=G,o.createCallback=function(t,r,e){if(null==t)return p;
+var n=typeof t;if("function"!=n){if("object"!=n)return function(r){return r[t]};var o=W(t);return function(r){for(var e=o.length,n=!1;e--&&(n=c(r[o[e]],t[o[e]],h)););return n}}return typeof r=="undefined"||b&&!b.test(N.call(t))?t:1===e?function(e){return t.call(r,e)}:2===e?function(e,n){return t.call(r,e,n)}:4===e?function(e,n,o,u){return t.call(r,e,n,o,u)}:function(e,n,o){return t.call(r,e,n,o)}},o.forEach=s,o.forIn=Y,o.keys=W,o.each=s,o.extend=G,o.identity=p,o.isArguments=a,o.isArray=Q,o.isEqual=c,o.isFunction=f,o.isObject=i,o.isString=l,o.VERSION="1.3.1",typeof define=="function"&&typeof define.amd=="object"&&define.amd?(t._=o, define(function(){return o
+})):P&&!P.nodeType?I?(I.exports=o)._=o:P._=o:t._=o}(this);
 })(self)
 },{}]},{},[1])(1)
 });

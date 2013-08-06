@@ -9,7 +9,12 @@
       "node-uuid": "1.4.0",
       "jxt": "0.0.7",
       "sdp": "0.0.2",
-      "hostmeta": "0.1.0"
+      "hostmeta": "0.1.0",
+      "saslmechanisms": "",
+      "sasl-plain": "",
+      "sasl-digest-md5": "",
+      "sasl-external": "",
+      "sasl-anonymous": ""
   },
   "devDependencies": {
       "precommit-hook": "0.3.5",
