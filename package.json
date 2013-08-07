@@ -10,11 +10,12 @@
       "jxt": "0.0.7",
       "sdp": "0.0.2",
       "hostmeta": "0.1.0",
-      "saslmechanisms": "",
-      "sasl-plain": "",
-      "sasl-digest-md5": "",
-      "sasl-external": "",
-      "sasl-anonymous": ""
+      "saslmechanisms": "0.1.1",
+      "sasl-external": "0.1.0",
+      "sasl-scram-sha-1": "0.1.0",
+      "sasl-digest-md5": "0.1.0",
+      "sasl-plain": "0.1.0",
+      "sasl-anonymous": "0.1.0"
   },
   "devDependencies": {
       "precommit-hook": "0.3.5",
