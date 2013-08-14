@@ -9,7 +9,7 @@
       "node-uuid": "1.4.0",
       "jxt": "0.0.7",
       "sdp": "0.0.2",
-      "hostmeta": "0.1.0",
+      "hostmeta": "0.1.1",
       "saslmechanisms": "0.1.1",
       "sasl-external": "0.1.0",
       "sasl-scram-sha-1": "0.1.0",
@@ -39,8 +39,5 @@
   "license": "MIT",
   "engines": {
     "node": "0.10.x"
-  },
-  "scripts": {
-      "postinstall": "browserify --standalone XMPP -o build/stanza.io.js index.js && uglifyjs build/stanza.io.js > build/stanza.io.min.js"
   }
 }
