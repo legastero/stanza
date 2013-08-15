@@ -5,6 +5,7 @@ exports.Presence = require('./lib/stanza/presence');
 exports.Iq = require('./lib/stanza/iq');
 
 exports.Client = require('./lib/client');
+exports.crypto = require('crypto');
 
 exports.createClient = function (opts) {
     var client = new exports.Client(opts);
@@ -30,7 +31,7 @@ exports.createClient = function (opts) {
     return client;
 };
 
-},{"./lib/client":2,"./lib/plugins/attention":3,"./lib/plugins/avatar":4,"./lib/plugins/carbons":5,"./lib/plugins/chatstates":6,"./lib/plugins/correction":7,"./lib/plugins/delayed":8,"./lib/plugins/disco":9,"./lib/plugins/forwarding":10,"./lib/plugins/idle":11,"./lib/plugins/invisible":12,"./lib/plugins/mam":13,"./lib/plugins/muc":14,"./lib/plugins/pubsub":15,"./lib/plugins/receipts":16,"./lib/plugins/time":17,"./lib/plugins/version":18,"./lib/plugins/webrtc":19,"./lib/stanza/iq":33,"./lib/stanza/message":35,"./lib/stanza/presence":37}],2:[function(require,module,exports){
+},{"./lib/client":2,"./lib/plugins/attention":3,"./lib/plugins/avatar":4,"./lib/plugins/carbons":5,"./lib/plugins/chatstates":6,"./lib/plugins/correction":7,"./lib/plugins/delayed":8,"./lib/plugins/disco":9,"./lib/plugins/forwarding":10,"./lib/plugins/idle":11,"./lib/plugins/invisible":12,"./lib/plugins/mam":13,"./lib/plugins/muc":14,"./lib/plugins/pubsub":15,"./lib/plugins/receipts":16,"./lib/plugins/time":17,"./lib/plugins/version":18,"./lib/plugins/webrtc":19,"./lib/stanza/iq":33,"./lib/stanza/message":35,"./lib/stanza/presence":37,"crypto":60}],2:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 var _ = require('../vendor/lodash');
 var async = require('async');
@@ -372,8 +373,10 @@ Client.prototype.getCredentials = function () {
     return _.extend(defaultCreds, creds);
 };
 
-Client.prototype.connect = function () {
+Client.prototype.connect = function (opts) {
     var self = this;
+
+    _.extend(self.config, opts || {});
 
     if (self.config.wsURL) {
         return self.conn.connect(self.config);
@@ -530,7 +533,7 @@ module.exports = function (client) {
 
         client.emit('avatar', {
             jid: msg.from,
-            avatars: msg.updated.published[0].avatars
+            avatars: msg.event.updated.published[0].avatars
         });
     });
 
@@ -546,6 +549,10 @@ module.exports = function (client) {
             id: 'current',
             avatars: info
         }, cb);
+    };
+
+    client.getAvatar = function (jid, id, cb) {
+        client.getItem(jid, 'urn:xmpp:avatar:data', id, cb);
     };
 };
 
@@ -726,8 +733,11 @@ function generateVerString(info, hash) {
         hash = 'sha1';
     }
 
-    var ver = crypto.createHash(hash).update(UTF8.encode(S)).digest();
+    var ver = crypto.createHash(hash).update(UTF8.encode(S)).digest('base64');
     var padding = 4 - ver.length % 4;
+    if (padding === 4) {
+        padding = 0;
+    }
 
     for (var i = 0; i < padding; i++) {
         ver += '=';
@@ -3623,7 +3633,7 @@ Roster.prototype = {
         items.forEach(function (item) {
             var data = {
                 jid: stanza.getAttribute(item, 'jid', undefined),
-                _name: stanza.getAttribute(item, 'name', undefined),
+                name: stanza.getAttribute(item, 'name', undefined),
                 subscription: stanza.getAttribute(item, 'subscription', 'none'),
                 ask: stanza.getAttribute(item, 'ask', undefined),
                 groups: []

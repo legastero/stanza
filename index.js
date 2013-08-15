@@ -3,6 +3,7 @@ exports.Presence = require('./lib/stanza/presence');
 exports.Iq = require('./lib/stanza/iq');
 
 exports.Client = require('./lib/client');
+exports.crypto = require('crypto');
 
 exports.createClient = function (opts) {
     var client = new exports.Client(opts);
