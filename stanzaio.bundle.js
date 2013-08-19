@@ -937,6 +937,20 @@ module.exports = function (client) {
         });
     };
 
+    client.getHistoryPreferences = function (cb) {
+        client.sendIq({
+            type: 'get',
+            mamPrefs: {}
+        }, cb);
+    };
+
+    client.setHistoryPreferences = function (opts, cb) {
+        client.sendIq({
+            type: 'set',
+            mamPrefs: opts
+        }, cb);
+    };
+
     client.on('message', function (msg) {
         if (msg._extensions.mam) {
             client.emit('mam:' + msg.mam.queryid, msg);
@@ -2808,6 +2822,66 @@ Archived.prototype = {
     },
     set id(value) {
         stanza.setAttribute(this.xml, 'id', value);
+    }
+};
+
+
+function Prefs(data, xml) {
+    return stanza.init(this, xml, data);
+}
+Prefs.prototype = {
+    constructor: {
+        value: Prefs
+    },
+    NS: 'urn:xmpp:mam:tmp',
+    EL: 'prefs',
+    _name: 'mamPrefs',
+    toString: stanza.toString,
+    toJSON: stanza.toJSON,
+    get default() {
+        return stanza.getAttribute(this.xml, 'default');
+    },
+    set default(value) {
+        stanza.setAttribute(this.xml, 'default', value);
+    },
+    get always() {
+        var results = [];
+        var container = stanza.find(this.xml, this.NS, 'always');
+        if (container.length === 0) {
+            return results;
+        }
+        container = container[0];
+        var jids = stanza.getMultiSubText(container, this.NS, 'jid');
+        jids.forEach(function (jid) {
+            results.push(jid.textContent);
+        });
+        return results;
+    },
+    set always(value) {
+        if (value.length > 0) {
+            var container = stanza.find(this.xml, this.NS, 'always');
+            stanza.setMultiSubText(container, this.NS, 'jid', value);
+        }
+    },
+    get never() {
+        var results = [];
+        var container = stanza.find(this.xml, this.NS, 'always');
+        if (container.length === 0) {
+            return results;
+        }
+        container = container[0];
+        var jids = stanza.getMultiSubText(container, this.NS, 'jid');
+        jids.forEach(function (jid) {
+            results.push(jid.textContent);
+        });
+        return results;
+  
+    },
+    set never(value) {
+        if (value.length > 0) {
+            var container = stanza.find(this.xml, this.NS, 'never');
+            stanza.setMultiSubText(container, this.NS, 'jid', value);
+        }
     }
 };
 
