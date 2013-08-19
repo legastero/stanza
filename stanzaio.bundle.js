@@ -258,9 +258,16 @@ function Client(opts) {
         var exts = Object.keys(iq._extensions);
         var children = iq.xml.childNodes;
 
+        var childCount = 0;
+        _.each(children, function (child) {
+            if (child.nodeType === 1) {
+                childCount += 1;
+            }
+        });
+
         if (iq.type === 'get' || iq.type === 'set') {
             // Invalid request
-            if (children.length != 1) {
+            if (childCount != 1) {
                 return self.sendIq({
                     id: iq.id,
                     type: 'error',
@@ -4590,7 +4597,12 @@ function WSConnection() {
     }
 
     function parse(data) {
-        return (self.parser.parseFromString(data, 'application/xml')).childNodes[0];
+        var nodes = (self.parser.parseFromString(data, 'application/xml')).childNodes;
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].nodeType === 1) {
+                return nodes[i];
+            }
+        }
     }
 
     self.on('connected', function () {
@@ -4609,6 +4621,10 @@ function WSConnection() {
 
         data = data.trim();
         data = data.replace(/^(\s*<\?.*\?>\s*)*/, '');
+        if (data === '') {
+            return;
+        }
+
         if (data.match(self.streamEnd)) {
             return self.disconnect();
         } else if (self.hasStream) {
