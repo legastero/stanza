@@ -175,7 +175,7 @@ function Client(opts) {
         }, function () {
             self.negotiatedFeatures.session = true;
             self.sessionStarted = true;
-            self.emit('session:started');
+            self.emit('session:started', self.jid);
             cb(null, features);
         });
     };
@@ -600,6 +600,16 @@ var stanzas = require('../stanza/chatstates');
 
 module.exports = function (client) {
     client.disco.addFeature('http://jabber.org/protocol/chatstates');
+
+    client.on('message', function (msg) {
+        if (msg.chatState) {
+            client.emit('chatState', {
+                to: msg.to,
+                from: msg.from,
+                chatState: msg.chatState
+            });
+        }
+    });
 };
 
 },{"../stanza/chatstates":26}],7:[function(require,module,exports){
@@ -611,6 +621,7 @@ module.exports = function (client) {
 
     client.on('message', function (msg) {
         if (msg.replace) {
+            client.emit('replace', msg);
             client.emit('replace:' + msg.id, msg);
         }
     });
@@ -2299,7 +2310,7 @@ DelayedDelivery.prototype = {
         stanza.setAttribute(this.xml, 'from', value);
     },
     get stamp() {
-        return new Date(stanza.getAttribute(this.xml, 'stamp'));
+        return new Date(stanza.getAttribute(this.xml, 'stamp') || Date.now());
     },
     set stamp(value) {
         stanza.setAttribute(this.xml, 'stamp', value.toISOString());
@@ -2645,7 +2656,7 @@ Idle.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get since() {
-        return new Date(stanza.getAttribute(this.xml, 'since'));
+        return new Date(stanza.getAttribute(this.xml, 'since') || Date.now());
     },
     set since(value) {
         stanza.setAttribute(this.xml, 'since', value.toISOString());
@@ -2750,13 +2761,13 @@ MAMQuery.prototype = {
         stanza.setAttribute(this.xml, 'queryid', value);
     },
     get start() {
-        return new Date(stanza.getSubText(this.xml, this.NS, 'start') || '');
+        return new Date(stanza.getSubText(this.xml, this.NS, 'start') || Date.now());
     },
     set start(value) {
         stanza.setSubText(this.xml, this.NS, 'start', value.toISOString());
     },
     get end() {
-        return new Date(stanza.getSubText(this.xml, this.NS, 'end') || '');
+        return new Date(stanza.getSubText(this.xml, this.NS, 'end') || Date.now());
     },
     set end(value) {
         stanza.setSubText(this.xml, this.NS, 'end', value.toISOString());
@@ -2838,10 +2849,10 @@ Prefs.prototype = {
     _name: 'mamPrefs',
     toString: stanza.toString,
     toJSON: stanza.toJSON,
-    get default() {
+    get defaultCondition() {
         return stanza.getAttribute(this.xml, 'default');
     },
-    set default(value) {
+    set defaultCondition(value) {
         stanza.setAttribute(this.xml, 'default', value);
     },
     get always() {
@@ -2886,7 +2897,10 @@ Prefs.prototype = {
 };
 
 
+
+
 stanza.extend(Iq, MAMQuery);
+stanza.extend(Iq, Prefs);
 stanza.extend(Message, Result);
 stanza.extend(Message, Archived);
 stanza.extend(Result, Forwarded);
@@ -4506,7 +4520,7 @@ EntityTime.prototype = {
     get utc() {
         var stamp = stanza.getSubText(this.xml, this.NS, 'utc');
         if (stamp) {
-            return new Date(stamp);
+            return new Date(stamp || Date.now());
         }
         return '';
     },
