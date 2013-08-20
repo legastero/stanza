@@ -420,6 +420,8 @@ Client.prototype.sendMessage = function (data) {
     if (!data.id) {
         data.id = this.nextId();
     }
+    var message = new Message(data);
+
     this.send(new Message(data));
 };
 
@@ -3791,7 +3793,11 @@ RSM.prototype = {
         return stanza.getSubText(this.xml, this.NS, 'before');
     },
     set before(value) {
-        stanza.setSubText(this.xml, this.NS, 'before', value);
+        if (value === true) {
+            stanza.findOrCreate(this.xml, this.NS, 'before');
+        } else {
+            stanza.setSubText(this.xml, this.NS, 'before', value);
+        }
     },
     get count() {
         return parseInt(stanza.getSubText(this.xml, this.NS, 'count') || '0', 10);
