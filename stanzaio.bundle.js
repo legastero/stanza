@@ -422,7 +422,10 @@ Client.prototype.sendMessage = function (data) {
     }
     var message = new Message(data);
 
-    this.send(new Message(data));
+    this.emit('message:sent', message);
+    this.send(message);
+
+    return data.id;
 };
 
 Client.prototype.sendPresence = function (data) {
@@ -431,6 +434,8 @@ Client.prototype.sendPresence = function (data) {
         data.id = this.nextId();
     }
     this.send(new Presence(data));
+
+    return data.id;
 };
 
 Client.prototype.sendIq = function (data, cb) {
@@ -449,6 +454,8 @@ Client.prototype.sendIq = function (data, cb) {
         });
     }
     this.send(new Iq(data));
+
+    return data.id;
 };
 
 Client.prototype.getRoster = function (cb) {
