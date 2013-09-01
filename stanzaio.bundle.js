@@ -2818,34 +2818,6 @@ Result.prototype = {
 };
 
 
-function Archived(data, xml) {
-    return stanza.init(this, xml, data);
-}
-Archived.prototype = {
-    constructor: {
-        value: Result
-    },
-    NS: 'urn:xmpp:mam:tmp',
-    EL: 'archived',
-    _name: 'archived',
-    _eventname: 'mam:archived',
-    toString: stanza.toString,
-    toJSON: stanza.toJSON,
-    get by() {
-        return stanza.getAttribute(this.xml, 'by');
-    },
-    set by(value) {
-        stanza.setAttribute(this.xml, 'by', value);
-    },
-    get id() {
-        return stanza.getAttribute(this.xml, 'id');
-    },
-    set id(value) {
-        stanza.setAttribute(this.xml, 'id', value);
-    }
-};
-
-
 function Prefs(data, xml) {
     return stanza.init(this, xml, data);
 }
@@ -2906,12 +2878,22 @@ Prefs.prototype = {
 };
 
 
+Message.prototype.__defineGetter__('archived', function () {
+    var archives = stanza.find(this.xml, this.NS, 'archived');
+    var results = [];
+    archives.forEach(function (archive) {
+        results.push({
+            by: stanza.getAttribute(archive, 'by'),
+            id: stanza.getAttribute(archive, 'id')
+        });
+    });
+    return results;
+});
 
 
 stanza.extend(Iq, MAMQuery);
 stanza.extend(Iq, Prefs);
 stanza.extend(Message, Result);
-stanza.extend(Message, Archived);
 stanza.extend(Result, Forwarded);
 stanza.extend(MAMQuery, RSM);
 
