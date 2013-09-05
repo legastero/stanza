@@ -127,6 +127,12 @@ function Client(opts) {
             self.send(new SASL.Response({
                 value: mech.response(self.getCredentials())
             }));
+
+            if (mech.saltedPassword) {
+                self.config.credentials.saltedPassword = mech.saltedPassword;
+                self.emit('credentials:update', self.config.credentials)
+            }
+
             cb();
         });
         self.on('sasl:failure', 'sasl', function () {
@@ -14400,7 +14406,9 @@ var Buffer=require("__browserify_Buffer").Buffer;//     uuid.js
 
         mech._clientFinalMessageWithoutProof = 'c=' + gs2Header + ',r=' + mech._nonce;
 
-        var saltedPassword = Hi(cred.password, mech._salt, mech._iterationCount);
+        var saltedPassword = cred.saltedPassword || Hi(cred.password, mech._salt, mech._iterationCount);
+        mech.saltedPassword = saltedPassword;
+
         var clientKey = HMAC(saltedPassword, 'Client Key');
         var storedKey = H(clientKey);
         var authMessage = mech._clientFirstMessageBare + ',' +
