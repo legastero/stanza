@@ -128,9 +128,11 @@ function Client(opts) {
                 value: mech.response(self.getCredentials())
             }));
 
-            if (mech.saltedPassword) {
-                self.config.credentials.saltedPassword = mech.saltedPassword;
-                self.emit('credentials:update', self.config.credentials)
+            if (mech.cache) {
+                _.each(mech.cache, function (val, key) {
+                    self.config.credentials[key] = btoa(val);
+                });
+                self.emit('credentials:update', self.config.credentials);
             }
 
             cb();
@@ -383,7 +385,16 @@ Client.prototype.getCredentials = function () {
         serviceName: server
     };
 
-    return _.extend(defaultCreds, creds);
+    var result = _.extend(defaultCreds, creds);
+
+    var cachedBinary = ['saltedPassword', 'clientKey', 'serverKey'];
+    cachedBinary.forEach(function (key) {
+        if (result[key]) {
+            result[key] = atob(result[key]);
+        }
+    });
+
+    return result;
 };
 
 Client.prototype.connect = function (opts) {
@@ -14406,10 +14417,16 @@ var Buffer=require("__browserify_Buffer").Buffer;//     uuid.js
 
         mech._clientFinalMessageWithoutProof = 'c=' + gs2Header + ',r=' + mech._nonce;
 
-        var saltedPassword = cred.saltedPassword || Hi(cred.password, mech._salt, mech._iterationCount);
-        mech.saltedPassword = saltedPassword;
+        var saltedPassword, clientKey, serverKey;
+        if (cred.clientKey && cred.serverKey) {
+            clientKey = cred.clientKey;
+            serverKey = cred.serverKey;
+        } else {
+            saltedPassword = cred.saltedPassword || Hi(cred.password, mech._salt, mech._iterationCount);
+            clientKey = HMAC(saltedPassword, 'Client Key');
+            serverKey = HMAC(saltedPassword, 'Server Key');
+        }
 
-        var clientKey = HMAC(saltedPassword, 'Client Key');
         var storedKey = H(clientKey);
         var authMessage = mech._clientFirstMessageBare + ',' +
                           mech._challenge + ',' + 
@@ -14419,13 +14436,18 @@ var Buffer=require("__browserify_Buffer").Buffer;//     uuid.js
         var xorstuff = XOR(clientKey, clientSignature);
 
         var clientProof = new Buffer(xorstuff, 'binary').toString('base64');
-        var serverKey = HMAC(saltedPassword, 'Server Key');
 
         mech._serverSignature = HMAC(serverKey, authMessage);
 
         var result = mech._clientFinalMessageWithoutProof + ',p=' + clientProof;
 
         mech._stage = 2;
+
+        mech.cache = {
+            saltedPassword: saltedPassword,
+            clientKey: clientKey,
+            serverKey: serverKey
+        };
 
         return result;
     };
