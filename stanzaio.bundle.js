@@ -685,7 +685,7 @@ function verifyVerString(info, hash, check) {
     if (hash === 'sha-1') {
         hash = 'sha1';
     }
-    var computed = this._generatedVerString(info, hash);
+    var computed = generateVerString(info, hash);
     return computed && computed == check;
 }
 
@@ -906,6 +906,9 @@ module.exports = function (client) {
             }
         }));
     });
+
+    client.verifyVerString = verifyVerString;
+    client.generateVerString = generateVerString;
 };
 
 },{"../../vendor/lodash":90,"../stanza/caps":24,"../stanza/disco":29,"crypto":60}],10:[function(require,module,exports){
