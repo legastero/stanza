@@ -9,6 +9,7 @@
       "node-uuid": "1.4.0",
       "jxt": "0.0.7",
       "sdp": "0.0.2",
+      "paddle": "1.0.0",
       "hostmeta": "0.1.1",
       "saslmechanisms": "0.1.1",
       "sasl-external": "0.1.0",
