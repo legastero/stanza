@@ -862,15 +862,25 @@ module.exports = function (client) {
     };
 
     client.updateCaps = function () {
+        var node = this.config.capsNode || 'https://stanza.io';
+        var data = JSON.parse(JSON.stringify({
+            identities: this.disco.identities[''],
+            features: this.disco.features[''],
+            extensions: this.disco.extensions['']
+        }));
+
+        var ver = generateVerString(data, 'sha-1');
+
         this.disco.caps = {
-            node: this.config.capsNode || 'https://stanza.io',
+            node: node,
             hash: 'sha-1',
-            ver: generateVerString({
-                identities: this.disco.identities[''],
-                features: this.disco.features[''],
-                extensions: this.disco.extensions['']
-            }, 'sha-1')
+            ver: ver
         };
+
+        node = node + '#' + ver;
+        this.disco.features[node] = data.features;
+        this.disco.identities[node] = data.identities;
+        this.disco.extensions[node] = data.extensions;
     };
 
     client.on('presence', function (pres) {
