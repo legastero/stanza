@@ -466,16 +466,27 @@ Client.prototype.sendIq = function (data, cb) {
     if (!data.id) {
         data.id = this.nextId();
     }
+
+    var rescb = function () {
+        var called = false;
+        return function (err, result) {
+            if (!called) {
+                called = true;
+                cb(err, result);
+            }
+        };
+    };
+
     if (data.type === 'get' || data.type === 'set') {
         var timeoutCheck = this.timeoutMonitor.insure(function () {
-            cb({type: 'error', error: {condition: 'timeout'}}, null);
+            rescb({type: 'error', error: {condition: 'timeout'}}, null);
         });
         this.once('id:' + data.id, 'session', function (resp) {
             timeoutCheck.check_in();
             if (resp._extensions.error) {
-                cb(resp, null);
+                rescb(resp, null);
             } else {
-                cb(null, resp);
+                rescb(null, resp);
             }
         });
     }
