@@ -873,6 +873,12 @@ module.exports = function (client) {
         };
     };
 
+    client.on('presence', function (pres) {
+        if (pres._extensions.caps) {
+            client.emit('disco:caps', pres);
+        }
+    });
+
     client.on('iq:get:discoInfo', function (iq) {
         var node = iq.discoInfo.node;
         var reportedNode = iq.discoInfo.node;
