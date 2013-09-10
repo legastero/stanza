@@ -31,7 +31,7 @@ exports.createClient = function (opts) {
     return client;
 };
 
-},{"./lib/client":2,"./lib/plugins/attention":3,"./lib/plugins/avatar":4,"./lib/plugins/carbons":5,"./lib/plugins/chatstates":6,"./lib/plugins/correction":7,"./lib/plugins/delayed":8,"./lib/plugins/disco":9,"./lib/plugins/forwarding":10,"./lib/plugins/idle":11,"./lib/plugins/invisible":12,"./lib/plugins/mam":13,"./lib/plugins/muc":14,"./lib/plugins/pubsub":15,"./lib/plugins/receipts":16,"./lib/plugins/time":17,"./lib/plugins/version":18,"./lib/plugins/webrtc":19,"./lib/stanza/iq":33,"./lib/stanza/message":35,"./lib/stanza/presence":37,"crypto":60}],2:[function(require,module,exports){
+},{"./lib/client":2,"./lib/plugins/attention":4,"./lib/plugins/avatar":5,"./lib/plugins/carbons":6,"./lib/plugins/chatstates":7,"./lib/plugins/correction":8,"./lib/plugins/delayed":9,"./lib/plugins/disco":10,"./lib/plugins/forwarding":11,"./lib/plugins/idle":12,"./lib/plugins/invisible":13,"./lib/plugins/mam":14,"./lib/plugins/muc":15,"./lib/plugins/pubsub":16,"./lib/plugins/receipts":17,"./lib/plugins/time":18,"./lib/plugins/version":19,"./lib/plugins/webrtc":20,"./lib/stanza/iq":34,"./lib/stanza/message":36,"./lib/stanza/presence":38,"crypto":61}],2:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 var _ = require('../vendor/lodash');
 var async = require('async');
@@ -41,6 +41,7 @@ var SASL = require('./stanza/sasl');
 var Message = require('./stanza/message');
 var Presence = require('./stanza/presence');
 var Iq = require('./stanza/iq');
+var JID = require('./jid');
 var WSConnection = require('./websocket');
 var getHostMeta = require('hostmeta');
 var SASLFactory = require('saslmechanisms');
@@ -405,6 +406,7 @@ Client.prototype.connect = function (opts) {
 
     // Default iq timeout of 15 seconds
     self.timeoutMonitor = new paddle.Paddle(self.config.timeout || 15);
+    self.timeoutMonitor.start();
 
     if (self.config.wsURL) {
         return self.conn.connect(self.config);
@@ -467,14 +469,12 @@ Client.prototype.sendIq = function (data, cb) {
         data.id = this.nextId();
     }
 
-    var rescb = function () {
-        var called = false;
-        return function (err, result) {
-            if (!called) {
-                called = true;
-                cb(err, result);
-            }
-        };
+    var called = false;
+    var rescb = function (err, result) {
+        if (!called) {
+            called = true;
+            cb(err, result);
+        }
     };
 
     if (data.type === 'get' || data.type === 'set') {
@@ -547,10 +547,91 @@ Client.prototype.denySubscription = function (jid) {
     this.sendPresence({type: 'unsubscribed', to: jid});
 };
 
+Client.prototype.JID = function (jid) {
+    return new JID(jid);
+};
+
 
 module.exports = Client;
 
-},{"../vendor/lodash":91,"./stanza/bind":23,"./stanza/error":30,"./stanza/iq":33,"./stanza/message":35,"./stanza/presence":37,"./stanza/roster":41,"./stanza/sasl":43,"./stanza/session":44,"./stanza/sm":45,"./stanza/stream":46,"./stanza/streamError":47,"./stanza/streamFeatures":48,"./websocket":52,"async":53,"hostmeta":67,"node-uuid":76,"paddle":77,"sasl-anonymous":79,"sasl-digest-md5":81,"sasl-external":83,"sasl-plain":85,"sasl-scram-sha-1":87,"saslmechanisms":89,"wildemitter":90}],3:[function(require,module,exports){
+},{"../vendor/lodash":92,"./jid":3,"./stanza/bind":24,"./stanza/error":31,"./stanza/iq":34,"./stanza/message":36,"./stanza/presence":38,"./stanza/roster":42,"./stanza/sasl":44,"./stanza/session":45,"./stanza/sm":46,"./stanza/stream":47,"./stanza/streamError":48,"./stanza/streamFeatures":49,"./websocket":53,"async":54,"hostmeta":68,"node-uuid":77,"paddle":78,"sasl-anonymous":80,"sasl-digest-md5":82,"sasl-external":84,"sasl-plain":86,"sasl-scram-sha-1":88,"saslmechanisms":90,"wildemitter":91}],3:[function(require,module,exports){
+function JID(jid) {
+    this.jid = jid;
+    this.parts = {};
+}
+
+JID.prototype = {
+    constructor: {
+        value: JID
+    },
+    toString: function () {
+        return this.jid;
+    },
+    get full() {
+        return this.jid;
+    },
+    get bare() {
+        if (this.parts.bare) {
+            return this.parts.bare;
+        }
+
+        var split = this.jid.indexOf('/');
+        if (split > 0) {
+            this.parts.bare = this.jid.slice(0, split);
+        } else {
+            this.parts.bare = this.jid;
+        }
+        return this.parts.bare;
+    },
+    get resource () {
+        if (this.parts.resource) {
+            return this.parts.resource;
+        }
+
+        var split = this.jid.indexOf('/');
+        if (split > 0) {
+            this.parts.resource = this.jid.slice(split + 1);
+        } else {
+            this.parts.resource = '';
+        }
+        return this.parts.resource;
+    },
+    get local() {
+        if (this.parts.local) {
+            return this.parts.local;
+        }
+
+        var bare = this.bare;
+        var split = bare.indexOf('@');
+        if (split > 0) {
+            this.parts.local = bare.slice(0, split);
+        } else {
+            this.parts.local = bare;
+        }
+
+        return this.parts.local;
+    },
+    get domain() {
+        if (this.parts.domain) {
+            return this.parts.domain;
+        }
+
+        var bare = this.bare;
+        var split = bare.indexOf('@');
+        if (split > 0) {
+            this.parts.domain = bare.slice(split + 1);
+        } else {
+            this.parts.domain = bare;
+        }
+
+        return this.parts.domain;
+    }
+};
+
+
+module.exports = JID;
+
+},{}],4:[function(require,module,exports){
 require('../stanza/attention');
 
 
@@ -573,7 +654,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/attention":21}],4:[function(require,module,exports){
+},{"../stanza/attention":22}],5:[function(require,module,exports){
 var stanzas = require('../stanza/avatar');
 
 
@@ -609,7 +690,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/avatar":22}],5:[function(require,module,exports){
+},{"../stanza/avatar":23}],6:[function(require,module,exports){
 var stanzas = require('../stanza/carbons');
 
 
@@ -640,7 +721,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/carbons":25}],6:[function(require,module,exports){
+},{"../stanza/carbons":26}],7:[function(require,module,exports){
 var stanzas = require('../stanza/chatstates');
 
 
@@ -658,7 +739,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/chatstates":26}],7:[function(require,module,exports){
+},{"../stanza/chatstates":27}],8:[function(require,module,exports){
 var stanzas = require('../stanza/replace');
 
 
@@ -673,7 +754,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/replace":40}],8:[function(require,module,exports){
+},{"../stanza/replace":41}],9:[function(require,module,exports){
 var stanzas = require('../stanza/delayed');
 
 
@@ -681,7 +762,7 @@ module.exports = function (client) {
     client.disco.addFeature('urn:xmpp:delay');
 };
 
-},{"../stanza/delayed":28}],9:[function(require,module,exports){
+},{"../stanza/delayed":29}],10:[function(require,module,exports){
 /*global unescape, escape */
 
 var _ = require('../../vendor/lodash');
@@ -901,6 +982,25 @@ module.exports = function (client) {
         this.disco.features[node] = data.features;
         this.disco.identities[node] = data.identities;
         this.disco.extensions[node] = data.extensions;
+
+        return client.getCurrentCaps();
+    };
+
+    client.getCurrentCaps = function () {
+        var caps = client.disco.caps;
+        if (!caps.ver) {
+            return {ver: null, discoInfo: null};
+        }
+
+        var node = caps.node + '#' + caps.ver;
+        return {
+            ver: caps.ver,
+            discoInfo: {
+                identities: client.disco.identities[node],
+                features: client.disco.features[node],
+                extensions: client.disco.extensions[node]
+            }
+        };
     };
 
     client.on('presence', function (pres) {
@@ -941,7 +1041,7 @@ module.exports = function (client) {
     client.generateVerString = generateVerString;
 };
 
-},{"../../vendor/lodash":91,"../stanza/caps":24,"../stanza/disco":29,"crypto":60}],10:[function(require,module,exports){
+},{"../../vendor/lodash":92,"../stanza/caps":25,"../stanza/disco":30,"crypto":61}],11:[function(require,module,exports){
 var stanzas = require('../stanza/forwarded');
 
 
@@ -949,7 +1049,7 @@ module.exports = function (client) {
     client.disco.addFeature('urn:xmpp:forward:0');
 };
 
-},{"../stanza/forwarded":31}],11:[function(require,module,exports){
+},{"../stanza/forwarded":32}],12:[function(require,module,exports){
 var stanzas = require('../stanza/idle');
 
 
@@ -957,7 +1057,7 @@ module.exports = function (client) {
     client.disco.addFeature('urn:xmpp:idle:0');
 };
 
-},{"../stanza/idle":32}],12:[function(require,module,exports){
+},{"../stanza/idle":33}],13:[function(require,module,exports){
 require('../stanza/visibility');
 
 
@@ -977,7 +1077,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/visibility":51}],13:[function(require,module,exports){
+},{"../stanza/visibility":52}],14:[function(require,module,exports){
 var stanzas = require('../stanza/mam');
 
 
@@ -1034,7 +1134,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/mam":34}],14:[function(require,module,exports){
+},{"../stanza/mam":35}],15:[function(require,module,exports){
 require('../stanza/muc');
 
 
@@ -1056,7 +1156,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/muc":36}],15:[function(require,module,exports){
+},{"../stanza/muc":37}],16:[function(require,module,exports){
 var stanzas = require('../stanza/pubsub');
 
 
@@ -1187,7 +1287,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/pubsub":38}],16:[function(require,module,exports){
+},{"../stanza/pubsub":39}],17:[function(require,module,exports){
 var stanzas = require('../stanza/receipts');
 
 
@@ -1215,7 +1315,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/receipts":39}],17:[function(require,module,exports){
+},{"../stanza/receipts":40}],18:[function(require,module,exports){
 var stanzas = require('../stanza/time');
 
 
@@ -1241,7 +1341,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/time":49}],18:[function(require,module,exports){
+},{"../stanza/time":50}],19:[function(require,module,exports){
 require('../stanza/version');
 
 
@@ -1265,7 +1365,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/version":50}],19:[function(require,module,exports){
+},{"../stanza/version":51}],20:[function(require,module,exports){
 var uuid = require('node-uuid');
 
 // normalize environment
@@ -1635,7 +1735,7 @@ module.exports = function (client) {
     client.webrtc = new WebRTC(client);
 };
 
-},{"node-uuid":76}],20:[function(require,module,exports){
+},{"node-uuid":77}],21:[function(require,module,exports){
 var SM = require('./stanza/sm');
 var MAX_SEQ = Math.pow(2, 32);
 
@@ -1743,7 +1843,7 @@ StreamManagement.prototype = {
 
 module.exports = StreamManagement;
 
-},{"./stanza/sm":45}],21:[function(require,module,exports){
+},{"./stanza/sm":46}],22:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -1779,7 +1879,7 @@ stanza.extend(Message, Attention);
 
 module.exports = Attention;
 
-},{"./message":35,"jxt":74}],22:[function(require,module,exports){
+},{"./message":36,"jxt":75}],23:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 var Item = require('./pubsub').Item;
@@ -1882,10 +1982,11 @@ Avatar.prototype = {
 
 module.exports = Avatar;
 
-},{"../../vendor/lodash":91,"./pubsub":38,"jxt":74}],23:[function(require,module,exports){
+},{"../../vendor/lodash":92,"./pubsub":39,"jxt":75}],24:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var StreamFeatures = require('./streamFeatures');
+var JID = require('../jid');
 
 
 function Bind(data, xml) {
@@ -1904,13 +2005,13 @@ Bind.prototype = {
         return stanza.getSubText(this.xml, this.NS, 'resource');
     },
     set resource(value) {
-        stanza.setSubText(this.xml, this.NS, 'resource');
+        stanza.setSubText(this.xml, this.NS, 'resource', value);
     },
     get jid() {
-        return stanza.getSubText(this.xml, this.NS, 'jid');
+        return new JID(stanza.getSubText(this.xml, this.NS, 'jid'));
     },
     set jid(value) {
-        stanza.setSubText(this.xml, this.NS, 'jid');
+        stanza.setSubText(this.xml, this.NS, 'jid', value.toString());
     }
 };
 
@@ -1921,7 +2022,7 @@ stanza.extend(StreamFeatures, Bind);
 
 module.exports = Bind;
 
-},{"./iq":33,"./streamFeatures":48,"jxt":74}],24:[function(require,module,exports){
+},{"../jid":3,"./iq":34,"./streamFeatures":49,"jxt":75}],25:[function(require,module,exports){
 var stanza = require('jxt');
 var Presence = require('./presence');
 var StreamFeatures = require('./streamFeatures');
@@ -1972,7 +2073,7 @@ stanza.extend(StreamFeatures, Caps);
 
 module.exports = Caps;
 
-},{"./presence":37,"./streamFeatures":48,"jxt":74}],25:[function(require,module,exports){
+},{"./presence":38,"./streamFeatures":49,"jxt":75}],26:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Iq = require('./iq');
@@ -2072,7 +2173,7 @@ exports.Private = Private;
 exports.Enable = Enable;
 exports.Disable = Disable;
 
-},{"./forwarded":31,"./iq":33,"./message":35,"jxt":74}],26:[function(require,module,exports){
+},{"./forwarded":32,"./iq":34,"./message":36,"jxt":75}],27:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -2190,7 +2291,7 @@ Message.prototype.__defineSetter__('chatState', function (value) {
     }
 });
 
-},{"./message":35,"jxt":74}],27:[function(require,module,exports){
+},{"./message":36,"jxt":75}],28:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 var Message = require('./message');
@@ -2350,10 +2451,11 @@ stanza.extend(Message, DataForm);
 exports.DataForm = DataForm;
 exports.Field = Field;
 
-},{"../../vendor/lodash":91,"./message":35,"jxt":74}],28:[function(require,module,exports){
+},{"../../vendor/lodash":92,"./message":36,"jxt":75}],29:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
+var JID = require('../jid');
 
 
 function DelayedDelivery(data, xml) {
@@ -2369,10 +2471,10 @@ DelayedDelivery.prototype = {
     toString: stanza.toString,
     toJSON: stanza.toJSON,
     get from() {
-        return stanza.getAttribute(this.xml, 'from');
+        return new JID(stanza.getAttribute(this.xml, 'from'));
     },
     set from(value) {
-        stanza.setAttribute(this.xml, 'from', value);
+        stanza.setAttribute(this.xml, 'from', value.toString());
     },
     get stamp() {
         return new Date(stanza.getAttribute(this.xml, 'stamp') || Date.now());
@@ -2395,12 +2497,13 @@ stanza.extend(Presence, DelayedDelivery);
 
 module.exports = DelayedDelivery;
 
-},{"./message":35,"./presence":37,"jxt":74}],29:[function(require,module,exports){
+},{"../jid":3,"./message":36,"./presence":38,"jxt":75}],30:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 var Iq = require('./iq');
 var RSM = require('./rsm');
 var DataForm = require('./dataforms').DataForm;
+var JID = require('../jid');
 
 
 function DiscoInfo(data, xml) {
@@ -2523,7 +2626,7 @@ DiscoItems.prototype = {
         var items = stanza.find(this.xml, this.NS, 'item');
         items.forEach(function (item) {
             result.push({
-                jid: stanza.getAttribute(item, 'jid'),
+                jid: new JID(stanza.getAttribute(item, 'jid')),
                 node: stanza.getAttribute(item, 'node'),
                 name: stanza.getAttribute(item, 'name')
             });
@@ -2539,7 +2642,7 @@ DiscoItems.prototype = {
         });
         values.forEach(function (value) {
             var item = document.createElementNS(self.NS, 'item');
-            stanza.setAttribute(item, 'jid', value.jid);
+            stanza.setAttribute(item, 'jid', value.jid.toString());
             stanza.setAttribute(item, 'node', value.node);
             stanza.setAttribute(item, 'name', value.name);
             self.xml.appendChild(item);
@@ -2555,12 +2658,13 @@ stanza.extend(DiscoItems, RSM);
 exports.DiscoInfo = DiscoInfo;
 exports.DiscoItems = DiscoItems;
 
-},{"../../vendor/lodash":91,"./dataforms":27,"./iq":33,"./rsm":42,"jxt":74}],30:[function(require,module,exports){
+},{"../../vendor/lodash":92,"../jid":3,"./dataforms":28,"./iq":34,"./rsm":43,"jxt":75}],31:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
 var Iq = require('./iq');
+var JID = require('../jid');
 
 
 function Error(data, xml) {
@@ -2646,10 +2750,10 @@ Error.prototype = {
         stanza.setAttribute(this.xml, 'type', value);
     },
     get by() {
-        return stanza.getAttribute(this.xml, 'by');
+        return new JID(stanza.getAttribute(this.xml, 'by'));
     },
     set by(value) {
-        stanza.setAttribute(this.xml, 'by', value);
+        stanza.setAttribute(this.xml, 'by', value.toString());
     },
     get $text() {
         return stanza.getSubLangText(this.xml, this._ERR_NS, 'text', this.lang);
@@ -2670,7 +2774,7 @@ stanza.extend(Iq, Error);
 
 module.exports = Error;
 
-},{"../../vendor/lodash":91,"./iq":33,"./message":35,"./presence":37,"jxt":74}],31:[function(require,module,exports){
+},{"../../vendor/lodash":92,"../jid":3,"./iq":34,"./message":36,"./presence":38,"jxt":75}],32:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -2703,7 +2807,7 @@ stanza.extend(Forwarded, DelayedDelivery);
 
 module.exports = Forwarded;
 
-},{"./delayed":28,"./iq":33,"./message":35,"./presence":37,"jxt":74}],32:[function(require,module,exports){
+},{"./delayed":29,"./iq":34,"./message":36,"./presence":38,"jxt":75}],33:[function(require,module,exports){
 var stanza = require('jxt');
 var Presence = require('./presence');
 
@@ -2734,8 +2838,9 @@ stanza.extend(Presence, Idle);
 
 module.exports = Idle;
 
-},{"./presence":37,"jxt":74}],33:[function(require,module,exports){
+},{"./presence":38,"jxt":75}],34:[function(require,module,exports){
 var stanza = require('jxt');
+var JID = require('../jid');
 
 
 function Iq(data, xml) {
@@ -2775,16 +2880,16 @@ Iq.prototype = {
         stanza.setAttribute(this.xml, 'id', value);
     },
     get to() {
-        return stanza.getAttribute(this.xml, 'to');
+        return new JID(stanza.getAttribute(this.xml, 'to'));
     },
     set to(value) {
-        stanza.setAttribute(this.xml, 'to', value);
+        stanza.setAttribute(this.xml, 'to', value.toString());
     },
     get from() {
-        return stanza.getAttribute(this.xml, 'from');
+        return new JID(stanza.getAttribute(this.xml, 'from'));
     },
     set from(value) {
-        stanza.setAttribute(this.xml, 'from', value);
+        stanza.setAttribute(this.xml, 'from', value.toString());
     },
     get type() {
         return stanza.getAttribute(this.xml, 'type');
@@ -2799,12 +2904,13 @@ stanza.topLevel(Iq);
 
 module.exports = Iq;
 
-},{"jxt":74}],34:[function(require,module,exports){
+},{"../jid":3,"jxt":75}],35:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Iq = require('./iq');
 var Forwarded = require('./forwarded');
 var RSM = require('./rsm');
+var JID = require('../jid');
 
 
 function MAMQuery(data, xml) {
@@ -2901,7 +3007,7 @@ Prefs.prototype = {
         container = container[0];
         var jids = stanza.getMultiSubText(container, this.NS, 'jid');
         jids.forEach(function (jid) {
-            results.push(jid.textContent);
+            results.push(new JID(jid.textContent));
         });
         return results;
     },
@@ -2920,7 +3026,7 @@ Prefs.prototype = {
         container = container[0];
         var jids = stanza.getMultiSubText(container, this.NS, 'jid');
         jids.forEach(function (jid) {
-            results.push(jid.textContent);
+            results.push(new JID(jid.textContent));
         });
         return results;
   
@@ -2939,7 +3045,7 @@ Message.prototype.__defineGetter__('archived', function () {
     var results = [];
     archives.forEach(function (archive) {
         results.push({
-            by: stanza.getAttribute(archive, 'by'),
+            by: new JID(stanza.getAttribute(archive, 'by')),
             id: stanza.getAttribute(archive, 'id')
         });
     });
@@ -2956,9 +3062,10 @@ stanza.extend(MAMQuery, RSM);
 exports.MAMQuery = MAMQuery;
 exports.Result = Result;
 
-},{"./forwarded":31,"./iq":33,"./message":35,"./rsm":42,"jxt":74}],35:[function(require,module,exports){
+},{"../jid":3,"./forwarded":32,"./iq":34,"./message":36,"./rsm":43,"jxt":75}],36:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
+var JID = require('../jid');
 
 
 function Message(data, xml) {
@@ -2986,16 +3093,16 @@ Message.prototype = {
         stanza.setAttribute(this.xml, 'id', value);
     },
     get to() {
-        return stanza.getAttribute(this.xml, 'to');
+        return new JID(stanza.getAttribute(this.xml, 'to'));
     },
     set to(value) {
-        stanza.setAttribute(this.xml, 'to', value);
+        stanza.setAttribute(this.xml, 'to', value.toString());
     },
     get from() {
-        return stanza.getAttribute(this.xml, 'from');
+        return new JID(stanza.getAttribute(this.xml, 'from'));
     },
     set from(value) {
-        stanza.setAttribute(this.xml, 'from', value);
+        stanza.setAttribute(this.xml, 'from', value.toString());
     },
     get type() {
         return stanza.getAttribute(this.xml, 'type', 'normal');
@@ -3032,7 +3139,7 @@ stanza.topLevel(Message);
 
 module.exports = Message;
 
-},{"../../vendor/lodash":91,"jxt":74}],36:[function(require,module,exports){
+},{"../../vendor/lodash":92,"../jid":3,"jxt":75}],37:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -3116,9 +3223,10 @@ stanza.extend(Presence, MUCJoin);
 
 exports.MUCJoin = MUCJoin;
 
-},{"./iq":33,"./message":35,"./presence":37,"jxt":74}],37:[function(require,module,exports){
+},{"./iq":34,"./message":36,"./presence":38,"jxt":75}],38:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
+var JID = require('../jid');
 
 
 function Presence(data, xml) {
@@ -3146,16 +3254,16 @@ Presence.prototype = {
         stanza.setAttribute(this.xml, 'id', value);
     },
     get to() {
-        return stanza.getAttribute(this.xml, 'to');
+        return new JID(stanza.getAttribute(this.xml, 'to'));
     },
     set to(value) {
-        stanza.setAttribute(this.xml, 'to', value);
+        stanza.setAttribute(this.xml, 'to', value.toString());
     },
     get from() {
-        return stanza.getAttribute(this.xml, 'from');
+        return new JID(stanza.getAttribute(this.xml, 'from'));
     },
     set from(value) {
-        stanza.setAttribute(this.xml, 'from', value);
+        stanza.setAttribute(this.xml, 'from', value.toString());
     },
     get type() {
         return stanza.getAttribute(this.xml, 'type', 'available');
@@ -3195,13 +3303,14 @@ stanza.topLevel(Presence);
 
 module.exports = Presence;
 
-},{"../../vendor/lodash":91,"jxt":74}],38:[function(require,module,exports){
+},{"../../vendor/lodash":92,"../jid":3,"jxt":75}],39:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 var Iq = require('./iq');
 var Message = require('./message');
 var Form = require('./dataforms').DataForm;
 var RSM = require('./rsm');
+var JID = require('../jid');
 
 
 function Pubsub(data, xml) {
@@ -3331,10 +3440,10 @@ Subscribe.prototype = {
         stanza.setAttribute(this.xml, 'node', value);
     },
     get jid() {
-        return stanza.getAttribute(this.xml, 'jid');
+        return new JID(stanza.getAttribute(this.xml, 'jid'));
     },
     set jid(value) {
-        stanza.setAttribute(this.xml, 'jid', value);
+        stanza.setAttribute(this.xml, 'jid', value.toString());
     }
 };
 
@@ -3358,10 +3467,10 @@ Subscription.prototype = {
         stanza.setAttribute(this.xml, 'node', value);
     },
     get jid() {
-        return stanza.getAttribute(this.xml, 'jid');
+        return new JID(stanza.getAttribute(this.xml, 'jid'));
     },
     set jid(value) {
-        stanza.setAttribute(this.xml, 'jid', value);
+        stanza.setAttribute(this.xml, 'jid', value.toString());
     },
     get subid() {
         return stanza.getAttribute(this.xml, 'subid');
@@ -3397,10 +3506,10 @@ Unsubscribe.prototype = {
         stanza.setAttribute(this.xml, 'node', value);
     },
     get jid() {
-        return stanza.getAttribute(this.xml, 'jid');
+        return new JID(stanza.getAttribute(this.xml, 'jid'));
     },
     set jid(value) {
-        stanza.setAttribute(this.xml, 'jid', value);
+        stanza.setAttribute(this.xml, 'jid', value.toString());
     }
 };
 
@@ -3633,7 +3742,7 @@ exports.Pubsub = Pubsub;
 exports.Item = Item;
 exports.EventItem = EventItem;
 
-},{"../../vendor/lodash":91,"./dataforms":27,"./iq":33,"./message":35,"./rsm":42,"jxt":74}],39:[function(require,module,exports){
+},{"../../vendor/lodash":92,"../jid":3,"./dataforms":28,"./iq":34,"./message":36,"./rsm":43,"jxt":75}],40:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -3693,7 +3802,7 @@ stanza.extend(Message, Request);
 exports.Request = Request;
 exports.Received = Received;
 
-},{"./message":35,"jxt":74}],40:[function(require,module,exports){
+},{"./message":36,"jxt":75}],41:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -3739,10 +3848,11 @@ Message.prototype.__defineSetter__('replace', function (value) {
 
 module.exports = Replace;
 
-},{"./message":35,"jxt":74}],41:[function(require,module,exports){
+},{"./message":36,"jxt":75}],42:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 var Iq = require('./iq');
+var JID = require('../jid');
 
 
 function Roster(data, xml) {
@@ -3774,7 +3884,7 @@ Roster.prototype = {
         var results = [];
         items.forEach(function (item) {
             var data = {
-                jid: stanza.getAttribute(item, 'jid', undefined),
+                jid: new JID(stanza.getAttribute(item, 'jid', '')),
                 name: stanza.getAttribute(item, 'name', undefined),
                 subscription: stanza.getAttribute(item, 'subscription', 'none'),
                 ask: stanza.getAttribute(item, 'ask', undefined),
@@ -3792,7 +3902,7 @@ Roster.prototype = {
         var self = this;
         values.forEach(function (value) {
             var item = document.createElementNS(self.NS, 'item');
-            stanza.setAttribute(item, 'jid', value.jid);
+            stanza.setAttribute(item, 'jid', value.jid.toString());
             stanza.setAttribute(item, 'name', value.name);
             stanza.setAttribute(item, 'subscription', value.subscription);
             stanza.setAttribute(item, 'ask', value.ask);
@@ -3812,7 +3922,7 @@ stanza.extend(Iq, Roster);
 
 module.exports = Roster;
 
-},{"../../vendor/lodash":91,"./iq":33,"jxt":74}],42:[function(require,module,exports){
+},{"../../vendor/lodash":92,"../jid":3,"./iq":34,"jxt":75}],43:[function(require,module,exports){
 var stanza = require('jxt');
 
 
@@ -3885,7 +3995,7 @@ RSM.prototype = {
 
 module.exports = RSM;
 
-},{"jxt":74}],43:[function(require,module,exports){
+},{"jxt":75}],44:[function(require,module,exports){
 var stanza = require('jxt');
 var _ = require('../../vendor/lodash');
 var StreamFeatures = require('./streamFeatures');
@@ -4130,7 +4240,7 @@ exports.Success = Success;
 exports.Failure = Failure;
 exports.Abort = Abort;
 
-},{"../../vendor/lodash":91,"./streamFeatures":48,"jxt":74}],44:[function(require,module,exports){
+},{"../../vendor/lodash":92,"./streamFeatures":49,"jxt":75}],45:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var StreamFeatures = require('./streamFeatures');
@@ -4157,7 +4267,7 @@ stanza.extend(Iq, Session);
 
 module.exports = Session;
 
-},{"./iq":33,"./streamFeatures":48,"jxt":74}],45:[function(require,module,exports){
+},{"./iq":34,"./streamFeatures":49,"jxt":75}],46:[function(require,module,exports){
 var stanza = require('jxt');
 var StreamFeatures = require('./streamFeatures');
 
@@ -4356,8 +4466,9 @@ exports.Failed = Failed;
 exports.Ack = Ack;
 exports.Request = Request;
 
-},{"./streamFeatures":48,"jxt":74}],46:[function(require,module,exports){
+},{"./streamFeatures":49,"jxt":75}],47:[function(require,module,exports){
 var stanza = require('jxt');
+var JID = require('../jid');
 
 
 function Stream(data, xml) {
@@ -4391,22 +4502,22 @@ Stream.prototype = {
         stanza.setAttribute(this.xml, 'version', value);
     },
     get to() {
-        return stanza.getAttribute(this.xml, 'to');
+        return new JID(stanza.getAttribute(this.xml, 'to'));
     },
     set to(value) {
-        stanza.setAttribute(this.xml, 'to', value);
+        stanza.setAttribute(this.xml, 'to', value.toString());
     },
     get from() {
-        return stanza.getAttribute(this.xml, 'from');
+        return new JID(stanza.getAttribute(this.xml, 'from'));
     },
     set from(value) {
-        stanza.setAttribute(this.xml, 'from', value);
+        stanza.setAttribute(this.xml, 'from', value.toString());
     }
 }; 
 
 module.exports = Stream;
 
-},{"jxt":74}],47:[function(require,module,exports){
+},{"../jid":3,"jxt":75}],48:[function(require,module,exports){
 var _ = require('../../vendor/lodash');
 var stanza = require('jxt');
 
@@ -4491,7 +4602,7 @@ stanza.topLevel(StreamError);
 
 module.exports = StreamError;
 
-},{"../../vendor/lodash":91,"jxt":74}],48:[function(require,module,exports){
+},{"../../vendor/lodash":92,"jxt":75}],49:[function(require,module,exports){
 var stanza = require('jxt');
 
 
@@ -4518,7 +4629,7 @@ stanza.topLevel(StreamFeatures);
 
 module.exports = StreamFeatures;
 
-},{"jxt":74}],49:[function(require,module,exports){
+},{"jxt":75}],50:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -4585,7 +4696,7 @@ stanza.extend(Iq, EntityTime);
 
 module.exports = EntityTime;
 
-},{"./iq":33,"jxt":74}],50:[function(require,module,exports){
+},{"./iq":34,"jxt":75}],51:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -4628,7 +4739,7 @@ stanza.extend(Iq, Version);
 
 module.exports = Version;
 
-},{"./iq":33,"jxt":74}],51:[function(require,module,exports){
+},{"./iq":34,"jxt":75}],52:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -4696,7 +4807,7 @@ stanza.extend(Iq, Invisible);
 exports.Visible = Visible;
 exports.Invisible = Invisible;
 
-},{"./iq":33,"jxt":74}],52:[function(require,module,exports){
+},{"./iq":34,"jxt":75}],53:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 var _ = require('../vendor/lodash');
 var async = require('async');
@@ -4884,7 +4995,7 @@ WSConnection.prototype.send = function (data) {
 
 module.exports = WSConnection;
 
-},{"../vendor/lodash":91,"./sm":20,"./stanza/iq":33,"./stanza/message":35,"./stanza/presence":37,"./stanza/stream":46,"async":53,"node-uuid":76,"wildemitter":90}],53:[function(require,module,exports){
+},{"../vendor/lodash":92,"./sm":21,"./stanza/iq":34,"./stanza/message":36,"./stanza/presence":38,"./stanza/stream":47,"async":54,"node-uuid":77,"wildemitter":91}],54:[function(require,module,exports){
 var process=require("__browserify_process");/*global setImmediate: false, setTimeout: false, console: false */
 (function () {
 
@@ -5841,7 +5952,7 @@ var process=require("__browserify_process");/*global setImmediate: false, setTim
 
 }());
 
-},{"__browserify_process":66}],54:[function(require,module,exports){
+},{"__browserify_process":67}],55:[function(require,module,exports){
 // UTILITY
 var util = require('util');
 var Buffer = require("buffer").Buffer;
@@ -6155,7 +6266,7 @@ assert.doesNotThrow = function(block, /*optional*/error, /*optional*/message) {
 
 assert.ifError = function(err) { if (err) {throw err;}};
 
-},{"buffer":58,"util":56}],55:[function(require,module,exports){
+},{"buffer":59,"util":57}],56:[function(require,module,exports){
 var process=require("__browserify_process");if (!process.EventEmitter) process.EventEmitter = function () {};
 
 var EventEmitter = exports.EventEmitter = process.EventEmitter;
@@ -6351,7 +6462,7 @@ EventEmitter.listenerCount = function(emitter, type) {
   return ret;
 };
 
-},{"__browserify_process":66}],56:[function(require,module,exports){
+},{"__browserify_process":67}],57:[function(require,module,exports){
 var events = require('events');
 
 exports.isArray = isArray;
@@ -6698,7 +6809,7 @@ exports.format = function(f) {
   return str;
 };
 
-},{"events":55}],57:[function(require,module,exports){
+},{"events":56}],58:[function(require,module,exports){
 exports.readIEEE754 = function(buffer, offset, isBE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -6784,7 +6895,7 @@ exports.writeIEEE754 = function(buffer, value, offset, isBE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 var assert = require('assert');
 exports.Buffer = Buffer;
 exports.SlowBuffer = Buffer;
@@ -7867,7 +7978,7 @@ Buffer.prototype.writeDoubleBE = function(value, offset, noAssert) {
   writeDouble(this, value, offset, true, noAssert);
 };
 
-},{"./buffer_ieee754":57,"assert":54,"base64-js":59}],59:[function(require,module,exports){
+},{"./buffer_ieee754":58,"assert":55,"base64-js":60}],60:[function(require,module,exports){
 (function (exports) {
 	'use strict';
 
@@ -7953,7 +8064,7 @@ Buffer.prototype.writeDoubleBE = function(value, offset, noAssert) {
 	module.exports.fromByteArray = uint8ToBase64;
 }());
 
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 var Buffer = require('buffer').Buffer
 var sha = require('./sha')
 var sha256 = require('./sha256')
@@ -8083,7 +8194,7 @@ each(['createCredentials'
   }
 })
 
-},{"./md5":61,"./rng":62,"./sha":63,"./sha256":64,"buffer":58}],61:[function(require,module,exports){
+},{"./md5":62,"./rng":63,"./sha":64,"./sha256":65,"buffer":59}],62:[function(require,module,exports){
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
  * Digest Algorithm, as defined in RFC 1321.
@@ -8348,7 +8459,7 @@ exports.hex_hmac_md5 = hex_hmac_md5;
 exports.b64_hmac_md5 = b64_hmac_md5;
 exports.bin_hmac_md5 = str_hmac_md5;
 
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 // Original code adapted from Robert Kieffer.
 // details at https://github.com/broofa/node-uuid
 (function() {
@@ -8386,7 +8497,7 @@ exports.bin_hmac_md5 = str_hmac_md5;
 
 }())
 
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -8598,7 +8709,7 @@ function binb2b64(binarray)
 }
 
 
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -8774,7 +8885,7 @@ var core_hmac_sha256 = function(key, data) {
 };
 
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 require=(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){
 // UTILITY
 var util = require('util');
@@ -12636,7 +12747,7 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 },{}]},{},[])
 ;;module.exports=require("buffer-browserify")
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -12690,7 +12801,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 var _ = require('./vendor/lodash');
 var async = require('async');
 var jxt = require('jxt');
@@ -12803,7 +12914,7 @@ module.exports = function (opts, cb) {
     });
 };
 
-},{"./vendor/lodash":73,"async":53,"jxt":68,"xhr":70}],68:[function(require,module,exports){
+},{"./vendor/lodash":74,"async":54,"jxt":69,"xhr":71}],69:[function(require,module,exports){
 var _ = require('./vendor/lodash');
 var serializer = new XMLSerializer();
 var XML_NS = 'http://www.w3.org/XML/1998/namespace';
@@ -13138,7 +13249,7 @@ exports.TOP_LEVEL_LOOKUP = TOP_LEVEL_LOOKUP;
 exports.LOOKUP_EXT = LOOKUP_EXT;
 exports.LOOKUP = LOOKUP;
 
-},{"./vendor/lodash":69}],69:[function(require,module,exports){
+},{"./vendor/lodash":70}],70:[function(require,module,exports){
 var global=self;/**
  * @license
  * Lo-Dash 1.3.1 (Custom Build) lodash.com/license
@@ -13158,7 +13269,7 @@ try{K.nodeClass=!(M.call(document)==w&&!({toString:0}+""))}catch(n){K.nodeClass=
 },W=u({a:"x",e:"[]",h:"if(!(z[typeof x]))return C",f:"C.push(m)"}),X=J?function(t){return i(t)?K.enumPrototypes&&typeof t=="function"||K.nonEnumArgs&&t.length&&a(t)?W(t):J(t):[]}:W,Y=u(G),H=u(Q,{h:Q.h.replace(";",";if(c>3&&typeof a[c-2]=='function'){var d=u.createCallback(a[--c-1],a[c--],2)}else if(c>2&&typeof a[c-1]=='function'){d=a[--c]}"),f:"C[m]=d?d(C[m],r[m]):r[m]"}),Z=u(G,F,{i:!1});f(/x/)&&(f=function(t){return typeof t=="function"&&"[object Function]"==M.call(t)}),o.assign=H,o.createCallback=function(t,r,e){if(null==t)return m;
 var n=typeof t;if("function"!=n){if("object"!=n)return function(r){return r[t]};var o=X(t);return function(r){for(var e=o.length,n=!1;e--&&(n=c(r[o[e]],t[o[e]],b)););return n}}return typeof r=="undefined"||d&&!d.test(q.call(t))?t:1===e?function(e){return t.call(r,e)}:2===e?function(e,n){return t.call(r,e,n)}:4===e?function(e,n,o,u){return t.call(r,e,n,o,u)}:function(e,n,o){return t.call(r,e,n,o)}},o.filter=s,o.forEach=p,o.forIn=Z,o.keys=X,o.each=p,o.extend=H,o.select=s,o.identity=m,o.isArguments=a,o.isArray=U,o.isEqual=c,o.isFunction=f,o.isObject=i,o.isString=l,o.VERSION="1.3.1",typeof define=="function"&&typeof define.amd=="object"&&define.amd?(t._=o, define(function(){return o
 })):I&&!I.nodeType?B?(B.exports=o)._=o:I._=o:t._=o}(this);
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 var window = require("global/window")
 var once = require("once")
 
@@ -13262,7 +13373,7 @@ function createXHR(options, callback) {
 
 function noop() {}
 
-},{"global/window":71,"once":72}],71:[function(require,module,exports){
+},{"global/window":72,"once":73}],72:[function(require,module,exports){
 var global=self;if (typeof window !== "undefined") {
     module.exports = window
 } else if (typeof global !== "undefined") {
@@ -13271,7 +13382,7 @@ var global=self;if (typeof window !== "undefined") {
     module.exports = {}
 }
 
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 module.exports = once
 
 once.proto = once(function () {
@@ -13292,7 +13403,7 @@ function once (fn) {
   }
 }
 
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 var global=self;/**
  * @license
  * Lo-Dash 1.3.1 (Custom Build) lodash.com/license
@@ -13311,7 +13422,7 @@ try{V.nodeClass=!($.call(document)==x&&!({toString:0}+""))}catch(n){V.nodeClass=
 },U=u({a:"x",e:"[]",h:"if(!(z[typeof x]))return C",f:"C.push(m)"}),W=H?function(t){return i(t)?V.enumPrototypes&&typeof t=="function"||V.nonEnumArgs&&t.length&&a(t)?U(t):H(t):[]}:U,X=u(T),G=u(K,{h:K.h.replace(";",";if(c>3&&typeof a[c-2]=='function'){var d=u.createCallback(a[--c-1],a[c--],2)}else if(c>2&&typeof a[c-1]=='function'){d=a[--c]}"),f:"C[m]=d?d(C[m],r[m]):r[m]"}),Y=u(T,B,{i:!1});f(/x/)&&(f=function(t){return typeof t=="function"&&"[object Function]"==$.call(t)}),o.assign=G,o.createCallback=function(t,r,e){if(null==t)return p;
 var n=typeof t;if("function"!=n){if("object"!=n)return function(r){return r[t]};var o=W(t);return function(r){for(var e=o.length,n=!1;e--&&(n=c(r[o[e]],t[o[e]],h)););return n}}return typeof r=="undefined"||b&&!b.test(N.call(t))?t:1===e?function(e){return t.call(r,e)}:2===e?function(e,n){return t.call(r,e,n)}:4===e?function(e,n,o,u){return t.call(r,e,n,o,u)}:function(e,n,o){return t.call(r,e,n,o)}},o.forEach=s,o.forIn=Y,o.keys=W,o.each=s,o.extend=G,o.identity=p,o.isArguments=a,o.isArray=Q,o.isEqual=c,o.isFunction=f,o.isObject=i,o.isString=l,o.VERSION="1.3.1",typeof define=="function"&&typeof define.amd=="object"&&define.amd?(t._=o, define(function(){return o
 })):P&&!P.nodeType?I?(I.exports=o)._=o:P._=o:t._=o}(this);
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 var _ = require('./vendor/lodash');
 var serializer = new XMLSerializer();
 var XML_NS = 'http://www.w3.org/XML/1998/namespace';
@@ -13646,7 +13757,7 @@ exports.TOP_LEVEL_LOOKUP = TOP_LEVEL_LOOKUP;
 exports.LOOKUP_EXT = LOOKUP_EXT;
 exports.LOOKUP = LOOKUP;
 
-},{"./vendor/lodash":75}],75:[function(require,module,exports){
+},{"./vendor/lodash":76}],76:[function(require,module,exports){
 var global=self;/**
  * @license
  * Lo-Dash 1.3.1 (Custom Build) lodash.com/license
@@ -13666,7 +13777,7 @@ try{K.nodeClass=!(M.call(document)==w&&!({toString:0}+""))}catch(n){K.nodeClass=
 },W=u({a:"x",e:"[]",h:"if(!(z[typeof x]))return C",f:"C.push(m)"}),X=J?function(t){return i(t)?K.enumPrototypes&&typeof t=="function"||K.nonEnumArgs&&t.length&&a(t)?W(t):J(t):[]}:W,Y=u(G),H=u(Q,{h:Q.h.replace(";",";if(c>3&&typeof a[c-2]=='function'){var d=u.createCallback(a[--c-1],a[c--],2)}else if(c>2&&typeof a[c-1]=='function'){d=a[--c]}"),f:"C[m]=d?d(C[m],r[m]):r[m]"}),Z=u(G,F,{i:!1});f(/x/)&&(f=function(t){return typeof t=="function"&&"[object Function]"==M.call(t)}),o.assign=H,o.createCallback=function(t,r,e){if(null==t)return m;
 var n=typeof t;if("function"!=n){if("object"!=n)return function(r){return r[t]};var o=X(t);return function(r){for(var e=o.length,n=!1;e--&&(n=c(r[o[e]],t[o[e]],b)););return n}}return typeof r=="undefined"||d&&!d.test(q.call(t))?t:1===e?function(e){return t.call(r,e)}:2===e?function(e,n){return t.call(r,e,n)}:4===e?function(e,n,o,u){return t.call(r,e,n,o,u)}:function(e,n,o){return t.call(r,e,n,o)}},o.filter=s,o.forEach=p,o.forIn=Z,o.keys=X,o.each=p,o.extend=H,o.select=s,o.identity=m,o.isArguments=a,o.isArray=U,o.isEqual=c,o.isFunction=f,o.isObject=i,o.isString=l,o.VERSION="1.3.1",typeof define=="function"&&typeof define.amd=="object"&&define.amd?(t._=o, define(function(){return o
 })):I&&!I.nodeType?B?(B.exports=o)._=o:I._=o:t._=o}(this);
-},{}],76:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 var Buffer=require("__browserify_Buffer").Buffer;//     uuid.js
 //
 //     (c) 2010-2012 Robert Kieffer
@@ -13913,7 +14024,7 @@ var Buffer=require("__browserify_Buffer").Buffer;//     uuid.js
   }
 }());
 
-},{"__browserify_Buffer":65,"crypto":60}],77:[function(require,module,exports){
+},{"__browserify_Buffer":66,"crypto":61}],78:[function(require,module,exports){
 /**
 * Written by Nathan Fritz. Copyright © 2011 by &yet, LLC. Released under the
 * terms of the MIT License:
@@ -14085,7 +14196,7 @@ Paddle.prototype.stop = stop;
 
 exports.Paddle = Paddle;
 
-},{"events":55}],78:[function(require,module,exports){
+},{"events":56}],79:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -14141,7 +14252,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{}],79:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -14161,7 +14272,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":78}],80:[function(require,module,exports){
+},{"./lib/mechanism":79}],81:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -14351,7 +14462,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"crypto":60}],81:[function(require,module,exports){
+},{"crypto":61}],82:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -14371,7 +14482,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":80}],82:[function(require,module,exports){
+},{"./lib/mechanism":81}],83:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -14427,7 +14538,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -14447,7 +14558,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":82}],84:[function(require,module,exports){
+},{"./lib/mechanism":83}],85:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -14514,7 +14625,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{}],85:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -14534,7 +14645,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":84}],86:[function(require,module,exports){
+},{"./lib/mechanism":85}],87:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -14792,7 +14903,7 @@ exports.Paddle = Paddle;
     exports = module.exports = Mechanism;
 }));
 
-},{"buffer":58,"crypto":60}],87:[function(require,module,exports){
+},{"buffer":59,"crypto":61}],88:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -14812,7 +14923,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":86}],88:[function(require,module,exports){
+},{"./lib/mechanism":87}],89:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -14885,7 +14996,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{}],89:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -14905,7 +15016,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/factory":88}],90:[function(require,module,exports){
+},{"./lib/factory":89}],91:[function(require,module,exports){
 /*
 WildEmitter.js is a slim little event emitter by @henrikjoreteg largely based 
 on @visionmedia's Emitter from UI Kit.
@@ -15042,7 +15153,7 @@ WildEmitter.prototype.getWildcardCallbacks = function (eventName) {
     return result;
 };
 
-},{}],91:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 var global=self;/**
  * @license
  * Lo-Dash 1.3.1 (Custom Build) lodash.com/license
