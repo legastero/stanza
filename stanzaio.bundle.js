@@ -71,6 +71,8 @@ function Client(opts) {
     WildEmitter.call(this);
 
     this.config = opts || {};
+    this.jid = new JID();
+
     this._idPrefix = uuid.v4();
     this._idCount = 0;
 
@@ -169,7 +171,7 @@ function Client(opts) {
         }, function (err, resp) {
             self.negotiatedFeatures.bind = true;
             self.emit('session:bound', resp.bind.jid);
-            self.jid = resp.bind.jid;
+            self.jid = new JID(resp.bind.jid);
             if (!features._extensions.session) {
                 self.sessionStarted = true;
                 self.emit('session:started', resp.bind.jid);
@@ -372,10 +374,10 @@ Client.prototype.discoverBindings = function (server, cb) {
 
 Client.prototype.getCredentials = function () {
     var creds = this.config.credentials || {};
-    var requestedJID = this.config.jid;
+    var requestedJID = new JID(this.config.jid);
 
-    var username = creds.username || requestedJID.slice(0, requestedJID.indexOf('@'));
-    var server = creds.server || requestedJID.slice(requestedJID.indexOf('@') + 1);
+    var username = creds.username || requestedJID.local;
+    var server = creds.server || requestedJID.domain;
 
     var defaultCreds = {
         username: username,
@@ -463,6 +465,7 @@ Client.prototype.sendPresence = function (data) {
 };
 
 Client.prototype.sendIq = function (data, cb) {
+    var self = this;
     data = data || {};
     cb = cb || function () {};
     if (!data.id) {
@@ -481,14 +484,30 @@ Client.prototype.sendIq = function (data, cb) {
         var timeoutCheck = this.timeoutMonitor.insure(function () {
             rescb({type: 'error', error: {condition: 'timeout'}}, null);
         });
-        this.once('id:' + data.id, 'session', function (resp) {
+
+        var dest = new JID(data.to);
+        var allowed = {};
+        allowed[''] = true;
+        allowed[dest.full] = true;
+        allowed[dest.bare] = true;
+        allowed[dest.domain] = true;
+        allowed[self.jid.bare] = true;
+        allowed[self.jid.domain] = true;
+
+        var handler = function (resp) {
+            var source = resp.from;
+            if (!allowed[source.full]) return;
+
             timeoutCheck.check_in();
+            self.off('id:' + data.id, handler);
             if (resp._extensions.error) {
                 rescb(resp, null);
             } else {
                 rescb(null, resp);
             }
-        });
+        };
+
+        this.on('id:' + data.id, 'session', handler);
     }
     this.send(new Iq(data));
 
@@ -556,8 +575,15 @@ module.exports = Client;
 
 },{"../vendor/lodash":92,"./jid":3,"./stanza/bind":24,"./stanza/error":31,"./stanza/iq":34,"./stanza/message":36,"./stanza/presence":38,"./stanza/roster":42,"./stanza/sasl":44,"./stanza/session":45,"./stanza/sm":46,"./stanza/stream":47,"./stanza/streamError":48,"./stanza/streamFeatures":49,"./websocket":53,"async":54,"hostmeta":68,"node-uuid":77,"paddle":78,"sasl-anonymous":80,"sasl-digest-md5":82,"sasl-external":84,"sasl-plain":86,"sasl-scram-sha-1":88,"saslmechanisms":90,"wildemitter":91}],3:[function(require,module,exports){
 function JID(jid) {
-    this.jid = jid;
-    this.parts = {};
+    jid = jid || '';
+
+    if (typeof jid === 'string') {
+        this.jid = jid;
+        this.parts = {};
+    } else {
+        this.jid = jid.jid;
+        this.parts = jid.parts;
+    }
 }
 
 JID.prototype = {
@@ -583,7 +609,7 @@ JID.prototype = {
         }
         return this.parts.bare;
     },
-    get resource () {
+    get resource() {
         if (this.parts.resource) {
             return this.parts.resource;
         }
