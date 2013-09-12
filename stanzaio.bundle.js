@@ -2966,12 +2966,14 @@ MAMQuery.prototype = {
         return new Date(stanza.getSubText(this.xml, this.NS, 'start') || Date.now());
     },
     set start(value) {
+        if (!value) return;
         stanza.setSubText(this.xml, this.NS, 'start', value.toISOString());
     },
     get end() {
         return new Date(stanza.getSubText(this.xml, this.NS, 'end') || Date.now());
     },
     set end(value) {
+        if (!value) return;
         stanza.setSubText(this.xml, this.NS, 'end', value.toISOString());
     }
 };
