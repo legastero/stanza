@@ -76,6 +76,8 @@ function Client(opts) {
     this._idPrefix = uuid.v4();
     this._idCount = 0;
 
+    this.timeoutMonitor = null;
+
     this.negotiatedFeatures = {};
     this.featureOrder = [
         'sasl',
@@ -407,8 +409,10 @@ Client.prototype.connect = function (opts) {
     _.extend(self.config, opts || {});
 
     // Default iq timeout of 15 seconds
-    self.timeoutMonitor = new paddle.Paddle(self.config.timeout || 15);
-    self.timeoutMonitor.start();
+    if (!self.timeoutMonitor) {
+        self.timeoutMonitor = new paddle.Paddle(self.config.timeout || 15);
+        self.timeoutMonitor.start();
+    }
 
     if (self.config.wsURL) {
         return self.conn.connect(self.config);
@@ -426,6 +430,7 @@ Client.prototype.connect = function (opts) {
 
 Client.prototype.disconnect = function () {
     this.timeoutMonitor.stop();
+    this.timeoutMonitor = null;
     if (this.sessionStarted) {
         this.emit('session:end');
         this.releaseGroup('session');
