@@ -3072,7 +3072,7 @@ Prefs.prototype = {
 
 
 Message.prototype.__defineGetter__('archived', function () {
-    var archives = stanza.find(this.xml, this.NS, 'archived');
+    var archives = stanza.find(this.xml, 'urn:xmpp:mam:tmp', 'archived');
     var results = [];
     archives.forEach(function (archive) {
         results.push({
