@@ -4979,19 +4979,31 @@ WSConnection.prototype.connect = function (opts) {
     self.parser = new DOMParser();
     self.serializer = new XMLSerializer();
 
-    self.conn = new WebSocket(opts.wsURL, 'xmpp');
+    try {
+        self.conn = new WebSocket(opts.wsURL, 'xmpp');
+        self.conn.onerror = function (e) {
+            e.preventDefault();
+            console.log(e);
+            self.emit('disconnected', self);
+            return false;
+        };
 
-    self.conn.onopen = function () {
-        self.emit('connected', self);
-    };
+        self.conn.onclose = function () {
+            self.emit('disconnected', self);
+        };
 
-    self.conn.onclose = function () {
-        self.emit('disconnected', self);
-    };
+        self.conn.onopen = function () {
+            self.emit('connected', self);
+        };
 
-    self.conn.onmessage = function (wsMsg) {
-        self.emit('raw:incoming', wsMsg.data);
-    };
+        self.conn.onmessage = function (wsMsg) {
+            self.emit('raw:incoming', wsMsg.data);
+        };
+    } catch (e) {
+        console.log('Caught exception');
+        return self.emit('disconnected', self);
+
+    }
 };
 
 WSConnection.prototype.disconnect = function () {
