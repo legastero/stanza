@@ -4689,7 +4689,7 @@ EntityTime.prototype = {
         }
         if (formatted.charAt(0) === '-') {
             sign = 1;
-            formatted.slice(1);
+            formatted = formatted.slice(1);
         }
         split = formatted.split(':');
         hrs = parseInt(split[0], 10);
@@ -4979,31 +4979,24 @@ WSConnection.prototype.connect = function (opts) {
     self.parser = new DOMParser();
     self.serializer = new XMLSerializer();
 
-    try {
-        self.conn = new WebSocket(opts.wsURL, 'xmpp');
-        self.conn.onerror = function (e) {
-            e.preventDefault();
-            console.log(e);
-            self.emit('disconnected', self);
-            return false;
-        };
+    self.conn = new WebSocket(opts.wsURL, 'xmpp');
+    self.conn.onerror = function (e) {
+        e.preventDefault();
+        self.emit('disconnected', self);
+        return false;
+    };
 
-        self.conn.onclose = function () {
-            self.emit('disconnected', self);
-        };
+    self.conn.onclose = function () {
+        self.emit('disconnected', self);
+    };
 
-        self.conn.onopen = function () {
-            self.emit('connected', self);
-        };
+    self.conn.onopen = function () {
+        self.emit('connected', self);
+    };
 
-        self.conn.onmessage = function (wsMsg) {
-            self.emit('raw:incoming', wsMsg.data);
-        };
-    } catch (e) {
-        console.log('Caught exception');
-        return self.emit('disconnected', self);
-
-    }
+    self.conn.onmessage = function (wsMsg) {
+        self.emit('raw:incoming', wsMsg.data);
+    };
 };
 
 WSConnection.prototype.disconnect = function () {
