@@ -256,6 +256,7 @@ function Client(opts) {
         self.negotiatedFeatures.sasl = false;
         self.negotiatedFeatures.streamManagement = false;
         self.negotiatedFeatures.bind = false;
+        self.negotiatedFeatures.session = false;
         self.releaseGroup('connection');
     });
 
@@ -4991,6 +4992,7 @@ WSConnection.prototype.connect = function (opts) {
     };
 
     self.conn.onopen = function () {
+        self.sm.started = false;
         self.emit('connected', self);
     };
 
@@ -5010,6 +5012,7 @@ WSConnection.prototype.disconnect = function () {
         this.conn.close();
         this.stream = undefined;
         this.conn = undefined;
+        this.sm.failed();
     }
 };
 
