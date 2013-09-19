@@ -708,14 +708,14 @@ module.exports = function (client) {
     });
 
     client.publishAvatar = function (id, data, cb) {
-        client.publish(null, 'urn:xmpp:avatar:data', {
+        client.publish('', 'urn:xmpp:avatar:data', {
             id: id,
             avatarData: data
         }, cb);
     };
 
     client.useAvatars = function (info, cb) {
-        client.publish(null, 'urn:xmpp:avatar:metadata', {
+        client.publish('', 'urn:xmpp:avatar:metadata', {
             id: 'current',
             avatars: info
         }, cb);
@@ -14955,7 +14955,7 @@ exports.Paddle = Paddle;
      */
     function Hi(text, salt, iterations) {
         var ui1 = HMAC(text, salt + '\0\0\0\1');
-        ui = ui1;
+        var ui = ui1;
         for (var i = 0; i < iterations - 1; i++) {
             ui1 = HMAC(text, ui1);
             ui = XOR(ui, ui1);
