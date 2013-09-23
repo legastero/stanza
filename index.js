@@ -22,7 +22,7 @@ exports.createClient = function (opts) {
     client.use(require('./lib/plugins/version'));
     client.use(require('./lib/plugins/invisible'));
     client.use(require('./lib/plugins/muc'));
-    client.use(require('./lib/plugins/webrtc'));
+//    client.use(require('./lib/plugins/webrtc'));
     client.use(require('./lib/plugins/pubsub'));
     client.use(require('./lib/plugins/avatar'));
     client.use(require('./lib/plugins/private'));

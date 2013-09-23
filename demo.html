@@ -128,7 +128,9 @@
         client = XMPP.createClient({
           jid: jid,
           server: server,
-          password: document.getElementById('password').value,
+          credentials: {
+            password: document.getElementById('password').value,
+          },
           wsURL: document.getElementById('wsURL').value
         });
 
