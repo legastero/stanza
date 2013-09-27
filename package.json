@@ -1,13 +1,13 @@
 {
     "name": "stanza.io",
-    "version": "2.3.0",
+    "version": "2.3.1",
     "description": "XMPP + WebSocket",
     "browserify": "index.js",
     "dependencies": {
         "async": "0.2.9",
         "wildemitter": "0.0.5",
         "node-uuid": "1.4.0",
-        "jxt": "0.2.5",
+        "jxt": "0.2.6",
         "sdp": "0.0.2",
         "paddle": "1.0.0",
         "hostmeta": "0.1.1",
