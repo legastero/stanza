@@ -27,6 +27,7 @@ exports.createClient = function (opts) {
     client.use(require('./lib/plugins/private'));
     client.use(require('./lib/plugins/bookmarks'));
     client.use(require('./lib/plugins/jingle'));
+    client.use(require('./lib/plugins/json'));
 
     return client;
 };
