@@ -16,7 +16,8 @@
         "sasl-digest-md5": "0.1.0",
         "sasl-plain": "0.1.0",
         "sasl-anonymous": "0.1.0",
-        "underscore": "1.5.2"
+        "underscore": "1.5.2",
+        "jingle": "0.0.2"
     },
     "devDependencies": {
         "precommit-hook": "0.3.5",
