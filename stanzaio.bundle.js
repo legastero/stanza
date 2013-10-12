@@ -34,7 +34,7 @@ exports.createClient = function (opts) {
     return client;
 };
 
-},{"./lib/client":2,"./lib/plugins/attention":4,"./lib/plugins/avatar":5,"./lib/plugins/bookmarks":6,"./lib/plugins/carbons":7,"./lib/plugins/chatstates":8,"./lib/plugins/correction":9,"./lib/plugins/delayed":10,"./lib/plugins/disco":11,"./lib/plugins/forwarding":12,"./lib/plugins/idle":13,"./lib/plugins/invisible":14,"./lib/plugins/jingle":15,"./lib/plugins/json":16,"./lib/plugins/mam":17,"./lib/plugins/muc":18,"./lib/plugins/private":19,"./lib/plugins/pubsub":20,"./lib/plugins/receipts":21,"./lib/plugins/time":22,"./lib/plugins/version":23,"./lib/stanza/iq":37,"./lib/stanza/message":41,"./lib/stanza/presence":43,"crypto":68}],2:[function(require,module,exports){
+},{"./lib/client":2,"./lib/plugins/attention":4,"./lib/plugins/avatar":5,"./lib/plugins/bookmarks":6,"./lib/plugins/carbons":7,"./lib/plugins/chatstates":8,"./lib/plugins/correction":9,"./lib/plugins/delayed":10,"./lib/plugins/disco":11,"./lib/plugins/forwarding":12,"./lib/plugins/idle":13,"./lib/plugins/invisible":14,"./lib/plugins/jingle":15,"./lib/plugins/json":16,"./lib/plugins/mam":17,"./lib/plugins/muc":18,"./lib/plugins/private":19,"./lib/plugins/pubsub":20,"./lib/plugins/receipts":21,"./lib/plugins/time":22,"./lib/plugins/version":23,"./lib/stanza/iq":37,"./lib/stanza/message":41,"./lib/stanza/presence":43,"crypto":70}],2:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 var _ = require('underscore');
 var async = require('async');
@@ -1085,7 +1085,7 @@ module.exports = function (client) {
     client.generateVerString = generateVerString;
 };
 
-},{"../stanza/caps":28,"../stanza/disco":33,"crypto":68,"underscore":115}],12:[function(require,module,exports){
+},{"../stanza/caps":28,"../stanza/disco":33,"crypto":70,"underscore":115}],12:[function(require,module,exports){
 var stanzas = require('../stanza/forwarded');
 
 
@@ -5035,7 +5035,7 @@ var process=require("__browserify_process");/*global setImmediate: false, setTim
 
 }());
 
-},{"__browserify_process":74}],62:[function(require,module,exports){
+},{"__browserify_process":69}],62:[function(require,module,exports){
 // UTILITY
 var util = require('util');
 var Buffer = require("buffer").Buffer;
@@ -5545,7 +5545,7 @@ EventEmitter.listenerCount = function(emitter, type) {
   return ret;
 };
 
-},{"__browserify_process":74}],64:[function(require,module,exports){
+},{"__browserify_process":69}],64:[function(require,module,exports){
 var events = require('events');
 
 exports.isArray = isArray;
@@ -7148,827 +7148,6 @@ Buffer.prototype.writeDoubleBE = function(value, offset, noAssert) {
 }());
 
 },{}],68:[function(require,module,exports){
-var Buffer = require('buffer').Buffer
-var sha = require('./sha')
-var sha256 = require('./sha256')
-var rng = require('./rng')
-var md5 = require('./md5')
-
-var algorithms = {
-  sha1: {
-    hex: sha.hex_sha1,
-    base64: sha.b64_sha1,
-    binary: sha.str_sha1
-  },
-  sha256: {
-    hex: sha256.hex_sha256,
-    base64: sha256.b64_sha256,
-    binary: sha256.str_sha256
-  },
-  md5: {
-    hex: md5.hex_md5,
-    base64: md5.b64_md5,
-    binary: md5.bin_md5
-  }
-}
-
-var algorithmsHmac = {
-  sha1: {
-    hex: sha.hex_hmac_sha1,
-    base64: sha.b64_hmac_sha1,
-    binary: sha.str_hmac_sha1
-  },
-  sha256: {
-    hex: sha256.hex_hmac_sha256,
-    base64: sha256.b64_hmac_sha256,
-    binary: sha256.str_hmac_sha256
-  },
-  md5: {
-    hex: md5.hex_hmac_md5,
-    base64: md5.b64_hmac_md5,
-    binary: md5.bin_hmac_md5
-  }
-}
-
-
-function error () {
-  var m = [].slice.call(arguments).join(' ')
-  throw new Error([
-    m,
-    'we accept pull requests',
-    'http://github.com/dominictarr/crypto-browserify'
-    ].join('\n'))
-}
-
-exports.createHash = function (alg) {
-  alg = alg || 'sha1'
-  if(!algorithms[alg])
-    error('algorithm:', alg, 'is not yet supported')
-  var s = ''
-  var _alg = algorithms[alg]
-  return {
-    update: function (data) {
-      s += data
-      return this
-    },
-    digest: function (enc) {
-      enc = enc || 'binary'
-      var fn
-      if(!(fn = _alg[enc]))
-        error('encoding:', enc , 'is not yet supported for algorithm', alg)
-      var r = fn(s)
-      s = null //not meant to use the hash after you've called digest.
-      return r
-    }
-  }
-}
-
-exports.createHmac = function (alg, key) {
-  if (!algorithmsHmac[alg])
-    error('algorithm:', alg, 'is not yet supported')
-  if (typeof key != 'string')
-    key = key.toString('binary')
-  var s = ''
-  var _alg = algorithmsHmac[alg]
-  return {
-    update: function (data) {
-      s += data
-      return this
-    },
-    digest: function (enc) {
-      enc = enc || 'binary'
-      var fn
-      if (!(fn = _alg[enc]))
-        error('encoding:', enc, 'is not yet support for algorithm', alg)
-      var r = fn(key, s)
-      s = null
-      return r
-    }
-  }
-}
-
-exports.randomBytes = function(size, callback) {
-  if (callback && callback.call) {
-    try {
-      callback.call(this, undefined, new Buffer(rng(size)));
-    } catch (err) { callback(err); }
-  } else {
-    return new Buffer(rng(size));
-  }
-}
-
-function each(a, f) {
-  for(var i in a)
-    f(a[i], i)
-}
-
-// the least I can do is make error messages for the rest of the node.js/crypto api.
-each(['createCredentials'
-, 'createCipher'
-, 'createCipheriv'
-, 'createDecipher'
-, 'createDecipheriv'
-, 'createSign'
-, 'createVerify'
-, 'createDiffieHellman'
-, 'pbkdf2'], function (name) {
-  exports[name] = function () {
-    error('sorry,', name, 'is not implemented yet')
-  }
-})
-
-},{"./md5":69,"./rng":70,"./sha":71,"./sha256":72,"buffer":66}],69:[function(require,module,exports){
-/*
- * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
- * Digest Algorithm, as defined in RFC 1321.
- * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- * Distributed under the BSD License
- * See http://pajhome.org.uk/crypt/md5 for more info.
- */
-
-/*
- * Configurable variables. You may need to tweak these to be compatible with
- * the server-side, but the defaults work in most cases.
- */
-var hexcase = 0;   /* hex output format. 0 - lowercase; 1 - uppercase        */
-var b64pad  = "="; /* base-64 pad character. "=" for strict RFC compliance   */
-var chrsz   = 8;   /* bits per input character. 8 - ASCII; 16 - Unicode      */
-
-/*
- * These are the functions you'll usually want to call
- * They take string arguments and return either hex or base-64 encoded strings
- */
-function hex_md5(s){ return binl2hex(core_md5(str2binl(s), s.length * chrsz));}
-function b64_md5(s){ return binl2b64(core_md5(str2binl(s), s.length * chrsz));}
-function str_md5(s){ return binl2str(core_md5(str2binl(s), s.length * chrsz));}
-function hex_hmac_md5(key, data) { return binl2hex(core_hmac_md5(key, data)); }
-function b64_hmac_md5(key, data) { return binl2b64(core_hmac_md5(key, data)); }
-function str_hmac_md5(key, data) { return binl2str(core_hmac_md5(key, data)); }
-
-/*
- * Perform a simple self-test to see if the VM is working
- */
-function md5_vm_test()
-{
-  return hex_md5("abc") == "900150983cd24fb0d6963f7d28e17f72";
-}
-
-/*
- * Calculate the MD5 of an array of little-endian words, and a bit length
- */
-function core_md5(x, len)
-{
-  /* append padding */
-  x[len >> 5] |= 0x80 << ((len) % 32);
-  x[(((len + 64) >>> 9) << 4) + 14] = len;
-
-  var a =  1732584193;
-  var b = -271733879;
-  var c = -1732584194;
-  var d =  271733878;
-
-  for(var i = 0; i < x.length; i += 16)
-  {
-    var olda = a;
-    var oldb = b;
-    var oldc = c;
-    var oldd = d;
-
-    a = md5_ff(a, b, c, d, x[i+ 0], 7 , -680876936);
-    d = md5_ff(d, a, b, c, x[i+ 1], 12, -389564586);
-    c = md5_ff(c, d, a, b, x[i+ 2], 17,  606105819);
-    b = md5_ff(b, c, d, a, x[i+ 3], 22, -1044525330);
-    a = md5_ff(a, b, c, d, x[i+ 4], 7 , -176418897);
-    d = md5_ff(d, a, b, c, x[i+ 5], 12,  1200080426);
-    c = md5_ff(c, d, a, b, x[i+ 6], 17, -1473231341);
-    b = md5_ff(b, c, d, a, x[i+ 7], 22, -45705983);
-    a = md5_ff(a, b, c, d, x[i+ 8], 7 ,  1770035416);
-    d = md5_ff(d, a, b, c, x[i+ 9], 12, -1958414417);
-    c = md5_ff(c, d, a, b, x[i+10], 17, -42063);
-    b = md5_ff(b, c, d, a, x[i+11], 22, -1990404162);
-    a = md5_ff(a, b, c, d, x[i+12], 7 ,  1804603682);
-    d = md5_ff(d, a, b, c, x[i+13], 12, -40341101);
-    c = md5_ff(c, d, a, b, x[i+14], 17, -1502002290);
-    b = md5_ff(b, c, d, a, x[i+15], 22,  1236535329);
-
-    a = md5_gg(a, b, c, d, x[i+ 1], 5 , -165796510);
-    d = md5_gg(d, a, b, c, x[i+ 6], 9 , -1069501632);
-    c = md5_gg(c, d, a, b, x[i+11], 14,  643717713);
-    b = md5_gg(b, c, d, a, x[i+ 0], 20, -373897302);
-    a = md5_gg(a, b, c, d, x[i+ 5], 5 , -701558691);
-    d = md5_gg(d, a, b, c, x[i+10], 9 ,  38016083);
-    c = md5_gg(c, d, a, b, x[i+15], 14, -660478335);
-    b = md5_gg(b, c, d, a, x[i+ 4], 20, -405537848);
-    a = md5_gg(a, b, c, d, x[i+ 9], 5 ,  568446438);
-    d = md5_gg(d, a, b, c, x[i+14], 9 , -1019803690);
-    c = md5_gg(c, d, a, b, x[i+ 3], 14, -187363961);
-    b = md5_gg(b, c, d, a, x[i+ 8], 20,  1163531501);
-    a = md5_gg(a, b, c, d, x[i+13], 5 , -1444681467);
-    d = md5_gg(d, a, b, c, x[i+ 2], 9 , -51403784);
-    c = md5_gg(c, d, a, b, x[i+ 7], 14,  1735328473);
-    b = md5_gg(b, c, d, a, x[i+12], 20, -1926607734);
-
-    a = md5_hh(a, b, c, d, x[i+ 5], 4 , -378558);
-    d = md5_hh(d, a, b, c, x[i+ 8], 11, -2022574463);
-    c = md5_hh(c, d, a, b, x[i+11], 16,  1839030562);
-    b = md5_hh(b, c, d, a, x[i+14], 23, -35309556);
-    a = md5_hh(a, b, c, d, x[i+ 1], 4 , -1530992060);
-    d = md5_hh(d, a, b, c, x[i+ 4], 11,  1272893353);
-    c = md5_hh(c, d, a, b, x[i+ 7], 16, -155497632);
-    b = md5_hh(b, c, d, a, x[i+10], 23, -1094730640);
-    a = md5_hh(a, b, c, d, x[i+13], 4 ,  681279174);
-    d = md5_hh(d, a, b, c, x[i+ 0], 11, -358537222);
-    c = md5_hh(c, d, a, b, x[i+ 3], 16, -722521979);
-    b = md5_hh(b, c, d, a, x[i+ 6], 23,  76029189);
-    a = md5_hh(a, b, c, d, x[i+ 9], 4 , -640364487);
-    d = md5_hh(d, a, b, c, x[i+12], 11, -421815835);
-    c = md5_hh(c, d, a, b, x[i+15], 16,  530742520);
-    b = md5_hh(b, c, d, a, x[i+ 2], 23, -995338651);
-
-    a = md5_ii(a, b, c, d, x[i+ 0], 6 , -198630844);
-    d = md5_ii(d, a, b, c, x[i+ 7], 10,  1126891415);
-    c = md5_ii(c, d, a, b, x[i+14], 15, -1416354905);
-    b = md5_ii(b, c, d, a, x[i+ 5], 21, -57434055);
-    a = md5_ii(a, b, c, d, x[i+12], 6 ,  1700485571);
-    d = md5_ii(d, a, b, c, x[i+ 3], 10, -1894986606);
-    c = md5_ii(c, d, a, b, x[i+10], 15, -1051523);
-    b = md5_ii(b, c, d, a, x[i+ 1], 21, -2054922799);
-    a = md5_ii(a, b, c, d, x[i+ 8], 6 ,  1873313359);
-    d = md5_ii(d, a, b, c, x[i+15], 10, -30611744);
-    c = md5_ii(c, d, a, b, x[i+ 6], 15, -1560198380);
-    b = md5_ii(b, c, d, a, x[i+13], 21,  1309151649);
-    a = md5_ii(a, b, c, d, x[i+ 4], 6 , -145523070);
-    d = md5_ii(d, a, b, c, x[i+11], 10, -1120210379);
-    c = md5_ii(c, d, a, b, x[i+ 2], 15,  718787259);
-    b = md5_ii(b, c, d, a, x[i+ 9], 21, -343485551);
-
-    a = safe_add(a, olda);
-    b = safe_add(b, oldb);
-    c = safe_add(c, oldc);
-    d = safe_add(d, oldd);
-  }
-  return Array(a, b, c, d);
-
-}
-
-/*
- * These functions implement the four basic operations the algorithm uses.
- */
-function md5_cmn(q, a, b, x, s, t)
-{
-  return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s),b);
-}
-function md5_ff(a, b, c, d, x, s, t)
-{
-  return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t);
-}
-function md5_gg(a, b, c, d, x, s, t)
-{
-  return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t);
-}
-function md5_hh(a, b, c, d, x, s, t)
-{
-  return md5_cmn(b ^ c ^ d, a, b, x, s, t);
-}
-function md5_ii(a, b, c, d, x, s, t)
-{
-  return md5_cmn(c ^ (b | (~d)), a, b, x, s, t);
-}
-
-/*
- * Calculate the HMAC-MD5, of a key and some data
- */
-function core_hmac_md5(key, data)
-{
-  var bkey = str2binl(key);
-  if(bkey.length > 16) bkey = core_md5(bkey, key.length * chrsz);
-
-  var ipad = Array(16), opad = Array(16);
-  for(var i = 0; i < 16; i++)
-  {
-    ipad[i] = bkey[i] ^ 0x36363636;
-    opad[i] = bkey[i] ^ 0x5C5C5C5C;
-  }
-
-  var hash = core_md5(ipad.concat(str2binl(data)), 512 + data.length * chrsz);
-  return core_md5(opad.concat(hash), 512 + 128);
-}
-
-/*
- * Add integers, wrapping at 2^32. This uses 16-bit operations internally
- * to work around bugs in some JS interpreters.
- */
-function safe_add(x, y)
-{
-  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
-  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-  return (msw << 16) | (lsw & 0xFFFF);
-}
-
-/*
- * Bitwise rotate a 32-bit number to the left.
- */
-function bit_rol(num, cnt)
-{
-  return (num << cnt) | (num >>> (32 - cnt));
-}
-
-/*
- * Convert a string to an array of little-endian words
- * If chrsz is ASCII, characters >255 have their hi-byte silently ignored.
- */
-function str2binl(str)
-{
-  var bin = Array();
-  var mask = (1 << chrsz) - 1;
-  for(var i = 0; i < str.length * chrsz; i += chrsz)
-    bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (i%32);
-  return bin;
-}
-
-/*
- * Convert an array of little-endian words to a string
- */
-function binl2str(bin)
-{
-  var str = "";
-  var mask = (1 << chrsz) - 1;
-  for(var i = 0; i < bin.length * 32; i += chrsz)
-    str += String.fromCharCode((bin[i>>5] >>> (i % 32)) & mask);
-  return str;
-}
-
-/*
- * Convert an array of little-endian words to a hex string.
- */
-function binl2hex(binarray)
-{
-  var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
-  var str = "";
-  for(var i = 0; i < binarray.length * 4; i++)
-  {
-    str += hex_tab.charAt((binarray[i>>2] >> ((i%4)*8+4)) & 0xF) +
-           hex_tab.charAt((binarray[i>>2] >> ((i%4)*8  )) & 0xF);
-  }
-  return str;
-}
-
-/*
- * Convert an array of little-endian words to a base-64 string
- */
-function binl2b64(binarray)
-{
-  var tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  var str = "";
-  for(var i = 0; i < binarray.length * 4; i += 3)
-  {
-    var triplet = (((binarray[i   >> 2] >> 8 * ( i   %4)) & 0xFF) << 16)
-                | (((binarray[i+1 >> 2] >> 8 * ((i+1)%4)) & 0xFF) << 8 )
-                |  ((binarray[i+2 >> 2] >> 8 * ((i+2)%4)) & 0xFF);
-    for(var j = 0; j < 4; j++)
-    {
-      if(i * 8 + j * 6 > binarray.length * 32) str += b64pad;
-      else str += tab.charAt((triplet >> 6*(3-j)) & 0x3F);
-    }
-  }
-  return str;
-}
-
-exports.hex_md5 = hex_md5;
-exports.b64_md5 = b64_md5;
-exports.bin_md5 = str_md5;
-exports.hex_hmac_md5 = hex_hmac_md5;
-exports.b64_hmac_md5 = b64_hmac_md5;
-exports.bin_hmac_md5 = str_hmac_md5;
-
-},{}],70:[function(require,module,exports){
-// Original code adapted from Robert Kieffer.
-// details at https://github.com/broofa/node-uuid
-(function() {
-  var _global = this;
-
-  var mathRNG, whatwgRNG;
-
-  // NOTE: Math.random() does not guarantee "cryptographic quality"
-  mathRNG = function(size) {
-    var bytes = new Array(size);
-    var r;
-
-    for (var i = 0, r; i < size; i++) {
-      if ((i & 0x03) == 0) r = Math.random() * 0x100000000;
-      bytes[i] = r >>> ((i & 0x03) << 3) & 0xff;
-    }
-
-    return bytes;
-  }
-
-  if (_global.crypto && crypto.getRandomValues) {
-    var _rnds = new Uint32Array(4);
-    whatwgRNG = function(size) {
-      var bytes = new Array(size);
-      crypto.getRandomValues(_rnds);
-
-      for (var c = 0 ; c < size; c++) {
-        bytes[c] = _rnds[c >> 2] >>> ((c & 0x03) * 8) & 0xff;
-      }
-      return bytes;
-    }
-  }
-
-  module.exports = whatwgRNG || mathRNG;
-
-}())
-
-},{}],71:[function(require,module,exports){
-/*
- * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
- * in FIPS PUB 180-1
- * Version 2.1a Copyright Paul Johnston 2000 - 2002.
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- * Distributed under the BSD License
- * See http://pajhome.org.uk/crypt/md5 for details.
- */
-
-exports.hex_sha1 = hex_sha1;
-exports.b64_sha1 = b64_sha1;
-exports.str_sha1 = str_sha1;
-exports.hex_hmac_sha1 = hex_hmac_sha1;
-exports.b64_hmac_sha1 = b64_hmac_sha1;
-exports.str_hmac_sha1 = str_hmac_sha1;
-
-/*
- * Configurable variables. You may need to tweak these to be compatible with
- * the server-side, but the defaults work in most cases.
- */
-var hexcase = 0;   /* hex output format. 0 - lowercase; 1 - uppercase        */
-var b64pad  = "="; /* base-64 pad character. "=" for strict RFC compliance   */
-var chrsz   = 8;   /* bits per input character. 8 - ASCII; 16 - Unicode      */
-
-/*
- * These are the functions you'll usually want to call
- * They take string arguments and return either hex or base-64 encoded strings
- */
-function hex_sha1(s){return binb2hex(core_sha1(str2binb(s),s.length * chrsz));}
-function b64_sha1(s){return binb2b64(core_sha1(str2binb(s),s.length * chrsz));}
-function str_sha1(s){return binb2str(core_sha1(str2binb(s),s.length * chrsz));}
-function hex_hmac_sha1(key, data){ return binb2hex(core_hmac_sha1(key, data));}
-function b64_hmac_sha1(key, data){ return binb2b64(core_hmac_sha1(key, data));}
-function str_hmac_sha1(key, data){ return binb2str(core_hmac_sha1(key, data));}
-
-/*
- * Perform a simple self-test to see if the VM is working
- */
-function sha1_vm_test()
-{
-  return hex_sha1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
-}
-
-/*
- * Calculate the SHA-1 of an array of big-endian words, and a bit length
- */
-function core_sha1(x, len)
-{
-  /* append padding */
-  x[len >> 5] |= 0x80 << (24 - len % 32);
-  x[((len + 64 >> 9) << 4) + 15] = len;
-
-  var w = Array(80);
-  var a =  1732584193;
-  var b = -271733879;
-  var c = -1732584194;
-  var d =  271733878;
-  var e = -1009589776;
-
-  for(var i = 0; i < x.length; i += 16)
-  {
-    var olda = a;
-    var oldb = b;
-    var oldc = c;
-    var oldd = d;
-    var olde = e;
-
-    for(var j = 0; j < 80; j++)
-    {
-      if(j < 16) w[j] = x[i + j];
-      else w[j] = rol(w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16], 1);
-      var t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)),
-                       safe_add(safe_add(e, w[j]), sha1_kt(j)));
-      e = d;
-      d = c;
-      c = rol(b, 30);
-      b = a;
-      a = t;
-    }
-
-    a = safe_add(a, olda);
-    b = safe_add(b, oldb);
-    c = safe_add(c, oldc);
-    d = safe_add(d, oldd);
-    e = safe_add(e, olde);
-  }
-  return Array(a, b, c, d, e);
-
-}
-
-/*
- * Perform the appropriate triplet combination function for the current
- * iteration
- */
-function sha1_ft(t, b, c, d)
-{
-  if(t < 20) return (b & c) | ((~b) & d);
-  if(t < 40) return b ^ c ^ d;
-  if(t < 60) return (b & c) | (b & d) | (c & d);
-  return b ^ c ^ d;
-}
-
-/*
- * Determine the appropriate additive constant for the current iteration
- */
-function sha1_kt(t)
-{
-  return (t < 20) ?  1518500249 : (t < 40) ?  1859775393 :
-         (t < 60) ? -1894007588 : -899497514;
-}
-
-/*
- * Calculate the HMAC-SHA1 of a key and some data
- */
-function core_hmac_sha1(key, data)
-{
-  var bkey = str2binb(key);
-  if(bkey.length > 16) bkey = core_sha1(bkey, key.length * chrsz);
-
-  var ipad = Array(16), opad = Array(16);
-  for(var i = 0; i < 16; i++)
-  {
-    ipad[i] = bkey[i] ^ 0x36363636;
-    opad[i] = bkey[i] ^ 0x5C5C5C5C;
-  }
-
-  var hash = core_sha1(ipad.concat(str2binb(data)), 512 + data.length * chrsz);
-  return core_sha1(opad.concat(hash), 512 + 160);
-}
-
-/*
- * Add integers, wrapping at 2^32. This uses 16-bit operations internally
- * to work around bugs in some JS interpreters.
- */
-function safe_add(x, y)
-{
-  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
-  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-  return (msw << 16) | (lsw & 0xFFFF);
-}
-
-/*
- * Bitwise rotate a 32-bit number to the left.
- */
-function rol(num, cnt)
-{
-  return (num << cnt) | (num >>> (32 - cnt));
-}
-
-/*
- * Convert an 8-bit or 16-bit string to an array of big-endian words
- * In 8-bit function, characters >255 have their hi-byte silently ignored.
- */
-function str2binb(str)
-{
-  var bin = Array();
-  var mask = (1 << chrsz) - 1;
-  for(var i = 0; i < str.length * chrsz; i += chrsz)
-    bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (32 - chrsz - i%32);
-  return bin;
-}
-
-/*
- * Convert an array of big-endian words to a string
- */
-function binb2str(bin)
-{
-  var str = "";
-  var mask = (1 << chrsz) - 1;
-  for(var i = 0; i < bin.length * 32; i += chrsz)
-    str += String.fromCharCode((bin[i>>5] >>> (32 - chrsz - i%32)) & mask);
-  return str;
-}
-
-/*
- * Convert an array of big-endian words to a hex string.
- */
-function binb2hex(binarray)
-{
-  var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
-  var str = "";
-  for(var i = 0; i < binarray.length * 4; i++)
-  {
-    str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
-           hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
-  }
-  return str;
-}
-
-/*
- * Convert an array of big-endian words to a base-64 string
- */
-function binb2b64(binarray)
-{
-  var tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  var str = "";
-  for(var i = 0; i < binarray.length * 4; i += 3)
-  {
-    var triplet = (((binarray[i   >> 2] >> 8 * (3 -  i   %4)) & 0xFF) << 16)
-                | (((binarray[i+1 >> 2] >> 8 * (3 - (i+1)%4)) & 0xFF) << 8 )
-                |  ((binarray[i+2 >> 2] >> 8 * (3 - (i+2)%4)) & 0xFF);
-    for(var j = 0; j < 4; j++)
-    {
-      if(i * 8 + j * 6 > binarray.length * 32) str += b64pad;
-      else str += tab.charAt((triplet >> 6*(3-j)) & 0x3F);
-    }
-  }
-  return str;
-}
-
-
-},{}],72:[function(require,module,exports){
-
-/**
- * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
- * in FIPS 180-2
- * Version 2.2-beta Copyright Angel Marin, Paul Johnston 2000 - 2009.
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- *
- */
-
-exports.hex_sha256 = hex_sha256;
-exports.b64_sha256 = b64_sha256;
-exports.str_sha256 = str_sha256;
-exports.hex_hmac_sha256 = hex_hmac_sha256;
-exports.b64_hmac_sha256 = b64_hmac_sha256;
-exports.str_hmac_sha256 = str_hmac_sha256;
-
-/*
- * Configurable variables. You may need to tweak these to be compatible with
- * the server-side, but the defaults work in most cases.
- */
-var hexcase = 0;   /* hex output format. 0 - lowercase; 1 - uppercase        */
-var b64pad  = "="; /* base-64 pad character. "=" for strict RFC compliance   */
-var chrsz   = 8;   /* bits per input character. 8 - ASCII; 16 - Unicode      */
-
-/*
- * These are the functions you'll usually want to call
- * They take string arguments and return either hex or base-64 encoded strings
- */
-function hex_sha256(s){return binb2hex(core_sha256(str2binb(s),s.length * chrsz));}
-function b64_sha256(s){return binb2b64(core_sha256(str2binb(s),s.length * chrsz));}
-function str_sha256(s){return binb2str(core_sha256(str2binb(s),s.length * chrsz));}
-function hex_hmac_sha256(key, data){ return binb2hex(core_hmac_sha256(key, data));}
-function b64_hmac_sha256(key, data){ return binb2b64(core_hmac_sha256(key, data));}
-function str_hmac_sha256(key, data){ return binb2str(core_hmac_sha256(key, data));}
-
-var safe_add = function(x, y) {
-  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
-  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-  return (msw << 16) | (lsw & 0xFFFF);
-};
-
-var S = function(X, n) {
-  return (X >>> n) | (X << (32 - n));
-};
-
-var R = function(X, n) {
-  return (X >>> n);
-};
-
-var Ch = function(x, y, z) {
-  return ((x & y) ^ ((~x) & z));
-};
-
-var Maj = function(x, y, z) {
-  return ((x & y) ^ (x & z) ^ (y & z));
-};
-
-var Sigma0256 = function(x) {
-  return (S(x, 2) ^ S(x, 13) ^ S(x, 22));
-};
-
-var Sigma1256 = function(x) {
-  return (S(x, 6) ^ S(x, 11) ^ S(x, 25));
-};
-
-var Gamma0256 = function(x) {
-  return (S(x, 7) ^ S(x, 18) ^ R(x, 3));
-};
-
-var Gamma1256 = function(x) {
-  return (S(x, 17) ^ S(x, 19) ^ R(x, 10));
-};
-
-var core_sha256 = function(m, l) {
-  var K = new Array(0x428A2F98,0x71374491,0xB5C0FBCF,0xE9B5DBA5,0x3956C25B,0x59F111F1,0x923F82A4,0xAB1C5ED5,0xD807AA98,0x12835B01,0x243185BE,0x550C7DC3,0x72BE5D74,0x80DEB1FE,0x9BDC06A7,0xC19BF174,0xE49B69C1,0xEFBE4786,0xFC19DC6,0x240CA1CC,0x2DE92C6F,0x4A7484AA,0x5CB0A9DC,0x76F988DA,0x983E5152,0xA831C66D,0xB00327C8,0xBF597FC7,0xC6E00BF3,0xD5A79147,0x6CA6351,0x14292967,0x27B70A85,0x2E1B2138,0x4D2C6DFC,0x53380D13,0x650A7354,0x766A0ABB,0x81C2C92E,0x92722C85,0xA2BFE8A1,0xA81A664B,0xC24B8B70,0xC76C51A3,0xD192E819,0xD6990624,0xF40E3585,0x106AA070,0x19A4C116,0x1E376C08,0x2748774C,0x34B0BCB5,0x391C0CB3,0x4ED8AA4A,0x5B9CCA4F,0x682E6FF3,0x748F82EE,0x78A5636F,0x84C87814,0x8CC70208,0x90BEFFFA,0xA4506CEB,0xBEF9A3F7,0xC67178F2);
-  var HASH = new Array(0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19);
-    var W = new Array(64);
-    var a, b, c, d, e, f, g, h, i, j;
-    var T1, T2;
-  /* append padding */
-  m[l >> 5] |= 0x80 << (24 - l % 32);
-  m[((l + 64 >> 9) << 4) + 15] = l;
-  for (var i = 0; i < m.length; i += 16) {
-    a = HASH[0]; b = HASH[1]; c = HASH[2]; d = HASH[3]; e = HASH[4]; f = HASH[5]; g = HASH[6]; h = HASH[7];
-    for (var j = 0; j < 64; j++) {
-      if (j < 16) {
-        W[j] = m[j + i];
-      } else {
-        W[j] = safe_add(safe_add(safe_add(Gamma1256(W[j - 2]), W[j - 7]), Gamma0256(W[j - 15])), W[j - 16]);
-      }
-      T1 = safe_add(safe_add(safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
-      T2 = safe_add(Sigma0256(a), Maj(a, b, c));
-      h = g; g = f; f = e; e = safe_add(d, T1); d = c; c = b; b = a; a = safe_add(T1, T2);
-    }
-    HASH[0] = safe_add(a, HASH[0]); HASH[1] = safe_add(b, HASH[1]); HASH[2] = safe_add(c, HASH[2]); HASH[3] = safe_add(d, HASH[3]);
-    HASH[4] = safe_add(e, HASH[4]); HASH[5] = safe_add(f, HASH[5]); HASH[6] = safe_add(g, HASH[6]); HASH[7] = safe_add(h, HASH[7]);
-  }
-  return HASH;
-};
-
-var str2binb = function(str) {
-  var bin = Array();
-  var mask = (1 << chrsz) - 1;
-  for (var i = 0; i < str.length * chrsz; i += chrsz) {
-    bin[i >> 5] |= (str.charCodeAt(i / chrsz) & mask) << (24 - i % 32);
-  }
-  return bin;
-};
-
-/*
- * Convert an array of big-endian words to a string
- */
-function binb2str(bin)
-{
-  var str = "";
-  var mask = (1 << chrsz) - 1;
-  for (var i = 0; i < bin.length * 32; i += chrsz)
-    str += String.fromCharCode((bin[i >> 5] >>> (32 - chrsz - i % 32)) & mask);
-  return str;
-}
-
-var hex2binb = function(a) {
-  var b = [], length = a.length, i, num;
-  for (i = 0; i < length; i += 2) {
-    num = parseInt(a.substr(i, 2), 16);
-    if (!isNaN(num)) {
-      b[i >> 3] |= num << (24 - (4 * (i % 8)));
-    } else {
-      return "INVALID HEX STRING";
-    }
-  }
-  return b;
-};
-
-var binb2hex = function(binarray) {
-  //var hexcase = 0; /* hex output format. 0 - lowercase; 1 - uppercase */
-  var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
-  var str = "";
-  for (var i = 0; i < binarray.length * 4; i++) {
-    str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) + hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
-  }
-  return str;
-};
-
-var binb2b64 = function(a) {
-  var b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" + "0123456789+/", str = "", length = a.length * 4, i, j, triplet;
-  var b64pad = "=";
-  for (i = 0; i < length; i += 3) {
-    triplet = (((a[i >> 2] >> 8 * (3 - i % 4)) & 0xFF) << 16) | (((a[i + 1 >> 2] >> 8 * (3 - (i + 1) % 4)) & 0xFF) << 8) | ((a[i + 2 >> 2] >> 8 * (3 - (i + 2) % 4)) & 0xFF);
-    for (j = 0; j < 4; j += 1) {
-      if (i * 8 + j * 6 <= a.length * 32) {
-        str += b.charAt((triplet >> 6 * (3 - j)) & 0x3F);
-      } else {
-        str += b64pad;
-      }
-    }
-}
-  return str;
-};
-
-var core_hmac_sha256 = function(key, data) {
-  var bkey = str2binb(key);
-  if (bkey.length > 16) {
-    bkey = core_sha256(bkey, key.length * chrsz);
-  }
-  var ipad = Array(16), opad = Array(16);
-  for (var i = 0; i < 16; i++) {
-    ipad[i] = bkey[i] ^ 0x36363636;
-    opad[i] = bkey[i] ^ 0x5C5C5C5C;
-  }
-  var hash = core_sha256(ipad.concat(str2binb(data)), 512 + data.length * chrsz);
-  return core_sha256(opad.concat(hash), 512 + 256);
-};
-
-
-},{}],73:[function(require,module,exports){
 require=(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){
 // UTILITY
 var util = require('util');
@@ -11830,7 +11009,7 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 },{}]},{},[])
 ;;module.exports=require("buffer-browserify")
 
-},{}],74:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -11883,6 +11062,827 @@ process.cwd = function () { return '/' };
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
+
+},{}],70:[function(require,module,exports){
+var Buffer = require('buffer').Buffer
+var sha = require('./sha')
+var sha256 = require('./sha256')
+var rng = require('./rng')
+var md5 = require('./md5')
+
+var algorithms = {
+  sha1: {
+    hex: sha.hex_sha1,
+    base64: sha.b64_sha1,
+    binary: sha.str_sha1
+  },
+  sha256: {
+    hex: sha256.hex_sha256,
+    base64: sha256.b64_sha256,
+    binary: sha256.str_sha256
+  },
+  md5: {
+    hex: md5.hex_md5,
+    base64: md5.b64_md5,
+    binary: md5.bin_md5
+  }
+}
+
+var algorithmsHmac = {
+  sha1: {
+    hex: sha.hex_hmac_sha1,
+    base64: sha.b64_hmac_sha1,
+    binary: sha.str_hmac_sha1
+  },
+  sha256: {
+    hex: sha256.hex_hmac_sha256,
+    base64: sha256.b64_hmac_sha256,
+    binary: sha256.str_hmac_sha256
+  },
+  md5: {
+    hex: md5.hex_hmac_md5,
+    base64: md5.b64_hmac_md5,
+    binary: md5.bin_hmac_md5
+  }
+}
+
+
+function error () {
+  var m = [].slice.call(arguments).join(' ')
+  throw new Error([
+    m,
+    'we accept pull requests',
+    'http://github.com/dominictarr/crypto-browserify'
+    ].join('\n'))
+}
+
+exports.createHash = function (alg) {
+  alg = alg || 'sha1'
+  if(!algorithms[alg])
+    error('algorithm:', alg, 'is not yet supported')
+  var s = ''
+  var _alg = algorithms[alg]
+  return {
+    update: function (data) {
+      s += data
+      return this
+    },
+    digest: function (enc) {
+      enc = enc || 'binary'
+      var fn
+      if(!(fn = _alg[enc]))
+        error('encoding:', enc , 'is not yet supported for algorithm', alg)
+      var r = fn(s)
+      s = null //not meant to use the hash after you've called digest.
+      return r
+    }
+  }
+}
+
+exports.createHmac = function (alg, key) {
+  if (!algorithmsHmac[alg])
+    error('algorithm:', alg, 'is not yet supported')
+  if (typeof key != 'string')
+    key = key.toString('binary')
+  var s = ''
+  var _alg = algorithmsHmac[alg]
+  return {
+    update: function (data) {
+      s += data
+      return this
+    },
+    digest: function (enc) {
+      enc = enc || 'binary'
+      var fn
+      if (!(fn = _alg[enc]))
+        error('encoding:', enc, 'is not yet support for algorithm', alg)
+      var r = fn(key, s)
+      s = null
+      return r
+    }
+  }
+}
+
+exports.randomBytes = function(size, callback) {
+  if (callback && callback.call) {
+    try {
+      callback.call(this, undefined, new Buffer(rng(size)));
+    } catch (err) { callback(err); }
+  } else {
+    return new Buffer(rng(size));
+  }
+}
+
+function each(a, f) {
+  for(var i in a)
+    f(a[i], i)
+}
+
+// the least I can do is make error messages for the rest of the node.js/crypto api.
+each(['createCredentials'
+, 'createCipher'
+, 'createCipheriv'
+, 'createDecipher'
+, 'createDecipheriv'
+, 'createSign'
+, 'createVerify'
+, 'createDiffieHellman'
+, 'pbkdf2'], function (name) {
+  exports[name] = function () {
+    error('sorry,', name, 'is not implemented yet')
+  }
+})
+
+},{"./md5":71,"./rng":72,"./sha":73,"./sha256":74,"buffer":66}],71:[function(require,module,exports){
+/*
+ * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
+ * Digest Algorithm, as defined in RFC 1321.
+ * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for more info.
+ */
+
+/*
+ * Configurable variables. You may need to tweak these to be compatible with
+ * the server-side, but the defaults work in most cases.
+ */
+var hexcase = 0;   /* hex output format. 0 - lowercase; 1 - uppercase        */
+var b64pad  = "="; /* base-64 pad character. "=" for strict RFC compliance   */
+var chrsz   = 8;   /* bits per input character. 8 - ASCII; 16 - Unicode      */
+
+/*
+ * These are the functions you'll usually want to call
+ * They take string arguments and return either hex or base-64 encoded strings
+ */
+function hex_md5(s){ return binl2hex(core_md5(str2binl(s), s.length * chrsz));}
+function b64_md5(s){ return binl2b64(core_md5(str2binl(s), s.length * chrsz));}
+function str_md5(s){ return binl2str(core_md5(str2binl(s), s.length * chrsz));}
+function hex_hmac_md5(key, data) { return binl2hex(core_hmac_md5(key, data)); }
+function b64_hmac_md5(key, data) { return binl2b64(core_hmac_md5(key, data)); }
+function str_hmac_md5(key, data) { return binl2str(core_hmac_md5(key, data)); }
+
+/*
+ * Perform a simple self-test to see if the VM is working
+ */
+function md5_vm_test()
+{
+  return hex_md5("abc") == "900150983cd24fb0d6963f7d28e17f72";
+}
+
+/*
+ * Calculate the MD5 of an array of little-endian words, and a bit length
+ */
+function core_md5(x, len)
+{
+  /* append padding */
+  x[len >> 5] |= 0x80 << ((len) % 32);
+  x[(((len + 64) >>> 9) << 4) + 14] = len;
+
+  var a =  1732584193;
+  var b = -271733879;
+  var c = -1732584194;
+  var d =  271733878;
+
+  for(var i = 0; i < x.length; i += 16)
+  {
+    var olda = a;
+    var oldb = b;
+    var oldc = c;
+    var oldd = d;
+
+    a = md5_ff(a, b, c, d, x[i+ 0], 7 , -680876936);
+    d = md5_ff(d, a, b, c, x[i+ 1], 12, -389564586);
+    c = md5_ff(c, d, a, b, x[i+ 2], 17,  606105819);
+    b = md5_ff(b, c, d, a, x[i+ 3], 22, -1044525330);
+    a = md5_ff(a, b, c, d, x[i+ 4], 7 , -176418897);
+    d = md5_ff(d, a, b, c, x[i+ 5], 12,  1200080426);
+    c = md5_ff(c, d, a, b, x[i+ 6], 17, -1473231341);
+    b = md5_ff(b, c, d, a, x[i+ 7], 22, -45705983);
+    a = md5_ff(a, b, c, d, x[i+ 8], 7 ,  1770035416);
+    d = md5_ff(d, a, b, c, x[i+ 9], 12, -1958414417);
+    c = md5_ff(c, d, a, b, x[i+10], 17, -42063);
+    b = md5_ff(b, c, d, a, x[i+11], 22, -1990404162);
+    a = md5_ff(a, b, c, d, x[i+12], 7 ,  1804603682);
+    d = md5_ff(d, a, b, c, x[i+13], 12, -40341101);
+    c = md5_ff(c, d, a, b, x[i+14], 17, -1502002290);
+    b = md5_ff(b, c, d, a, x[i+15], 22,  1236535329);
+
+    a = md5_gg(a, b, c, d, x[i+ 1], 5 , -165796510);
+    d = md5_gg(d, a, b, c, x[i+ 6], 9 , -1069501632);
+    c = md5_gg(c, d, a, b, x[i+11], 14,  643717713);
+    b = md5_gg(b, c, d, a, x[i+ 0], 20, -373897302);
+    a = md5_gg(a, b, c, d, x[i+ 5], 5 , -701558691);
+    d = md5_gg(d, a, b, c, x[i+10], 9 ,  38016083);
+    c = md5_gg(c, d, a, b, x[i+15], 14, -660478335);
+    b = md5_gg(b, c, d, a, x[i+ 4], 20, -405537848);
+    a = md5_gg(a, b, c, d, x[i+ 9], 5 ,  568446438);
+    d = md5_gg(d, a, b, c, x[i+14], 9 , -1019803690);
+    c = md5_gg(c, d, a, b, x[i+ 3], 14, -187363961);
+    b = md5_gg(b, c, d, a, x[i+ 8], 20,  1163531501);
+    a = md5_gg(a, b, c, d, x[i+13], 5 , -1444681467);
+    d = md5_gg(d, a, b, c, x[i+ 2], 9 , -51403784);
+    c = md5_gg(c, d, a, b, x[i+ 7], 14,  1735328473);
+    b = md5_gg(b, c, d, a, x[i+12], 20, -1926607734);
+
+    a = md5_hh(a, b, c, d, x[i+ 5], 4 , -378558);
+    d = md5_hh(d, a, b, c, x[i+ 8], 11, -2022574463);
+    c = md5_hh(c, d, a, b, x[i+11], 16,  1839030562);
+    b = md5_hh(b, c, d, a, x[i+14], 23, -35309556);
+    a = md5_hh(a, b, c, d, x[i+ 1], 4 , -1530992060);
+    d = md5_hh(d, a, b, c, x[i+ 4], 11,  1272893353);
+    c = md5_hh(c, d, a, b, x[i+ 7], 16, -155497632);
+    b = md5_hh(b, c, d, a, x[i+10], 23, -1094730640);
+    a = md5_hh(a, b, c, d, x[i+13], 4 ,  681279174);
+    d = md5_hh(d, a, b, c, x[i+ 0], 11, -358537222);
+    c = md5_hh(c, d, a, b, x[i+ 3], 16, -722521979);
+    b = md5_hh(b, c, d, a, x[i+ 6], 23,  76029189);
+    a = md5_hh(a, b, c, d, x[i+ 9], 4 , -640364487);
+    d = md5_hh(d, a, b, c, x[i+12], 11, -421815835);
+    c = md5_hh(c, d, a, b, x[i+15], 16,  530742520);
+    b = md5_hh(b, c, d, a, x[i+ 2], 23, -995338651);
+
+    a = md5_ii(a, b, c, d, x[i+ 0], 6 , -198630844);
+    d = md5_ii(d, a, b, c, x[i+ 7], 10,  1126891415);
+    c = md5_ii(c, d, a, b, x[i+14], 15, -1416354905);
+    b = md5_ii(b, c, d, a, x[i+ 5], 21, -57434055);
+    a = md5_ii(a, b, c, d, x[i+12], 6 ,  1700485571);
+    d = md5_ii(d, a, b, c, x[i+ 3], 10, -1894986606);
+    c = md5_ii(c, d, a, b, x[i+10], 15, -1051523);
+    b = md5_ii(b, c, d, a, x[i+ 1], 21, -2054922799);
+    a = md5_ii(a, b, c, d, x[i+ 8], 6 ,  1873313359);
+    d = md5_ii(d, a, b, c, x[i+15], 10, -30611744);
+    c = md5_ii(c, d, a, b, x[i+ 6], 15, -1560198380);
+    b = md5_ii(b, c, d, a, x[i+13], 21,  1309151649);
+    a = md5_ii(a, b, c, d, x[i+ 4], 6 , -145523070);
+    d = md5_ii(d, a, b, c, x[i+11], 10, -1120210379);
+    c = md5_ii(c, d, a, b, x[i+ 2], 15,  718787259);
+    b = md5_ii(b, c, d, a, x[i+ 9], 21, -343485551);
+
+    a = safe_add(a, olda);
+    b = safe_add(b, oldb);
+    c = safe_add(c, oldc);
+    d = safe_add(d, oldd);
+  }
+  return Array(a, b, c, d);
+
+}
+
+/*
+ * These functions implement the four basic operations the algorithm uses.
+ */
+function md5_cmn(q, a, b, x, s, t)
+{
+  return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s),b);
+}
+function md5_ff(a, b, c, d, x, s, t)
+{
+  return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t);
+}
+function md5_gg(a, b, c, d, x, s, t)
+{
+  return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t);
+}
+function md5_hh(a, b, c, d, x, s, t)
+{
+  return md5_cmn(b ^ c ^ d, a, b, x, s, t);
+}
+function md5_ii(a, b, c, d, x, s, t)
+{
+  return md5_cmn(c ^ (b | (~d)), a, b, x, s, t);
+}
+
+/*
+ * Calculate the HMAC-MD5, of a key and some data
+ */
+function core_hmac_md5(key, data)
+{
+  var bkey = str2binl(key);
+  if(bkey.length > 16) bkey = core_md5(bkey, key.length * chrsz);
+
+  var ipad = Array(16), opad = Array(16);
+  for(var i = 0; i < 16; i++)
+  {
+    ipad[i] = bkey[i] ^ 0x36363636;
+    opad[i] = bkey[i] ^ 0x5C5C5C5C;
+  }
+
+  var hash = core_md5(ipad.concat(str2binl(data)), 512 + data.length * chrsz);
+  return core_md5(opad.concat(hash), 512 + 128);
+}
+
+/*
+ * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+ * to work around bugs in some JS interpreters.
+ */
+function safe_add(x, y)
+{
+  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+  return (msw << 16) | (lsw & 0xFFFF);
+}
+
+/*
+ * Bitwise rotate a 32-bit number to the left.
+ */
+function bit_rol(num, cnt)
+{
+  return (num << cnt) | (num >>> (32 - cnt));
+}
+
+/*
+ * Convert a string to an array of little-endian words
+ * If chrsz is ASCII, characters >255 have their hi-byte silently ignored.
+ */
+function str2binl(str)
+{
+  var bin = Array();
+  var mask = (1 << chrsz) - 1;
+  for(var i = 0; i < str.length * chrsz; i += chrsz)
+    bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (i%32);
+  return bin;
+}
+
+/*
+ * Convert an array of little-endian words to a string
+ */
+function binl2str(bin)
+{
+  var str = "";
+  var mask = (1 << chrsz) - 1;
+  for(var i = 0; i < bin.length * 32; i += chrsz)
+    str += String.fromCharCode((bin[i>>5] >>> (i % 32)) & mask);
+  return str;
+}
+
+/*
+ * Convert an array of little-endian words to a hex string.
+ */
+function binl2hex(binarray)
+{
+  var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
+  var str = "";
+  for(var i = 0; i < binarray.length * 4; i++)
+  {
+    str += hex_tab.charAt((binarray[i>>2] >> ((i%4)*8+4)) & 0xF) +
+           hex_tab.charAt((binarray[i>>2] >> ((i%4)*8  )) & 0xF);
+  }
+  return str;
+}
+
+/*
+ * Convert an array of little-endian words to a base-64 string
+ */
+function binl2b64(binarray)
+{
+  var tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  var str = "";
+  for(var i = 0; i < binarray.length * 4; i += 3)
+  {
+    var triplet = (((binarray[i   >> 2] >> 8 * ( i   %4)) & 0xFF) << 16)
+                | (((binarray[i+1 >> 2] >> 8 * ((i+1)%4)) & 0xFF) << 8 )
+                |  ((binarray[i+2 >> 2] >> 8 * ((i+2)%4)) & 0xFF);
+    for(var j = 0; j < 4; j++)
+    {
+      if(i * 8 + j * 6 > binarray.length * 32) str += b64pad;
+      else str += tab.charAt((triplet >> 6*(3-j)) & 0x3F);
+    }
+  }
+  return str;
+}
+
+exports.hex_md5 = hex_md5;
+exports.b64_md5 = b64_md5;
+exports.bin_md5 = str_md5;
+exports.hex_hmac_md5 = hex_hmac_md5;
+exports.b64_hmac_md5 = b64_hmac_md5;
+exports.bin_hmac_md5 = str_hmac_md5;
+
+},{}],72:[function(require,module,exports){
+// Original code adapted from Robert Kieffer.
+// details at https://github.com/broofa/node-uuid
+(function() {
+  var _global = this;
+
+  var mathRNG, whatwgRNG;
+
+  // NOTE: Math.random() does not guarantee "cryptographic quality"
+  mathRNG = function(size) {
+    var bytes = new Array(size);
+    var r;
+
+    for (var i = 0, r; i < size; i++) {
+      if ((i & 0x03) == 0) r = Math.random() * 0x100000000;
+      bytes[i] = r >>> ((i & 0x03) << 3) & 0xff;
+    }
+
+    return bytes;
+  }
+
+  if (_global.crypto && crypto.getRandomValues) {
+    var _rnds = new Uint32Array(4);
+    whatwgRNG = function(size) {
+      var bytes = new Array(size);
+      crypto.getRandomValues(_rnds);
+
+      for (var c = 0 ; c < size; c++) {
+        bytes[c] = _rnds[c >> 2] >>> ((c & 0x03) * 8) & 0xff;
+      }
+      return bytes;
+    }
+  }
+
+  module.exports = whatwgRNG || mathRNG;
+
+}())
+
+},{}],73:[function(require,module,exports){
+/*
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
+ * in FIPS PUB 180-1
+ * Version 2.1a Copyright Paul Johnston 2000 - 2002.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for details.
+ */
+
+exports.hex_sha1 = hex_sha1;
+exports.b64_sha1 = b64_sha1;
+exports.str_sha1 = str_sha1;
+exports.hex_hmac_sha1 = hex_hmac_sha1;
+exports.b64_hmac_sha1 = b64_hmac_sha1;
+exports.str_hmac_sha1 = str_hmac_sha1;
+
+/*
+ * Configurable variables. You may need to tweak these to be compatible with
+ * the server-side, but the defaults work in most cases.
+ */
+var hexcase = 0;   /* hex output format. 0 - lowercase; 1 - uppercase        */
+var b64pad  = "="; /* base-64 pad character. "=" for strict RFC compliance   */
+var chrsz   = 8;   /* bits per input character. 8 - ASCII; 16 - Unicode      */
+
+/*
+ * These are the functions you'll usually want to call
+ * They take string arguments and return either hex or base-64 encoded strings
+ */
+function hex_sha1(s){return binb2hex(core_sha1(str2binb(s),s.length * chrsz));}
+function b64_sha1(s){return binb2b64(core_sha1(str2binb(s),s.length * chrsz));}
+function str_sha1(s){return binb2str(core_sha1(str2binb(s),s.length * chrsz));}
+function hex_hmac_sha1(key, data){ return binb2hex(core_hmac_sha1(key, data));}
+function b64_hmac_sha1(key, data){ return binb2b64(core_hmac_sha1(key, data));}
+function str_hmac_sha1(key, data){ return binb2str(core_hmac_sha1(key, data));}
+
+/*
+ * Perform a simple self-test to see if the VM is working
+ */
+function sha1_vm_test()
+{
+  return hex_sha1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
+}
+
+/*
+ * Calculate the SHA-1 of an array of big-endian words, and a bit length
+ */
+function core_sha1(x, len)
+{
+  /* append padding */
+  x[len >> 5] |= 0x80 << (24 - len % 32);
+  x[((len + 64 >> 9) << 4) + 15] = len;
+
+  var w = Array(80);
+  var a =  1732584193;
+  var b = -271733879;
+  var c = -1732584194;
+  var d =  271733878;
+  var e = -1009589776;
+
+  for(var i = 0; i < x.length; i += 16)
+  {
+    var olda = a;
+    var oldb = b;
+    var oldc = c;
+    var oldd = d;
+    var olde = e;
+
+    for(var j = 0; j < 80; j++)
+    {
+      if(j < 16) w[j] = x[i + j];
+      else w[j] = rol(w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16], 1);
+      var t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)),
+                       safe_add(safe_add(e, w[j]), sha1_kt(j)));
+      e = d;
+      d = c;
+      c = rol(b, 30);
+      b = a;
+      a = t;
+    }
+
+    a = safe_add(a, olda);
+    b = safe_add(b, oldb);
+    c = safe_add(c, oldc);
+    d = safe_add(d, oldd);
+    e = safe_add(e, olde);
+  }
+  return Array(a, b, c, d, e);
+
+}
+
+/*
+ * Perform the appropriate triplet combination function for the current
+ * iteration
+ */
+function sha1_ft(t, b, c, d)
+{
+  if(t < 20) return (b & c) | ((~b) & d);
+  if(t < 40) return b ^ c ^ d;
+  if(t < 60) return (b & c) | (b & d) | (c & d);
+  return b ^ c ^ d;
+}
+
+/*
+ * Determine the appropriate additive constant for the current iteration
+ */
+function sha1_kt(t)
+{
+  return (t < 20) ?  1518500249 : (t < 40) ?  1859775393 :
+         (t < 60) ? -1894007588 : -899497514;
+}
+
+/*
+ * Calculate the HMAC-SHA1 of a key and some data
+ */
+function core_hmac_sha1(key, data)
+{
+  var bkey = str2binb(key);
+  if(bkey.length > 16) bkey = core_sha1(bkey, key.length * chrsz);
+
+  var ipad = Array(16), opad = Array(16);
+  for(var i = 0; i < 16; i++)
+  {
+    ipad[i] = bkey[i] ^ 0x36363636;
+    opad[i] = bkey[i] ^ 0x5C5C5C5C;
+  }
+
+  var hash = core_sha1(ipad.concat(str2binb(data)), 512 + data.length * chrsz);
+  return core_sha1(opad.concat(hash), 512 + 160);
+}
+
+/*
+ * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+ * to work around bugs in some JS interpreters.
+ */
+function safe_add(x, y)
+{
+  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+  return (msw << 16) | (lsw & 0xFFFF);
+}
+
+/*
+ * Bitwise rotate a 32-bit number to the left.
+ */
+function rol(num, cnt)
+{
+  return (num << cnt) | (num >>> (32 - cnt));
+}
+
+/*
+ * Convert an 8-bit or 16-bit string to an array of big-endian words
+ * In 8-bit function, characters >255 have their hi-byte silently ignored.
+ */
+function str2binb(str)
+{
+  var bin = Array();
+  var mask = (1 << chrsz) - 1;
+  for(var i = 0; i < str.length * chrsz; i += chrsz)
+    bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (32 - chrsz - i%32);
+  return bin;
+}
+
+/*
+ * Convert an array of big-endian words to a string
+ */
+function binb2str(bin)
+{
+  var str = "";
+  var mask = (1 << chrsz) - 1;
+  for(var i = 0; i < bin.length * 32; i += chrsz)
+    str += String.fromCharCode((bin[i>>5] >>> (32 - chrsz - i%32)) & mask);
+  return str;
+}
+
+/*
+ * Convert an array of big-endian words to a hex string.
+ */
+function binb2hex(binarray)
+{
+  var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
+  var str = "";
+  for(var i = 0; i < binarray.length * 4; i++)
+  {
+    str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
+           hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
+  }
+  return str;
+}
+
+/*
+ * Convert an array of big-endian words to a base-64 string
+ */
+function binb2b64(binarray)
+{
+  var tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  var str = "";
+  for(var i = 0; i < binarray.length * 4; i += 3)
+  {
+    var triplet = (((binarray[i   >> 2] >> 8 * (3 -  i   %4)) & 0xFF) << 16)
+                | (((binarray[i+1 >> 2] >> 8 * (3 - (i+1)%4)) & 0xFF) << 8 )
+                |  ((binarray[i+2 >> 2] >> 8 * (3 - (i+2)%4)) & 0xFF);
+    for(var j = 0; j < 4; j++)
+    {
+      if(i * 8 + j * 6 > binarray.length * 32) str += b64pad;
+      else str += tab.charAt((triplet >> 6*(3-j)) & 0x3F);
+    }
+  }
+  return str;
+}
+
+
+},{}],74:[function(require,module,exports){
+
+/**
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
+ * in FIPS 180-2
+ * Version 2.2-beta Copyright Angel Marin, Paul Johnston 2000 - 2009.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ *
+ */
+
+exports.hex_sha256 = hex_sha256;
+exports.b64_sha256 = b64_sha256;
+exports.str_sha256 = str_sha256;
+exports.hex_hmac_sha256 = hex_hmac_sha256;
+exports.b64_hmac_sha256 = b64_hmac_sha256;
+exports.str_hmac_sha256 = str_hmac_sha256;
+
+/*
+ * Configurable variables. You may need to tweak these to be compatible with
+ * the server-side, but the defaults work in most cases.
+ */
+var hexcase = 0;   /* hex output format. 0 - lowercase; 1 - uppercase        */
+var b64pad  = "="; /* base-64 pad character. "=" for strict RFC compliance   */
+var chrsz   = 8;   /* bits per input character. 8 - ASCII; 16 - Unicode      */
+
+/*
+ * These are the functions you'll usually want to call
+ * They take string arguments and return either hex or base-64 encoded strings
+ */
+function hex_sha256(s){return binb2hex(core_sha256(str2binb(s),s.length * chrsz));}
+function b64_sha256(s){return binb2b64(core_sha256(str2binb(s),s.length * chrsz));}
+function str_sha256(s){return binb2str(core_sha256(str2binb(s),s.length * chrsz));}
+function hex_hmac_sha256(key, data){ return binb2hex(core_hmac_sha256(key, data));}
+function b64_hmac_sha256(key, data){ return binb2b64(core_hmac_sha256(key, data));}
+function str_hmac_sha256(key, data){ return binb2str(core_hmac_sha256(key, data));}
+
+var safe_add = function(x, y) {
+  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+  return (msw << 16) | (lsw & 0xFFFF);
+};
+
+var S = function(X, n) {
+  return (X >>> n) | (X << (32 - n));
+};
+
+var R = function(X, n) {
+  return (X >>> n);
+};
+
+var Ch = function(x, y, z) {
+  return ((x & y) ^ ((~x) & z));
+};
+
+var Maj = function(x, y, z) {
+  return ((x & y) ^ (x & z) ^ (y & z));
+};
+
+var Sigma0256 = function(x) {
+  return (S(x, 2) ^ S(x, 13) ^ S(x, 22));
+};
+
+var Sigma1256 = function(x) {
+  return (S(x, 6) ^ S(x, 11) ^ S(x, 25));
+};
+
+var Gamma0256 = function(x) {
+  return (S(x, 7) ^ S(x, 18) ^ R(x, 3));
+};
+
+var Gamma1256 = function(x) {
+  return (S(x, 17) ^ S(x, 19) ^ R(x, 10));
+};
+
+var core_sha256 = function(m, l) {
+  var K = new Array(0x428A2F98,0x71374491,0xB5C0FBCF,0xE9B5DBA5,0x3956C25B,0x59F111F1,0x923F82A4,0xAB1C5ED5,0xD807AA98,0x12835B01,0x243185BE,0x550C7DC3,0x72BE5D74,0x80DEB1FE,0x9BDC06A7,0xC19BF174,0xE49B69C1,0xEFBE4786,0xFC19DC6,0x240CA1CC,0x2DE92C6F,0x4A7484AA,0x5CB0A9DC,0x76F988DA,0x983E5152,0xA831C66D,0xB00327C8,0xBF597FC7,0xC6E00BF3,0xD5A79147,0x6CA6351,0x14292967,0x27B70A85,0x2E1B2138,0x4D2C6DFC,0x53380D13,0x650A7354,0x766A0ABB,0x81C2C92E,0x92722C85,0xA2BFE8A1,0xA81A664B,0xC24B8B70,0xC76C51A3,0xD192E819,0xD6990624,0xF40E3585,0x106AA070,0x19A4C116,0x1E376C08,0x2748774C,0x34B0BCB5,0x391C0CB3,0x4ED8AA4A,0x5B9CCA4F,0x682E6FF3,0x748F82EE,0x78A5636F,0x84C87814,0x8CC70208,0x90BEFFFA,0xA4506CEB,0xBEF9A3F7,0xC67178F2);
+  var HASH = new Array(0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19);
+    var W = new Array(64);
+    var a, b, c, d, e, f, g, h, i, j;
+    var T1, T2;
+  /* append padding */
+  m[l >> 5] |= 0x80 << (24 - l % 32);
+  m[((l + 64 >> 9) << 4) + 15] = l;
+  for (var i = 0; i < m.length; i += 16) {
+    a = HASH[0]; b = HASH[1]; c = HASH[2]; d = HASH[3]; e = HASH[4]; f = HASH[5]; g = HASH[6]; h = HASH[7];
+    for (var j = 0; j < 64; j++) {
+      if (j < 16) {
+        W[j] = m[j + i];
+      } else {
+        W[j] = safe_add(safe_add(safe_add(Gamma1256(W[j - 2]), W[j - 7]), Gamma0256(W[j - 15])), W[j - 16]);
+      }
+      T1 = safe_add(safe_add(safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
+      T2 = safe_add(Sigma0256(a), Maj(a, b, c));
+      h = g; g = f; f = e; e = safe_add(d, T1); d = c; c = b; b = a; a = safe_add(T1, T2);
+    }
+    HASH[0] = safe_add(a, HASH[0]); HASH[1] = safe_add(b, HASH[1]); HASH[2] = safe_add(c, HASH[2]); HASH[3] = safe_add(d, HASH[3]);
+    HASH[4] = safe_add(e, HASH[4]); HASH[5] = safe_add(f, HASH[5]); HASH[6] = safe_add(g, HASH[6]); HASH[7] = safe_add(h, HASH[7]);
+  }
+  return HASH;
+};
+
+var str2binb = function(str) {
+  var bin = Array();
+  var mask = (1 << chrsz) - 1;
+  for (var i = 0; i < str.length * chrsz; i += chrsz) {
+    bin[i >> 5] |= (str.charCodeAt(i / chrsz) & mask) << (24 - i % 32);
+  }
+  return bin;
+};
+
+/*
+ * Convert an array of big-endian words to a string
+ */
+function binb2str(bin)
+{
+  var str = "";
+  var mask = (1 << chrsz) - 1;
+  for (var i = 0; i < bin.length * 32; i += chrsz)
+    str += String.fromCharCode((bin[i >> 5] >>> (32 - chrsz - i % 32)) & mask);
+  return str;
+}
+
+var hex2binb = function(a) {
+  var b = [], length = a.length, i, num;
+  for (i = 0; i < length; i += 2) {
+    num = parseInt(a.substr(i, 2), 16);
+    if (!isNaN(num)) {
+      b[i >> 3] |= num << (24 - (4 * (i % 8)));
+    } else {
+      return "INVALID HEX STRING";
+    }
+  }
+  return b;
+};
+
+var binb2hex = function(binarray) {
+  //var hexcase = 0; /* hex output format. 0 - lowercase; 1 - uppercase */
+  var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
+  var str = "";
+  for (var i = 0; i < binarray.length * 4; i++) {
+    str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) + hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
+  }
+  return str;
+};
+
+var binb2b64 = function(a) {
+  var b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" + "0123456789+/", str = "", length = a.length * 4, i, j, triplet;
+  var b64pad = "=";
+  for (i = 0; i < length; i += 3) {
+    triplet = (((a[i >> 2] >> 8 * (3 - i % 4)) & 0xFF) << 16) | (((a[i + 1 >> 2] >> 8 * (3 - (i + 1) % 4)) & 0xFF) << 8) | ((a[i + 2 >> 2] >> 8 * (3 - (i + 2) % 4)) & 0xFF);
+    for (j = 0; j < 4; j += 1) {
+      if (i * 8 + j * 6 <= a.length * 32) {
+        str += b.charAt((triplet >> 6 * (3 - j)) & 0x3F);
+      } else {
+        str += b64pad;
+      }
+    }
+}
+  return str;
+};
+
+var core_hmac_sha256 = function(key, data) {
+  var bkey = str2binb(key);
+  if (bkey.length > 16) {
+    bkey = core_sha256(bkey, key.length * chrsz);
+  }
+  var ipad = Array(16), opad = Array(16);
+  for (var i = 0; i < 16; i++) {
+    ipad[i] = bkey[i] ^ 0x36363636;
+    opad[i] = bkey[i] ^ 0x5C5C5C5C;
+  }
+  var hash = core_sha256(ipad.concat(str2binb(data)), 512 + data.length * chrsz);
+  return core_sha256(opad.concat(hash), 512 + 256);
+};
+
 
 },{}],75:[function(require,module,exports){
 var _ = require('./vendor/lodash');
@@ -12524,6 +12524,7 @@ function Jingle(opts) {
     var config = this.config = {
         debug: false,
         peerConnectionConfig: {
+            iceServers: [{"url": "stun:stun.l.google.com:19302"}]
         },
         peerConnectionConstraints: {
             optional: [
@@ -13004,6 +13005,7 @@ var JingleJSON = require('sdp-jingle-json');
 
 function JinglePeerConnection(config, constraints) {
     this.sid = '';
+    this.sdpSessId = Date.now();
     this.isInitiator = true;
 
     this.localDescription = {contents: []};
@@ -13037,6 +13039,7 @@ JinglePeerConnection.prototype.offer = function (constraints, cb) {
             offer.sdp = self._applySdpHack(offer.sdp);
             self.pc.setLocalDescription(offer);
             var json = JingleJSON.toSessionJSON(offer.sdp, self.isInitiator ? 'initiator' : 'responder');
+            json.sid = this.sid;
             self.localDescription = json;
             var expandedOffer = {
                 type: 'offer',
@@ -13059,7 +13062,7 @@ JinglePeerConnection.prototype.offer = function (constraints, cb) {
 PeerConnection.prototype.handleAnswer = function (answer, cb) {
     cb = cb || function () {};
     var self = this;
-    answer.sdp = JingleJSON.toSessionSDP(answer.json, this.sid);
+    answer.sdp = JingleJSON.toSessionSDP(answer.json, this.sdpSessId);
     self.remoteDescription = answer.json;
     this.pc.setRemoteDescription(
         new webrtc.SessionDescription(answer),
@@ -13076,7 +13079,7 @@ PeerConnection.prototype.handleAnswer = function (answer, cb) {
 JinglePeerConnection.prototype._answer = function (offer, constraints, cb) {
     cb = cb || function () {};
     var self = this;
-    offer.sdp = JingleJSON.toSessionSDP(offer.json, self.sid);
+    offer.sdp = JingleJSON.toSessionSDP(offer.json, self.sdpSessId);
     self.remoteDescription = offer.json;
     this.pc.setRemoteDescription(new webrtc.SessionDescription(offer), function () {
         self.pc.createAnswer(
@@ -13084,6 +13087,7 @@ JinglePeerConnection.prototype._answer = function (offer, constraints, cb) {
                 answer.sdp = self._applySdpHack(answer.sdp);
                 self.pc.setLocalDescription(answer);
                 var json = JingleJSON.toSessionJSON(answer.sdp);
+                json.sid = self.sid;
                 self.localDescription = json;
                 var expandedAnswer = {
                     type: 'answer',
@@ -13513,12 +13517,20 @@ exports.findLine = function (prefix, mediaLines, sessionLines) {
     return false;
 };
 
-exports.findLines = function (prefix, lines) {
+exports.findLines = function (prefix, mediaLines, sessionLines) {
     var results = [];
     var prefixLength = prefix.length;
-    for (var i = 0; i < lines.length; i++) {
-        if (lines[i].substr(0, prefixLength) === prefix) {
-            results.push(lines[i]);
+    for (var i = 0; i < mediaLines.length; i++) {
+        if (mediaLines[i].substr(0, prefixLength) === prefix) {
+            results.push(mediaLines[i]);
+        }
+    }
+    if (results.length || !sessionLines) {
+        return results;
+    }
+    for (var j = 0; j < sessionLines.length; j++) {
+        if (sessionLines[j].substr(0, prefixLength) === prefix) {
+            results.push(sessionLines[j]);
         }
     }
     return results;
@@ -13859,10 +13871,10 @@ var senders = {
 };
 
 
-exports.toSessionSDP = function (session) {
+exports.toSessionSDP = function (session, sid) {
     var sdp = [
         'v=0',
-        'o=- ' + (session.sid || Date.now()) + ' 2 IN IP4 0.0.0.0',
+        'o=- ' + (sid || session.sid || Date.now()) + ' ' + Date.now() + ' IN IP4 0.0.0.0',
         's=-',
         't=0 0'
     ];
@@ -15075,7 +15087,7 @@ var Buffer=require("__browserify_Buffer").Buffer;//     uuid.js
   }
 }());
 
-},{"__browserify_Buffer":73,"crypto":68}],102:[function(require,module,exports){
+},{"__browserify_Buffer":68,"crypto":70}],102:[function(require,module,exports){
 /**
 * Written by Nathan Fritz. Copyright © 2011 by &yet, LLC. Released under the
 * terms of the MIT License:
@@ -15513,7 +15525,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"crypto":68}],106:[function(require,module,exports){
+},{"crypto":70}],106:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15954,7 +15966,7 @@ exports.Paddle = Paddle;
     exports = module.exports = Mechanism;
 }));
 
-},{"buffer":66,"crypto":68}],112:[function(require,module,exports){
+},{"buffer":66,"crypto":70}],112:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS

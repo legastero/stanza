@@ -1,6 +1,6 @@
 {
     "name": "stanza.io",
-    "version": "2.5.2",
+    "version": "2.5.3",
     "description": "XMPP + WebSocket",
     "browserify": "index.js",
     "dependencies": {
@@ -17,7 +17,8 @@
         "sasl-plain": "0.1.0",
         "sasl-anonymous": "0.1.0",
         "underscore": "1.5.2",
-        "jingle": "0.0.5"
+        "jingle": "0.0.8",
+        "crypto-browserify": "1.0.3"
     },
     "devDependencies": {
         "precommit-hook": "0.3.5",
