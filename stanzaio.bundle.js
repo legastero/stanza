@@ -3187,11 +3187,12 @@ exports.RTP = stanza.define({
                 if (!values.length) return;
 
                 stanza.setBoolSubAttribute(this.xml, NS, 'encryption', 'required', true);
+                enc = stanza.find(this.xml, NS, 'encryption')[0];
 
                 var self = this;
                 values.forEach(function (value) {
                     var content = new exports.Crypto(value, null, self);
-                    self.xml.appendChild(content.xml);
+                    enc.appendChild(content.xml);
                 });
             }
         },
@@ -14116,7 +14117,10 @@ MediaSession.prototype = _.extend(MediaSession.prototype, {
         this.state = 'pending';
         this.pc.isInitiator = false;
         this.pc.answer({type: 'offer', json: changes}, function (err, answer) {
-            if (err) return cb(err);
+            if (err) {
+                console.log(err);
+                return cb({condition: 'general-error'});
+            }
             self.pendingAnswer = answer.json;
             cb();
         });
@@ -14124,7 +14128,8 @@ MediaSession.prototype = _.extend(MediaSession.prototype, {
     onSessionAccept: function (changes, cb) {
         this.state = 'active';
         this.pc.handleAnswer({type: 'answer', json: changes}, function (err) {
-            cb(err);
+            console.log(err);
+            cb({condition: 'general-error'});
         });
     },
     onSessionTerminate: function (changes, cb) {
