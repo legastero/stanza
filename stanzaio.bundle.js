@@ -3555,7 +3555,7 @@ exports.Resume = stanza.define({
     element: 'resume',
     topLevel: true,
     fields: {
-        h: util.numberAttribute('h', '0'),
+        h: util.numberAttribute('h'),
         previd: stanza.attribute('previd')
     }
 });
@@ -3567,7 +3567,7 @@ exports.Resumed = stanza.define({
     element: 'resumed',
     topLevel: true,
     fields: {
-        h: util.numberAttribute('h', '0'),
+        h: util.numberAttribute('h'),
         previd: stanza.attribute('previd')
     }
 });
@@ -3587,7 +3587,7 @@ exports.Ack = stanza.define({
     element: 'a',
     topLevel: true,
     fields: {
-        h: util.numberAttribute('h', '0')
+        h: util.numberAttribute('h')
     }
 });
 
@@ -3885,8 +3885,8 @@ exports.dateSubAttribute = function (NS, sub, attr, now) {
 };
 
 exports.numberAttribute = stanza.field(
-    function (xml, attr, defaultVal) {
-        return parseInt(stanza.getAttribute(xml, attr, defaultVal), 10);
+    function (xml, attr)  {
+        return parseInt(stanza.getAttribute(xml, attr, '0'), 10);
     },
     function (xml, attr, value) {
         stanza.setAttribute(xml, attr, value.toString());
@@ -3894,8 +3894,8 @@ exports.numberAttribute = stanza.field(
 );
 
 exports.numberSub = stanza.field(
-    function (xml, NS, sub, defaultVal) {
-        return parseInt(stanza.getSubText(xml, NS, sub, defaultVal), 10);
+    function (xml, NS, sub) {
+        return parseInt(stanza.getSubText(xml, NS, sub, '0'), 10);
     },
     function (xml, NS, sub, value) {
         stanza.setSubText(xml, NS, sub, value.toString());
