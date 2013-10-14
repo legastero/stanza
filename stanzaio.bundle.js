@@ -581,7 +581,7 @@ Client.prototype.JID = function (jid) {
 
 module.exports = Client;
 
-},{"./jid":3,"./stanza/bind":26,"./stanza/error":34,"./stanza/iq":37,"./stanza/message":41,"./stanza/presence":43,"./stanza/roster":47,"./stanza/sasl":50,"./stanza/session":51,"./stanza/sm":52,"./stanza/stream":53,"./stanza/streamError":54,"./stanza/streamFeatures":55,"./websocket":60,"async":61,"hostmeta":75,"node-uuid":101,"paddle":102,"sasl-anonymous":104,"sasl-digest-md5":106,"sasl-external":108,"sasl-plain":110,"sasl-scram-sha-1":112,"saslmechanisms":114,"underscore":115,"wildemitter":116}],3:[function(require,module,exports){
+},{"./jid":3,"./stanza/bind":26,"./stanza/error":34,"./stanza/iq":37,"./stanza/message":41,"./stanza/presence":43,"./stanza/roster":47,"./stanza/sasl":50,"./stanza/session":51,"./stanza/sm":52,"./stanza/stream":53,"./stanza/streamError":54,"./stanza/streamFeatures":55,"./websocket":60,"async":61,"hostmeta":75,"node-uuid":104,"paddle":105,"sasl-anonymous":107,"sasl-digest-md5":109,"sasl-external":111,"sasl-plain":113,"sasl-scram-sha-1":115,"saslmechanisms":117,"underscore":118,"wildemitter":119}],3:[function(require,module,exports){
 function JID(jid) {
     jid = jid || '';
 
@@ -1085,7 +1085,7 @@ module.exports = function (client) {
     client.generateVerString = generateVerString;
 };
 
-},{"../stanza/caps":28,"../stanza/disco":33,"crypto":70,"underscore":115}],12:[function(require,module,exports){
+},{"../stanza/caps":28,"../stanza/disco":33,"crypto":70,"underscore":118}],12:[function(require,module,exports){
 var stanzas = require('../stanza/forwarded');
 
 
@@ -1517,7 +1517,6 @@ function StreamManagement(conn) {
     this.lastAck = 0;
     this.handled = 0;
     this.windowSize = 1;
-    this.windowCount = 0;
     this.unacked = [];
     this.pendingAck = false;
 }
@@ -1555,7 +1554,6 @@ StreamManagement.prototype = {
         this.id = false;
         this.lastAck = 0;
         this.handled = 0;
-        this.windowCount = 0;
         this.unacked = [];
     },
     ack: function () {
@@ -1571,18 +1569,24 @@ StreamManagement.prototype = {
         var self = this;
         var numAcked = mod(ack.h - this.lastAck, MAX_SEQ);
 
+        this.pendingAck = false;
+
         for (var i = 0; i < numAcked && this.unacked.length > 0; i++) {
             this.conn.emit('stanza:acked', this.unacked.shift());
         }
+        this.lastAck = ack.h;
+
         if (resend) {
             var resendUnacked = this.unacked;
             this.unacked = [];
             resendUnacked.forEach(function (stanza) {
-                self.conn.send(stanza); 
+                self.conn.send(stanza);
             });
         }
-        this.pendingAck = false;
-        this.lastAck = ack.h;
+
+        if (this.unacked.length >= this.windowSize) {
+            this.request();
+        }
     },
     track: function (stanza) {
         var name = stanza._name;
@@ -1594,10 +1598,8 @@ StreamManagement.prototype = {
 
         if (this.started && acceptable[name]) {
             this.unacked.push(stanza);
-            this.windowCount += 1;
-            if (!this.pendingAck && this.windowCount >= this.windowSize) {
+            if (!this.pendingAck && this.unacked.length >= this.windowSize) {
                 this.request();
-                this.windowCount = 0;
             }
         }
     },
@@ -1658,7 +1660,7 @@ stanza.add(EventItem, 'avatars', avatars);
 stanza.add(Item, 'avatarData', stanza.subText('urn:xmpp:avatar:data', 'data'));
 stanza.add(EventItem, 'avatarData', stanza.subText('urn:xmpp:avatar:data', 'data'));
 
-},{"./pubsub":45,"jxt":97,"underscore":115}],26:[function(require,module,exports){
+},{"./pubsub":45,"jxt":100,"underscore":118}],26:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var StreamFeatures = require('./streamFeatures');
@@ -1679,7 +1681,7 @@ var Bind = module.exports = stanza.define({
 stanza.extend(Iq, Bind);
 stanza.extend(StreamFeatures, Bind);
 
-},{"./iq":37,"./streamFeatures":55,"./util":57,"jxt":97}],27:[function(require,module,exports){
+},{"./iq":37,"./streamFeatures":55,"./util":57,"jxt":100}],27:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 var PrivateStorage = require('./private');
@@ -1707,7 +1709,7 @@ var Bookmarks = module.exports = stanza.define({
 stanza.extend(PrivateStorage, Bookmarks);
 stanza.extend(Bookmarks, Conference, 'conferences');
 
-},{"./private":44,"./util":57,"jxt":97}],28:[function(require,module,exports){
+},{"./private":44,"./util":57,"jxt":100}],28:[function(require,module,exports){
 var stanza = require('jxt');
 var Presence = require('./presence');
 var StreamFeatures = require('./streamFeatures');
@@ -1728,7 +1730,7 @@ var Caps = module.exports = stanza.define({
 stanza.extend(Presence, Caps);
 stanza.extend(StreamFeatures, Caps);
 
-},{"./presence":43,"./streamFeatures":55,"jxt":97}],29:[function(require,module,exports){
+},{"./presence":43,"./streamFeatures":55,"jxt":100}],29:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Iq = require('./iq');
@@ -1777,7 +1779,7 @@ stanza.extend(Message, exports.Private);
 stanza.extend(Iq, exports.Enable);
 stanza.extend(Iq, exports.Disable);
 
-},{"./forwarded":35,"./iq":37,"./message":41,"jxt":97}],30:[function(require,module,exports){
+},{"./forwarded":35,"./iq":37,"./message":41,"jxt":100}],30:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -1852,7 +1854,7 @@ stanza.add(Message, 'chatState', {
     }
 });
 
-},{"./message":41,"jxt":97}],31:[function(require,module,exports){
+},{"./message":41,"jxt":100}],31:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -1941,7 +1943,7 @@ exports.Field = stanza.define({
 
 stanza.extend(Message, exports.DataForm);
 
-},{"./message":41,"./util":57,"jxt":97,"underscore":115}],32:[function(require,module,exports){
+},{"./message":41,"./util":57,"jxt":100,"underscore":118}],32:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -1961,7 +1963,7 @@ var DelayedDelivery = module.exports = stanza.define({
 stanza.extend(Message, DelayedDelivery);
 stanza.extend(Presence, DelayedDelivery);
 
-},{"./message":41,"./presence":43,"./util":57,"jxt":97}],33:[function(require,module,exports){
+},{"./message":41,"./presence":43,"./util":57,"jxt":100}],33:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var JID = require('../jid');
@@ -2080,7 +2082,7 @@ stanza.extend(Iq, exports.DiscoItems);
 stanza.extend(exports.DiscoItems, RSM);
 stanza.extend(exports.DiscoInfo, DataForm, 'extensions');
 
-},{"../jid":3,"./dataforms":31,"./iq":37,"./rsm":48,"jxt":97,"underscore":115}],34:[function(require,module,exports){
+},{"../jid":3,"./dataforms":31,"./iq":37,"./rsm":48,"jxt":100,"underscore":118}],34:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2184,7 +2186,7 @@ stanza.extend(Message, ErrorStanza);
 stanza.extend(Presence, ErrorStanza);
 stanza.extend(Iq, ErrorStanza);
 
-},{"./iq":37,"./message":41,"./presence":43,"./util":57,"jxt":97,"underscore":115}],35:[function(require,module,exports){
+},{"./iq":37,"./message":41,"./presence":43,"./util":57,"jxt":100,"underscore":118}],35:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -2206,7 +2208,7 @@ stanza.extend(Forwarded, Presence);
 stanza.extend(Forwarded, Iq);
 stanza.extend(Forwarded, DelayedDelivery);
 
-},{"./delayed":32,"./iq":37,"./message":41,"./presence":43,"jxt":97}],36:[function(require,module,exports){
+},{"./delayed":32,"./iq":37,"./message":41,"./presence":43,"jxt":100}],36:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2278,7 +2280,7 @@ stanza.extend(exports.ICEUDP, exports.Candidate, 'candidates');
 stanza.extend(exports.ICEUDP, exports.RemoteCandidate);
 stanza.extend(exports.ICEUDP, exports.Fingerprint, 'fingerprints');
 
-},{"./jingle":38,"./util":57,"jxt":97,"underscore":115}],37:[function(require,module,exports){
+},{"./jingle":38,"./util":57,"jxt":100,"underscore":118}],37:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 
@@ -2311,7 +2313,7 @@ Iq.prototype.errorReply = function (data) {
     return new Iq(data);
 };
 
-},{"./util":57,"jxt":97}],38:[function(require,module,exports){
+},{"./util":57,"jxt":100}],38:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2463,7 +2465,7 @@ stanza.extend(Iq, exports.Jingle);
 stanza.extend(exports.Jingle, exports.Content, 'contents');
 stanza.extend(exports.Jingle, exports.Reason);
 
-},{"./error":34,"./iq":37,"./util":57,"jxt":97,"underscore":115}],39:[function(require,module,exports){
+},{"./error":34,"./iq":37,"./util":57,"jxt":100,"underscore":118}],39:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Item = require('./pubsub').Item;
@@ -2490,7 +2492,7 @@ stanza.add(Message, 'json', JSONExtension);
 stanza.add(Item, 'json', JSONExtension);
 stanza.add(EventItem, 'json', JSONExtension);
 
-},{"./message":41,"./pubsub":45,"jxt":97}],40:[function(require,module,exports){
+},{"./message":41,"./pubsub":45,"jxt":100}],40:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 var Message = require('./message');
@@ -2591,7 +2593,7 @@ stanza.extend(Message, exports.Result);
 stanza.extend(exports.Result, Forwarded);
 stanza.extend(exports.MAMQuery, RSM);
 
-},{"../jid":3,"./forwarded":35,"./iq":37,"./message":41,"./rsm":48,"./util":57,"jxt":97}],41:[function(require,module,exports){
+},{"../jid":3,"./forwarded":35,"./iq":37,"./message":41,"./rsm":48,"./util":57,"jxt":100}],41:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2629,7 +2631,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"./util":57,"jxt":97,"underscore":115}],42:[function(require,module,exports){
+},{"./util":57,"jxt":100,"underscore":118}],42:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -2705,7 +2707,7 @@ exports.MUCJoin = stanza.define({
 
 stanza.extend(Presence, exports.MUCJoin);
 
-},{"./iq":37,"./message":41,"./presence":43,"jxt":97}],43:[function(require,module,exports){
+},{"./iq":37,"./message":41,"./presence":43,"jxt":100}],43:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2753,7 +2755,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"./util":57,"jxt":97,"underscore":115}],44:[function(require,module,exports){
+},{"./util":57,"jxt":100,"underscore":118}],44:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -2766,7 +2768,7 @@ var PrivateStorage = module.exports = stanza.define({
 
 stanza.extend(Iq, PrivateStorage);
 
-},{"./iq":37,"jxt":97}],45:[function(require,module,exports){
+},{"./iq":37,"jxt":100}],45:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2971,7 +2973,7 @@ stanza.extend(Message, exports.Event);
 stanza.extend(Iq, exports.Pubsub);
 stanza.extend(Iq, exports.PubsubOwner);
 
-},{"../jid":3,"./dataforms":31,"./iq":37,"./message":41,"./rsm":48,"./util":57,"jxt":97,"underscore":115}],46:[function(require,module,exports){
+},{"../jid":3,"./dataforms":31,"./iq":37,"./message":41,"./rsm":48,"./util":57,"jxt":100,"underscore":118}],46:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -2989,7 +2991,7 @@ var Received = module.exports = stanza.define({
 
 stanza.extend(Message, Received);
 
-},{"./message":41,"jxt":97}],47:[function(require,module,exports){
+},{"./message":41,"jxt":100}],47:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var Iq = require('./iq');
@@ -3057,7 +3059,7 @@ var Roster = module.exports = stanza.define({
 
 stanza.extend(Iq, Roster);
 
-},{"../jid":3,"./iq":37,"jxt":97,"underscore":115}],48:[function(require,module,exports){
+},{"../jid":3,"./iq":37,"jxt":100,"underscore":118}],48:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 
@@ -3092,7 +3094,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"./util":57,"jxt":97}],49:[function(require,module,exports){
+},{"./util":57,"jxt":100}],49:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -3281,6 +3283,48 @@ exports.Crypto = stanza.define({
 });
 
 
+// Bundle mapping has not been standardized yet
+exports.Bundle = stanza.define({
+    name: '_group',
+    namespace: 'urn:ietf:rfc:5888',
+    element: 'group',
+    fields: {
+        type: stanza.attribute('type'),
+        contents: {
+            get: function () {
+                var self = this;
+                return stanza.getMultiSubText(this.xml, this._NS, 'content', function (sub) {
+                    return stanza.getAttribute(sub, 'name');
+                });
+            },
+            set: function (value) {
+                var self = this;
+                stanza.setMultiSubText(this.xml, this._NS, 'content', value, function (val) {
+                    var child = stanza.createElement(self._NS, 'content', self._NS);
+                    stanza.setAttribute(child, 'name', val);
+                    self.xml.appendChild(child);
+                });
+            }
+        }
+    }
+});
+
+
+// SSRC mapping has not been standardized yet
+exports.SSRC = stanza.define({
+    name: '_ssrc',
+    namespace: 'http://estos.de/ns/ssrc',
+    element: 'ssrc',
+    fields: {
+        ssrc: stanza.attribute('ssrc'),
+        cname: stanza.attribute('cname'),
+        msid: stanza.attribute('msid'),
+        mslabel: stanza.attribute('mslabel'),
+        label: stanza.attribute('label')
+    }
+});
+
+
 exports.Mute = stanza.define({
     name: 'mute',
     namespace: INFONS,
@@ -3305,14 +3349,16 @@ exports.Unmute = stanza.define({
 
 stanza.extend(jingle.Content, exports.RTP);
 stanza.extend(exports.RTP, exports.PayloadType, 'payloads');
+stanza.extend(exports.RTP, exports.SSRC, 'ssrcs');
 
 stanza.extend(jingle.Jingle, exports.Mute);
 stanza.extend(jingle.Jingle, exports.Unmute);
+stanza.extend(jingle.Jingle, exports.Bundle, 'groupings');
 stanza.add(jingle.Jingle, 'ringing', stanza.boolSub(INFONS, 'ringing'));
 stanza.add(jingle.Jingle, 'hold', stanza.boolSub(INFONS, 'hold'));
 stanza.add(jingle.Jingle, 'active', stanza.boolSub(INFONS, 'active'));
 
-},{"./jingle":38,"./util":57,"jxt":97,"underscore":115}],50:[function(require,module,exports){
+},{"./jingle":38,"./util":57,"jxt":100,"underscore":118}],50:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -3450,7 +3496,7 @@ exports.Failure = stanza.define({
 
 stanza.extend(StreamFeatures, exports.Mechanisms);
 
-},{"./streamFeatures":55,"./util":57,"jxt":97,"underscore":115}],51:[function(require,module,exports){
+},{"./streamFeatures":55,"./util":57,"jxt":100,"underscore":118}],51:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var StreamFeatures = require('./streamFeatures');
@@ -3464,7 +3510,7 @@ var Session = module.exports = stanza.define({
 stanza.extend(StreamFeatures, Session);
 stanza.extend(Iq, Session);
 
-},{"./iq":37,"./streamFeatures":55,"jxt":97}],52:[function(require,module,exports){
+},{"./iq":37,"./streamFeatures":55,"jxt":100}],52:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 var StreamFeatures = require('./streamFeatures');
@@ -3556,7 +3602,7 @@ exports.Request = stanza.define({
 
 stanza.extend(StreamFeatures, exports.SMFeature);
 
-},{"./streamFeatures":55,"./util":57,"jxt":97}],53:[function(require,module,exports){
+},{"./streamFeatures":55,"./util":57,"jxt":100}],53:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 
@@ -3581,7 +3627,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"./util":57,"jxt":97}],54:[function(require,module,exports){
+},{"./util":57,"jxt":100}],54:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 
@@ -3666,7 +3712,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"jxt":97,"underscore":115}],55:[function(require,module,exports){
+},{"jxt":100,"underscore":118}],55:[function(require,module,exports){
 var stanza = require('jxt');
 
 var StreamFeatures = module.exports = stanza.define({
@@ -3699,7 +3745,7 @@ var SubscriptionPreApprovalFeature = stanza.define({
 stanza.extend(StreamFeatures, RosterVerFeature);
 stanza.extend(StreamFeatures, SubscriptionPreApprovalFeature);
 
-},{"jxt":97}],56:[function(require,module,exports){
+},{"jxt":100}],56:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 var Iq = require('./iq');
@@ -3751,7 +3797,7 @@ var EntityTime = module.exports = stanza.define({
 
 stanza.extend(Iq, EntityTime);
 
-},{"./iq":37,"./util":57,"jxt":97}],57:[function(require,module,exports){
+},{"./iq":37,"./util":57,"jxt":100}],57:[function(require,module,exports){
 var stanza = require('jxt');
 var JID = require('../jid');
 var XML_NS = 'http://www.w3.org/XML/1998/namespace';
@@ -3856,7 +3902,7 @@ exports.numberSub = stanza.field(
     }
 );
 
-},{"../jid":3,"jxt":97}],58:[function(require,module,exports){
+},{"../jid":3,"jxt":100}],58:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -3875,7 +3921,7 @@ var Version = module.exports = stanza.define({
 
 stanza.extend(Iq, Version);
 
-},{"./iq":37,"jxt":97}],59:[function(require,module,exports){
+},{"./iq":37,"jxt":100}],59:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -3883,7 +3929,7 @@ var Iq = require('./iq');
 stanza.add(Iq, 'visible', stanza.boolSub('urn:xmpp:invisible:0', 'visible'));
 stanza.add(Iq, 'invisible', stanza.boolSub('urn:xmpp:invisible:0', 'invisible'));
 
-},{"./iq":37,"jxt":97}],60:[function(require,module,exports){
+},{"./iq":37,"jxt":100}],60:[function(require,module,exports){
 var _ = require('underscore');
 var WildEmitter = require('wildemitter');
 var async = require('async');
@@ -4078,7 +4124,7 @@ WSConnection.prototype.send = function (data) {
 
 module.exports = WSConnection;
 
-},{"./sm":24,"./stanza/iq":37,"./stanza/message":41,"./stanza/presence":43,"./stanza/stream":53,"async":61,"node-uuid":101,"underscore":115,"wildemitter":116}],61:[function(require,module,exports){
+},{"./sm":24,"./stanza/iq":37,"./stanza/message":41,"./stanza/presence":43,"./stanza/stream":53,"async":61,"node-uuid":104,"underscore":118,"wildemitter":119}],61:[function(require,module,exports){
 var process=require("__browserify_process");/*global setImmediate: false, setTimeout: false, console: false */
 (function () {
 
@@ -12506,16 +12552,301 @@ try{V.nodeClass=!($.call(document)==x&&!({toString:0}+""))}catch(n){V.nodeClass=
 var n=typeof t;if("function"!=n){if("object"!=n)return function(r){return r[t]};var o=W(t);return function(r){for(var e=o.length,n=!1;e--&&(n=c(r[o[e]],t[o[e]],h)););return n}}return typeof r=="undefined"||b&&!b.test(N.call(t))?t:1===e?function(e){return t.call(r,e)}:2===e?function(e,n){return t.call(r,e,n)}:4===e?function(e,n,o,u){return t.call(r,e,n,o,u)}:function(e,n,o){return t.call(r,e,n,o)}},o.forEach=s,o.forIn=Y,o.keys=W,o.each=s,o.extend=G,o.identity=p,o.isArguments=a,o.isArray=Q,o.isEqual=c,o.isFunction=f,o.isObject=i,o.isString=l,o.VERSION="1.3.1",typeof define=="function"&&typeof define.amd=="object"&&define.amd?(t._=o, define(function(){return o
 })):P&&!P.nodeType?I?(I.exports=o)._=o:P._=o:t._=o}(this);
 },{}],82:[function(require,module,exports){
+module.exports = require('./lib/sessionManager');
+
+},{"./lib/sessionManager":85}],83:[function(require,module,exports){
+var bows = require('bows');
+var async = require('async');
+var WildEmitter = require('wildemitter');
+var JinglePeerConnection = require('jingle-rtcpeerconnection');
+var JingleJSON = require('sdp-jingle-json');
+
+
+var log = bows('JingleSession');
+
+
+function actionToMethod(action) {
+    var words = action.split('-');
+    return 'on' + words[0][0].toUpperCase() + words[0].substr(1) + words[1][0].toUpperCase() + words[1].substr(1);
+}
+
+
+function JingleSession(opts) {
+    var self = this;
+    this.sid = opts.sid || Date.now().toString();
+    this.peer = opts.peer;
+    this.isInitiator = opts.initiator || false;
+    this.state = 'starting';
+    this.parent = opts.parent;
+
+    this.processingQueue = async.queue(function (task, next) {
+        var action  = task.action;
+        var changes = task.changes;
+        var cb = task.cb;
+
+        log(this.sid + ': ' + action);
+        self[action](changes, function (err) {
+            cb(err);
+            next();
+        });
+    });
+}
+
+JingleSession.prototype = Object.create(WildEmitter.prototype, {
+    constructor: {
+        value: JingleSession
+    }
+});
+
+
+JingleSession.prototype.process = function (action, changes, cb) {
+    var self = this;
+
+    var method = actionToMethod(action);
+
+    this.processingQueue.push({
+        action: method,
+        changes: changes,
+        cb: cb
+    });
+};
+
+JingleSession.prototype.send = function (type, data) {
+    data = data || {};
+    data.sid = this.sid;
+    data.action = type;
+    this.parent.emit('send', {
+        to: this.peer,
+        type: 'set',
+        jingle: data
+    });
+};
+
+Object.defineProperty(JingleSession.prototype, 'state', {
+    get: function () {
+        return this._state;
+    },
+    set: function (value) {
+        var validStates = {
+            starting: true,
+            pending: true,
+            active: true,
+            ended: true
+        };
+
+        if (!validStates[value]) {
+            throw new Error('Invalid Jingle Session State: ' + value);
+        }
+
+        if (this._state !== value) {
+            this._state = value;
+            log(this.sid + ': State changed to ' + value);
+        }
+    }
+});
+Object.defineProperty(JingleSession.prototype, 'starting', {
+    get: function () {
+        return this._state == 'starting';
+    }
+});
+Object.defineProperty(JingleSession.prototype, 'pending', {
+    get: function () {
+        return this._state == 'pending';
+    }
+});
+Object.defineProperty(JingleSession.prototype, 'active', {
+    get: function () {
+        return this._state == 'active';
+    }
+});
+Object.defineProperty(JingleSession.prototype, 'ended', {
+    get: function () {
+        return this._state == 'ended';
+    }
+});
+
+JingleSession.prototype.start = function () {
+    this.state = 'pending';
+    log(this.sid + ': Can not start generic session');
+};
+JingleSession.prototype.end = function (silence) {
+    this.parent.peers[this.peer].splice(this.parent.peers[this.peer].indexOf(this), 1);
+    delete this.parent.sessions[this.sid];
+
+    this.state = 'ended';
+
+    if (!silence) {
+        this.send('session-terminate');
+    }
+};
+
+var actions = [
+    'content-accept', 'content-add', 'content-modify',
+    'conent-reject', 'content-remove', 'description-info',
+    'session-accept', 'session-info', 'session-initiate',
+    'session-terminate', 'transport-accept', 'transport-info',
+    'transport-reject', 'transport-replace'
+];
+
+actions.forEach(function (action) {
+    var method = actionToMethod(action);
+    JingleSession.prototype[method] = function (changes, cb) {
+        log(this.sid + ': Unsupported action ' + action);
+        cb();
+    };
+});
+
+module.exports = JingleSession;
+
+},{"async":61,"bows":86,"jingle-rtcpeerconnection":90,"sdp-jingle-json":95,"wildemitter":119}],84:[function(require,module,exports){
 var _ = require('underscore');
+var bows = require('bows');
+var JingleSession = require('./genericSession');
+var JinglePeerConnection = require('jingle-rtcpeerconnection');
+
+
+var log = bows('JingleMedia');
+
+
+function MediaSession(opts) {
+    JingleSession.call(this, opts);
+
+    var self = this;
+
+    this.pc = new JinglePeerConnection(this.parent.config.peerConnectionConfig,
+                                       this.parent.config.peerConnectionConstraints);
+    this.pc.on('ice', this.onIceCandidate.bind(this));
+    this.pc.on('addStream', this.onStreamAdded.bind(this));
+    this.pc.on('removeStream', this.onStreamRemoved.bind(this));
+    this.pendingAnswer = null;
+
+    this.pc.addStream(this.parent.localStream);
+
+    this.stream = null;
+}
+
+MediaSession.prototype = Object.create(JingleSession.prototype, {
+    constructor: {
+        value: MediaSession
+    }
+});
+
+MediaSession.prototype = _.extend(MediaSession.prototype, {
+    start: function () {
+        var self = this;
+        this.state = 'pending';
+        this.pc.isInitiator = true;
+        this.pc.offer(function (err, sessDesc) {
+            self.send('session-initiate', sessDesc.json);
+        });
+    },
+    end: function () {
+        this.pc.close();
+        this.onStreamRemoved();
+        JingleSession.prototype.end.call(this);
+    },
+    accept: function () {
+        log(this.sid + ': Accepted incoming session');
+        this.send('session-accept', this.pendingAnswer);
+    },
+    ring: function () {
+        log(this.sid + ': Ringing on incoming session');
+        this.send('session-info', {ringing: true});
+    },
+    mute: function (creator, name) {
+        log(this.sid + ': Muting');
+        this.send('session-info', {mute: {creator: creator, name: name}});
+    },
+    unmute: function (creator, name) {
+        log(this.sid + ': Unmuting');
+        this.send('session-info', {unmute: {creator: creator, name: name}});
+    },
+    hold: function () {
+        log(this.sid + ': Placing on hold');
+        this.send('session-info', {hold: true});
+    },
+    resume: function () {
+        log(this.sid + ': Resuing from hold');
+        this.send('session-info', {active: true});
+    },
+    onSessionInitiate: function (changes, cb) {
+        log(this.sid + ': Initiating incoming session');
+        var self = this;
+        this.state = 'pending';
+        this.pc.isInitiator = false;
+        this.pc.answer({type: 'offer', json: changes}, function (err, answer) {
+            if (err) {
+                log(self.sid + ': Could not create WebRTC answer', err);
+                return cb({condition: 'general-error'});
+            }
+            self.pendingAnswer = answer.json;
+            cb();
+        });
+    },
+    onSessionAccept: function (changes, cb) {
+        var self = this;
+        log(this.sid + ': Activating accepted outbound session');
+        this.state = 'active';
+        this.pc.handleAnswer({type: 'answer', json: changes}, function (err) {
+            log(self.sid + ': Could not process WebRTC answer', err);
+            cb({condition: 'general-error'});
+        });
+    },
+    onSessionTerminate: function (changes, cb) {
+        log(this.sid + ': Terminating session');
+        this.pc.close();
+        this.onStreamRemoved();
+        JingleSession.prototype.end.call(this, true);
+        cb();
+    },
+    onTransportInfo: function (changes, cb) {
+        var self = this;
+        log(this.sid + ': Adding ICE candidate');
+        this.pc.processIce(changes, function (err) {
+            if (err) {
+                log(self.sid + ': Could not process ICE candidate', err);
+            }
+            cb();
+        });
+    },
+    onIceCandidate: function (candidateInfo) {
+        log(this.sid + ': Discovered new ICE candidate', candidateInfo);
+        this.send('transport-info', candidateInfo);
+    },
+    onStreamAdded: function (event) {
+        if (this.stream) {
+            log(this.sid + ': Received remote stream, but one already exists');
+        } else {
+            log(this.sid + ': Remote media stream added');
+            this.stream = event.stream;
+            this.parent.emit('peerStreamAdded', this);
+        }
+    },
+    onStreamRemoved: function () {
+        log(this.sid + ': Remote media stream removed');
+        this.parent.emit('peerStreamRemoved', this);
+    }
+});
+
+
+module.exports = MediaSession;
+
+},{"./genericSession":83,"bows":86,"jingle-rtcpeerconnection":90,"underscore":118}],85:[function(require,module,exports){
+var _ = require('underscore');
+var bows = require('bows');
+var hark = require('hark');
 var webrtc = require('webrtcsupport');
+var mockconsole = require('mockconsole');
 var getUserMedia = require('getusermedia');
 var JinglePeerConnection = require('jingle-rtcpeerconnection');
 var WildEmitter = require('wildemitter');
-var Hark = require('hark');
 var GainController = require('mediastream-gain');
-var mockconsole = require('mockconsole');
-var GenericSession = require('./session/session');
-var MediaSession = require('./session/media');
+
+var GenericSession = require('./genericSession');
+var MediaSession = require('./mediaSession');
+
+
+var log = bows('Jingle');
 
 
 function Jingle(opts) {
@@ -12546,14 +12877,6 @@ function Jingle(opts) {
 
     this.screenSharingSupport = webrtc.screenSharing;
 
-    this.logger = function () {
-        if (opts.debug) {
-            return opts.logger || console;
-        } else {
-            return opts.logger || mockconsole;
-        }
-    }();
-
     for (var item in opts) {
         config[item] = opts[item];
     }
@@ -12573,20 +12896,14 @@ function Jingle(opts) {
             'urn:ietf:rfc:3264'
         ];
     } else {
-        this.logger.error('WebRTC not supported');
+        log('WebRTC not supported');
     }
 
     WildEmitter.call(this);
 
     if (this.config.debug) {
         this.on('*', function (event, val1, val2) {
-            var logger;
-            if (self.config.logger === mockconsole) {
-                logger = console;
-            } else {
-                logger = self.logger;
-            }
-            logger.log('jingleevent:', event, val1, val2);
+            log(event, val1, val2);
         });
     }
 }
@@ -12613,7 +12930,10 @@ Jingle.prototype.startLocalMedia = function (mediaConstraints, cb) {
                 self.setMicIfEnabled(0.5);
             }
 
+            log('Local media stream started');
             self.emit('localStream', stream);
+        } else {
+            log('Could not start local media');
         }
         if (cb) cb(err, stream);
     });
@@ -12627,18 +12947,18 @@ Jingle.prototype.stopLocalMedia = function () {
 };
 
 Jingle.prototype.setupAudioMonitor = function (stream) {
-    this.logger.log('Setup audio');
+    log('Setup audio');
     var audio = hark(stream);
     var self = this;
     var timeout;
 
-    audio.on('speaking', function() {
+    audio.on('speaking', function () {
         if (self.hardMuted) return;
         self.setMicIfEnabled(1);
         self.emit('speaking');
     });
 
-    audio.on('stopped_speaking', function() {
+    audio.on('stopped_speaking', function () {
         if (self.hardMuted) return;
         if (timeout) clearTimeout(timeout);
 
@@ -12691,7 +13011,7 @@ Jingle.prototype.process = function (req) {
     if (action !== 'session-initiate') {
         // Can't modify a session that we don't have.
         if (!session) {
-            self.logger.error('Unknown session');
+            log('Unknown session', sid);
             return this.sendError(sender, reqid, {
                 condition: 'item-not-found',
                 jingleCondition: 'unknown-session'
@@ -12700,7 +13020,7 @@ Jingle.prototype.process = function (req) {
 
         // Check if someone is trying to hijack a session.
         if (session.peer !== sender || session.ended) {
-            self.logger.error('Session has ended, or action has wrong sender');
+            log('Session has ended, or action has wrong sender');
             return this.sendError(sender, reqid, {
                 condition: 'item-not-found',
                 jingleCondition: 'unknown-session'
@@ -12709,7 +13029,7 @@ Jingle.prototype.process = function (req) {
 
         // Can't accept a session twice
         if (action === 'session-accept' && !session.pending) {
-            self.logger.error('Tried to accept session twice');
+            log('Tried to accept session twice', sid);
             return this.sendError(sender, reqid, {
                 condition: 'unexpected-request',
                 jingleCondition: 'out-of-order'
@@ -12718,7 +13038,7 @@ Jingle.prototype.process = function (req) {
 
         // Can't process two requests at once, need to tie break
         if (action !== 'session-terminate' && session.pendingAction) {
-            self.logger.error('Tie break during pending request');
+            log('Tie break during pending request');
             if (session.isInitiator) {
                 return this.sendError(sender, reqid, {
                     condition: 'conflict',
@@ -12729,7 +13049,7 @@ Jingle.prototype.process = function (req) {
     } else if (session) {
         // Don't accept a new session if we already have one.
         if (session.peer !== sender) {
-            self.logger.error('Duplicate sid from new sender');
+            log('Duplicate sid from new sender');
             return this.sendError(sender, reqid, {
                 condition: 'service-unavailable'
             });
@@ -12739,7 +13059,7 @@ Jingle.prototype.process = function (req) {
         // happened to pick the same random sid.
         if (session.pending) {
             if (this.jid > session.peer) {
-                self.logger.error('Tie break new session because of duplicate sids');
+                log('Tie break new session because of duplicate sids');
                 return this.sendError(sender, reqid, {
                     condition: 'conflict',
                     jingleCondition: 'tie-break'
@@ -12748,7 +13068,7 @@ Jingle.prototype.process = function (req) {
         }
 
         // The other side is just doing it wrong.
-        self.logger.error('Someone is doing this wrong');
+        log('Someone is doing this wrong');
         return this.sendError(sender, reqid, {
             condition: 'unexpected-request',
             jingleCondition: 'out-of-order'
@@ -12765,7 +13085,7 @@ Jingle.prototype.process = function (req) {
                     // We already have a pending session request for this content type.
                     if (currsid > sid) {
                         // We won the tie breaker
-                        self.logger.error('Tie break');
+                        log('Tie break');
                         return this.sendError(sender, reqid, {
                             condition: 'conflict',
                             jingleCondition: 'tie-break'
@@ -12798,11 +13118,12 @@ Jingle.prototype.process = function (req) {
 
     session.process(action, req.jingle, function (err) {
         if (err) {
-            self.logger.error('Could not process', req, err);
+            log('Could not process request', req, err);
             self.sendError(sender, reqid, err);
         } else {
             self.emit('send', {to: sender, id: reqid, type: 'result'});
             if (action === 'session-initiate') {
+                log('Incoming session request from ', sender, session);
                 self.emit('incoming', session);
             }
         }
@@ -12825,11 +13146,13 @@ Jingle.prototype.createMediaSession = function (peer, sid) {
     }
     this.peers[peer].push(session);
 
+    log('Outgoing session', session.sid, session);
     this.emit('outgoing', session);
     return session;
 };
 
 Jingle.prototype.endPeerSessions = function (peer) {
+    log('Ending all sessions with', peer);
     var sessions = this.peers[peer] || [];
     sessions.forEach(function (session) {
         session.end();
@@ -12839,7 +13162,82 @@ Jingle.prototype.endPeerSessions = function (peer) {
 
 module.exports = Jingle;
 
-},{"./session/media":95,"./session/session":96,"getusermedia":83,"hark":84,"jingle-rtcpeerconnection":85,"mediastream-gain":87,"mockconsole":89,"underscore":115,"webrtcsupport":94,"wildemitter":116}],83:[function(require,module,exports){
+},{"./genericSession":83,"./mediaSession":84,"bows":86,"getusermedia":88,"hark":89,"jingle-rtcpeerconnection":90,"mediastream-gain":92,"mockconsole":94,"underscore":118,"webrtcsupport":99,"wildemitter":119}],86:[function(require,module,exports){
+(function() {
+  var inNode = typeof window === 'undefined',
+      ls = !inNode && window.localStorage,
+      debug = ls.debug,
+      logger = require('andlog'),
+      goldenRatio = 0.618033988749895,
+      hue = 0,
+      padLength = 15,
+      noop = function() {},
+      yieldColor,
+      bows,
+      debugRegex;
+
+  yieldColor = function() {
+    hue += goldenRatio;
+    hue = hue % 1;
+    return hue * 360;
+  };
+
+  var debugRegex = debug && debug[0]==='/' && new RegExp(debug.substring(1,debug.length-1));
+
+  bows = function(str) {
+    var msg;
+    msg = "%c" + (str.slice(0, padLength));
+    msg += Array(padLength + 3 - msg.length).join(' ') + '|';
+
+    if (debugRegex && !str.match(debugRegex)) return noop;
+    if (!window.chrome) return logger.log.bind(logger, msg);
+    return logger.log.bind(logger, msg, "color: hsl(" + (yieldColor()) + ",99%,40%); font-weight: bold");
+  };
+
+  bows.config = function(config) {
+    if (config.padLength) {
+      return padLength = config.padLength;
+    }
+  };
+
+  if (typeof module !== 'undefined') {
+    module.exports = bows;
+  } else {
+    window.bows = bows;
+  }
+}).call();
+
+},{"andlog":87}],87:[function(require,module,exports){
+// follow @HenrikJoreteg and @andyet if you like this ;)
+(function () {
+    var inNode = typeof window === 'undefined',
+        ls = !inNode && window.localStorage,
+        out = {};
+
+    if (inNode) {
+        module.exports = console;
+        return;
+    }
+
+    if (ls && ls.debug && window.console) {
+        out = window.console;
+    } else {
+        var methods = "assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profileEnd,time,timeEnd,trace,warn".split(","),
+            l = methods.length,
+            fn = function () {};
+
+        while (l--) {
+            out[methods[l]] = fn;
+        }
+    }
+    if (typeof exports !== 'undefined') {
+        module.exports = out;
+    } else {
+        window.console = out;
+    }
+})();
+
+},{}],88:[function(require,module,exports){
 // getUserMedia helper by @HenrikJoreteg
 var func = (navigator.getUserMedia ||
             navigator.webkitGetUserMedia ||
@@ -12903,7 +13301,7 @@ module.exports = function (constraints, cb) {
     });
 };
 
-},{}],84:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 
 function getMaxVolume (analyser, fftBins) {
@@ -12996,7 +13394,7 @@ module.exports = function(stream, options) {
   return harker;
 }
 
-},{"wildemitter":116}],85:[function(require,module,exports){
+},{"wildemitter":119}],90:[function(require,module,exports){
 var _ = require('underscore');
 var webrtc = require('webrtcsupport');
 var PeerConnection = require('rtcpeerconnection');
@@ -13011,7 +13409,7 @@ function JinglePeerConnection(config, constraints) {
     this.localDescription = {contents: []};
     this.remoteDescription = {contents: []};
 
-    PeerConnection.call(this);
+    PeerConnection.call(this, config, constraints);
 }
 
 JinglePeerConnection.prototype = Object.create(PeerConnection.prototype, {
@@ -13165,7 +13563,7 @@ JinglePeerConnection.prototype._onIce = function (event) {
 
 module.exports = JinglePeerConnection;
 
-},{"rtcpeerconnection":86,"sdp-jingle-json":90,"underscore":115,"webrtcsupport":94}],86:[function(require,module,exports){
+},{"rtcpeerconnection":91,"sdp-jingle-json":95,"underscore":118,"webrtcsupport":99}],91:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 var webrtc = require('webrtcsupport');
 
@@ -13387,7 +13785,7 @@ PeerConnection.prototype.createDataChannel = function (name, opts) {
 
 module.exports = PeerConnection;
 
-},{"webrtcsupport":94,"wildemitter":116}],87:[function(require,module,exports){
+},{"webrtcsupport":99,"wildemitter":119}],92:[function(require,module,exports){
 var support = require('webrtcsupport');
 
 
@@ -13434,7 +13832,7 @@ GainController.prototype.on = function () {
 
 module.exports = GainController;
 
-},{"webrtcsupport":88}],88:[function(require,module,exports){
+},{"webrtcsupport":93}],93:[function(require,module,exports){
 // created by @HenrikJoreteg
 var PC = window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.RTCPeerConnection;
 var IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
@@ -13464,7 +13862,7 @@ module.exports = {
     IceCandidate: IceCandidate
 };
 
-},{}],89:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 var methods = "assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profileEnd,time,timeEnd,trace,warn".split(",");
 var l = methods.length;
 var fn = function () {};
@@ -13476,7 +13874,7 @@ while (l--) {
 
 module.exports = mockconsole;
 
-},{}],90:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 var tosdp = require('./lib/tosdp');
 var tojson = require('./lib/tojson');
 
@@ -13489,7 +13887,7 @@ exports.toSessionJSON = tojson.toSessionJSON;
 exports.toMediaJSON = tojson.toMediaJSON;
 exports.toCandidateJSON = tojson.toCandidateJSON;
 
-},{"./lib/tojson":92,"./lib/tosdp":93}],91:[function(require,module,exports){
+},{"./lib/tojson":97,"./lib/tosdp":98}],96:[function(require,module,exports){
 exports.lines = function (sdp) {
     return sdp.split('\r\n').filter(function (line) {
         return line.length > 0;
@@ -13701,7 +14099,7 @@ exports.grouping = function (lines) {
     return parsed;
 };
 
-},{}],92:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 var parsers = require('./parsers');
 var idCounter = Math.random();
 
@@ -13858,7 +14256,7 @@ exports.toCandidateJSON = function (line) {
     return candidate;
 };
 
-},{"./parsers":91}],93:[function(require,module,exports){
+},{"./parsers":96}],98:[function(require,module,exports){
 var senders = {
     'initiator': 'sendonly',
     'responder': 'recvonly',
@@ -14026,7 +14424,7 @@ exports.toCandidateSDP = function (candidate) {
     return 'a=candidate:' + sdp.join(' ');
 };
 
-},{}],94:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 // created by @HenrikJoreteg
 var prefix;
 var isChrome = false;
@@ -14064,261 +14462,7 @@ module.exports = {
     IceCandidate: IceCandidate
 };
 
-},{}],95:[function(require,module,exports){
-var _ = require('underscore');
-var JingleSession = require('./session');
-var JinglePeerConnection = require('jingle-rtcpeerconnection');
-
-
-function MediaSession(opts) {
-    JingleSession.call(this, opts);
-
-    this.pc = new JinglePeerConnection(this.parent.config.peerConnectionConfig,
-                                       this.parent.config.peerConnectionConstraints);
-    this.pc.on('ice', this.onIceCandidate.bind(this));
-    this.pc.on('addStream', this.onStreamAdded.bind(this));
-    this.pc.on('removeStream', this.onStreamRemoved.bind(this));
-    this.pendingAnswer = null;
-
-    this.pc.addStream(this.parent.localStream);
-
-    this.stream = null;
-}
-
-MediaSession.prototype = Object.create(JingleSession.prototype, {
-    constructor: {
-        value: MediaSession
-    }
-});
-
-MediaSession.prototype = _.extend(MediaSession.prototype, {
-    start: function () {
-        var self = this;
-        this.state = 'pending';
-        this.pc.isInitiator = true;
-        this.pc.offer(function (err, sessDesc) {
-            self.send('session-initiate', sessDesc.json);
-        });
-    },
-    end: function () {
-        this.pc.close();
-        this.onStreamRemoved();
-        this.state = 'ended';
-        this.send('session-terminate');
-    },
-    accept: function () {
-        this.send('session-accept', this.pendingAnswer);
-    },
-    ring: function () {
-        this.send('session-info', {ringing: true});
-    },
-    mute: function (creator, name) {
-        this.send('session-info', {mute: {creator: creator, name: name}});
-    },
-    unmute: function (creator, name) {
-        this.send('session-info', {unmute: {creator: creator, name: name}});
-    },
-    hold: function () {
-        this.send('session-info', {hold: true});
-    },
-    resume: function () {
-        this.send('session-info', {active: true});
-    },
-    onSessionInitiate: function (changes, cb) {
-        var self = this;
-        this.state = 'pending';
-        this.pc.isInitiator = false;
-        this.pc.answer({type: 'offer', json: changes}, function (err, answer) {
-            if (err) {
-                console.log(err);
-                return cb({condition: 'general-error'});
-            }
-            self.pendingAnswer = answer.json;
-            cb();
-        });
-    },
-    onSessionAccept: function (changes, cb) {
-        this.state = 'active';
-        this.pc.handleAnswer({type: 'answer', json: changes}, function (err) {
-            console.log(err);
-            cb({condition: 'general-error'});
-        });
-    },
-    onSessionTerminate: function (changes, cb) {
-        this.state = 'ended';
-        this.pc.close();
-        this.onStreamRemoved();
-        cb();
-    },
-    onTransportInfo: function (changes, cb) {
-        this.pc.processIce(changes, cb);
-    },
-    onIceCandidate: function (candidateInfo) {
-        this.send('transport-info', candidateInfo);
-    },
-    onStreamAdded: function (event) {
-        if (this.stream) {
-        } else {
-            this.stream = event.stream;
-            this.parent.emit('peerStreamAdded', this);
-        }
-    },
-    onStreamRemoved: function () {
-        this.parent.peers[this.peer].splice(this.parent.peers[this.peer].indexOf(this), 1);
-        delete this.parent.sessions[this.sid];
-
-        this.state = 'ended';
-        this.parent.emit('peerStreamRemoved', this);
-    }
-});
-
-
-module.exports = MediaSession;
-
-},{"./session":96,"jingle-rtcpeerconnection":85,"underscore":115}],96:[function(require,module,exports){
-var async = require('async');
-var WildEmitter = require('wildemitter');
-var JinglePeerConnection = require('jingle-rtcpeerconnection');
-var JingleJSON = require('sdp-jingle-json');
-
-
-function JingleSession(opts) {
-    var self = this;
-    this.sid = opts.sid || Date.now().toString();
-    this.peer = opts.peer;
-    this.isInitiator = opts.initiator || false;
-    this.state = 'starting';
-    this.parent = opts.parent;
-
-    this.processingQueue = async.queue(function (task, next) {
-        var action  = task.action;
-        var changes = task.changes;
-        var cb = task.cb;
-
-        self[action](changes, function (err) {
-            cb(err);
-            next();
-        });
-    });
-}
-
-JingleSession.prototype = Object.create(WildEmitter.prototype, {
-    constructor: {
-        value: JingleSession
-    }
-});
-
-
-JingleSession.prototype.start = function () {
-};
-
-JingleSession.prototype.end = function () {
-};
-
-JingleSession.prototype.process = function (action, changes, cb) {
-    var self = this;
-
-    var words = action.split('-');
-    var method = 'on' + words[0][0].toUpperCase() + words[0].substr(1) + words[1][0].toUpperCase() + words[1].substr(1);
-
-    this.processingQueue.push({
-        action: method,
-        changes: changes,
-        cb: cb
-    });
-};
-
-JingleSession.prototype.send = function (type, data) {
-    data = data || {};
-    data.sid = this.sid;
-    data.action = type;
-    this.parent.emit('send', {
-        to: this.peer,
-        type: 'set',
-        jingle: data
-    });
-};
-
-Object.defineProperty(JingleSession.prototype, 'starting', {
-    get: function () {
-        return this.state == 'starting';
-    }
-});
-Object.defineProperty(JingleSession.prototype, 'pending', {
-    get: function () {
-        return this.state == 'pending';
-    }
-});
-Object.defineProperty(JingleSession.prototype, 'active', {
-    get: function () {
-        return this.state == 'active';
-    }
-});
-Object.defineProperty(JingleSession.prototype, 'ended', {
-    get: function () {
-        return this.state == 'ended';
-    }
-});
-
-JingleSession.prototype.onContentAccept = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onContentAdd = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onContentModify = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onContentReject = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onContentRemove = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onDescriptionInfo = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onSessionAccept = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onSessionInfo = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onSessionInitiate = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onSessionTerminate = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onTransportAccept = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onTransportInfo = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onTransportReject = function (changes, cb) {
-    cb();
-};
-
-JingleSession.prototype.onTransportReplace = function (changes, cb) {
-    cb();
-};
-
-module.exports = JingleSession;
-
-},{"async":61,"jingle-rtcpeerconnection":85,"sdp-jingle-json":90,"wildemitter":116}],97:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -14328,7 +14472,7 @@ var types = require('./lib/types');
 
 module.exports = _.extend({}, core, helpers, types);
 
-},{"./lib/core":98,"./lib/helpers":99,"./lib/types":100,"underscore":115}],98:[function(require,module,exports){
+},{"./lib/core":101,"./lib/helpers":102,"./lib/types":103,"underscore":118}],101:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -14484,7 +14628,7 @@ exports.define = function (opts) {
     return StanzaConstructor;
 };
 
-},{"./helpers":99,"./types":100,"underscore":115}],99:[function(require,module,exports){
+},{"./helpers":102,"./types":103,"underscore":118}],102:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -14737,7 +14881,7 @@ exports.setBoolSub = function (xml, NS, element, value) {
     }
 };
 
-},{"underscore":115}],100:[function(require,module,exports){
+},{"underscore":118}],103:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -14840,7 +14984,7 @@ exports.multiExtension = function (ChildJXT) {
     };
 };
 
-},{"./helpers":99,"underscore":115}],101:[function(require,module,exports){
+},{"./helpers":102,"underscore":118}],104:[function(require,module,exports){
 var Buffer=require("__browserify_Buffer").Buffer;//     uuid.js
 //
 //     (c) 2010-2012 Robert Kieffer
@@ -15087,7 +15231,7 @@ var Buffer=require("__browserify_Buffer").Buffer;//     uuid.js
   }
 }());
 
-},{"__browserify_Buffer":68,"crypto":70}],102:[function(require,module,exports){
+},{"__browserify_Buffer":68,"crypto":70}],105:[function(require,module,exports){
 /**
 * Written by Nathan Fritz. Copyright © 2011 by &yet, LLC. Released under the
 * terms of the MIT License:
@@ -15259,7 +15403,7 @@ Paddle.prototype.stop = stop;
 
 exports.Paddle = Paddle;
 
-},{"events":63}],103:[function(require,module,exports){
+},{"events":63}],106:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15315,7 +15459,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{}],104:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15335,7 +15479,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":103}],105:[function(require,module,exports){
+},{"./lib/mechanism":106}],108:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15525,7 +15669,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"crypto":70}],106:[function(require,module,exports){
+},{"crypto":70}],109:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15545,7 +15689,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":105}],107:[function(require,module,exports){
+},{"./lib/mechanism":108}],110:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15601,7 +15745,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{}],108:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15621,7 +15765,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":107}],109:[function(require,module,exports){
+},{"./lib/mechanism":110}],112:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15688,7 +15832,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{}],110:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15708,7 +15852,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":109}],111:[function(require,module,exports){
+},{"./lib/mechanism":112}],114:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15966,7 +16110,7 @@ exports.Paddle = Paddle;
     exports = module.exports = Mechanism;
 }));
 
-},{"buffer":66,"crypto":70}],112:[function(require,module,exports){
+},{"buffer":66,"crypto":70}],115:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15986,7 +16130,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":111}],113:[function(require,module,exports){
+},{"./lib/mechanism":114}],116:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -16059,7 +16203,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{}],114:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -16079,7 +16223,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/factory":113}],115:[function(require,module,exports){
+},{"./lib/factory":116}],118:[function(require,module,exports){
 //     Underscore.js 1.5.2
 //     http://underscorejs.org
 //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -17357,7 +17501,7 @@ exports.Paddle = Paddle;
 
 }).call(this);
 
-},{}],116:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 /*
 WildEmitter.js is a slim little event emitter by @henrikjoreteg largely based 
 on @visionmedia's Emitter from UI Kit.
