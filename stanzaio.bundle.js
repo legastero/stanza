@@ -1159,12 +1159,10 @@ module.exports = function (client) {
 
     jingle.on('send', function (data) {
         client.sendIq(data);
-        console.log('outgoing', data);
     });
 
     client.on('iq:set:jingle', function (data) {
         data = data.toJSON();
-        console.log('incoming', data);
         jingle.process(data);
     });
 
@@ -3164,7 +3162,7 @@ exports.RTP = stanza.define({
         ssrc: stanza.attribute('ssrc'),
         bandwidth: stanza.subText(NS, 'bandwidth'),
         bandwidthType: stanza.subAttribute(NS, 'bandwidth', 'type'),
-        mux: stanza.boolSub(NS, 'rtp-mux'),
+        mux: stanza.boolSub(NS, 'rtcp-mux'),
         encryption: {
             get: function () {
                 var enc = stanza.find(this.xml, NS, 'encryption');
@@ -3275,7 +3273,7 @@ exports.Crypto = stanza.define({
     namespace: NS,
     element: 'crypto',
     fields: {
-        cipherSuite: stanza.attribute('cipher-suite'),
+        cipherSuite: stanza.attribute('crypto-suite'),
         keyParams: stanza.attribute('key-params'),
         sessionParams: stanza.attribute('session-params'),
         tag: stanza.attribute('tag')
@@ -3289,7 +3287,7 @@ exports.Bundle = stanza.define({
     namespace: 'urn:ietf:rfc:5888',
     element: 'group',
     fields: {
-        type: stanza.attribute('type'),
+        semantics: stanza.attribute('semantics'),
         contents: {
             get: function () {
                 var self = this;
@@ -12584,7 +12582,7 @@ function JingleSession(opts) {
         var changes = task.changes;
         var cb = task.cb;
 
-        log(this.sid + ': ' + action);
+        log(self.sid + ': ' + action);
         self[action](changes, function (err) {
             cb(err);
             next();
@@ -12747,6 +12745,7 @@ MediaSession.prototype = _.extend(MediaSession.prototype, {
     },
     accept: function () {
         log(this.sid + ': Accepted incoming session');
+        this.state = 'active';
         this.send('session-accept', this.pendingAnswer);
     },
     ring: function () {
@@ -12808,6 +12807,35 @@ MediaSession.prototype = _.extend(MediaSession.prototype, {
             }
             cb();
         });
+    },
+    onSessionInfo: function (info, cb) {
+        log(info);
+        if (info.ringing) {
+            log(this.sid + ': Ringing on remote stream');
+            this.parent.emit('ringing', this);
+        }
+
+        if (info.hold) {
+            log(this.sid + ': On hold');
+            this.parent.emit('hold', this);
+        }
+
+        if (info.active) {
+            log(this.sid + ': Resumed from hold');
+            this.parent.emit('resumed', this);
+        }
+
+        if (info.mute) {
+            log(this.sid + ': Muted', info.mute);
+            this.parent.emit('mute', this, info.mute);
+        }
+
+        if (info.unmute) {
+            log(this.sid + ': Unmuted', info.unmute);
+            this.parent.emit('unmute', this, info.unmute);
+        }
+
+        cb();
     },
     onIceCandidate: function (candidateInfo) {
         log(this.sid + ': Discovered new ICE candidate', candidateInfo);
@@ -14336,7 +14364,7 @@ exports.toMediaSDP = function (content) {
 
     var encryption = desc.encryption || [];
     encryption.forEach(function (crypto) {
-        sdp.push('a=crypto:' + crypto.tag + ' ' + crypto.cipherSuite + ' ' + crypto.keyParams + ' ' + crypto.sessionParams);
+        sdp.push('a=crypto:' + crypto.tag + ' ' + crypto.cipherSuite + ' ' + crypto.keyParams + (crypto.sessionParams ? ' ' + crypto.sessionParams : ''));
     });
 
     payloads.forEach(function (payload) {
@@ -14384,7 +14412,7 @@ exports.toMediaSDP = function (content) {
     ssrcs.forEach(function (ssrc) {
         for (var attribute in ssrc) {
             if (attribute == 'ssrc') continue;
-            sdp.push('a=ssrc:' + ssrc.ssrc + ' ' + attribute + (ssrc[attribute] ? (':' + ssrc[attribute]) : ''));
+            sdp.push('a=ssrc:' + (ssrc.ssrc || desc.ssrc) + ' ' + attribute + (ssrc[attribute] ? (':' + ssrc[attribute]) : ''));
         }
     });
 
