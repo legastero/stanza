@@ -73,7 +73,12 @@ function Client(opts) {
 
     WildEmitter.call(this);
 
-    this.config = opts || {};
+    opts = opts || {};
+    this.config = _.extend({
+        useStreamManagement: true,
+        transport: 'websocket'
+    }, opts);
+
     this.jid = new JID();
 
     this._idPrefix = uuid.v4();
@@ -91,9 +96,9 @@ function Client(opts) {
     ];
     this.features = {};
 
-    this.conn = new WSConnection();
-    this.conn.on('*', function (eventName, data) {
-        self.emit(eventName, data);    
+    this.transport = new WSConnection();
+    this.transport.on('*', function (eventName, data) {
+        self.emit(eventName, data);
     });
 
     this.on('streamFeatures', function (features) {
@@ -115,7 +120,7 @@ function Client(opts) {
 
         async.waterfall(series, function (cmd) {
             if (cmd === 'restart') {
-                self.conn.restart();
+                self.transport.restart();
             } else if (cmd === 'disconnect') {
                 self.disconnect();
             }
@@ -198,16 +203,20 @@ function Client(opts) {
     };
 
     this.features.streamManagement = function (features, cb) {
+        if (!self.config.useStreamManagement) {
+            return cb(null, features);
+        }
+
         self.on('stream:management:enabled', 'sm', function (enabled) {
-            self.conn.sm.enabled(enabled);
+            self.transport.sm.enabled(enabled);
             self.negotiatedFeatures.streamManagement = true;
 
             self.on('stream:management:ack', 'connection', function (ack) {
-                self.conn.sm.process(ack);
+                self.transport.sm.process(ack);
             });
 
             self.on('stream:management:request', 'connection', function (request) {
-                self.conn.sm.ack();
+                self.transport.sm.ack();
             });
 
             self.releaseGroup('sm');
@@ -215,17 +224,17 @@ function Client(opts) {
         });
 
         self.on('stream:management:resumed', 'sm', function (resumed) {
-            self.conn.sm.enabled(resumed);
+            self.transport.sm.enabled(resumed);
             self.negotiatedFeatures.streamManagement = true;
             self.negotiatedFeatures.bind = true;
             self.sessionStarted = true;
 
             self.on('stream:management:ack', 'connection', function (ack) {
-                self.conn.sm.process(ack);
+                self.transport.sm.process(ack);
             });
-            
+
             self.on('stream:management:request', 'connection', function (request) {
-                self.conn.sm.ack();
+                self.transport.sm.ack();
             });
 
             self.releaseGroup('sm');
@@ -233,22 +242,21 @@ function Client(opts) {
         });
 
         self.on('stream:management:failed', 'sm', function (failed) {
-            self.conn.sm.failed();
+            self.transport.sm.failed();
             self.emit('session:end');
             self.releaseGroup('session');
             self.releaseGroup('sm');
             cb(null, features);
         });
 
-        
-        if (!self.conn.sm.id) {
+        if (!self.transport.sm.id) {
             if (self.negotiatedFeatures.bind) {
-                self.conn.sm.enable();
+                self.transport.sm.enable();
             } else {
                 cb(null, features);
             }
-        } else if (self.conn.sm.id && self.conn.sm.allowResume) {
-            self.conn.sm.resume();
+        } else if (self.transport.sm.id && self.transport.sm.allowResume) {
+            self.transport.resume();
         } else {
             cb(null, features);
         }
@@ -344,7 +352,7 @@ Client.prototype = Object.create(WildEmitter.prototype, {
 });
 
 Client.prototype.__defineGetter__('stream', function () {
-    return this.conn ? this.conn.stream : undefined;
+    return this.transport ? this.transport.stream : undefined;
 });
 
 Client.prototype.use = function (pluginInit) {
@@ -413,13 +421,13 @@ Client.prototype.connect = function (opts) {
     }
 
     if (self.config.wsURL) {
-        return self.conn.connect(self.config);
+        return self.transport.connect(self.config);
     }
 
     self.discoverBindings(self.config.server, function (err, endpoints) {
         if (!err && endpoints.length) {
             self.config.wsURL = endpoints[0];
-            self.conn.connect(self.config);
+            self.transport.connect(self.config);
         } else {
             self.disconnect();
         }
@@ -437,13 +445,13 @@ Client.prototype.disconnect = function () {
     }
     this.sessionStarted = false;
     this.releaseGroup('connection');
-    if (this.conn) {
-        this.conn.disconnect();
+    if (this.transport) {
+        this.transport.disconnect();
     }
 };
 
 Client.prototype.send = function (data) {
-    this.conn.send(data);
+    this.transport.send(data);
 };
 
 Client.prototype.sendMessage = function (data) {
