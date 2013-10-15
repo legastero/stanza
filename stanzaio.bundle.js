@@ -1141,6 +1141,16 @@ module.exports = function (client) {
         client.disco.addFeature(cap);
     });
 
+    var mappedEvents = [
+        'outgoing', 'incoming', 'accepted', 'terminated',
+        'ringing', 'mute', 'unmute', 'hold', 'resumed'
+    ];
+    mappedEvents.forEach(function (event) {
+        jingle.on(event, function (session, arg1) {
+            client.emit('jingle:' + event, session, arg1);
+        });
+    });
+
     jingle.on('localStream', function (stream) {
         client.emit('jingle:localstream:added', stream);
     });
@@ -1155,22 +1165,6 @@ module.exports = function (client) {
 
     jingle.on('peerStreamRemoved', function (session) {
         client.emit('jingle:remotestream:removed', session);
-    });
-
-    jingle.on('incoming', function (session) {
-        client.emit('jingle:incoming', session);
-    });
-
-    jingle.on('outgoing', function (session) {
-        client.emit('jingle:outgoing', session);
-    });
-
-    jingle.on('terminated', function (session) {
-        client.emit('jingle:terminated', session);
-    });
-
-    client.on('accepted', function (session) {
-        client.emit('jingle:accepted', session);
     });
 
     jingle.on('send', function (data) {
@@ -12692,6 +12686,8 @@ JingleSession.prototype.end = function (silence) {
     if (!silence) {
         this.send('session-terminate');
     }
+
+    this.parent.emit('terminated', this);
 };
 
 var actions = [
@@ -12806,6 +12802,7 @@ MediaSession.prototype = _.extend(MediaSession.prototype, {
             log(self.sid + ': Could not process WebRTC answer', err);
             cb({condition: 'general-error'});
         });
+        this.parent.emit('accepted', this);
     },
     onSessionTerminate: function (changes, cb) {
         log(this.sid + ': Terminating session');
