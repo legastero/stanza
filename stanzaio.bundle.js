@@ -12686,7 +12686,7 @@ JingleSession.prototype.end = function (reason, silence) {
     reason = reason || {};
 
     if (!silence) {
-        this.send('session-terminate', reason);
+        this.send('session-terminate', {reason: reason});
     }
 
     this.parent.emit('terminated', this, reason);
