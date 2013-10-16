@@ -12822,7 +12822,7 @@ MediaSession.prototype = _.extend(MediaSession.prototype, {
         log(this.sid + ': Terminating session');
         this.pc.close();
         this.onStreamRemoved();
-        JingleSession.prototype.end.call(this, changes, true);
+        JingleSession.prototype.end.call(this, changes.reason, true);
         cb();
     },
     onTransportInfo: function (changes, cb) {
