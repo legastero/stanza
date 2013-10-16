@@ -12734,9 +12734,11 @@ function MediaSession(opts) {
 
     if (this.parent.localStream) {
         this.pc.addStream(this.parent.localStream);
+        this.localStream = this.parent.localStream;
     } else {
         this.parent.once('localStream', function (stream) {
             self.pc.addStream(stream);
+            this.localStream = stream;
         });
     }
 
@@ -12807,10 +12809,14 @@ MediaSession.prototype = _.extend(MediaSession.prototype, {
         log(this.sid + ': Activating accepted outbound session');
         this.state = 'active';
         this.pc.handleAnswer({type: 'answer', json: changes}, function (err) {
-            log(self.sid + ': Could not process WebRTC answer', err);
-            cb({condition: 'general-error'});
+            if (err) {
+                log(self.sid + ': Could not process WebRTC answer', err);
+                return cb({condition: 'general-error'});
+            }
+
+            this.parent.emit('accepted', this);
+            cb();
         });
-        this.parent.emit('accepted', this);
     },
     onSessionTerminate: function (changes, cb) {
         log(this.sid + ': Terminating session');
