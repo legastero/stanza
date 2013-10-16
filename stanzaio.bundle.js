@@ -12730,7 +12730,13 @@ function MediaSession(opts) {
     this.pc.on('removeStream', this.onStreamRemoved.bind(this));
     this.pendingAnswer = null;
 
-    this.pc.addStream(this.parent.localStream);
+    if (this.parent.localStream) {
+        this.pc.addStream(this.parent.localStream);
+    } else {
+        this.parent.once('localStream', function (stream) {
+            self.pc.addStream(stream);
+        });
+    }
 
     this.stream = null;
 }
