@@ -12814,7 +12814,7 @@ MediaSession.prototype = _.extend(MediaSession.prototype, {
                 return cb({condition: 'general-error'});
             }
 
-            this.parent.emit('accepted', this);
+            self.parent.emit('accepted', self);
             cb();
         });
     },
