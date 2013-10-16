@@ -12677,17 +12677,19 @@ JingleSession.prototype.start = function () {
     this.state = 'pending';
     log(this.sid + ': Can not start generic session');
 };
-JingleSession.prototype.end = function (silence) {
+JingleSession.prototype.end = function (reason, silence) {
     this.parent.peers[this.peer].splice(this.parent.peers[this.peer].indexOf(this), 1);
     delete this.parent.sessions[this.sid];
 
     this.state = 'ended';
 
+    reason = reason || {};
+
     if (!silence) {
-        this.send('session-terminate');
+        this.send('session-terminate', reason);
     }
 
-    this.parent.emit('terminated', this);
+    this.parent.emit('terminated', this, reason);
 };
 
 var actions = [
@@ -12756,10 +12758,10 @@ MediaSession.prototype = _.extend(MediaSession.prototype, {
             self.send('session-initiate', sessDesc.json);
         });
     },
-    end: function () {
+    end: function (reason) {
         this.pc.close();
         this.onStreamRemoved();
-        JingleSession.prototype.end.call(this);
+        JingleSession.prototype.end.call(this, reason);
     },
     accept: function () {
         log(this.sid + ': Accepted incoming session');
@@ -12814,7 +12816,7 @@ MediaSession.prototype = _.extend(MediaSession.prototype, {
         log(this.sid + ': Terminating session');
         this.pc.close();
         this.onStreamRemoved();
-        JingleSession.prototype.end.call(this, true);
+        JingleSession.prototype.end.call(this, changes, true);
         cb();
     },
     onTransportInfo: function (changes, cb) {
