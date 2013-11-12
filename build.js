@@ -6,6 +6,7 @@ var fs = require('fs');
 var bundle = browserify();
 bundle.add('./index');
 bundle.bundle({standalone: 'XMPP'}, function (err, js) {
-    //var result = UglifyJS.minify(js, {fromString: true}).code;
     fs.writeFileSync('stanzaio.bundle.js', js);
+    var min = UglifyJS.minify(js, {fromString: true}).code;
+    fs.writeFileSync('stanzaio.bundle.min.js', min);
 });

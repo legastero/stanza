@@ -30,11 +30,12 @@ exports.createClient = function (opts) {
     client.use(require('./lib/plugins/bookmarks'));
     client.use(require('./lib/plugins/jingle'));
     client.use(require('./lib/plugins/json'));
+    client.use(require('./lib/plugins/hashes'));
 
     return client;
 };
 
-},{"./lib/client":2,"./lib/plugins/attention":4,"./lib/plugins/avatar":5,"./lib/plugins/bookmarks":6,"./lib/plugins/carbons":7,"./lib/plugins/chatstates":8,"./lib/plugins/correction":9,"./lib/plugins/delayed":10,"./lib/plugins/disco":11,"./lib/plugins/forwarding":12,"./lib/plugins/idle":13,"./lib/plugins/invisible":14,"./lib/plugins/jingle":15,"./lib/plugins/json":16,"./lib/plugins/mam":17,"./lib/plugins/muc":18,"./lib/plugins/private":19,"./lib/plugins/pubsub":20,"./lib/plugins/receipts":21,"./lib/plugins/time":22,"./lib/plugins/version":23,"./lib/stanza/iq":37,"./lib/stanza/message":41,"./lib/stanza/presence":43,"crypto":70}],2:[function(require,module,exports){
+},{"./lib/client":2,"./lib/plugins/attention":4,"./lib/plugins/avatar":5,"./lib/plugins/bookmarks":6,"./lib/plugins/carbons":7,"./lib/plugins/chatstates":8,"./lib/plugins/correction":9,"./lib/plugins/delayed":10,"./lib/plugins/disco":11,"./lib/plugins/forwarding":12,"./lib/plugins/hashes":13,"./lib/plugins/idle":14,"./lib/plugins/invisible":15,"./lib/plugins/jingle":16,"./lib/plugins/json":17,"./lib/plugins/mam":18,"./lib/plugins/muc":19,"./lib/plugins/private":20,"./lib/plugins/pubsub":21,"./lib/plugins/receipts":22,"./lib/plugins/time":23,"./lib/plugins/version":24,"./lib/stanza/iq":38,"./lib/stanza/message":42,"./lib/stanza/presence":44,"crypto":71}],2:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 var _ = require('underscore');
 var async = require('async');
@@ -589,7 +590,7 @@ Client.prototype.JID = function (jid) {
 
 module.exports = Client;
 
-},{"./jid":3,"./stanza/bind":26,"./stanza/error":34,"./stanza/iq":37,"./stanza/message":41,"./stanza/presence":43,"./stanza/roster":47,"./stanza/sasl":50,"./stanza/session":51,"./stanza/sm":52,"./stanza/stream":53,"./stanza/streamError":54,"./stanza/streamFeatures":55,"./websocket":60,"async":61,"hostmeta":75,"node-uuid":104,"paddle":105,"sasl-anonymous":107,"sasl-digest-md5":109,"sasl-external":111,"sasl-plain":113,"sasl-scram-sha-1":115,"saslmechanisms":117,"underscore":118,"wildemitter":119}],3:[function(require,module,exports){
+},{"./jid":3,"./stanza/bind":27,"./stanza/error":35,"./stanza/iq":38,"./stanza/message":42,"./stanza/presence":44,"./stanza/roster":48,"./stanza/sasl":51,"./stanza/session":52,"./stanza/sm":53,"./stanza/stream":54,"./stanza/streamError":55,"./stanza/streamFeatures":56,"./websocket":61,"async":62,"hostmeta":76,"node-uuid":105,"paddle":106,"sasl-anonymous":108,"sasl-digest-md5":110,"sasl-external":112,"sasl-plain":114,"sasl-scram-sha-1":116,"saslmechanisms":118,"underscore":119,"wildemitter":120}],3:[function(require,module,exports){
 function JID(jid) {
     jid = jid || '';
 
@@ -729,7 +730,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/avatar":25}],6:[function(require,module,exports){
+},{"../stanza/avatar":26}],6:[function(require,module,exports){
 var stanzas = require('../stanza/bookmarks');
 
 
@@ -745,7 +746,7 @@ module.exports = function (client) {
 
 };
 
-},{"../stanza/bookmarks":27}],7:[function(require,module,exports){
+},{"../stanza/bookmarks":28}],7:[function(require,module,exports){
 var stanzas = require('../stanza/carbons');
 
 
@@ -776,7 +777,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/carbons":29}],8:[function(require,module,exports){
+},{"../stanza/carbons":30}],8:[function(require,module,exports){
 var stanzas = require('../stanza/chatstates');
 
 
@@ -794,7 +795,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/chatstates":30}],9:[function(require,module,exports){
+},{"../stanza/chatstates":31}],9:[function(require,module,exports){
 module.exports = function (client) {
     client.disco.addFeature('urn:xmpp:message-correct:0');
 
@@ -814,7 +815,7 @@ module.exports = function (client) {
     client.disco.addFeature('urn:xmpp:delay');
 };
 
-},{"../stanza/delayed":32}],11:[function(require,module,exports){
+},{"../stanza/delayed":33}],11:[function(require,module,exports){
 /*global unescape, escape */
 
 var _ = require('underscore');
@@ -1093,7 +1094,7 @@ module.exports = function (client) {
     client.generateVerString = generateVerString;
 };
 
-},{"../stanza/caps":28,"../stanza/disco":33,"crypto":70,"underscore":118}],12:[function(require,module,exports){
+},{"../stanza/caps":29,"../stanza/disco":34,"crypto":71,"underscore":119}],12:[function(require,module,exports){
 var stanzas = require('../stanza/forwarded');
 
 
@@ -1101,12 +1102,20 @@ module.exports = function (client) {
     client.disco.addFeature('urn:xmpp:forward:0');
 };
 
-},{"../stanza/forwarded":35}],13:[function(require,module,exports){
+},{"../stanza/forwarded":36}],13:[function(require,module,exports){
+module.exports = function (client) {
+    client.disco.addFeature('urn:xmpp:hashes:1');
+    client.disco.addFeature('urn:xmpp:hash-function-text-names:md5');
+    client.disco.addFeature('urn:xmpp:hash-function-text-names:sha-1');
+    client.disco.addFeature('urn:xmpp:hash-function-text-names:sha-256');
+};
+
+},{}],14:[function(require,module,exports){
 module.exports = function (client) {
     client.disco.addFeature('urn:xmpp:idle:0');
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 require('../stanza/visibility');
 
 
@@ -1126,7 +1135,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/visibility":59}],15:[function(require,module,exports){
+},{"../stanza/visibility":60}],16:[function(require,module,exports){
 var Jingle = require('jingle');
 
 var stanza = require('../stanza/jingle');
@@ -1190,14 +1199,14 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/iceUdp":36,"../stanza/jingle":38,"../stanza/rtp":49,"jingle":82}],16:[function(require,module,exports){
+},{"../stanza/iceUdp":37,"../stanza/jingle":39,"../stanza/rtp":50,"jingle":83}],17:[function(require,module,exports){
 var stanza = require('../stanza/json');
 
 module.exports = function (client) {
     client.disco.addFeature('urn:xmpp:json:tmp');
 };
 
-},{"../stanza/json":39}],17:[function(require,module,exports){
+},{"../stanza/json":40}],18:[function(require,module,exports){
 var stanzas = require('../stanza/mam');
 
 
@@ -1254,7 +1263,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/mam":40}],18:[function(require,module,exports){
+},{"../stanza/mam":41}],19:[function(require,module,exports){
 require('../stanza/muc');
 
 
@@ -1276,7 +1285,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/muc":42}],19:[function(require,module,exports){
+},{"../stanza/muc":43}],20:[function(require,module,exports){
 var stanzas = require('../stanza/private');
 
 
@@ -1298,7 +1307,7 @@ module.exports = function (client) {
 
 };
 
-},{"../stanza/private":44}],20:[function(require,module,exports){
+},{"../stanza/private":45}],21:[function(require,module,exports){
 var stanzas = require('../stanza/pubsub');
 
 
@@ -1429,7 +1438,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/pubsub":45}],21:[function(require,module,exports){
+},{"../stanza/pubsub":46}],22:[function(require,module,exports){
 var stanzas = require('../stanza/receipts');
 
 
@@ -1457,7 +1466,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/receipts":46}],22:[function(require,module,exports){
+},{"../stanza/receipts":47}],23:[function(require,module,exports){
 var stanzas = require('../stanza/time');
 
 
@@ -1483,7 +1492,7 @@ module.exports = function (client) {
     });
 };
 
-},{"../stanza/time":56}],23:[function(require,module,exports){
+},{"../stanza/time":57}],24:[function(require,module,exports){
 require('../stanza/version');
 
 
@@ -1507,7 +1516,7 @@ module.exports = function (client) {
     };
 };
 
-},{"../stanza/version":58}],24:[function(require,module,exports){
+},{"../stanza/version":59}],25:[function(require,module,exports){
 var SM = require('./stanza/sm');
 var MAX_SEQ = Math.pow(2, 32);
 
@@ -1620,7 +1629,7 @@ StreamManagement.prototype = {
 
 module.exports = StreamManagement;
 
-},{"./stanza/sm":52}],25:[function(require,module,exports){
+},{"./stanza/sm":53}],26:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var Item = require('./pubsub').Item;
@@ -1668,7 +1677,7 @@ stanza.add(EventItem, 'avatars', avatars);
 stanza.add(Item, 'avatarData', stanza.subText('urn:xmpp:avatar:data', 'data'));
 stanza.add(EventItem, 'avatarData', stanza.subText('urn:xmpp:avatar:data', 'data'));
 
-},{"./pubsub":45,"jxt":100,"underscore":118}],26:[function(require,module,exports){
+},{"./pubsub":46,"jxt":101,"underscore":119}],27:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var StreamFeatures = require('./streamFeatures');
@@ -1689,7 +1698,7 @@ var Bind = module.exports = stanza.define({
 stanza.extend(Iq, Bind);
 stanza.extend(StreamFeatures, Bind);
 
-},{"./iq":37,"./streamFeatures":55,"./util":57,"jxt":100}],27:[function(require,module,exports){
+},{"./iq":38,"./streamFeatures":56,"./util":58,"jxt":101}],28:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 var PrivateStorage = require('./private');
@@ -1717,7 +1726,7 @@ var Bookmarks = module.exports = stanza.define({
 stanza.extend(PrivateStorage, Bookmarks);
 stanza.extend(Bookmarks, Conference, 'conferences');
 
-},{"./private":44,"./util":57,"jxt":100}],28:[function(require,module,exports){
+},{"./private":45,"./util":58,"jxt":101}],29:[function(require,module,exports){
 var stanza = require('jxt');
 var Presence = require('./presence');
 var StreamFeatures = require('./streamFeatures');
@@ -1738,7 +1747,7 @@ var Caps = module.exports = stanza.define({
 stanza.extend(Presence, Caps);
 stanza.extend(StreamFeatures, Caps);
 
-},{"./presence":43,"./streamFeatures":55,"jxt":100}],29:[function(require,module,exports){
+},{"./presence":44,"./streamFeatures":56,"jxt":101}],30:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Iq = require('./iq');
@@ -1787,7 +1796,7 @@ stanza.extend(Message, exports.Private);
 stanza.extend(Iq, exports.Enable);
 stanza.extend(Iq, exports.Disable);
 
-},{"./forwarded":35,"./iq":37,"./message":41,"jxt":100}],30:[function(require,module,exports){
+},{"./forwarded":36,"./iq":38,"./message":42,"jxt":101}],31:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -1862,7 +1871,7 @@ stanza.add(Message, 'chatState', {
     }
 });
 
-},{"./message":41,"jxt":100}],31:[function(require,module,exports){
+},{"./message":42,"jxt":101}],32:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -1951,7 +1960,7 @@ exports.Field = stanza.define({
 
 stanza.extend(Message, exports.DataForm);
 
-},{"./message":41,"./util":57,"jxt":100,"underscore":118}],32:[function(require,module,exports){
+},{"./message":42,"./util":58,"jxt":101,"underscore":119}],33:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -1971,7 +1980,7 @@ var DelayedDelivery = module.exports = stanza.define({
 stanza.extend(Message, DelayedDelivery);
 stanza.extend(Presence, DelayedDelivery);
 
-},{"./message":41,"./presence":43,"./util":57,"jxt":100}],33:[function(require,module,exports){
+},{"./message":42,"./presence":44,"./util":58,"jxt":101}],34:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var JID = require('../jid');
@@ -2090,7 +2099,7 @@ stanza.extend(Iq, exports.DiscoItems);
 stanza.extend(exports.DiscoItems, RSM);
 stanza.extend(exports.DiscoInfo, DataForm, 'extensions');
 
-},{"../jid":3,"./dataforms":31,"./iq":37,"./rsm":48,"jxt":100,"underscore":118}],34:[function(require,module,exports){
+},{"../jid":3,"./dataforms":32,"./iq":38,"./rsm":49,"jxt":101,"underscore":119}],35:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2194,7 +2203,7 @@ stanza.extend(Message, ErrorStanza);
 stanza.extend(Presence, ErrorStanza);
 stanza.extend(Iq, ErrorStanza);
 
-},{"./iq":37,"./message":41,"./presence":43,"./util":57,"jxt":100,"underscore":118}],35:[function(require,module,exports){
+},{"./iq":38,"./message":42,"./presence":44,"./util":58,"jxt":101,"underscore":119}],36:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -2216,7 +2225,7 @@ stanza.extend(Forwarded, Presence);
 stanza.extend(Forwarded, Iq);
 stanza.extend(Forwarded, DelayedDelivery);
 
-},{"./delayed":32,"./iq":37,"./message":41,"./presence":43,"jxt":100}],36:[function(require,module,exports){
+},{"./delayed":33,"./iq":38,"./message":42,"./presence":44,"jxt":101}],37:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2288,7 +2297,7 @@ stanza.extend(exports.ICEUDP, exports.Candidate, 'candidates');
 stanza.extend(exports.ICEUDP, exports.RemoteCandidate);
 stanza.extend(exports.ICEUDP, exports.Fingerprint, 'fingerprints');
 
-},{"./jingle":38,"./util":57,"jxt":100,"underscore":118}],37:[function(require,module,exports){
+},{"./jingle":39,"./util":58,"jxt":101,"underscore":119}],38:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 
@@ -2321,7 +2330,7 @@ Iq.prototype.errorReply = function (data) {
     return new Iq(data);
 };
 
-},{"./util":57,"jxt":100}],38:[function(require,module,exports){
+},{"./util":58,"jxt":101}],39:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2473,7 +2482,7 @@ stanza.extend(Iq, exports.Jingle);
 stanza.extend(exports.Jingle, exports.Content, 'contents');
 stanza.extend(exports.Jingle, exports.Reason);
 
-},{"./error":34,"./iq":37,"./util":57,"jxt":100,"underscore":118}],39:[function(require,module,exports){
+},{"./error":35,"./iq":38,"./util":58,"jxt":101,"underscore":119}],40:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Item = require('./pubsub').Item;
@@ -2500,7 +2509,7 @@ stanza.add(Message, 'json', JSONExtension);
 stanza.add(Item, 'json', JSONExtension);
 stanza.add(EventItem, 'json', JSONExtension);
 
-},{"./message":41,"./pubsub":45,"jxt":100}],40:[function(require,module,exports){
+},{"./message":42,"./pubsub":46,"jxt":101}],41:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 var Message = require('./message');
@@ -2601,7 +2610,7 @@ stanza.extend(Message, exports.Result);
 stanza.extend(exports.Result, Forwarded);
 stanza.extend(exports.MAMQuery, RSM);
 
-},{"../jid":3,"./forwarded":35,"./iq":37,"./message":41,"./rsm":48,"./util":57,"jxt":100}],41:[function(require,module,exports){
+},{"../jid":3,"./forwarded":36,"./iq":38,"./message":42,"./rsm":49,"./util":58,"jxt":101}],42:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2639,7 +2648,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"./util":57,"jxt":100,"underscore":118}],42:[function(require,module,exports){
+},{"./util":58,"jxt":101,"underscore":119}],43:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -2715,7 +2724,7 @@ exports.MUCJoin = stanza.define({
 
 stanza.extend(Presence, exports.MUCJoin);
 
-},{"./iq":37,"./message":41,"./presence":43,"jxt":100}],43:[function(require,module,exports){
+},{"./iq":38,"./message":42,"./presence":44,"jxt":101}],44:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2763,7 +2772,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"./util":57,"jxt":100,"underscore":118}],44:[function(require,module,exports){
+},{"./util":58,"jxt":101,"underscore":119}],45:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -2776,7 +2785,7 @@ var PrivateStorage = module.exports = stanza.define({
 
 stanza.extend(Iq, PrivateStorage);
 
-},{"./iq":37,"jxt":100}],45:[function(require,module,exports){
+},{"./iq":38,"jxt":101}],46:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2981,7 +2990,7 @@ stanza.extend(Message, exports.Event);
 stanza.extend(Iq, exports.Pubsub);
 stanza.extend(Iq, exports.PubsubOwner);
 
-},{"../jid":3,"./dataforms":31,"./iq":37,"./message":41,"./rsm":48,"./util":57,"jxt":100,"underscore":118}],46:[function(require,module,exports){
+},{"../jid":3,"./dataforms":32,"./iq":38,"./message":42,"./rsm":49,"./util":58,"jxt":101,"underscore":119}],47:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -2999,7 +3008,7 @@ var Received = module.exports = stanza.define({
 
 stanza.extend(Message, Received);
 
-},{"./message":41,"jxt":100}],47:[function(require,module,exports){
+},{"./message":42,"jxt":101}],48:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var Iq = require('./iq');
@@ -3067,7 +3076,7 @@ var Roster = module.exports = stanza.define({
 
 stanza.extend(Iq, Roster);
 
-},{"../jid":3,"./iq":37,"jxt":100,"underscore":118}],48:[function(require,module,exports){
+},{"../jid":3,"./iq":38,"jxt":101,"underscore":119}],49:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 
@@ -3102,7 +3111,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"./util":57,"jxt":100}],49:[function(require,module,exports){
+},{"./util":58,"jxt":101}],50:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -3366,7 +3375,7 @@ stanza.add(jingle.Jingle, 'ringing', stanza.boolSub(INFONS, 'ringing'));
 stanza.add(jingle.Jingle, 'hold', stanza.boolSub(INFONS, 'hold'));
 stanza.add(jingle.Jingle, 'active', stanza.boolSub(INFONS, 'active'));
 
-},{"./jingle":38,"./util":57,"jxt":100,"underscore":118}],50:[function(require,module,exports){
+},{"./jingle":39,"./util":58,"jxt":101,"underscore":119}],51:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -3504,7 +3513,7 @@ exports.Failure = stanza.define({
 
 stanza.extend(StreamFeatures, exports.Mechanisms);
 
-},{"./streamFeatures":55,"./util":57,"jxt":100,"underscore":118}],51:[function(require,module,exports){
+},{"./streamFeatures":56,"./util":58,"jxt":101,"underscore":119}],52:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var StreamFeatures = require('./streamFeatures');
@@ -3518,7 +3527,7 @@ var Session = module.exports = stanza.define({
 stanza.extend(StreamFeatures, Session);
 stanza.extend(Iq, Session);
 
-},{"./iq":37,"./streamFeatures":55,"jxt":100}],52:[function(require,module,exports){
+},{"./iq":38,"./streamFeatures":56,"jxt":101}],53:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 var StreamFeatures = require('./streamFeatures');
@@ -3610,7 +3619,7 @@ exports.Request = stanza.define({
 
 stanza.extend(StreamFeatures, exports.SMFeature);
 
-},{"./streamFeatures":55,"./util":57,"jxt":100}],53:[function(require,module,exports){
+},{"./streamFeatures":56,"./util":58,"jxt":101}],54:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 
@@ -3635,7 +3644,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"./util":57,"jxt":100}],54:[function(require,module,exports){
+},{"./util":58,"jxt":101}],55:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 
@@ -3720,7 +3729,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"jxt":100,"underscore":118}],55:[function(require,module,exports){
+},{"jxt":101,"underscore":119}],56:[function(require,module,exports){
 var stanza = require('jxt');
 
 var StreamFeatures = module.exports = stanza.define({
@@ -3753,7 +3762,7 @@ var SubscriptionPreApprovalFeature = stanza.define({
 stanza.extend(StreamFeatures, RosterVerFeature);
 stanza.extend(StreamFeatures, SubscriptionPreApprovalFeature);
 
-},{"jxt":100}],56:[function(require,module,exports){
+},{"jxt":101}],57:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 var Iq = require('./iq');
@@ -3805,7 +3814,7 @@ var EntityTime = module.exports = stanza.define({
 
 stanza.extend(Iq, EntityTime);
 
-},{"./iq":37,"./util":57,"jxt":100}],57:[function(require,module,exports){
+},{"./iq":38,"./util":58,"jxt":101}],58:[function(require,module,exports){
 var stanza = require('jxt');
 var JID = require('../jid');
 var XML_NS = 'http://www.w3.org/XML/1998/namespace';
@@ -3910,7 +3919,7 @@ exports.numberSub = stanza.field(
     }
 );
 
-},{"../jid":3,"jxt":100}],58:[function(require,module,exports){
+},{"../jid":3,"jxt":101}],59:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -3929,7 +3938,7 @@ var Version = module.exports = stanza.define({
 
 stanza.extend(Iq, Version);
 
-},{"./iq":37,"jxt":100}],59:[function(require,module,exports){
+},{"./iq":38,"jxt":101}],60:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -3937,7 +3946,7 @@ var Iq = require('./iq');
 stanza.add(Iq, 'visible', stanza.boolSub('urn:xmpp:invisible:0', 'visible'));
 stanza.add(Iq, 'invisible', stanza.boolSub('urn:xmpp:invisible:0', 'invisible'));
 
-},{"./iq":37,"jxt":100}],60:[function(require,module,exports){
+},{"./iq":38,"jxt":101}],61:[function(require,module,exports){
 var _ = require('underscore');
 var WildEmitter = require('wildemitter');
 var async = require('async');
@@ -4132,7 +4141,7 @@ WSConnection.prototype.send = function (data) {
 
 module.exports = WSConnection;
 
-},{"./sm":24,"./stanza/iq":37,"./stanza/message":41,"./stanza/presence":43,"./stanza/stream":53,"async":61,"node-uuid":104,"underscore":118,"wildemitter":119}],61:[function(require,module,exports){
+},{"./sm":25,"./stanza/iq":38,"./stanza/message":42,"./stanza/presence":44,"./stanza/stream":54,"async":62,"node-uuid":105,"underscore":119,"wildemitter":120}],62:[function(require,module,exports){
 var process=require("__browserify_process");/*global setImmediate: false, setTimeout: false, console: false */
 (function () {
 
@@ -5089,7 +5098,7 @@ var process=require("__browserify_process");/*global setImmediate: false, setTim
 
 }());
 
-},{"__browserify_process":69}],62:[function(require,module,exports){
+},{"__browserify_process":70}],63:[function(require,module,exports){
 // UTILITY
 var util = require('util');
 var Buffer = require("buffer").Buffer;
@@ -5403,7 +5412,7 @@ assert.doesNotThrow = function(block, /*optional*/error, /*optional*/message) {
 
 assert.ifError = function(err) { if (err) {throw err;}};
 
-},{"buffer":66,"util":64}],63:[function(require,module,exports){
+},{"buffer":67,"util":65}],64:[function(require,module,exports){
 var process=require("__browserify_process");if (!process.EventEmitter) process.EventEmitter = function () {};
 
 var EventEmitter = exports.EventEmitter = process.EventEmitter;
@@ -5599,7 +5608,7 @@ EventEmitter.listenerCount = function(emitter, type) {
   return ret;
 };
 
-},{"__browserify_process":69}],64:[function(require,module,exports){
+},{"__browserify_process":70}],65:[function(require,module,exports){
 var events = require('events');
 
 exports.isArray = isArray;
@@ -5946,7 +5955,7 @@ exports.format = function(f) {
   return str;
 };
 
-},{"events":63}],65:[function(require,module,exports){
+},{"events":64}],66:[function(require,module,exports){
 exports.readIEEE754 = function(buffer, offset, isBE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -6032,7 +6041,7 @@ exports.writeIEEE754 = function(buffer, value, offset, isBE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 var assert = require('assert');
 exports.Buffer = Buffer;
 exports.SlowBuffer = Buffer;
@@ -7115,7 +7124,7 @@ Buffer.prototype.writeDoubleBE = function(value, offset, noAssert) {
   writeDouble(this, value, offset, true, noAssert);
 };
 
-},{"./buffer_ieee754":65,"assert":62,"base64-js":67}],67:[function(require,module,exports){
+},{"./buffer_ieee754":66,"assert":63,"base64-js":68}],68:[function(require,module,exports){
 (function (exports) {
 	'use strict';
 
@@ -7201,7 +7210,7 @@ Buffer.prototype.writeDoubleBE = function(value, offset, noAssert) {
 	module.exports.fromByteArray = uint8ToBase64;
 }());
 
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 require=(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){
 // UTILITY
 var util = require('util');
@@ -11063,7 +11072,7 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 },{}]},{},[])
 ;;module.exports=require("buffer-browserify")
 
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -11117,7 +11126,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 var Buffer = require('buffer').Buffer
 var sha = require('./sha')
 var sha256 = require('./sha256')
@@ -11247,7 +11256,7 @@ each(['createCredentials'
   }
 })
 
-},{"./md5":71,"./rng":72,"./sha":73,"./sha256":74,"buffer":66}],71:[function(require,module,exports){
+},{"./md5":72,"./rng":73,"./sha":74,"./sha256":75,"buffer":67}],72:[function(require,module,exports){
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
  * Digest Algorithm, as defined in RFC 1321.
@@ -11512,7 +11521,7 @@ exports.hex_hmac_md5 = hex_hmac_md5;
 exports.b64_hmac_md5 = b64_hmac_md5;
 exports.bin_hmac_md5 = str_hmac_md5;
 
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 // Original code adapted from Robert Kieffer.
 // details at https://github.com/broofa/node-uuid
 (function() {
@@ -11550,7 +11559,7 @@ exports.bin_hmac_md5 = str_hmac_md5;
 
 }())
 
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -11762,7 +11771,7 @@ function binb2b64(binarray)
 }
 
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -11938,7 +11947,7 @@ var core_hmac_sha256 = function(key, data) {
 };
 
 
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 var _ = require('./vendor/lodash');
 var async = require('async');
 var jxt = require('jxt');
@@ -12051,7 +12060,7 @@ module.exports = function (opts, cb) {
     });
 };
 
-},{"./vendor/lodash":81,"async":61,"jxt":76,"xhr":78}],76:[function(require,module,exports){
+},{"./vendor/lodash":82,"async":62,"jxt":77,"xhr":79}],77:[function(require,module,exports){
 var _ = require('./vendor/lodash');
 var serializer = new XMLSerializer();
 var XML_NS = 'http://www.w3.org/XML/1998/namespace';
@@ -12386,7 +12395,7 @@ exports.TOP_LEVEL_LOOKUP = TOP_LEVEL_LOOKUP;
 exports.LOOKUP_EXT = LOOKUP_EXT;
 exports.LOOKUP = LOOKUP;
 
-},{"./vendor/lodash":77}],77:[function(require,module,exports){
+},{"./vendor/lodash":78}],78:[function(require,module,exports){
 var global=self;/**
  * @license
  * Lo-Dash 1.3.1 (Custom Build) lodash.com/license
@@ -12406,7 +12415,7 @@ try{K.nodeClass=!(M.call(document)==w&&!({toString:0}+""))}catch(n){K.nodeClass=
 },W=u({a:"x",e:"[]",h:"if(!(z[typeof x]))return C",f:"C.push(m)"}),X=J?function(t){return i(t)?K.enumPrototypes&&typeof t=="function"||K.nonEnumArgs&&t.length&&a(t)?W(t):J(t):[]}:W,Y=u(G),H=u(Q,{h:Q.h.replace(";",";if(c>3&&typeof a[c-2]=='function'){var d=u.createCallback(a[--c-1],a[c--],2)}else if(c>2&&typeof a[c-1]=='function'){d=a[--c]}"),f:"C[m]=d?d(C[m],r[m]):r[m]"}),Z=u(G,F,{i:!1});f(/x/)&&(f=function(t){return typeof t=="function"&&"[object Function]"==M.call(t)}),o.assign=H,o.createCallback=function(t,r,e){if(null==t)return m;
 var n=typeof t;if("function"!=n){if("object"!=n)return function(r){return r[t]};var o=X(t);return function(r){for(var e=o.length,n=!1;e--&&(n=c(r[o[e]],t[o[e]],b)););return n}}return typeof r=="undefined"||d&&!d.test(q.call(t))?t:1===e?function(e){return t.call(r,e)}:2===e?function(e,n){return t.call(r,e,n)}:4===e?function(e,n,o,u){return t.call(r,e,n,o,u)}:function(e,n,o){return t.call(r,e,n,o)}},o.filter=s,o.forEach=p,o.forIn=Z,o.keys=X,o.each=p,o.extend=H,o.select=s,o.identity=m,o.isArguments=a,o.isArray=U,o.isEqual=c,o.isFunction=f,o.isObject=i,o.isString=l,o.VERSION="1.3.1",typeof define=="function"&&typeof define.amd=="object"&&define.amd?(t._=o, define(function(){return o
 })):I&&!I.nodeType?B?(B.exports=o)._=o:I._=o:t._=o}(this);
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 var window = require("global/window")
 var once = require("once")
 
@@ -12510,7 +12519,7 @@ function createXHR(options, callback) {
 
 function noop() {}
 
-},{"global/window":79,"once":80}],79:[function(require,module,exports){
+},{"global/window":80,"once":81}],80:[function(require,module,exports){
 var global=self;if (typeof window !== "undefined") {
     module.exports = window
 } else if (typeof global !== "undefined") {
@@ -12519,7 +12528,7 @@ var global=self;if (typeof window !== "undefined") {
     module.exports = {}
 }
 
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 module.exports = once
 
 once.proto = once(function () {
@@ -12540,7 +12549,7 @@ function once (fn) {
   }
 }
 
-},{}],81:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 var global=self;/**
  * @license
  * Lo-Dash 1.3.1 (Custom Build) lodash.com/license
@@ -12559,10 +12568,10 @@ try{V.nodeClass=!($.call(document)==x&&!({toString:0}+""))}catch(n){V.nodeClass=
 },U=u({a:"x",e:"[]",h:"if(!(z[typeof x]))return C",f:"C.push(m)"}),W=H?function(t){return i(t)?V.enumPrototypes&&typeof t=="function"||V.nonEnumArgs&&t.length&&a(t)?U(t):H(t):[]}:U,X=u(T),G=u(K,{h:K.h.replace(";",";if(c>3&&typeof a[c-2]=='function'){var d=u.createCallback(a[--c-1],a[c--],2)}else if(c>2&&typeof a[c-1]=='function'){d=a[--c]}"),f:"C[m]=d?d(C[m],r[m]):r[m]"}),Y=u(T,B,{i:!1});f(/x/)&&(f=function(t){return typeof t=="function"&&"[object Function]"==$.call(t)}),o.assign=G,o.createCallback=function(t,r,e){if(null==t)return p;
 var n=typeof t;if("function"!=n){if("object"!=n)return function(r){return r[t]};var o=W(t);return function(r){for(var e=o.length,n=!1;e--&&(n=c(r[o[e]],t[o[e]],h)););return n}}return typeof r=="undefined"||b&&!b.test(N.call(t))?t:1===e?function(e){return t.call(r,e)}:2===e?function(e,n){return t.call(r,e,n)}:4===e?function(e,n,o,u){return t.call(r,e,n,o,u)}:function(e,n,o){return t.call(r,e,n,o)}},o.forEach=s,o.forIn=Y,o.keys=W,o.each=s,o.extend=G,o.identity=p,o.isArguments=a,o.isArray=Q,o.isEqual=c,o.isFunction=f,o.isObject=i,o.isString=l,o.VERSION="1.3.1",typeof define=="function"&&typeof define.amd=="object"&&define.amd?(t._=o, define(function(){return o
 })):P&&!P.nodeType?I?(I.exports=o)._=o:P._=o:t._=o}(this);
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 module.exports = require('./lib/sessionManager');
 
-},{"./lib/sessionManager":85}],83:[function(require,module,exports){
+},{"./lib/sessionManager":86}],84:[function(require,module,exports){
 var bows = require('bows');
 var async = require('async');
 var WildEmitter = require('wildemitter');
@@ -12710,7 +12719,7 @@ actions.forEach(function (action) {
 
 module.exports = JingleSession;
 
-},{"async":61,"bows":86,"jingle-rtcpeerconnection":90,"sdp-jingle-json":95,"wildemitter":119}],84:[function(require,module,exports){
+},{"async":62,"bows":87,"jingle-rtcpeerconnection":91,"sdp-jingle-json":96,"wildemitter":120}],85:[function(require,module,exports){
 var _ = require('underscore');
 var bows = require('bows');
 var JingleSession = require('./genericSession');
@@ -12886,7 +12895,7 @@ MediaSession.prototype = _.extend(MediaSession.prototype, {
 
 module.exports = MediaSession;
 
-},{"./genericSession":83,"bows":86,"jingle-rtcpeerconnection":90,"underscore":118}],85:[function(require,module,exports){
+},{"./genericSession":84,"bows":87,"jingle-rtcpeerconnection":91,"underscore":119}],86:[function(require,module,exports){
 var _ = require('underscore');
 var bows = require('bows');
 var hark = require('hark');
@@ -13217,7 +13226,7 @@ Jingle.prototype.endPeerSessions = function (peer) {
 
 module.exports = Jingle;
 
-},{"./genericSession":83,"./mediaSession":84,"bows":86,"getusermedia":88,"hark":89,"jingle-rtcpeerconnection":90,"mediastream-gain":92,"mockconsole":94,"underscore":118,"webrtcsupport":99,"wildemitter":119}],86:[function(require,module,exports){
+},{"./genericSession":84,"./mediaSession":85,"bows":87,"getusermedia":89,"hark":90,"jingle-rtcpeerconnection":91,"mediastream-gain":93,"mockconsole":95,"underscore":119,"webrtcsupport":100,"wildemitter":120}],87:[function(require,module,exports){
 (function() {
   var inNode = typeof window === 'undefined',
       ls = !inNode && window.localStorage,
@@ -13262,7 +13271,7 @@ module.exports = Jingle;
   }
 }).call();
 
-},{"andlog":87}],87:[function(require,module,exports){
+},{"andlog":88}],88:[function(require,module,exports){
 // follow @HenrikJoreteg and @andyet if you like this ;)
 (function () {
     var inNode = typeof window === 'undefined',
@@ -13292,7 +13301,7 @@ module.exports = Jingle;
     }
 })();
 
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 // getUserMedia helper by @HenrikJoreteg
 var func = (navigator.getUserMedia ||
             navigator.webkitGetUserMedia ||
@@ -13356,7 +13365,7 @@ module.exports = function (constraints, cb) {
     });
 };
 
-},{}],89:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 
 function getMaxVolume (analyser, fftBins) {
@@ -13449,7 +13458,7 @@ module.exports = function(stream, options) {
   return harker;
 }
 
-},{"wildemitter":119}],90:[function(require,module,exports){
+},{"wildemitter":120}],91:[function(require,module,exports){
 var _ = require('underscore');
 var webrtc = require('webrtcsupport');
 var PeerConnection = require('rtcpeerconnection');
@@ -13618,7 +13627,7 @@ JinglePeerConnection.prototype._onIce = function (event) {
 
 module.exports = JinglePeerConnection;
 
-},{"rtcpeerconnection":91,"sdp-jingle-json":95,"underscore":118,"webrtcsupport":99}],91:[function(require,module,exports){
+},{"rtcpeerconnection":92,"sdp-jingle-json":96,"underscore":119,"webrtcsupport":100}],92:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 var webrtc = require('webrtcsupport');
 
@@ -13840,7 +13849,7 @@ PeerConnection.prototype.createDataChannel = function (name, opts) {
 
 module.exports = PeerConnection;
 
-},{"webrtcsupport":99,"wildemitter":119}],92:[function(require,module,exports){
+},{"webrtcsupport":100,"wildemitter":120}],93:[function(require,module,exports){
 var support = require('webrtcsupport');
 
 
@@ -13887,7 +13896,7 @@ GainController.prototype.on = function () {
 
 module.exports = GainController;
 
-},{"webrtcsupport":93}],93:[function(require,module,exports){
+},{"webrtcsupport":94}],94:[function(require,module,exports){
 // created by @HenrikJoreteg
 var PC = window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.RTCPeerConnection;
 var IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
@@ -13917,7 +13926,7 @@ module.exports = {
     IceCandidate: IceCandidate
 };
 
-},{}],94:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 var methods = "assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profileEnd,time,timeEnd,trace,warn".split(",");
 var l = methods.length;
 var fn = function () {};
@@ -13929,7 +13938,7 @@ while (l--) {
 
 module.exports = mockconsole;
 
-},{}],95:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 var tosdp = require('./lib/tosdp');
 var tojson = require('./lib/tojson');
 
@@ -13942,7 +13951,7 @@ exports.toSessionJSON = tojson.toSessionJSON;
 exports.toMediaJSON = tojson.toMediaJSON;
 exports.toCandidateJSON = tojson.toCandidateJSON;
 
-},{"./lib/tojson":97,"./lib/tosdp":98}],96:[function(require,module,exports){
+},{"./lib/tojson":98,"./lib/tosdp":99}],97:[function(require,module,exports){
 exports.lines = function (sdp) {
     return sdp.split('\r\n').filter(function (line) {
         return line.length > 0;
@@ -14154,7 +14163,7 @@ exports.grouping = function (lines) {
     return parsed;
 };
 
-},{}],97:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 var parsers = require('./parsers');
 var idCounter = Math.random();
 
@@ -14311,7 +14320,7 @@ exports.toCandidateJSON = function (line) {
     return candidate;
 };
 
-},{"./parsers":96}],98:[function(require,module,exports){
+},{"./parsers":97}],99:[function(require,module,exports){
 var senders = {
     'initiator': 'sendonly',
     'responder': 'recvonly',
@@ -14479,7 +14488,7 @@ exports.toCandidateSDP = function (candidate) {
     return 'a=candidate:' + sdp.join(' ');
 };
 
-},{}],99:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 // created by @HenrikJoreteg
 var prefix;
 var isChrome = false;
@@ -14517,7 +14526,7 @@ module.exports = {
     IceCandidate: IceCandidate
 };
 
-},{}],100:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -14527,7 +14536,7 @@ var types = require('./lib/types');
 
 module.exports = _.extend({}, core, helpers, types);
 
-},{"./lib/core":101,"./lib/helpers":102,"./lib/types":103,"underscore":118}],101:[function(require,module,exports){
+},{"./lib/core":102,"./lib/helpers":103,"./lib/types":104,"underscore":119}],102:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -14683,7 +14692,7 @@ exports.define = function (opts) {
     return StanzaConstructor;
 };
 
-},{"./helpers":102,"./types":103,"underscore":118}],102:[function(require,module,exports){
+},{"./helpers":103,"./types":104,"underscore":119}],103:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -14936,7 +14945,7 @@ exports.setBoolSub = function (xml, NS, element, value) {
     }
 };
 
-},{"underscore":118}],103:[function(require,module,exports){
+},{"underscore":119}],104:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -15039,7 +15048,7 @@ exports.multiExtension = function (ChildJXT) {
     };
 };
 
-},{"./helpers":102,"underscore":118}],104:[function(require,module,exports){
+},{"./helpers":103,"underscore":119}],105:[function(require,module,exports){
 var Buffer=require("__browserify_Buffer").Buffer;//     uuid.js
 //
 //     (c) 2010-2012 Robert Kieffer
@@ -15286,7 +15295,7 @@ var Buffer=require("__browserify_Buffer").Buffer;//     uuid.js
   }
 }());
 
-},{"__browserify_Buffer":68,"crypto":70}],105:[function(require,module,exports){
+},{"__browserify_Buffer":69,"crypto":71}],106:[function(require,module,exports){
 /**
 * Written by Nathan Fritz. Copyright © 2011 by &yet, LLC. Released under the
 * terms of the MIT License:
@@ -15458,7 +15467,7 @@ Paddle.prototype.stop = stop;
 
 exports.Paddle = Paddle;
 
-},{"events":63}],106:[function(require,module,exports){
+},{"events":64}],107:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15514,7 +15523,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{}],107:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15534,7 +15543,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":106}],108:[function(require,module,exports){
+},{"./lib/mechanism":107}],109:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15724,7 +15733,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"crypto":70}],109:[function(require,module,exports){
+},{"crypto":71}],110:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15744,7 +15753,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":108}],110:[function(require,module,exports){
+},{"./lib/mechanism":109}],111:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15800,7 +15809,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{}],111:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15820,7 +15829,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":110}],112:[function(require,module,exports){
+},{"./lib/mechanism":111}],113:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15887,7 +15896,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{}],113:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -15907,7 +15916,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":112}],114:[function(require,module,exports){
+},{"./lib/mechanism":113}],115:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -16165,7 +16174,7 @@ exports.Paddle = Paddle;
     exports = module.exports = Mechanism;
 }));
 
-},{"buffer":66,"crypto":70}],115:[function(require,module,exports){
+},{"buffer":67,"crypto":71}],116:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -16185,7 +16194,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/mechanism":114}],116:[function(require,module,exports){
+},{"./lib/mechanism":115}],117:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -16258,7 +16267,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{}],117:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 (function(root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
@@ -16278,7 +16287,7 @@ exports.Paddle = Paddle;
   
 }));
 
-},{"./lib/factory":116}],118:[function(require,module,exports){
+},{"./lib/factory":117}],119:[function(require,module,exports){
 //     Underscore.js 1.5.2
 //     http://underscorejs.org
 //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -17556,7 +17565,7 @@ exports.Paddle = Paddle;
 
 }).call(this);
 
-},{}],119:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 /*
 WildEmitter.js is a slim little event emitter by @henrikjoreteg largely based 
 on @visionmedia's Emitter from UI Kit.

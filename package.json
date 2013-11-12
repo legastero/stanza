@@ -1,6 +1,6 @@
 {
     "name": "stanza.io",
-    "version": "2.5.15",
+    "version": "2.6.0",
     "description": "XMPP + WebSocket",
     "browserify": "index.js",
     "dependencies": {
