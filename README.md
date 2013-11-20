@@ -9,8 +9,8 @@
 
 ## What is this?
 
-A basic framework for translating XML to dev-friendly JSON and back again, and can be used
-both in the browser and in node.
+Stanza.io is a library for using modern XMPP in the browser, and it does that by exposing everything as JSON. Unless you insist, you
+have no need to ever see or touch any XML when using stanza.io.
 
 ## Installing
 
@@ -34,7 +34,7 @@ The bundled and minified files will be in the generated `build` directory.
 4. Enter your connection info, click connect.
 5. Use the JS console to play with the XMPP client (var client).
 
-If you want to see stanza.io in action in a full-featured client, take a look at [Otalk.im](http://otalk.im) (and its [source](https://github.com/andyet/otalk).
+If you want to see stanza.io in action in a full-featured client, take a look at [Otalk.im](http://otalk.im) (and its [source](https://github.com/andyet/otalk)).
 
 ## License
 
