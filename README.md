@@ -29,10 +29,10 @@ The bundled and minified files will be in the generated `build` directory.
 ## Getting Started
 
 1. Find or install a server which supports XMPP over WebSocket (Prosody recommended).
-2. Run `npm install` to build `stanza.io.js`
+2. Run `grunt` to build `build/stanzaio.bundle.js`
 3. Open `demo.html` in your browser
 4. Enter your connection info, click connect.
-5. Use the JS console to play with the XMPP client (var client).
+5. Use the JS console to play with the XMPP client (`var client`).
 
 If you want to see stanza.io in action in a full-featured client, take a look at [Otalk.im](http://otalk.im) (and its [source](https://github.com/andyet/otalk)).
 
