@@ -1,3 +1,5 @@
+"use strict";
+
 exports.Message = require('./lib/stanza/message');
 exports.Presence = require('./lib/stanza/presence');
 exports.Iq = require('./lib/stanza/iq');

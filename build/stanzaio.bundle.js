@@ -1,4 +1,6 @@
 !function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define(e):"undefined"!=typeof window?window.XMPP=e():"undefined"!=typeof global?global.XMPP=e():"undefined"!=typeof self&&(self.XMPP=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
+
 exports.Message = require('./lib/stanza/message');
 exports.Presence = require('./lib/stanza/presence');
 exports.Iq = require('./lib/stanza/iq');
@@ -35,6 +37,8 @@ exports.createClient = function (opts) {
 };
 
 },{"./lib/client":2,"./lib/plugins/attention":4,"./lib/plugins/avatar":5,"./lib/plugins/bookmarks":6,"./lib/plugins/carbons":7,"./lib/plugins/chatstates":8,"./lib/plugins/correction":9,"./lib/plugins/delayed":10,"./lib/plugins/disco":11,"./lib/plugins/forwarding":12,"./lib/plugins/hashes":13,"./lib/plugins/idle":14,"./lib/plugins/invisible":15,"./lib/plugins/jingle":16,"./lib/plugins/json":17,"./lib/plugins/mam":18,"./lib/plugins/muc":19,"./lib/plugins/private":20,"./lib/plugins/pubsub":21,"./lib/plugins/receipts":22,"./lib/plugins/time":23,"./lib/plugins/version":24,"./lib/stanza/iq":38,"./lib/stanza/message":42,"./lib/stanza/presence":44,"crypto":72}],2:[function(require,module,exports){
+"use strict";
+
 var WildEmitter = require('wildemitter');
 var _ = require('underscore');
 var async = require('async');
@@ -590,6 +594,8 @@ Client.prototype.JID = function (jid) {
 module.exports = Client;
 
 },{"./jid":3,"./stanza/bind":27,"./stanza/error":35,"./stanza/iq":38,"./stanza/message":42,"./stanza/presence":44,"./stanza/roster":48,"./stanza/sasl":51,"./stanza/session":52,"./stanza/sm":53,"./stanza/stream":54,"./stanza/streamError":55,"./stanza/streamFeatures":56,"./websocket":61,"async":62,"hostmeta":77,"node-uuid":105,"paddle":106,"sasl-anonymous":108,"sasl-digest-md5":110,"sasl-external":112,"sasl-plain":114,"sasl-scram-sha-1":116,"saslmechanisms":118,"underscore":119,"wildemitter":120}],3:[function(require,module,exports){
+"use strict";
+
 function JID(jid) {
     jid = jid || '';
 
@@ -1516,6 +1522,8 @@ module.exports = function (client) {
 };
 
 },{"../stanza/version":59}],25:[function(require,module,exports){
+"use strict";
+
 var SM = require('./stanza/sm');
 var MAX_SEQ = Math.pow(2, 32);
 
@@ -3864,7 +3872,10 @@ stanza.add(Iq, 'visible', stanza.boolSub('urn:xmpp:invisible:0', 'visible'));
 stanza.add(Iq, 'invisible', stanza.boolSub('urn:xmpp:invisible:0', 'invisible'));
 
 },{"./iq":38,"jxt":98}],61:[function(require,module,exports){
+"use strict";
+
 var _ = require('underscore');
+var stanza = require('jxt');
 var WildEmitter = require('wildemitter');
 var async = require('async');
 var Stream = require('./stanza/stream');
@@ -3884,31 +3895,20 @@ function WSConnection() {
 
     self.sendQueue = async.queue(function (data, cb) {
         if (self.conn) {
-            self.emit('raw:outgoing', data);
-
             self.sm.track(data);
 
             if (typeof data !== 'string') {
                 data = data.toString();
             }
 
+            self.emit('raw:outgoing', data);
             self.conn.send(data);
         }
         cb();
     }, 1);
 
     function wrap(data) {
-        var result = [self.streamStart, data, self.streamEnd].join('');
-        return result;
-    }
-
-    function parse(data) {
-        var nodes = (self.parser.parseFromString(data, 'application/xml')).childNodes;
-        for (var i = 0; i < nodes.length; i++) {
-            if (nodes[i].nodeType === 1) {
-                return nodes[i];
-            }
-        }
+        return [self.streamStart, data, self.streamEnd].join('');
     }
 
     self.on('connected', function () {
@@ -3935,7 +3935,7 @@ function WSConnection() {
             return self.disconnect();
         } else if (self.hasStream) {
             try {
-                streamData = new Stream({}, parse(wrap(data)));
+                streamData = stanza.parse(Stream, wrap(data));
             } catch (e) {
                 return self.disconnect();
             }
@@ -3947,10 +3947,10 @@ function WSConnection() {
 
             ended = false;
             try {
-                streamData = new Stream({}, parse(data + self.streamEnd));
+                streamData = stanza.parse(Stream, wrap(data));
             } catch (e) {
                 try {
-                    streamData = new Stream({}, parse(data));
+                    streamData = stanza.parse(Stream, data);
                     ended = true;
                 } catch (e2) {
                     return self.disconnect();
@@ -3999,8 +3999,6 @@ WSConnection.prototype.connect = function (opts) {
     self.hasStream = false;
     self.streamStart = '<stream:stream xmlns:stream="http://etherx.jabber.org/streams">';
     self.streamEnd = '</stream:stream>';
-    self.parser = new DOMParser();
-    self.serializer = new XMLSerializer();
 
     self.conn = new WebSocket(opts.wsURL, 'xmpp');
     self.conn.onerror = function (e) {
@@ -4058,7 +4056,7 @@ WSConnection.prototype.send = function (data) {
 
 module.exports = WSConnection;
 
-},{"./sm":25,"./stanza/iq":38,"./stanza/message":42,"./stanza/presence":44,"./stanza/stream":54,"async":62,"node-uuid":105,"underscore":119,"wildemitter":120}],62:[function(require,module,exports){
+},{"./sm":25,"./stanza/iq":38,"./stanza/message":42,"./stanza/presence":44,"./stanza/stream":54,"async":62,"jxt":98,"node-uuid":105,"underscore":119,"wildemitter":120}],62:[function(require,module,exports){
 var process=require("__browserify_process");/*global setImmediate: false, setTimeout: false, console: false */
 (function () {
 
