@@ -15,7 +15,7 @@ have no need to ever see or touch any XML when using stanza.io.
 ## Installing
 
 ```sh
-$ npm install jxt
+$ npm install stanza.io
 ```
 
 ## Building bundled/minified version (for AMD, etc)
