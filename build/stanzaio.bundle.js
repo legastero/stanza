@@ -594,7 +594,7 @@ Client.prototype.JID = function (jid) {
 
 module.exports = Client;
 
-},{"./jid":3,"./stanza/bind":28,"./stanza/error":36,"./stanza/iq":40,"./stanza/message":44,"./stanza/presence":46,"./stanza/roster":50,"./stanza/sasl":53,"./stanza/session":54,"./stanza/sm":55,"./stanza/stream":56,"./stanza/streamError":57,"./stanza/streamFeatures":58,"./websocket":63,"async":64,"hostmeta":79,"node-uuid":117,"paddle":118,"sasl-anonymous":120,"sasl-digest-md5":122,"sasl-external":124,"sasl-plain":126,"sasl-scram-sha-1":128,"saslmechanisms":130,"underscore":131,"wildemitter":132}],3:[function(require,module,exports){
+},{"./jid":3,"./stanza/bind":28,"./stanza/error":36,"./stanza/iq":40,"./stanza/message":44,"./stanza/presence":46,"./stanza/roster":50,"./stanza/sasl":53,"./stanza/session":54,"./stanza/sm":55,"./stanza/stream":56,"./stanza/streamError":57,"./stanza/streamFeatures":58,"./websocket":63,"async":64,"hostmeta":79,"node-uuid":107,"paddle":108,"sasl-anonymous":110,"sasl-digest-md5":112,"sasl-external":114,"sasl-plain":116,"sasl-scram-sha-1":118,"saslmechanisms":120,"underscore":121,"wildemitter":122}],3:[function(require,module,exports){
 "use strict";
 
 function JID(jid) {
@@ -1108,7 +1108,7 @@ module.exports = function (client) {
     client.generateVerString = generateVerString;
 };
 
-},{"../stanza/caps":30,"../stanza/disco":35,"crypto":74,"underscore":131}],12:[function(require,module,exports){
+},{"../stanza/caps":30,"../stanza/disco":35,"crypto":74,"underscore":121}],12:[function(require,module,exports){
 "use strict";
 
 var stanzas = require('../stanza/extdisco');
@@ -1252,6 +1252,46 @@ module.exports = function (client) {
         client.sendPresence({to: peer});
         sess.start();
         return sess;
+    };
+
+    client.discoverICEServers = function (cb) {
+        client.getServices(client.config.server, null, function (err, res) {
+            if (err) return cb(err);
+
+            var services = res.services.services;
+            var discovered = [];
+
+            for (var i = 0; i < services.length; i++) {
+                var service = services[i];
+                var ice = {};
+                if (service.type === 'stun') {
+                    ice.url = 'stun:' + service.host;
+                    if (service.port) {
+                        ice.url += ':' + service.port;
+                    }
+                    discovered.push(ice);
+                    client.jingle.addICEServer(ice);
+                } else if (service.type === 'turn') {
+                    ice.url = 'turn:' + service.host;
+                    if (service.port) {
+                        ice.url += ':' + service.port;
+                    }
+                    if (service.transport && service.transport !== 'udp') {
+                        ice.url += '?transport=' + service.transport;
+                    }
+
+                    if (service.username) {
+                        ice.username = service.username;
+                    }
+                    if (service.password) {
+                        ice.credential = service.password;
+                    }
+                    discovered.push(ice);
+                    client.jingle.addICEServer(ice);
+                }
+            }
+            cb(null, discovered);
+        });
     };
 };
 
@@ -1753,7 +1793,7 @@ stanza.add(EventItem, 'avatars', avatars);
 stanza.add(Item, 'avatarData', stanza.subText('urn:xmpp:avatar:data', 'data'));
 stanza.add(EventItem, 'avatarData', stanza.subText('urn:xmpp:avatar:data', 'data'));
 
-},{"./pubsub":48,"jxt":110,"underscore":131}],28:[function(require,module,exports){
+},{"./pubsub":48,"jxt":100,"underscore":121}],28:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var StreamFeatures = require('./streamFeatures');
@@ -1774,7 +1814,7 @@ var Bind = module.exports = stanza.define({
 stanza.extend(Iq, Bind);
 stanza.extend(StreamFeatures, Bind);
 
-},{"./iq":40,"./streamFeatures":58,"./util":60,"jxt":110}],29:[function(require,module,exports){
+},{"./iq":40,"./streamFeatures":58,"./util":60,"jxt":100}],29:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 var PrivateStorage = require('./private');
@@ -1802,7 +1842,7 @@ var Bookmarks = module.exports = stanza.define({
 stanza.extend(PrivateStorage, Bookmarks);
 stanza.extend(Bookmarks, Conference, 'conferences');
 
-},{"./private":47,"./util":60,"jxt":110}],30:[function(require,module,exports){
+},{"./private":47,"./util":60,"jxt":100}],30:[function(require,module,exports){
 var stanza = require('jxt');
 var Presence = require('./presence');
 var StreamFeatures = require('./streamFeatures');
@@ -1823,7 +1863,7 @@ var Caps = module.exports = stanza.define({
 stanza.extend(Presence, Caps);
 stanza.extend(StreamFeatures, Caps);
 
-},{"./presence":46,"./streamFeatures":58,"jxt":110}],31:[function(require,module,exports){
+},{"./presence":46,"./streamFeatures":58,"jxt":100}],31:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Iq = require('./iq');
@@ -1872,7 +1912,7 @@ stanza.extend(Message, exports.Private);
 stanza.extend(Iq, exports.Enable);
 stanza.extend(Iq, exports.Disable);
 
-},{"./forwarded":38,"./iq":40,"./message":44,"jxt":110}],32:[function(require,module,exports){
+},{"./forwarded":38,"./iq":40,"./message":44,"jxt":100}],32:[function(require,module,exports){
 "use strict";
 
 var stanza = require('jxt');
@@ -1949,7 +1989,7 @@ stanza.add(Message, 'chatState', {
     }
 });
 
-},{"./message":44,"jxt":110}],33:[function(require,module,exports){
+},{"./message":44,"jxt":100}],33:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -2040,7 +2080,7 @@ exports.Field = stanza.define({
 
 stanza.extend(Message, exports.DataForm);
 
-},{"./message":44,"./util":60,"jxt":110,"underscore":131}],34:[function(require,module,exports){
+},{"./message":44,"./util":60,"jxt":100,"underscore":121}],34:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -2060,7 +2100,7 @@ var DelayedDelivery = module.exports = stanza.define({
 stanza.extend(Message, DelayedDelivery);
 stanza.extend(Presence, DelayedDelivery);
 
-},{"./message":44,"./presence":46,"./util":60,"jxt":110}],35:[function(require,module,exports){
+},{"./message":44,"./presence":46,"./util":60,"jxt":100}],35:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -2181,7 +2221,7 @@ stanza.extend(Iq, exports.DiscoItems);
 stanza.extend(exports.DiscoItems, RSM);
 stanza.extend(exports.DiscoInfo, DataForm, 'extensions');
 
-},{"../jid":3,"./dataforms":33,"./iq":40,"./rsm":51,"jxt":110,"underscore":131}],36:[function(require,module,exports){
+},{"../jid":3,"./dataforms":33,"./iq":40,"./rsm":51,"jxt":100,"underscore":121}],36:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -2287,7 +2327,7 @@ stanza.extend(Message, ErrorStanza);
 stanza.extend(Presence, ErrorStanza);
 stanza.extend(Iq, ErrorStanza);
 
-},{"./iq":40,"./message":44,"./presence":46,"./util":60,"jxt":110,"underscore":131}],37:[function(require,module,exports){
+},{"./iq":40,"./message":44,"./presence":46,"./util":60,"jxt":100,"underscore":121}],37:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var DataForm = require('./dataforms').DataForm;
@@ -2332,7 +2372,7 @@ stanza.extend(Service, DataForm);
 stanza.extend(Iq, Services);
 stanza.extend(Iq, Credentials);
 
-},{"./dataforms":33,"./iq":40,"jxt":110}],38:[function(require,module,exports){
+},{"./dataforms":33,"./iq":40,"jxt":100}],38:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 var Presence = require('./presence');
@@ -2354,7 +2394,7 @@ stanza.extend(Forwarded, Presence);
 stanza.extend(Forwarded, Iq);
 stanza.extend(Forwarded, DelayedDelivery);
 
-},{"./delayed":34,"./iq":40,"./message":44,"./presence":46,"jxt":110}],39:[function(require,module,exports){
+},{"./delayed":34,"./iq":40,"./message":44,"./presence":46,"jxt":100}],39:[function(require,module,exports){
 var _ = require('underscore');
 var stanza = require('jxt');
 var util = require('./util');
@@ -2426,7 +2466,7 @@ stanza.extend(exports.ICEUDP, exports.Candidate, 'candidates');
 stanza.extend(exports.ICEUDP, exports.RemoteCandidate);
 stanza.extend(exports.ICEUDP, exports.Fingerprint, 'fingerprints');
 
-},{"./jingle":41,"./util":60,"jxt":110,"underscore":131}],40:[function(require,module,exports){
+},{"./jingle":41,"./util":60,"jxt":100,"underscore":121}],40:[function(require,module,exports){
 "use strict";
 
 var stanza = require('jxt');
@@ -2461,7 +2501,7 @@ Iq.prototype.errorReply = function (data) {
     return new Iq(data);
 };
 
-},{"./util":60,"jxt":110}],41:[function(require,module,exports){
+},{"./util":60,"jxt":100}],41:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -2615,7 +2655,7 @@ stanza.extend(Iq, exports.Jingle);
 stanza.extend(exports.Jingle, exports.Content, 'contents');
 stanza.extend(exports.Jingle, exports.Reason);
 
-},{"./error":36,"./iq":40,"./util":60,"jxt":110,"underscore":131}],42:[function(require,module,exports){
+},{"./error":36,"./iq":40,"./util":60,"jxt":100,"underscore":121}],42:[function(require,module,exports){
 "use strict";
 
 var stanza = require('jxt');
@@ -2644,7 +2684,7 @@ stanza.add(Message, 'json', JSONExtension);
 stanza.add(Item, 'json', JSONExtension);
 stanza.add(EventItem, 'json', JSONExtension);
 
-},{"./message":44,"./pubsub":48,"jxt":110}],43:[function(require,module,exports){
+},{"./message":44,"./pubsub":48,"jxt":100}],43:[function(require,module,exports){
 "use strict";
 
 var stanza = require('jxt');
@@ -2747,7 +2787,7 @@ stanza.extend(Message, exports.Result);
 stanza.extend(exports.Result, Forwarded);
 stanza.extend(exports.MAMQuery, RSM);
 
-},{"../jid":3,"./forwarded":38,"./iq":40,"./message":44,"./rsm":51,"./util":60,"jxt":110}],44:[function(require,module,exports){
+},{"../jid":3,"./forwarded":38,"./iq":40,"./message":44,"./rsm":51,"./util":60,"jxt":100}],44:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -2787,7 +2827,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"./util":60,"jxt":110,"underscore":131}],45:[function(require,module,exports){
+},{"./util":60,"jxt":100,"underscore":121}],45:[function(require,module,exports){
 "use strict";
 
 var stanza = require('jxt');
@@ -2865,7 +2905,7 @@ exports.MUCJoin = stanza.define({
 
 stanza.extend(Presence, exports.MUCJoin);
 
-},{"./iq":40,"./message":44,"./presence":46,"jxt":110}],46:[function(require,module,exports){
+},{"./iq":40,"./message":44,"./presence":46,"jxt":100}],46:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -2915,7 +2955,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"./util":60,"jxt":110,"underscore":131}],47:[function(require,module,exports){
+},{"./util":60,"jxt":100,"underscore":121}],47:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -2928,7 +2968,7 @@ var PrivateStorage = module.exports = stanza.define({
 
 stanza.extend(Iq, PrivateStorage);
 
-},{"./iq":40,"jxt":110}],48:[function(require,module,exports){
+},{"./iq":40,"jxt":100}],48:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -3135,7 +3175,7 @@ stanza.extend(Message, exports.Event);
 stanza.extend(Iq, exports.Pubsub);
 stanza.extend(Iq, exports.PubsubOwner);
 
-},{"../jid":3,"./dataforms":33,"./iq":40,"./message":44,"./rsm":51,"./util":60,"jxt":110,"underscore":131}],49:[function(require,module,exports){
+},{"../jid":3,"./dataforms":33,"./iq":40,"./message":44,"./rsm":51,"./util":60,"jxt":100,"underscore":121}],49:[function(require,module,exports){
 var stanza = require('jxt');
 var Message = require('./message');
 
@@ -3153,7 +3193,7 @@ var Received = module.exports = stanza.define({
 
 stanza.extend(Message, Received);
 
-},{"./message":44,"jxt":110}],50:[function(require,module,exports){
+},{"./message":44,"jxt":100}],50:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -3223,7 +3263,7 @@ var Roster = module.exports = stanza.define({
 
 stanza.extend(Iq, Roster);
 
-},{"../jid":3,"./iq":40,"jxt":110,"underscore":131}],51:[function(require,module,exports){
+},{"../jid":3,"./iq":40,"jxt":100,"underscore":121}],51:[function(require,module,exports){
 "use strict";
 
 var stanza = require('jxt');
@@ -3260,7 +3300,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"./util":60,"jxt":110}],52:[function(require,module,exports){
+},{"./util":60,"jxt":100}],52:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -3526,7 +3566,7 @@ stanza.add(jingle.Jingle, 'ringing', stanza.boolSub(INFONS, 'ringing'));
 stanza.add(jingle.Jingle, 'hold', stanza.boolSub(INFONS, 'hold'));
 stanza.add(jingle.Jingle, 'active', stanza.boolSub(INFONS, 'active'));
 
-},{"./jingle":41,"./util":60,"jxt":110,"underscore":131}],53:[function(require,module,exports){
+},{"./jingle":41,"./util":60,"jxt":100,"underscore":121}],53:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -3666,7 +3706,7 @@ exports.Failure = stanza.define({
 
 stanza.extend(StreamFeatures, exports.Mechanisms);
 
-},{"./streamFeatures":58,"./util":60,"jxt":110,"underscore":131}],54:[function(require,module,exports){
+},{"./streamFeatures":58,"./util":60,"jxt":100,"underscore":121}],54:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 var StreamFeatures = require('./streamFeatures');
@@ -3680,7 +3720,7 @@ var Session = module.exports = stanza.define({
 stanza.extend(StreamFeatures, Session);
 stanza.extend(Iq, Session);
 
-},{"./iq":40,"./streamFeatures":58,"jxt":110}],55:[function(require,module,exports){
+},{"./iq":40,"./streamFeatures":58,"jxt":100}],55:[function(require,module,exports){
 var stanza = require('jxt');
 var util = require('./util');
 var StreamFeatures = require('./streamFeatures');
@@ -3772,7 +3812,7 @@ exports.Request = stanza.define({
 
 stanza.extend(StreamFeatures, exports.SMFeature);
 
-},{"./streamFeatures":58,"./util":60,"jxt":110}],56:[function(require,module,exports){
+},{"./streamFeatures":58,"./util":60,"jxt":100}],56:[function(require,module,exports){
 "use strict";
 
 var stanza = require('jxt');
@@ -3799,7 +3839,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"./util":60,"jxt":110}],57:[function(require,module,exports){
+},{"./util":60,"jxt":100}],57:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -3886,7 +3926,7 @@ module.exports = stanza.define({
     }
 });
 
-},{"jxt":110,"underscore":131}],58:[function(require,module,exports){
+},{"jxt":100,"underscore":121}],58:[function(require,module,exports){
 "use strict";
 
 var stanza = require('jxt');
@@ -3921,7 +3961,7 @@ var SubscriptionPreApprovalFeature = stanza.define({
 stanza.extend(StreamFeatures, RosterVerFeature);
 stanza.extend(StreamFeatures, SubscriptionPreApprovalFeature);
 
-},{"jxt":110}],59:[function(require,module,exports){
+},{"jxt":100}],59:[function(require,module,exports){
 "use strict";
 
 var stanza = require('jxt');
@@ -3975,7 +4015,7 @@ var EntityTime = module.exports = stanza.define({
 
 stanza.extend(Iq, EntityTime);
 
-},{"./iq":40,"./util":60,"jxt":110}],60:[function(require,module,exports){
+},{"./iq":40,"./util":60,"jxt":100}],60:[function(require,module,exports){
 "use strict";
 
 var stanza = require('jxt');
@@ -4000,7 +4040,7 @@ exports.jidSub = stanza.field(
     }
 );
 
-},{"../jid":3,"jxt":110}],61:[function(require,module,exports){
+},{"../jid":3,"jxt":100}],61:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -4019,7 +4059,7 @@ var Version = module.exports = stanza.define({
 
 stanza.extend(Iq, Version);
 
-},{"./iq":40,"jxt":110}],62:[function(require,module,exports){
+},{"./iq":40,"jxt":100}],62:[function(require,module,exports){
 var stanza = require('jxt');
 var Iq = require('./iq');
 
@@ -4027,7 +4067,7 @@ var Iq = require('./iq');
 stanza.add(Iq, 'visible', stanza.boolSub('urn:xmpp:invisible:0', 'visible'));
 stanza.add(Iq, 'invisible', stanza.boolSub('urn:xmpp:invisible:0', 'invisible'));
 
-},{"./iq":40,"jxt":110}],63:[function(require,module,exports){
+},{"./iq":40,"jxt":100}],63:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -4212,7 +4252,7 @@ WSConnection.prototype.send = function (data) {
 
 module.exports = WSConnection;
 
-},{"./sm":26,"./stanza/iq":40,"./stanza/message":44,"./stanza/presence":46,"./stanza/stream":56,"async":64,"jxt":110,"node-uuid":117,"underscore":131,"wildemitter":132}],64:[function(require,module,exports){
+},{"./sm":26,"./stanza/iq":40,"./stanza/message":44,"./stanza/presence":46,"./stanza/stream":56,"async":64,"jxt":100,"node-uuid":107,"underscore":121,"wildemitter":122}],64:[function(require,module,exports){
 var process=require("__browserify_process");/*global setImmediate: false, setTimeout: false, console: false */
 (function () {
 
@@ -11154,7 +11194,7 @@ module.exports = function (opts, cb) {
     });
 };
 
-},{"./lib/xrd":80,"async":64,"jxt":110,"request":81,"underscore":131}],80:[function(require,module,exports){
+},{"./lib/xrd":80,"async":64,"jxt":100,"request":81,"underscore":121}],80:[function(require,module,exports){
 "use strict";
 
 var _ = require('underscore');
@@ -11205,7 +11245,7 @@ var Link = jxt.define({
 
 jxt.extend(XRD, Link, 'links');
 
-},{"jxt":110,"underscore":131}],81:[function(require,module,exports){
+},{"jxt":100,"underscore":121}],81:[function(require,module,exports){
 // Browser Request
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -11769,7 +11809,7 @@ actions.forEach(function (action) {
 
 module.exports = JingleSession;
 
-},{"async":86,"bows":87,"jingle-rtcpeerconnection":91,"sdp-jingle-json":103,"wildemitter":109}],84:[function(require,module,exports){
+},{"async":64,"bows":86,"jingle-rtcpeerconnection":90,"sdp-jingle-json":95,"wildemitter":122}],84:[function(require,module,exports){
 var _ = require('underscore');
 var bows = require('bows');
 var JingleSession = require('./genericSession');
@@ -11945,7 +11985,7 @@ MediaSession.prototype = _.extend(MediaSession.prototype, {
 
 module.exports = MediaSession;
 
-},{"./genericSession":83,"bows":87,"jingle-rtcpeerconnection":91,"underscore":107}],85:[function(require,module,exports){
+},{"./genericSession":83,"bows":86,"jingle-rtcpeerconnection":90,"underscore":121}],85:[function(require,module,exports){
 var _ = require('underscore');
 var bows = require('bows');
 var hark = require('hark');
@@ -12005,6 +12045,7 @@ function Jingle(opts) {
             'urn:xmpp:jingle:apps:rtp:audio',
             'urn:xmpp:jingle:apps:rtp:video',
             'urn:xmpp:jingle:apps:rtp:rtcb-fb:0',
+            'urn:xmpp:jingle:apps:rtp:rtp-hdrext:0',
             'urn:xmpp:jingle:apps:dtls:0',
             'urn:xmpp:jingle:transports:ice-udp:1',
             'urn:ietf:rfc:3264'
@@ -12027,6 +12068,10 @@ Jingle.prototype = Object.create(WildEmitter.prototype, {
         value: Jingle
     }
 });
+
+Jingle.prototype.addICEServer = function (server) {
+    this.config.peerConnectionConfig.iceServers.push(server);
+};
 
 Jingle.prototype.startLocalMedia = function (mediaConstraints, cb) {
     var self = this;
@@ -12279,9 +12324,7 @@ Jingle.prototype.endPeerSessions = function (peer) {
 
 module.exports = Jingle;
 
-},{"./genericSession":83,"./mediaSession":84,"bows":87,"getusermedia":89,"hark":90,"jingle-rtcpeerconnection":91,"mediastream-gain":100,"mockconsole":102,"underscore":107,"webrtcsupport":108,"wildemitter":109}],86:[function(require,module,exports){
-module.exports=require(64)
-},{"__browserify_process":73}],87:[function(require,module,exports){
+},{"./genericSession":83,"./mediaSession":84,"bows":86,"getusermedia":88,"hark":89,"jingle-rtcpeerconnection":90,"mediastream-gain":92,"mockconsole":94,"underscore":121,"webrtcsupport":99,"wildemitter":122}],86:[function(require,module,exports){
 (function() {
   var inNode = typeof window === 'undefined',
       ls = !inNode && window.localStorage,
@@ -12326,7 +12369,7 @@ module.exports=require(64)
   }
 }).call();
 
-},{"andlog":88}],88:[function(require,module,exports){
+},{"andlog":87}],87:[function(require,module,exports){
 // follow @HenrikJoreteg and @andyet if you like this ;)
 (function () {
     var inNode = typeof window === 'undefined',
@@ -12356,7 +12399,7 @@ module.exports=require(64)
     }
 })();
 
-},{}],89:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 // getUserMedia helper by @HenrikJoreteg
 var func = (navigator.getUserMedia ||
             navigator.webkitGetUserMedia ||
@@ -12420,7 +12463,7 @@ module.exports = function (constraints, cb) {
     });
 };
 
-},{}],90:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 
 function getMaxVolume (analyser, fftBins) {
@@ -12513,7 +12556,7 @@ module.exports = function(stream, options) {
   return harker;
 }
 
-},{"wildemitter":109}],91:[function(require,module,exports){
+},{"wildemitter":122}],90:[function(require,module,exports){
 var _ = require('underscore');
 var webrtc = require('webrtcsupport');
 var PeerConnection = require('rtcpeerconnection');
@@ -12711,144 +12754,7 @@ JinglePeerConnection.prototype._onIce = function (event) {
 
 module.exports = JinglePeerConnection;
 
-},{"rtcpeerconnection":93,"sdp-jingle-json":94,"underscore":98,"webrtcsupport":99}],92:[function(require,module,exports){
-/*
-WildEmitter.js is a slim little event emitter by @henrikjoreteg largely based 
-on @visionmedia's Emitter from UI Kit.
-
-Why? I wanted it standalone.
-
-I also wanted support for wildcard emitters like this:
-
-emitter.on('*', function (eventName, other, event, payloads) {
-    
-});
-
-emitter.on('somenamespace*', function (eventName, payloads) {
-    
-});
-
-Please note that callbacks triggered by wildcard registered events also get 
-the event name as the first argument.
-*/
-module.exports = WildEmitter;
-
-function WildEmitter() {
-    this.callbacks = {};
-}
-
-// Listen on the given `event` with `fn`. Store a group name if present.
-WildEmitter.prototype.on = function (event, groupName, fn) {
-    var hasGroup = (arguments.length === 3),
-        group = hasGroup ? arguments[1] : undefined, 
-        func = hasGroup ? arguments[2] : arguments[1];
-    func._groupName = group;
-    (this.callbacks[event] = this.callbacks[event] || []).push(func);
-    return this;
-};
-
-// Adds an `event` listener that will be invoked a single
-// time then automatically removed.
-WildEmitter.prototype.once = function (event, groupName, fn) {
-    var self = this,
-        hasGroup = (arguments.length === 3),
-        group = hasGroup ? arguments[1] : undefined, 
-        func = hasGroup ? arguments[2] : arguments[1];
-    function on() {
-        self.off(event, on);
-        func.apply(this, arguments);
-    }
-    this.on(event, group, on);
-    return this;
-};
-
-// Unbinds an entire group
-WildEmitter.prototype.releaseGroup = function (groupName) {
-    var item, i, len, handlers;
-    for (item in this.callbacks) {
-        handlers = this.callbacks[item];
-        for (i = 0, len = handlers.length; i < len; i++) {
-            if (handlers[i]._groupName === groupName) {
-                //console.log('removing');
-                // remove it and shorten the array we're looping through
-                handlers.splice(i, 1);
-                i--;
-                len--;
-            }
-        }
-    }
-    return this;
-};
-
-// Remove the given callback for `event` or all
-// registered callbacks.
-WildEmitter.prototype.off = function (event, fn) {
-    var callbacks = this.callbacks[event],
-        i;
-    
-    if (!callbacks) return this;
-
-    // remove all handlers
-    if (arguments.length === 1) {
-        delete this.callbacks[event];
-        return this;
-    }
-
-    // remove specific handler
-    i = callbacks.indexOf(fn);
-    callbacks.splice(i, 1);
-    return this;
-};
-
-// Emit `event` with the given args.
-// also calls any `*` handlers
-WildEmitter.prototype.emit = function (event) {
-    var args = [].slice.call(arguments, 1),
-        callbacks = this.callbacks[event],
-        specialCallbacks = this.getWildcardCallbacks(event),
-        i,
-        len,
-        item;
-
-    if (callbacks) {
-        for (i = 0, len = callbacks.length; i < len; ++i) {
-            if (callbacks[i]) {
-                callbacks[i].apply(this, args);
-            } else {
-                break;
-            }
-        }
-    }
-
-    if (specialCallbacks) {
-        for (i = 0, len = specialCallbacks.length; i < len; ++i) {
-            if (specialCallbacks[i]) {
-                specialCallbacks[i].apply(this, [event].concat(args));
-            } else {
-                break;
-            }
-        }
-    }
-
-    return this;
-};
-
-// Helper for for finding special wildcard event handlers that match the event
-WildEmitter.prototype.getWildcardCallbacks = function (eventName) {
-    var item,
-        split,
-        result = [];
-
-    for (item in this.callbacks) {
-        split = item.split('*');
-        if (item === '*' || (split.length === 2 && eventName.slice(0, split[1].length) === split[1])) {
-            result = result.concat(this.callbacks[item]);
-        }
-    }
-    return result;
-};
-
-},{}],93:[function(require,module,exports){
+},{"rtcpeerconnection":91,"sdp-jingle-json":95,"underscore":121,"webrtcsupport":99}],91:[function(require,module,exports){
 var WildEmitter = require('wildemitter');
 var webrtc = require('webrtcsupport');
 
@@ -13070,7 +12976,96 @@ PeerConnection.prototype.createDataChannel = function (name, opts) {
 
 module.exports = PeerConnection;
 
-},{"webrtcsupport":99,"wildemitter":92}],94:[function(require,module,exports){
+},{"webrtcsupport":99,"wildemitter":122}],92:[function(require,module,exports){
+var support = require('webrtcsupport');
+
+
+function GainController(stream) {
+    this.support = support.webAudio && support.mediaStream;
+
+    // set our starting value
+    this.gain = 1;
+
+    if (this.support) {
+        var context = this.context = new support.AudioContext();
+        this.microphone = context.createMediaStreamSource(stream);
+        this.gainFilter = context.createGain();
+        this.destination = context.createMediaStreamDestination();
+        this.outputStream = this.destination.stream;
+        this.microphone.connect(this.gainFilter);
+        this.gainFilter.connect(this.destination);
+        stream.removeTrack(stream.getAudioTracks()[0]);
+        stream.addTrack(this.outputStream.getAudioTracks()[0]);
+    }
+    this.stream = stream;
+}
+
+// setting
+GainController.prototype.setGain = function (val) {
+    // check for support
+    if (!this.support) return;
+    this.gainFilter.gain.value = val;
+    this.gain = val;
+};
+
+GainController.prototype.getGain = function () {
+    return this.gain;
+};
+
+GainController.prototype.off = function () {
+    return this.setGain(0);
+};
+
+GainController.prototype.on = function () {
+    this.setGain(1);
+};
+
+
+module.exports = GainController;
+
+},{"webrtcsupport":93}],93:[function(require,module,exports){
+// created by @HenrikJoreteg
+var PC = window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.RTCPeerConnection;
+var IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
+var SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
+var prefix = function () {
+    if (window.mozRTCPeerConnection) {
+        return 'moz';
+    } else if (window.webkitRTCPeerConnection) {
+        return 'webkit';
+    }
+}();
+var MediaStream = window.webkitMediaStream || window.MediaStream;
+var screenSharing = navigator.userAgent.match('Chrome') && parseInt(navigator.userAgent.match(/Chrome\/(.*) /)[1], 10) >= 26;
+var AudioContext = window.webkitAudioContext || window.AudioContext;
+
+// export support flags and constructors.prototype && PC
+module.exports = {
+    support: !!PC,
+    dataChannel: !!(PC && PC.prototype && PC.prototype.createDataChannel),
+    prefix: prefix,
+    webAudio: !!(AudioContext && AudioContext.prototype.createMediaStreamSource),
+    mediaStream: !!(MediaStream && MediaStream.prototype.removeTrack),
+    screenSharing: screenSharing,
+    AudioContext: AudioContext,
+    PeerConnection: PC,
+    SessionDescription: SessionDescription,
+    IceCandidate: IceCandidate
+};
+
+},{}],94:[function(require,module,exports){
+var methods = "assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profileEnd,time,timeEnd,trace,warn".split(",");
+var l = methods.length;
+var fn = function () {};
+var mockconsole = {};
+
+while (l--) {
+    mockconsole[methods[l]] = fn;
+}
+
+module.exports = mockconsole;
+
+},{}],95:[function(require,module,exports){
 var tosdp = require('./lib/tosdp');
 var tojson = require('./lib/tojson');
 
@@ -13083,7 +13078,7 @@ exports.toSessionJSON = tojson.toSessionJSON;
 exports.toMediaJSON = tojson.toMediaJSON;
 exports.toCandidateJSON = tojson.toCandidateJSON;
 
-},{"./lib/tojson":96,"./lib/tosdp":97}],95:[function(require,module,exports){
+},{"./lib/tojson":97,"./lib/tosdp":98}],96:[function(require,module,exports){
 exports.lines = function (sdp) {
     return sdp.split('\r\n').filter(function (line) {
         return line.length > 0;
@@ -13295,7 +13290,7 @@ exports.grouping = function (lines) {
     return parsed;
 };
 
-},{}],96:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 var parsers = require('./parsers');
 var idCounter = Math.random();
 
@@ -13452,7 +13447,7 @@ exports.toCandidateJSON = function (line) {
     return candidate;
 };
 
-},{"./parsers":95}],97:[function(require,module,exports){
+},{"./parsers":96}],98:[function(require,module,exports){
 var senders = {
     'initiator': 'sendonly',
     'responder': 'recvonly',
@@ -13620,7 +13615,1884 @@ exports.toCandidateSDP = function (candidate) {
     return 'a=candidate:' + sdp.join(' ');
 };
 
-},{}],98:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
+// created by @HenrikJoreteg
+var prefix;
+var isChrome = false;
+var isFirefox = false;
+var ua = navigator.userAgent.toLowerCase();
+
+// basic sniffing
+if (ua.indexOf('firefox') !== -1) {
+    prefix = 'moz';
+    isFirefox = true;
+} else if (ua.indexOf('chrome') !== -1) {
+    prefix = 'webkit';
+    isChrome = true;
+}
+
+var PC = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+var IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
+var SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
+var MediaStream = window.webkitMediaStream || window.MediaStream;
+var screenSharing = navigator.userAgent.match('Chrome') && parseInt(navigator.userAgent.match(/Chrome\/(.*) /)[1], 10) >= 26;
+var AudioContext = window.webkitAudioContext || window.AudioContext;
+
+
+// export support flags and constructors.prototype && PC
+module.exports = {
+    support: !!PC,
+    dataChannel: isChrome || isFirefox || (PC.prototype && PC.prototype.createDataChannel),
+    prefix: prefix,
+    webAudio: !!(AudioContext && AudioContext.prototype.createMediaStreamSource),
+    mediaStream: !!(MediaStream && MediaStream.prototype.removeTrack),
+    screenSharing: !!screenSharing,
+    AudioContext: AudioContext,
+    PeerConnection: PC,
+    SessionDescription: SessionDescription,
+    IceCandidate: IceCandidate
+};
+
+},{}],100:[function(require,module,exports){
+"use strict";
+
+var _ = require('underscore');
+var core = require('./lib/core');
+var helpers = require('./lib/helpers');
+var types = require('./lib/types');
+
+module.exports = _.extend({}, core, helpers, types);
+
+},{"./lib/core":101,"./lib/helpers":102,"./lib/types":103,"underscore":121}],101:[function(require,module,exports){
+"use strict";
+
+var _ = require('underscore');
+var parser = new (require('xmlshim').DOMParser)();
+var serializer = new (require('xmlshim').XMLSerializer)();
+
+var helpers = require('./helpers');
+var types = require('./types');
+var find = helpers.find;
+
+var LOOKUP = {};
+var LOOKUP_EXT = {};
+var TOP_LEVEL_LOOKUP = {};
+
+
+function topLevel(JXT) {
+    var name = JXT.prototype._NS + '|' + JXT.prototype._EL;
+    LOOKUP[name] = JXT;
+    TOP_LEVEL_LOOKUP[name] = JXT;
+}
+
+function toString(xml) {
+    return serializer.serializeToString(xml);
+}
+
+function toJSON(jxt) {
+    var prop;
+    var result = {};
+    var exclude = {
+        constructor: true,
+        _EL: true,
+        _NS: true,
+        _extensions: true,
+        _name: true,
+        parent: true,
+        prototype: true,
+        toJSON: true,
+        toString: true,
+        xml: true
+    };
+
+    for (prop in jxt._extensions) {
+        if (jxt._extensions[prop].toJSON && prop[0] !== '_') {
+            result[prop] = jxt._extensions[prop].toJSON();
+        }
+    }
+
+    for (prop in jxt) {
+        if (!exclude[prop] && !((LOOKUP_EXT[jxt._NS + '|' + jxt._EL] || {})[prop]) && !jxt._extensions[prop] && prop[0] !== '_') {
+            var val = jxt[prop];
+            if (typeof val == 'function') continue;
+            var type = Object.prototype.toString.call(val);
+            if (type.indexOf('Object') >= 0) {
+                if (Object.keys(val).length > 0) {
+                    result[prop] = val;
+                }
+            } else if (type.indexOf('Array') >= 0) {
+                if (val.length > 0) {
+                    result[prop] = val;
+                }
+            } else if (!!val) {
+                result[prop] = val;
+            }
+        }
+    }
+
+    return result;
+}
+
+
+exports.build = function (xml) {
+    var JXT = TOP_LEVEL_LOOKUP[xml.namespaceURI + '|' + xml.localName];
+    if (JXT) {
+        return new JXT(null, xml);
+    }
+};
+
+exports.extend = function (ParentJXT, ChildJXT, multiName) {
+    var parentName = ParentJXT.prototype._NS + '|' + ParentJXT.prototype._EL;
+    var name = ChildJXT.prototype._name;
+    var qName = ChildJXT.prototype._NS + '|' + ChildJXT.prototype._EL;
+
+    LOOKUP[qName] = ChildJXT;
+    if (!LOOKUP_EXT[qName]) {
+        LOOKUP_EXT[qName] = {};
+    }
+    if (!LOOKUP_EXT[parentName]) {
+        LOOKUP_EXT[parentName] = {};
+    }
+    LOOKUP_EXT[parentName][name] = ChildJXT;
+
+    exports.add(ParentJXT, name, types.extension(ChildJXT));
+    if (multiName) {
+        exports.add(ParentJXT, multiName, types.multiExtension(ChildJXT));
+    }
+};
+
+exports.add = function (ParentJXT, fieldName, field) {
+    field.enumerable = true;
+    Object.defineProperty(ParentJXT.prototype, fieldName, field);
+};
+
+exports.define = function (opts) {
+    var StanzaConstructor = function (data, xml, parent) {
+        var self = this;
+
+        var parentNode = (xml || {}).parentNode || (parent || {}).xml;
+        var parentNS = (parentNode || {}).namespaceURI;
+
+        self.xml = xml || helpers.createElement(self._NS, self._EL, parentNS);
+
+        self._extensions = {};
+
+        _.each(self.xml.childNodes, function (child) {
+            var childName = child.namespaceURI + '|' + child.localName;
+            var ChildJXT = LOOKUP[childName];
+            if (ChildJXT !== undefined) {
+                var name = ChildJXT.prototype._name;
+                self._extensions[name] = new ChildJXT(null, child);
+                self._extensions[name].parent = self;
+            }
+        });
+
+        _.extend(self, data);
+
+        if (opts.init) {
+            opts.init(data);
+        }
+
+        return self;
+    };
+
+    StanzaConstructor.prototype = {
+        constructor: {
+            value: StanzaConstructor
+        },
+        _name: opts.name,
+        _eventname: opts.eventName,
+        _NS: opts.namespace,
+        _EL: opts.element,
+        toString: function () { return toString(this.xml); },
+        toJSON: function () { return toJSON(this); }
+    };
+
+    var fieldNames = Object.keys(opts.fields || {});
+    fieldNames.forEach(function (fieldName) {
+        exports.add(StanzaConstructor, fieldName, opts.fields[fieldName]);
+    });
+
+    if (opts.topLevel) {
+        topLevel(StanzaConstructor);
+    }
+
+    return StanzaConstructor;
+};
+
+},{"./helpers":102,"./types":103,"underscore":121,"xmlshim":106}],102:[function(require,module,exports){
+"use strict";
+
+var _ = require('underscore');
+var dom = require('xmlshim');
+
+var XML_NS = exports.XML_NS = 'http://www.w3.org/XML/1998/namespace';
+
+var serializer = new dom.XMLSerializer();
+var parser = new dom.DOMParser();
+var doc = dom.implementation.createDocument('', '', null);
+
+exports.parse = function (JXT, str) {
+    var nodes = parser.parseFromString(str, 'application/xml').childNodes;
+    for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i].nodeType === 1) {
+            return new JXT({}, nodes[i]);
+        }
+    }
+
+    throw new Error('Could not parse: ' + str);
+};
+
+exports.getParser = function () {
+    return parser;
+};
+
+exports.getSerializer = function () {
+    return serializer;
+};
+
+exports.createElement = function (NS, name, parentNS) {
+    var el = doc.createElementNS(NS, name);
+    if (!parentNS || parentNS !== NS) {
+        exports.setAttribute(el, 'xmlns', NS);
+    }
+    return el;
+};
+
+var find = exports.find = function (xml, NS, selector) {
+    var children = xml.getElementsByTagName(selector);
+    return _.filter(children, function (child) {
+        return child.namespaceURI === NS && child.parentNode == xml;
+    });
+};
+
+exports.findOrCreate = function (xml, NS, selector) {
+    var existing = exports.find(xml, NS, selector);
+    if (existing.length) {
+        return existing[0];
+    } else {
+        var created = exports.createElement(NS, selector, xml.namespaceURI);
+        xml.appendChild(created);
+        return created;
+    }
+};
+
+exports.getAttribute = function (xml, attr, defaultVal) {
+    return xml.getAttribute(attr) || defaultVal || '';
+};
+
+exports.setAttribute = function (xml, attr, value, force) {
+    if (value || force) {
+        xml.setAttribute(attr, value);
+    } else {
+        xml.removeAttribute(attr);
+    }
+};
+
+exports.getBoolAttribute = function (xml, attr, defaultVal) {
+    var val = xml.getAttribute(attr) || defaultVal || '';
+    return val === 'true' || val === '1';
+};
+
+exports.setBoolAttribute = function (xml, attr, value) {
+    if (value) {
+        xml.setAttribute(attr, '1');
+    } else {
+        xml.removeAttribute(attr);
+    }
+};
+
+exports.getSubAttribute = function (xml, NS, sub, attr, defaultVal) {
+    var subs = find(xml, NS, sub);
+    if (!subs) {
+        return '';
+    }
+
+    for (var i = 0; i < subs.length; i++) {
+        return subs[i].getAttribute(attr) || defaultVal || '';
+    }
+
+    return '';
+};
+
+exports.setSubAttribute = function (xml, NS, sub, attr, value) {
+    var subs = find(xml, NS, sub);
+    if (!subs.length) {
+        if (value) {
+            sub = exports.createElement(NS, sub, xml.namespaceURI);
+            sub.setAttribute(attr, value);
+            xml.appendChild(sub);
+        }
+    } else {
+        for (var i = 0; i < subs.length; i++) {
+            if (value) {
+                subs[i].setAttribute(attr, value);
+                return;
+            } else {
+                subs[i].removeAttribute(attr);
+            }
+        }
+    }
+};
+
+exports.getBoolSubAttribute = function (xml, NS, sub, attr, defaultVal) {
+    var val = xml.getSubAttribute(NS, sub, attr) || defaultVal || '';
+    return val === 'true' || val === '1';
+};
+
+exports.setBoolSubAttribute = function (xml, NS, sub, attr, value) {
+    value = value ? '1' : '';
+    exports.setSubAttribute(xml, NS, sub, attr, value);
+};
+
+exports.getText = function (xml) {
+    return xml.textContent;
+};
+
+exports.setText = function (xml, value) {
+    xml.textContent = value;
+};
+
+exports.getSubText = function (xml, NS, element, defaultVal) {
+    var subs = find(xml, NS, element);
+
+    defaultVal = defaultVal || '';
+
+    if (!subs.length) {
+        return defaultVal;
+    }
+
+    return subs[0].textContent || defaultVal;
+};
+
+exports.setSubText = function (xml, NS, element, value) {
+    var subs = find(xml, NS, element);
+    if (!subs.length) {
+        if (value) {
+            var sub = exports.createElement(NS, element, xml.namespaceURI);
+            sub.textContent = value;
+            xml.appendChild(sub);
+        }
+    } else {
+        for (var i = 0; i < subs.length; i++) {
+            if (value) {
+                subs[i].textContent = value;
+                return;
+            } else {
+                xml.removeChild(subs[i]);
+            }
+        }
+    }
+};
+
+exports.getMultiSubText = function (xml, NS, element, extractor) {
+    var subs = find(xml, NS, element);
+    var results = [];
+
+    extractor = extractor || function (sub) {
+        return sub.textContent || '';
+    };
+
+    for (var i = 0; i < subs.length; i++) {
+        results.push(extractor(subs[i]));
+    }
+
+    return results;
+};
+
+exports.setMultiSubText = function (xml, NS, element, value, builder) {
+    var subs = find(xml, NS, element);
+    var values = [];
+    builder = builder || function (value) {
+        var sub = exports.createElement(NS, element, xml.namespaceURI);
+        sub.textContent = value;
+        xml.appendChild(sub);
+    };
+    if (typeof value === 'string') {
+        values = (value || '').split('\n');
+    } else {
+        values = value;
+    }
+    _.forEach(subs, function (sub) {
+        xml.removeChild(sub);
+    });
+    _.forEach(values, function (val) {
+        if (val) {
+            builder(val);
+        }
+    });
+};
+
+exports.getSubLangText = function (xml, NS, element, defaultLang) {
+    var subs = find(xml, NS, element);
+    if (!subs.length) {
+        return {};
+    }
+
+    var lang, sub;
+    var results = {};
+    var langs = [];
+
+    for (var i = 0; i < subs.length; i++) {
+        sub = subs[i];
+        lang = sub.getAttributeNS(XML_NS, 'lang') || defaultLang;
+        langs.push(lang);
+        results[lang] = sub.textContent || '';
+    }
+
+    return results;
+};
+
+exports.setSubLangText = function (xml, NS, element, value, defaultLang) {
+    var sub, lang;
+    var subs = find(xml, NS, element);
+    if (subs.length) {
+        for (var i = 0; i < subs.length; i++) {
+            xml.removeChild(subs[i]);
+        }
+    }
+
+    if (typeof value === 'string') {
+        sub = exports.createElement(NS, element, xml.namespaceURI);
+        sub.textContent = value;
+        xml.appendChild(sub);
+    } else if (typeof value === 'object') {
+        for (lang in value) {
+            if (value.hasOwnProperty(lang)) {
+                sub = exports.createElement(NS, element, xml.namespaceURI);
+                if (lang !== defaultLang) {
+                    sub.setAttributeNS(XML_NS, 'lang', lang);
+                }
+                sub.textContent = value[lang];
+                xml.appendChild(sub);
+            }
+        }
+    }
+};
+
+exports.getBoolSub = function (xml, NS, element) {
+    var subs = find(xml, NS, element);
+    return !!subs.length;
+};
+
+exports.setBoolSub = function (xml, NS, element, value) {
+    var subs = find(xml, NS, element);
+    if (!subs.length) {
+        if (value) {
+            var sub = exports.createElement(NS, element, xml.namespaceURI);
+            xml.appendChild(sub);
+        }
+    } else {
+        for (var i = 0; i < subs.length; i++) {
+            if (value) {
+                return;
+            } else {
+                xml.removeChild(subs[i]);
+            }
+        }
+    }
+};
+
+},{"underscore":121,"xmlshim":106}],103:[function(require,module,exports){
+"use strict";
+
+var _ = require('underscore');
+var fromB64 = require('atob');
+var toB64 = require('btoa');
+
+var helpers = require('./helpers');
+var find = helpers.find;
+
+
+var field = exports.field = function (getter, setter) {
+    return function () {
+        var args = _.toArray(arguments);
+        return {
+            get: function () {
+                return getter.apply(null, [this.xml].concat(args));
+            },
+            set: function (value) {
+                setter.apply(null, ([this.xml].concat(args)).concat([value]));
+            }
+        };
+    };
+};
+
+exports.field = field;
+exports.boolAttribute = field(helpers.getBoolAttribute,
+                              helpers.setBoolAttribute);
+exports.subAttribute = field(helpers.getSubAttribute,
+                             helpers.setSubAttribute);
+exports.boolSubAttribute = field(helpers.getSubBoolAttribute,
+                                 helpers.setSubBoolAttribute);
+exports.text = field(helpers.getText,
+                     helpers.setText);
+exports.subText = field(helpers.getSubText,
+                        helpers.setSubText);
+exports.multiSubText = field(helpers.getMultiSubText,
+                             helpers.setMultiSubText);
+exports.subLangText = field(helpers.getSubLangText,
+                            helpers.setSubLangText);
+exports.boolSub = field(helpers.getBoolSub,
+                        helpers.setBoolSub);
+
+exports.langAttribute = field(
+    function (xml) {
+        return xml.getAttributeNS(helpers.XML_NS, 'lang') || '';
+    },
+    function (xml, value) {
+        xml.setAttributeNS(helpers.XML_NS, 'lang', value);
+    }
+);
+
+exports.b64Text = field(
+    function (xml) {
+        if (xml.textContent && xml.textContent != '=') {
+            return fromB64(xml.textContent);
+        }
+        return '';
+    },
+    function (xml, value) {
+        xml.textContent = toB64(value) || '=';
+    }
+);
+
+exports.dateAttribute = function (attr, now) {
+    return {
+        get: function () {
+            var data = helpers.getAttribute(this.xml, attr);
+            if (data) return new Date(data);
+            if (now) return new Date(Date.now());
+        },
+        set: function (value) {
+            if (!value) return;
+            if (typeof value != 'string') {
+                value = value.toISOString();
+            }
+            helpers.setAttribute(this.xml, attr, value);
+        }
+    };
+};
+
+exports.dateSub = function (NS, sub, now) {
+    return {
+        get: function () {
+            var data = helpers.getSubText(this.xml, NS, sub);
+            if (data) return new Date(data);
+            if (now) return new Date(Date.now());
+        },
+        set: function (value) {
+            if (!value) return;
+            if (typeof value != 'string') {
+                value = value.toISOString();
+            }
+            helpers.setSubText(this.xml, NS, sub, value);
+        }
+    };
+};
+
+exports.dateSubAttribute = function (NS, sub, attr, now) {
+    return {
+        get: function () {
+            var data = helpers.getSubAttribute(this.xml, NS, sub, attr);
+            if (data) return new Date(data);
+            if (now) return new Date(Date.now());
+        },
+        set: function (value) {
+            if (!value) return;
+            if (typeof value != 'string') {
+                value = value.toISOString();
+            }
+            helpers.setSubAttribute(this.xml, NS, sub, attr, value);
+        }
+    };
+};
+
+exports.numberAttribute = field(
+    function (xml, attr)  {
+        return parseInt(helpers.getAttribute(xml, attr, '0'), 10);
+    },
+    function (xml, attr, value) {
+        helpers.setAttribute(xml, attr, value.toString());
+    }
+);
+
+exports.numberSub = field(
+    function (xml, NS, sub) {
+        return parseInt(helpers.getSubText(xml, NS, sub, '0'), 10);
+    },
+    function (xml, NS, sub, value) {
+        helpers.setSubText(xml, NS, sub, value.toString());
+    }
+);
+
+exports.attribute = function (name, defaultVal) {
+    return {
+        get: function () {
+            return helpers.getAttribute(this.xml, name, defaultVal);
+        },
+        set: function (value) {
+            helpers.setAttribute(this.xml, name, value);
+        }
+    };
+};
+
+exports.extension = function (ChildJXT) {
+    return {
+        get: function () {
+            var self = this;
+            var name = ChildJXT.prototype._name;
+            if (!this._extensions[name]) {
+                var existing = find(this.xml, ChildJXT.prototype._NS, ChildJXT.prototype._EL);
+                if (!existing.length) {
+                    this._extensions[name] = new ChildJXT({}, null, self);
+                    this.xml.appendChild(this._extensions[name].xml);
+                } else {
+                    this._extensions[name] = new ChildJXT(null, existing[0], self);
+                }
+                this._extensions[name].parent = this;
+            }
+            return this._extensions[name];
+        },
+        set: function (value) {
+            var child = this[ChildJXT.prototype._name];
+            _.extend(child, value);
+        }
+    };
+};
+
+exports.multiExtension = function (ChildJXT) {
+    return {
+        get: function () {
+            var self = this;
+            var data = find(this.xml, ChildJXT.prototype._NS, ChildJXT.prototype._EL);
+            var results = [];
+
+            _.forEach(data, function (xml) {
+                results.push(new ChildJXT({}, xml, self).toJSON());
+            });
+            return results;
+        },
+        set: function (value) {
+            var self = this;
+            var existing = find(this.xml, ChildJXT.prototype._NS, ChildJXT.prototype._EL);
+
+            _.forEach(existing, function (item) {
+                self.xml.removeChild(item);
+            });
+
+            _.forEach(value, function (data) {
+                var content = new ChildJXT(data, null, self);
+                self.xml.appendChild(content.xml);
+            });
+        }
+    };
+};
+
+},{"./helpers":102,"atob":104,"btoa":105,"underscore":121}],104:[function(require,module,exports){
+var Buffer=require("__browserify_Buffer").Buffer;(function () {
+  "use strict";
+
+  function atob(str) {
+    return new Buffer(str, 'base64').toString('binary');
+  }
+
+  module.exports = atob;
+}());
+
+},{"__browserify_Buffer":72}],105:[function(require,module,exports){
+var Buffer=require("__browserify_Buffer").Buffer;(function () {
+  "use strict";
+
+  function btoa(str) {
+    var buffer
+      ;
+
+    if (str instanceof Buffer) {
+      buffer = str;
+    } else {
+      buffer = new Buffer(str.toString(), 'binary');
+    }
+
+    return buffer.toString('base64');
+  }
+
+  module.exports = btoa;
+}());
+
+},{"__browserify_Buffer":72}],106:[function(require,module,exports){
+exports.XMLSerializer = XMLSerializer;
+exports.DOMParser = DOMParser;
+exports.implementation = document.implementation;
+
+},{}],107:[function(require,module,exports){
+var Buffer=require("__browserify_Buffer").Buffer;//     uuid.js
+//
+//     (c) 2010-2012 Robert Kieffer
+//     MIT License
+//     https://github.com/broofa/node-uuid
+(function() {
+  var _global = this;
+
+  // Unique ID creation requires a high quality random # generator.  We feature
+  // detect to determine the best RNG source, normalizing to a function that
+  // returns 128-bits of randomness, since that's what's usually required
+  var _rng;
+
+  // Node.js crypto-based RNG - http://nodejs.org/docs/v0.6.2/api/crypto.html
+  //
+  // Moderately fast, high quality
+  if (typeof(require) == 'function') {
+    try {
+      var _rb = require('crypto').randomBytes;
+      _rng = _rb && function() {return _rb(16);};
+    } catch(e) {}
+  }
+
+  if (!_rng && _global.crypto && crypto.getRandomValues) {
+    // WHATWG crypto-based RNG - http://wiki.whatwg.org/wiki/Crypto
+    //
+    // Moderately fast, high quality
+    var _rnds8 = new Uint8Array(16);
+    _rng = function whatwgRNG() {
+      crypto.getRandomValues(_rnds8);
+      return _rnds8;
+    };
+  }
+
+  if (!_rng) {
+    // Math.random()-based (RNG)
+    //
+    // If all else fails, use Math.random().  It's fast, but is of unspecified
+    // quality.
+    var  _rnds = new Array(16);
+    _rng = function() {
+      for (var i = 0, r; i < 16; i++) {
+        if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
+        _rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
+      }
+
+      return _rnds;
+    };
+  }
+
+  // Buffer class to use
+  var BufferClass = typeof(Buffer) == 'function' ? Buffer : Array;
+
+  // Maps for number <-> hex string conversion
+  var _byteToHex = [];
+  var _hexToByte = {};
+  for (var i = 0; i < 256; i++) {
+    _byteToHex[i] = (i + 0x100).toString(16).substr(1);
+    _hexToByte[_byteToHex[i]] = i;
+  }
+
+  // **`parse()` - Parse a UUID into it's component bytes**
+  function parse(s, buf, offset) {
+    var i = (buf && offset) || 0, ii = 0;
+
+    buf = buf || [];
+    s.toLowerCase().replace(/[0-9a-f]{2}/g, function(oct) {
+      if (ii < 16) { // Don't overflow!
+        buf[i + ii++] = _hexToByte[oct];
+      }
+    });
+
+    // Zero out remaining bytes if string was short
+    while (ii < 16) {
+      buf[i + ii++] = 0;
+    }
+
+    return buf;
+  }
+
+  // **`unparse()` - Convert UUID byte array (ala parse()) into a string**
+  function unparse(buf, offset) {
+    var i = offset || 0, bth = _byteToHex;
+    return  bth[buf[i++]] + bth[buf[i++]] +
+            bth[buf[i++]] + bth[buf[i++]] + '-' +
+            bth[buf[i++]] + bth[buf[i++]] + '-' +
+            bth[buf[i++]] + bth[buf[i++]] + '-' +
+            bth[buf[i++]] + bth[buf[i++]] + '-' +
+            bth[buf[i++]] + bth[buf[i++]] +
+            bth[buf[i++]] + bth[buf[i++]] +
+            bth[buf[i++]] + bth[buf[i++]];
+  }
+
+  // **`v1()` - Generate time-based UUID**
+  //
+  // Inspired by https://github.com/LiosK/UUID.js
+  // and http://docs.python.org/library/uuid.html
+
+  // random #'s we need to init node and clockseq
+  var _seedBytes = _rng();
+
+  // Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
+  var _nodeId = [
+    _seedBytes[0] | 0x01,
+    _seedBytes[1], _seedBytes[2], _seedBytes[3], _seedBytes[4], _seedBytes[5]
+  ];
+
+  // Per 4.2.2, randomize (14 bit) clockseq
+  var _clockseq = (_seedBytes[6] << 8 | _seedBytes[7]) & 0x3fff;
+
+  // Previous uuid creation time
+  var _lastMSecs = 0, _lastNSecs = 0;
+
+  // See https://github.com/broofa/node-uuid for API details
+  function v1(options, buf, offset) {
+    var i = buf && offset || 0;
+    var b = buf || [];
+
+    options = options || {};
+
+    var clockseq = options.clockseq != null ? options.clockseq : _clockseq;
+
+    // UUID timestamps are 100 nano-second units since the Gregorian epoch,
+    // (1582-10-15 00:00).  JSNumbers aren't precise enough for this, so
+    // time is handled internally as 'msecs' (integer milliseconds) and 'nsecs'
+    // (100-nanoseconds offset from msecs) since unix epoch, 1970-01-01 00:00.
+    var msecs = options.msecs != null ? options.msecs : new Date().getTime();
+
+    // Per 4.2.1.2, use count of uuid's generated during the current clock
+    // cycle to simulate higher resolution clock
+    var nsecs = options.nsecs != null ? options.nsecs : _lastNSecs + 1;
+
+    // Time since last uuid creation (in msecs)
+    var dt = (msecs - _lastMSecs) + (nsecs - _lastNSecs)/10000;
+
+    // Per 4.2.1.2, Bump clockseq on clock regression
+    if (dt < 0 && options.clockseq == null) {
+      clockseq = clockseq + 1 & 0x3fff;
+    }
+
+    // Reset nsecs if clock regresses (new clockseq) or we've moved onto a new
+    // time interval
+    if ((dt < 0 || msecs > _lastMSecs) && options.nsecs == null) {
+      nsecs = 0;
+    }
+
+    // Per 4.2.1.2 Throw error if too many uuids are requested
+    if (nsecs >= 10000) {
+      throw new Error('uuid.v1(): Can\'t create more than 10M uuids/sec');
+    }
+
+    _lastMSecs = msecs;
+    _lastNSecs = nsecs;
+    _clockseq = clockseq;
+
+    // Per 4.1.4 - Convert from unix epoch to Gregorian epoch
+    msecs += 12219292800000;
+
+    // `time_low`
+    var tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
+    b[i++] = tl >>> 24 & 0xff;
+    b[i++] = tl >>> 16 & 0xff;
+    b[i++] = tl >>> 8 & 0xff;
+    b[i++] = tl & 0xff;
+
+    // `time_mid`
+    var tmh = (msecs / 0x100000000 * 10000) & 0xfffffff;
+    b[i++] = tmh >>> 8 & 0xff;
+    b[i++] = tmh & 0xff;
+
+    // `time_high_and_version`
+    b[i++] = tmh >>> 24 & 0xf | 0x10; // include version
+    b[i++] = tmh >>> 16 & 0xff;
+
+    // `clock_seq_hi_and_reserved` (Per 4.2.2 - include variant)
+    b[i++] = clockseq >>> 8 | 0x80;
+
+    // `clock_seq_low`
+    b[i++] = clockseq & 0xff;
+
+    // `node`
+    var node = options.node || _nodeId;
+    for (var n = 0; n < 6; n++) {
+      b[i + n] = node[n];
+    }
+
+    return buf ? buf : unparse(b);
+  }
+
+  // **`v4()` - Generate random UUID**
+
+  // See https://github.com/broofa/node-uuid for API details
+  function v4(options, buf, offset) {
+    // Deprecated - 'format' argument, as supported in v1.2
+    var i = buf && offset || 0;
+
+    if (typeof(options) == 'string') {
+      buf = options == 'binary' ? new BufferClass(16) : null;
+      options = null;
+    }
+    options = options || {};
+
+    var rnds = options.random || (options.rng || _rng)();
+
+    // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+    rnds[6] = (rnds[6] & 0x0f) | 0x40;
+    rnds[8] = (rnds[8] & 0x3f) | 0x80;
+
+    // Copy bytes to buffer, if provided
+    if (buf) {
+      for (var ii = 0; ii < 16; ii++) {
+        buf[i + ii] = rnds[ii];
+      }
+    }
+
+    return buf || unparse(rnds);
+  }
+
+  // Export public API
+  var uuid = v4;
+  uuid.v1 = v1;
+  uuid.v4 = v4;
+  uuid.parse = parse;
+  uuid.unparse = unparse;
+  uuid.BufferClass = BufferClass;
+
+  if (_global.define && define.amd) {
+    // Publish as AMD module
+    define(function() {return uuid;});
+  } else if (typeof(module) != 'undefined' && module.exports) {
+    // Publish as node.js module
+    module.exports = uuid;
+  } else {
+    // Publish as global (in browsers)
+    var _previousRoot = _global.uuid;
+
+    // **`noConflict()` - (browser only) to reset global 'uuid' var**
+    uuid.noConflict = function() {
+      _global.uuid = _previousRoot;
+      return uuid;
+    };
+
+    _global.uuid = uuid;
+  }
+}());
+
+},{"__browserify_Buffer":72,"crypto":74}],108:[function(require,module,exports){
+/**
+* Written by Nathan Fritz. Copyright © 2011 by &yet, LLC. Released under the
+* terms of the MIT License:
+* 
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/ 
+
+var EventEmitter = require("events").EventEmitter;
+
+/**
+ * You're up a creek; here's your Paddle. In Javascript, we rely on callback
+ * execution, often times without knowing for sure that it will happen. With
+ * Paddle, you can know. Paddle is a simple way of noting that your code should
+ * reach one of several code-execution points within a timelimit. If the time-
+ * limit is exceeded, an error callback is executed.
+ *
+ * @param freq: number of seconds between timeout checks
+ */
+function Paddle(freq) {
+    EventEmitter.call(this);
+    this.registry = new Object();
+    this.insureids = 0;
+    if(freq === undefined) {
+        this.freq = 5;
+    } else {
+        this.freq = freq;
+    }
+    this.run = false;
+    this.start();
+}
+
+//extend Paddle with EventEmitter
+Paddle.super_ = EventEmitter;
+Paddle.prototype = Object.create(EventEmitter.prototype, {
+    constructor: {
+        value: Paddle,
+        enumerable: false
+    }
+});
+
+/*
+ * Register a new check. If the check times out, error_callback will be called
+ * with the optionally specified args. You may specify an id, but one will be
+ * created otherwise.
+ *
+ * @param error_callback: function called when timeout is reached without check-in
+ * @param timeout: seconds to wait for check-in
+ * @param args: Array of arguments to call error_callback with
+ * @param id: optional -- insure will generate one for you
+ *
+ * @return Object: returns the insurance obj you just created
+ * {paddle, error_callback, args, id, timeout, done, check_in}
+ *
+ */
+function insure(error_callback, timeout, args, id) {
+    if(id === undefined) {
+        ++this.insureids;
+        this.insureids %= 65000;
+        id = this.insureids;
+    }
+    expiretime = Date.now() + timeout * 1000;
+    var that = this;
+    var insurance = {
+        paddle: that,
+        error_callback: error_callback,
+        args: args,
+        id: id,
+        timeout: expiretime,
+        done: false,
+        check_in: function() {
+            return this.paddle.check_in(this.id);
+        }
+    }
+    //this.registry[id] = [expiretime, error_callback, args];
+    this.registry[id] = insurance;
+    return insurance;
+}
+
+/*
+ * Check in with an id or paddle to confirm that your end-execution point occurred. This
+ * will cancel the timeout error, and delete the entry for this id.
+ *
+ * @param id or insurance: id from insure or insure obj
+ */
+function check_in(id) {
+    if(id.id !== undefined) {
+        //perhaps this is an insure object
+        id = id.id;
+    }
+    if(id in this.registry) {
+        this.emit('check_in', this.registry[id]);
+        this.registry[id].done = true;
+        delete this.registry[id];
+        return true;
+    }
+    return false;
+}
+
+/*
+ * Executed internally to occasionally make sure all insurance ids are within
+ * their timeouts.
+ */
+function checkEnsures() {
+    var now = Date.now();
+    for(var id in this.registry) {
+        if(now > this.registry[id].timeout) {
+            this.registry[id].error_callback.apply(this, this.registry[id].args);
+            this.emit('timeout', this.registry[id]);
+            delete this.registry[id];
+        }
+    }
+    if(this.run) {
+        setTimeout(function() { this.checkEnsures() }.bind(this), this.freq * 1000);
+    }
+}
+
+/*
+ * Start checking paddle timeouts. Optionally reset frequency.
+ *
+ * @return bool: true if running, false if it was already running.
+ */
+function start(freq) {
+    if(freq !== undefined) {
+        this.freq = freq;
+    }
+    if(!this.run) {
+        this.run = true;
+        setTimeout(function() { this.checkEnsures() }.bind(this), this.freq * 1000);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/*
+ * Stop checking Paddle timeouts.
+ * @return bool: true if stopped, false if it was already stopped.
+ */
+function stop() {
+    if(this.run) {
+        this.run = false;
+        return true;
+    } else {
+        return true;
+    }
+}
+
+Paddle.prototype.insure = insure;
+Paddle.prototype.check_in = check_in;
+Paddle.prototype.checkEnsures = checkEnsures;
+Paddle.prototype.start = start;
+Paddle.prototype.stop = stop;
+
+exports.Paddle = Paddle;
+
+},{"events":67}],109:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports, module);
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports', 'module'], factory);
+  }
+}(this, function(exports, module) {
+
+  /**
+   * ANONYMOUS `Mechanism` constructor.
+   *
+   * This class implements the ANONYMOUS SASL mechanism.
+   *
+   * The ANONYMOUS SASL mechanism provides support for permitting anonymous
+   * access to various services
+   *
+   * References:
+   *  - [RFC 4505](http://tools.ietf.org/html/rfc4505)
+   *
+   * @api public
+   */
+  function Mechanism() {
+  }
+  
+  Mechanism.prototype.name = 'ANONYMOUS';
+  Mechanism.prototype.clientFirst = true;
+  
+  /**
+   * Encode a response using optional trace information.
+   *
+   * Options:
+   *  - `trace`  trace information (optional)
+   *
+   * @param {Object} cred
+   * @api public
+   */
+  Mechanism.prototype.response = function(cred) {
+    return cred.trace || '';
+  };
+  
+  /**
+   * Decode a challenge issued by the server.
+   *
+   * @param {String} chal
+   * @api public
+   */
+  Mechanism.prototype.challenge = function(chal) {
+  };
+
+  exports = module.exports = Mechanism;
+  
+}));
+
+},{}],110:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports,
+            module,
+            require('./lib/mechanism'));
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports',
+            'module',
+            './lib/mechanism'], factory);
+  }
+}(this, function(exports, module, Mechanism) {
+
+  exports = module.exports = Mechanism;
+  exports.Mechanism = Mechanism;
+  
+}));
+
+},{"./lib/mechanism":109}],111:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports, module, require('crypto'));
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports', 'module', 'crypto'], factory);
+  }
+}(this, function(exports, module, crypto) {
+  
+  /**
+   * DIGEST-MD5 `Mechanism` constructor.
+   *
+   * This class implements the DIGEST-MD5 SASL mechanism.
+   *
+   * References:
+   *  - [RFC 2831](http://tools.ietf.org/html/rfc2831)
+   *
+   * @api public
+   */
+  function Mechanism(options) {
+    options = options || {};
+    this._genNonce = options.genNonce || genNonce(32);
+  }
+  
+  Mechanism.prototype.name = 'DIGEST-MD5';
+  Mechanism.prototype.clientFirst = false;
+  
+  /**
+   * Encode a response using given credential.
+   *
+   * Options:
+   *  - `username`
+   *  - `password`
+   *  - `host`
+   *  - `serviceType`
+   *  - `authzid`   authorization identity (optional)
+   *
+   * @param {Object} cred
+   * @api public
+   */
+  Mechanism.prototype.response = function(cred) {
+    // TODO: Implement support for subsequent authentication.  This requires
+    //       that the client be able to store username, realm, nonce,
+    //       nonce-count, cnonce, and qop values from prior authentication.
+    //       The impact of this requirement needs to be investigated.
+    //
+    //       See RFC 2831 (Section 2.2) for further details.
+    
+    // TODO: Implement support for auth-int and auth-conf, as defined in RFC
+    //       2831 sections 2.3 Integrity Protection and 2.4 Confidentiality
+    //       Protection, respectively.
+    //
+    //       Note that supporting this functionality has implications
+    //       regarding the negotiation of security layers via SASL.  Due to
+    //       the fact that TLS has largely superseded this functionality,
+    //       implementing it is a low priority.
+  
+    var uri = cred.serviceType + '/' + cred.host;
+    if (cred.serviceName && cred.host !== cred.serviceName) {
+      uri += '/' + serviceName;
+    }
+    var realm = cred.realm || this._realm || ''
+      , cnonce = this._genNonce()
+      , nc = '00000001'
+      , qop = 'auth'
+      , ha1
+      , ha2
+      , digest;
+  
+    var str = '';
+    str += 'username="' + cred.username + '"';
+    if (realm) { str += ',realm="' + realm + '"'; };
+    str += ',nonce="' + this._nonce + '"';
+    str += ',cnonce="' + cnonce + '"';
+    str += ',nc=' + nc;
+    str += ',qop=' + qop;
+    str += ',digest-uri="' + uri + '"';
+    
+    if (cred.authzid) {
+      ha1 = md5(md5(cred.username + ":" + realm + ":" + cred.password, 'binary') + ":" + this._nonce + ":" + cnonce + ":" + cred.authzid);
+    } else {
+      ha1 = md5(md5(cred.username + ":" + realm + ":" + cred.password, 'binary') + ":" + this._nonce + ":" + cnonce);
+    }
+    
+    if (qop == 'auth') {
+      ha2 = md5('AUTHENTICATE:' + uri);
+    } else if (qop == 'auth-int' || qop == 'auth-conf') {
+      ha2 = md5('AUTHENTICATE:' + uri + ':00000000000000000000000000000000');
+    }
+    
+    digest = md5(ha1 + ":" + this._nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + ha2);
+    str += ',response=' + digest;
+    
+    if (this._charset == 'utf-8') { str += ',charset=utf-8'; }
+    if (cred.authzid) { str += 'authzid="' + cred.authzid + '"'; }
+    
+    return str;
+  };
+  
+  /**
+   * Decode a challenge issued by the server.
+   *
+   * @param {String} chal
+   * @return {Mechanism} for chaining
+   * @api public
+   */
+  Mechanism.prototype.challenge = function(chal) {
+    var dtives = parse(chal);
+    
+    // TODO: Implement support for multiple realm directives, as allowed by the
+    //       DIGEST-MD5 specification.
+    this._realm = dtives['realm'];
+    this._nonce = dtives['nonce'];
+    this._qop = (dtives['qop'] || 'auth').split(',');
+    this._stale = dtives['stale'];
+    this._maxbuf = parseInt(dtives['maxbuf']) || 65536;
+    this._charset = dtives['charset'];
+    this._algo = dtives['algorithm'];
+    this._cipher = dtives['cipher'];
+    if (this._cipher) { this._cipher.split(','); }
+    return this;
+  };
+  
+  
+  /**
+   * Parse challenge.
+   *
+   * @api private
+   */
+  function parse(chal) {
+    var dtives = {};
+    var tokens = chal.split(/,(?=(?:[^"]|"[^"]*")*$)/);
+    for (var i = 0, len = tokens.length; i < len; i++) {
+      var dtiv = /(\w+)=["]?([^"]+)["]?$/.exec(tokens[i]);
+      if (dtiv) {
+        dtives[dtiv[1]] = dtiv[2];
+      }
+    }
+    return dtives;
+  }
+  
+  /**
+   * Return a unique nonce with the given `len`.
+   *
+   *     genNonce(10)();
+   *     // => "FDaS435D2z"
+   *
+   * @param {Number} len
+   * @return {Function}
+   * @api private
+   */
+  function genNonce(len) {
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+      , charlen = chars.length;
+  
+    return function() {
+      var buf = [];
+      for (var i = 0; i < len; ++i) {
+        buf.push(chars[Math.random() * charlen | 0]);
+      }
+      return buf.join('');
+    }
+  }
+  
+  /**
+   * Return md5 hash of the given string and optional encoding,
+   * defaulting to hex.
+   *
+   *     md5('wahoo');
+   *     // => "e493298061761236c96b02ea6aa8a2ad"
+   *
+   * @param {String} str
+   * @param {String} encoding
+   * @return {String}
+   * @api private
+   */
+  function md5(str, encoding){
+    return crypto
+      .createHash('md5')
+      .update(str)
+      .digest(encoding || 'hex');
+  }
+
+
+  exports = module.exports = Mechanism;
+  
+}));
+
+},{"crypto":74}],112:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"./lib/mechanism":111}],113:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports, module);
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports', 'module'], factory);
+  }
+}(this, function(exports, module) {
+
+  /**
+   * EXTERNAL `Mechanism` constructor.
+   *
+   * This class implements the EXTERNAL SASL mechanism.
+   *
+   * The EXTERNAL SASL mechanism provides support for authentication using
+   * credentials established by external means. 
+   *
+   * References:
+   *  - [RFC 4422](http://tools.ietf.org/html/rfc4422)
+   *
+   * @api public
+   */
+  function Mechanism() {
+  }
+  
+  Mechanism.prototype.name = 'EXTERNAL';
+  Mechanism.prototype.clientFirst = true;
+  
+  /**
+   * Encode a response using given credential.
+   *
+   * Options:
+   *  - `authzid`   authorization identity (optional)
+   *
+   * @param {Object} cred
+   * @api public
+   */
+  Mechanism.prototype.response = function(cred) {
+    return cred.authzid || '';
+  };
+  
+  /**
+   * Decode a challenge issued by the server.
+   *
+   * @param {String} chal
+   * @api public
+   */
+  Mechanism.prototype.challenge = function(chal) {
+  };
+
+  exports = module.exports = Mechanism;
+  
+}));
+
+},{}],114:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"./lib/mechanism":113}],115:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports, module);
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports', 'module'], factory);
+  }
+}(this, function(exports, module) {
+
+  /**
+   * PLAIN `Mechanism` constructor.
+   *
+   * This class implements the PLAIN SASL mechanism.
+   *
+   * The PLAIN SASL mechanism provides support for exchanging a clear-text
+   * username and password.  This mechanism should not be used without adequate
+   * security provided by an underlying transport layer. 
+   *
+   * References:
+   *  - [RFC 4616](http://tools.ietf.org/html/rfc4616)
+   *
+   * @api public
+   */
+  function Mechanism() {
+  }
+  
+  Mechanism.prototype.name = 'PLAIN';
+  Mechanism.prototype.clientFirst = true;
+  
+  /**
+   * Encode a response using given credential.
+   *
+   * Options:
+   *  - `username`
+   *  - `password`
+   *  - `authzid`   authorization identity (optional)
+   *
+   * @param {Object} cred
+   * @api public
+   */
+  Mechanism.prototype.response = function(cred) {
+    var str = '';
+    str += cred.authzid || '';
+    str += '\0';
+    str += cred.username;
+    str += '\0';
+    str += cred.password;
+    return str;
+  };
+  
+  /**
+   * Decode a challenge issued by the server.
+   *
+   * @param {String} chal
+   * @return {Mechanism} for chaining
+   * @api public
+   */
+  Mechanism.prototype.challenge = function(chal) {
+    return this;
+  };
+
+  exports = module.exports = Mechanism;
+  
+}));
+
+},{}],116:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"./lib/mechanism":115}],117:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports, module, require('crypto'), require('buffer'));
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports', 'module', 'crypto', 'buffer'], factory);
+  }
+}(this, function(exports, module, crypto, buffer) {
+
+    var Buffer = buffer.Buffer;
+ 
+    /**
+     * SCRAM-SHA-1 `Mechanism` constructor.
+     *
+     * This class implements the SCRAM-SHA-1 SASL mechanism.
+     *
+     * References:
+     *  - [RFC 5802](http://tools.ietf.org/html/rfc5802)
+     *
+     * @api public
+     */
+    function Mechanism(options) {
+        options = options || {};
+        this._genNonce = options.genNonce || genNonce(32);
+        this._stage = 0;
+    }
+
+    Mechanism.prototype.name = 'SCRAM-SHA-1';
+    Mechanism.prototype.clientFirst = true;
+
+    /**
+     * Encode a response using given credentials.
+     *
+     * Options:
+     *  - `username`
+     *  - `password`
+     *  - `authzid`
+     *
+     * @param {object} cred
+     * @api public
+     */
+    Mechanism.prototype.response = function (cred) {
+        return responses[this._stage](this, cred); 
+    };
+
+    /**
+     * Decode a challenge issued by the server.
+     *
+     * @param {String} chal
+     * @return {Mechanism} for chaining
+     * @api public
+     */
+    Mechanism.prototype.challenge = function (chal) {
+        var values = parse(chal);
+
+        this._salt = new Buffer(values.s || '', 'base64').toString('binary');
+        this._iterationCount = parseInt(values.i, 10);
+        this._nonce = values.r;
+        this._verifier = values.v;
+        this._error = values.e;
+        this._challenge = chal;
+
+        return this;
+    };
+
+
+    var responses = {};
+    responses[0] = function (mech, cred) {
+        mech._cnonce = mech._genNonce();
+
+        var authzid = '';
+        if (cred.authzid) {
+            authzid = 'a=' + saslname(cred.authzid);
+        }
+
+        mech._gs2Header = 'n,' + authzid + ',';
+
+        var nonce = 'r=' + mech._cnonce;
+        var username = 'n=' + saslname(cred.username);
+
+        mech._clientFirstMessageBare = username + ',' + nonce;
+        var result = mech._gs2Header + mech._clientFirstMessageBare
+
+        mech._stage = 1;
+
+        return result;
+    };
+    responses[1] = function (mech, cred) {
+        var gs2Header = new Buffer(mech._gs2Header).toString('base64');
+
+        mech._clientFinalMessageWithoutProof = 'c=' + gs2Header + ',r=' + mech._nonce;
+
+        var saltedPassword, clientKey, serverKey;
+        if (cred.clientKey && cred.serverKey) {
+            clientKey = cred.clientKey;
+            serverKey = cred.serverKey;
+        } else {
+            saltedPassword = cred.saltedPassword || Hi(cred.password, mech._salt, mech._iterationCount);
+            clientKey = HMAC(saltedPassword, 'Client Key');
+            serverKey = HMAC(saltedPassword, 'Server Key');
+        }
+
+        var storedKey = H(clientKey);
+        var authMessage = mech._clientFirstMessageBare + ',' +
+                          mech._challenge + ',' + 
+                          mech._clientFinalMessageWithoutProof;
+        var clientSignature = HMAC(storedKey, authMessage);
+
+        var xorstuff = XOR(clientKey, clientSignature);
+
+        var clientProof = new Buffer(xorstuff, 'binary').toString('base64');
+
+        mech._serverSignature = HMAC(serverKey, authMessage);
+
+        var result = mech._clientFinalMessageWithoutProof + ',p=' + clientProof;
+
+        mech._stage = 2;
+
+        mech.cache = {
+            saltedPassword: saltedPassword,
+            clientKey: clientKey,
+            serverKey: serverKey
+        };
+
+        return result;
+    };
+    responses[2] = function (mech, cred) {
+        // TODO: Signal errors 
+        return '';
+    };
+
+    /**
+     * Create a SHA-1 HMAC.
+     *
+     * @param {String} key
+     * @param {String} msg
+     * @api private
+     */
+    function HMAC(key, msg) {
+        return crypto.createHmac('sha1', key).update(msg).digest('binary');
+    }
+
+    /**
+     * Iteratively create an HMAC, with a salt.
+     *
+     * @param {String} text
+     * @param {String} salt
+     * @param {Number} iterations
+     * @api private
+     */
+    function Hi(text, salt, iterations) {
+        var ui1 = HMAC(text, salt + '\0\0\0\1');
+        var ui = ui1;
+        for (var i = 0; i < iterations - 1; i++) {
+            ui1 = HMAC(text, ui1);
+            ui = XOR(ui, ui1);
+        }
+        return ui;
+    }
+
+    /**
+     * Create a SHA-1 hash.
+     *
+     * @param {String} text
+     * @api private
+     */
+    function H(text) {
+        return crypto.createHash('sha1').update(text).digest('binary');
+    }
+
+    /**
+     * String XOR
+     *
+     * @param {String} a
+     * @param {String} b
+     * @api private
+     */
+    function XOR(a, b) {
+        a = new Buffer(a, 'binary');
+        b = new Buffer(b, 'binary');
+
+        var len = Math.min(a.length, b.length);
+        result = [];
+        for (var i = 0; i < len; i++) {
+            result.push(a[i] ^ b[i]);
+        }
+        result = new Buffer(result, 'binary');
+        return result.toString('binary');
+    }
+
+    /**
+     * Escape special characters in username values.
+     *
+     * @param {String} name
+     * @api private
+     */
+    function saslname(name) {
+        var escaped = [];
+        var curr = '';
+        for (var i = 0; i < name.length; i++) {
+            curr = name[i];
+            if (curr === ',') {
+                escaped.push('=2C');
+            } else if (curr === '=') {
+                escaped.push('=3D');
+            } else {
+                escaped.push(curr);
+            }
+        }
+        return escaped.join('');
+    }
+
+    /**
+     * Parse challenge.
+     *
+     * @api private
+     */
+    function parse(chal) {
+        var dtives = {};
+        var tokens = chal.split(/,(?=(?:[^"]|"[^"]*")*$)/);
+        for (var i = 0, len = tokens.length; i < len; i++) {
+            var dtiv = /(\w+)=["]?([^"]+)["]?$/.exec(tokens[i]);
+            if (dtiv) {
+                dtives[dtiv[1]] = dtiv[2];
+            }
+        }
+        return dtives;
+    }
+  
+ 
+    /**
+    * Return a unique nonce with the given `len`.
+    *
+    *     genNonce(10)();
+    *     // => "FDaS435D2z"
+    *
+    * @param {Number} len
+    * @return {Function}
+    * @api private
+    */
+    function genNonce(len) {
+        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charlen = chars.length;
+
+        return function() {
+            var buf = [];
+            for (var i = 0; i < len; ++i) {
+                buf.push(chars[Math.random() * charlen | 0]);
+            }
+            return buf.join('');
+        }
+    }
+
+    exports = module.exports = Mechanism;
+}));
+
+},{"buffer":70,"crypto":74}],118:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments)
+},{"./lib/mechanism":117}],119:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports, module);
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports', 'module'], factory);
+  }
+}(this, function(exports, module) {
+  
+  /**
+   * `Factory` constructor.
+   *
+   * @api public
+   */
+  function Factory() {
+    this._mechs = [];
+  }
+  
+  /**
+   * Utilize the given `mech` with optional `name`, overridding the mechanism's
+   * default name.
+   *
+   * Examples:
+   *
+   *     factory.use(FooMechanism);
+   *
+   *     factory.use('XFOO', FooMechanism);
+   *
+   * @param {String|Mechanism} name
+   * @param {Mechanism} mech
+   * @return {Factory} for chaining
+   * @api public
+   */
+  Factory.prototype.use = function(name, mech) {
+    if (!mech) {
+      mech = name;
+      name = mech.prototype.name;
+    }
+    this._mechs.push({ name: name, mech: mech });
+    return this;
+  };
+  
+  /**
+   * Create a new mechanism from supported list of `mechs`.
+   *
+   * If no mechanisms are supported, returns `null`.
+   *
+   * Examples:
+   *
+   *     var mech = factory.create(['FOO', 'BAR']);
+   *
+   * @param {Array} mechs
+   * @return {Mechanism}
+   * @api public
+   */
+  Factory.prototype.create = function(mechs) {
+    for (var i = 0, len = this._mechs.length; i < len; i++) {
+      for (var j = 0, jlen = mechs.length; j < jlen; j++) {
+        var entry = this._mechs[i];
+        if (entry.name == mechs[j]) {
+          return new entry.mech();
+        }
+      }
+    }
+    return null;
+  };
+
+  exports = module.exports = Factory;
+  
+}));
+
+},{}],120:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof exports === 'object') {
+    // CommonJS
+    factory(exports,
+            module,
+            require('./lib/factory'));
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['exports',
+            'module',
+            './lib/factory'], factory);
+  }
+}(this, function(exports, module, Factory) {
+  
+  exports = module.exports = Factory;
+  exports.Factory = Factory;
+  
+}));
+
+},{"./lib/factory":119}],121:[function(require,module,exports){
 //     Underscore.js 1.5.2
 //     http://underscorejs.org
 //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -14898,1990 +16770,143 @@ exports.toCandidateSDP = function (candidate) {
 
 }).call(this);
 
-},{}],99:[function(require,module,exports){
-// created by @HenrikJoreteg
-var prefix;
-var isChrome = false;
-var isFirefox = false;
-var ua = navigator.userAgent.toLowerCase();
+},{}],122:[function(require,module,exports){
+/*
+WildEmitter.js is a slim little event emitter by @henrikjoreteg largely based 
+on @visionmedia's Emitter from UI Kit.
 
-// basic sniffing
-if (ua.indexOf('firefox') !== -1) {
-    prefix = 'moz';
-    isFirefox = true;
-} else if (ua.indexOf('chrome') !== -1) {
-    prefix = 'webkit';
-    isChrome = true;
-}
+Why? I wanted it standalone.
 
-var PC = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
-var IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
-var SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
-var MediaStream = window.webkitMediaStream || window.MediaStream;
-var screenSharing = navigator.userAgent.match('Chrome') && parseInt(navigator.userAgent.match(/Chrome\/(.*) /)[1], 10) >= 26;
-var AudioContext = window.webkitAudioContext || window.AudioContext;
+I also wanted support for wildcard emitters like this:
 
-
-// export support flags and constructors.prototype && PC
-module.exports = {
-    support: !!PC,
-    dataChannel: isChrome || isFirefox || (PC.prototype && PC.prototype.createDataChannel),
-    prefix: prefix,
-    webAudio: !!(AudioContext && AudioContext.prototype.createMediaStreamSource),
-    mediaStream: !!(MediaStream && MediaStream.prototype.removeTrack),
-    screenSharing: !!screenSharing,
-    AudioContext: AudioContext,
-    PeerConnection: PC,
-    SessionDescription: SessionDescription,
-    IceCandidate: IceCandidate
-};
-
-},{}],100:[function(require,module,exports){
-var support = require('webrtcsupport');
-
-
-function GainController(stream) {
-    this.support = support.webAudio && support.mediaStream;
-
-    // set our starting value
-    this.gain = 1;
-
-    if (this.support) {
-        var context = this.context = new support.AudioContext();
-        this.microphone = context.createMediaStreamSource(stream);
-        this.gainFilter = context.createGain();
-        this.destination = context.createMediaStreamDestination();
-        this.outputStream = this.destination.stream;
-        this.microphone.connect(this.gainFilter);
-        this.gainFilter.connect(this.destination);
-        stream.removeTrack(stream.getAudioTracks()[0]);
-        stream.addTrack(this.outputStream.getAudioTracks()[0]);
-    }
-    this.stream = stream;
-}
-
-// setting
-GainController.prototype.setGain = function (val) {
-    // check for support
-    if (!this.support) return;
-    this.gainFilter.gain.value = val;
-    this.gain = val;
-};
-
-GainController.prototype.getGain = function () {
-    return this.gain;
-};
-
-GainController.prototype.off = function () {
-    return this.setGain(0);
-};
-
-GainController.prototype.on = function () {
-    this.setGain(1);
-};
-
-
-module.exports = GainController;
-
-},{"webrtcsupport":101}],101:[function(require,module,exports){
-// created by @HenrikJoreteg
-var PC = window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.RTCPeerConnection;
-var IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
-var SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
-var prefix = function () {
-    if (window.mozRTCPeerConnection) {
-        return 'moz';
-    } else if (window.webkitRTCPeerConnection) {
-        return 'webkit';
-    }
-}();
-var MediaStream = window.webkitMediaStream || window.MediaStream;
-var screenSharing = navigator.userAgent.match('Chrome') && parseInt(navigator.userAgent.match(/Chrome\/(.*) /)[1], 10) >= 26;
-var AudioContext = window.webkitAudioContext || window.AudioContext;
-
-// export support flags and constructors.prototype && PC
-module.exports = {
-    support: !!PC,
-    dataChannel: !!(PC && PC.prototype && PC.prototype.createDataChannel),
-    prefix: prefix,
-    webAudio: !!(AudioContext && AudioContext.prototype.createMediaStreamSource),
-    mediaStream: !!(MediaStream && MediaStream.prototype.removeTrack),
-    screenSharing: screenSharing,
-    AudioContext: AudioContext,
-    PeerConnection: PC,
-    SessionDescription: SessionDescription,
-    IceCandidate: IceCandidate
-};
-
-},{}],102:[function(require,module,exports){
-var methods = "assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profileEnd,time,timeEnd,trace,warn".split(",");
-var l = methods.length;
-var fn = function () {};
-var mockconsole = {};
-
-while (l--) {
-    mockconsole[methods[l]] = fn;
-}
-
-module.exports = mockconsole;
-
-},{}],103:[function(require,module,exports){
-arguments[4][94][0].apply(exports,arguments)
-},{"./lib/tojson":105,"./lib/tosdp":106}],104:[function(require,module,exports){
-module.exports=require(95)
-},{}],105:[function(require,module,exports){
-module.exports=require(96)
-},{"./parsers":104}],106:[function(require,module,exports){
-module.exports=require(97)
-},{}],107:[function(require,module,exports){
-module.exports=require(98)
-},{}],108:[function(require,module,exports){
-module.exports=require(99)
-},{}],109:[function(require,module,exports){
-module.exports=require(92)
-},{}],110:[function(require,module,exports){
-"use strict";
-
-var _ = require('underscore');
-var core = require('./lib/core');
-var helpers = require('./lib/helpers');
-var types = require('./lib/types');
-
-module.exports = _.extend({}, core, helpers, types);
-
-},{"./lib/core":111,"./lib/helpers":112,"./lib/types":113,"underscore":131}],111:[function(require,module,exports){
-"use strict";
-
-var _ = require('underscore');
-var parser = new (require('xmlshim').DOMParser)();
-var serializer = new (require('xmlshim').XMLSerializer)();
-
-var helpers = require('./helpers');
-var types = require('./types');
-var find = helpers.find;
-
-var LOOKUP = {};
-var LOOKUP_EXT = {};
-var TOP_LEVEL_LOOKUP = {};
-
-
-function topLevel(JXT) {
-    var name = JXT.prototype._NS + '|' + JXT.prototype._EL;
-    LOOKUP[name] = JXT;
-    TOP_LEVEL_LOOKUP[name] = JXT;
-}
-
-function toString(xml) {
-    return serializer.serializeToString(xml);
-}
-
-function toJSON(jxt) {
-    var prop;
-    var result = {};
-    var exclude = {
-        constructor: true,
-        _EL: true,
-        _NS: true,
-        _extensions: true,
-        _name: true,
-        parent: true,
-        prototype: true,
-        toJSON: true,
-        toString: true,
-        xml: true
-    };
-
-    for (prop in jxt._extensions) {
-        if (jxt._extensions[prop].toJSON && prop[0] !== '_') {
-            result[prop] = jxt._extensions[prop].toJSON();
-        }
-    }
-
-    for (prop in jxt) {
-        if (!exclude[prop] && !((LOOKUP_EXT[jxt._NS + '|' + jxt._EL] || {})[prop]) && !jxt._extensions[prop] && prop[0] !== '_') {
-            var val = jxt[prop];
-            if (typeof val == 'function') continue;
-            var type = Object.prototype.toString.call(val);
-            if (type.indexOf('Object') >= 0) {
-                if (Object.keys(val).length > 0) {
-                    result[prop] = val;
-                }
-            } else if (type.indexOf('Array') >= 0) {
-                if (val.length > 0) {
-                    result[prop] = val;
-                }
-            } else if (!!val) {
-                result[prop] = val;
-            }
-        }
-    }
-
-    return result;
-}
-
-
-exports.build = function (xml) {
-    var JXT = TOP_LEVEL_LOOKUP[xml.namespaceURI + '|' + xml.localName];
-    if (JXT) {
-        return new JXT(null, xml);
-    }
-};
-
-exports.extend = function (ParentJXT, ChildJXT, multiName) {
-    var parentName = ParentJXT.prototype._NS + '|' + ParentJXT.prototype._EL;
-    var name = ChildJXT.prototype._name;
-    var qName = ChildJXT.prototype._NS + '|' + ChildJXT.prototype._EL;
-
-    LOOKUP[qName] = ChildJXT;
-    if (!LOOKUP_EXT[qName]) {
-        LOOKUP_EXT[qName] = {};
-    }
-    if (!LOOKUP_EXT[parentName]) {
-        LOOKUP_EXT[parentName] = {};
-    }
-    LOOKUP_EXT[parentName][name] = ChildJXT;
-
-    exports.add(ParentJXT, name, types.extension(ChildJXT));
-    if (multiName) {
-        exports.add(ParentJXT, multiName, types.multiExtension(ChildJXT));
-    }
-};
-
-exports.add = function (ParentJXT, fieldName, field) {
-    field.enumerable = true;
-    Object.defineProperty(ParentJXT.prototype, fieldName, field);
-};
-
-exports.define = function (opts) {
-    var StanzaConstructor = function (data, xml, parent) {
-        var self = this;
-
-        var parentNode = (xml || {}).parentNode || (parent || {}).xml;
-        var parentNS = (parentNode || {}).namespaceURI;
-
-        self.xml = xml || helpers.createElement(self._NS, self._EL, parentNS);
-
-        self._extensions = {};
-
-        _.each(self.xml.childNodes, function (child) {
-            var childName = child.namespaceURI + '|' + child.localName;
-            var ChildJXT = LOOKUP[childName];
-            if (ChildJXT !== undefined) {
-                var name = ChildJXT.prototype._name;
-                self._extensions[name] = new ChildJXT(null, child);
-                self._extensions[name].parent = self;
-            }
-        });
-
-        _.extend(self, data);
-
-        if (opts.init) {
-            opts.init(data);
-        }
-
-        return self;
-    };
-
-    StanzaConstructor.prototype = {
-        constructor: {
-            value: StanzaConstructor
-        },
-        _name: opts.name,
-        _eventname: opts.eventName,
-        _NS: opts.namespace,
-        _EL: opts.element,
-        toString: function () { return toString(this.xml); },
-        toJSON: function () { return toJSON(this); }
-    };
-
-    var fieldNames = Object.keys(opts.fields || {});
-    fieldNames.forEach(function (fieldName) {
-        exports.add(StanzaConstructor, fieldName, opts.fields[fieldName]);
-    });
-
-    if (opts.topLevel) {
-        topLevel(StanzaConstructor);
-    }
-
-    return StanzaConstructor;
-};
-
-},{"./helpers":112,"./types":113,"underscore":131,"xmlshim":116}],112:[function(require,module,exports){
-"use strict";
-
-var _ = require('underscore');
-var dom = require('xmlshim');
-
-var XML_NS = exports.XML_NS = 'http://www.w3.org/XML/1998/namespace';
-
-var serializer = new dom.XMLSerializer();
-var parser = new dom.DOMParser();
-var doc = dom.implementation.createDocument('', '', null);
-
-exports.parse = function (JXT, str) {
-    var nodes = parser.parseFromString(str, 'application/xml').childNodes;
-    for (var i = 0; i < nodes.length; i++) {
-        if (nodes[i].nodeType === 1) {
-            return new JXT({}, nodes[i]);
-        }
-    }
-
-    throw new Error('Could not parse: ' + str);
-};
-
-exports.getParser = function () {
-    return parser;
-};
-
-exports.getSerializer = function () {
-    return serializer;
-};
-
-exports.createElement = function (NS, name, parentNS) {
-    var el = doc.createElementNS(NS, name);
-    if (!parentNS || parentNS !== NS) {
-        exports.setAttribute(el, 'xmlns', NS);
-    }
-    return el;
-};
-
-var find = exports.find = function (xml, NS, selector) {
-    var children = xml.getElementsByTagName(selector);
-    return _.filter(children, function (child) {
-        return child.namespaceURI === NS && child.parentNode == xml;
-    });
-};
-
-exports.findOrCreate = function (xml, NS, selector) {
-    var existing = exports.find(xml, NS, selector);
-    if (existing.length) {
-        return existing[0];
-    } else {
-        var created = exports.createElement(NS, selector, xml.namespaceURI);
-        xml.appendChild(created);
-        return created;
-    }
-};
-
-exports.getAttribute = function (xml, attr, defaultVal) {
-    return xml.getAttribute(attr) || defaultVal || '';
-};
-
-exports.setAttribute = function (xml, attr, value, force) {
-    if (value || force) {
-        xml.setAttribute(attr, value);
-    } else {
-        xml.removeAttribute(attr);
-    }
-};
-
-exports.getBoolAttribute = function (xml, attr, defaultVal) {
-    var val = xml.getAttribute(attr) || defaultVal || '';
-    return val === 'true' || val === '1';
-};
-
-exports.setBoolAttribute = function (xml, attr, value) {
-    if (value) {
-        xml.setAttribute(attr, '1');
-    } else {
-        xml.removeAttribute(attr);
-    }
-};
-
-exports.getSubAttribute = function (xml, NS, sub, attr, defaultVal) {
-    var subs = find(xml, NS, sub);
-    if (!subs) {
-        return '';
-    }
-
-    for (var i = 0; i < subs.length; i++) {
-        return subs[i].getAttribute(attr) || defaultVal || '';
-    }
-
-    return '';
-};
-
-exports.setSubAttribute = function (xml, NS, sub, attr, value) {
-    var subs = find(xml, NS, sub);
-    if (!subs.length) {
-        if (value) {
-            sub = exports.createElement(NS, sub, xml.namespaceURI);
-            sub.setAttribute(attr, value);
-            xml.appendChild(sub);
-        }
-    } else {
-        for (var i = 0; i < subs.length; i++) {
-            if (value) {
-                subs[i].setAttribute(attr, value);
-                return;
-            } else {
-                subs[i].removeAttribute(attr);
-            }
-        }
-    }
-};
-
-exports.getBoolSubAttribute = function (xml, NS, sub, attr, defaultVal) {
-    var val = xml.getSubAttribute(NS, sub, attr) || defaultVal || '';
-    return val === 'true' || val === '1';
-};
-
-exports.setBoolSubAttribute = function (xml, NS, sub, attr, value) {
-    value = value ? '1' : '';
-    exports.setSubAttribute(xml, NS, sub, attr, value);
-};
-
-exports.getText = function (xml) {
-    return xml.textContent;
-};
-
-exports.setText = function (xml, value) {
-    xml.textContent = value;
-};
-
-exports.getSubText = function (xml, NS, element, defaultVal) {
-    var subs = find(xml, NS, element);
-
-    defaultVal = defaultVal || '';
-
-    if (!subs.length) {
-        return defaultVal;
-    }
-
-    return subs[0].textContent || defaultVal;
-};
-
-exports.setSubText = function (xml, NS, element, value) {
-    var subs = find(xml, NS, element);
-    if (!subs.length) {
-        if (value) {
-            var sub = exports.createElement(NS, element, xml.namespaceURI);
-            sub.textContent = value;
-            xml.appendChild(sub);
-        }
-    } else {
-        for (var i = 0; i < subs.length; i++) {
-            if (value) {
-                subs[i].textContent = value;
-                return;
-            } else {
-                xml.removeChild(subs[i]);
-            }
-        }
-    }
-};
-
-exports.getMultiSubText = function (xml, NS, element, extractor) {
-    var subs = find(xml, NS, element);
-    var results = [];
-
-    extractor = extractor || function (sub) {
-        return sub.textContent || '';
-    };
-
-    for (var i = 0; i < subs.length; i++) {
-        results.push(extractor(subs[i]));
-    }
-
-    return results;
-};
-
-exports.setMultiSubText = function (xml, NS, element, value, builder) {
-    var subs = find(xml, NS, element);
-    var values = [];
-    builder = builder || function (value) {
-        var sub = exports.createElement(NS, element, xml.namespaceURI);
-        sub.textContent = value;
-        xml.appendChild(sub);
-    };
-    if (typeof value === 'string') {
-        values = (value || '').split('\n');
-    } else {
-        values = value;
-    }
-    _.forEach(subs, function (sub) {
-        xml.removeChild(sub);
-    });
-    _.forEach(values, function (val) {
-        if (val) {
-            builder(val);
-        }
-    });
-};
-
-exports.getSubLangText = function (xml, NS, element, defaultLang) {
-    var subs = find(xml, NS, element);
-    if (!subs.length) {
-        return {};
-    }
-
-    var lang, sub;
-    var results = {};
-    var langs = [];
-
-    for (var i = 0; i < subs.length; i++) {
-        sub = subs[i];
-        lang = sub.getAttributeNS(XML_NS, 'lang') || defaultLang;
-        langs.push(lang);
-        results[lang] = sub.textContent || '';
-    }
-
-    return results;
-};
-
-exports.setSubLangText = function (xml, NS, element, value, defaultLang) {
-    var sub, lang;
-    var subs = find(xml, NS, element);
-    if (subs.length) {
-        for (var i = 0; i < subs.length; i++) {
-            xml.removeChild(subs[i]);
-        }
-    }
-
-    if (typeof value === 'string') {
-        sub = exports.createElement(NS, element, xml.namespaceURI);
-        sub.textContent = value;
-        xml.appendChild(sub);
-    } else if (typeof value === 'object') {
-        for (lang in value) {
-            if (value.hasOwnProperty(lang)) {
-                sub = exports.createElement(NS, element, xml.namespaceURI);
-                if (lang !== defaultLang) {
-                    sub.setAttributeNS(XML_NS, 'lang', lang);
-                }
-                sub.textContent = value[lang];
-                xml.appendChild(sub);
-            }
-        }
-    }
-};
-
-exports.getBoolSub = function (xml, NS, element) {
-    var subs = find(xml, NS, element);
-    return !!subs.length;
-};
-
-exports.setBoolSub = function (xml, NS, element, value) {
-    var subs = find(xml, NS, element);
-    if (!subs.length) {
-        if (value) {
-            var sub = exports.createElement(NS, element, xml.namespaceURI);
-            xml.appendChild(sub);
-        }
-    } else {
-        for (var i = 0; i < subs.length; i++) {
-            if (value) {
-                return;
-            } else {
-                xml.removeChild(subs[i]);
-            }
-        }
-    }
-};
-
-},{"underscore":131,"xmlshim":116}],113:[function(require,module,exports){
-"use strict";
-
-var _ = require('underscore');
-var fromB64 = require('atob');
-var toB64 = require('btoa');
-
-var helpers = require('./helpers');
-var find = helpers.find;
-
-
-var field = exports.field = function (getter, setter) {
-    return function () {
-        var args = _.toArray(arguments);
-        return {
-            get: function () {
-                return getter.apply(null, [this.xml].concat(args));
-            },
-            set: function (value) {
-                setter.apply(null, ([this.xml].concat(args)).concat([value]));
-            }
-        };
-    };
-};
-
-exports.field = field;
-exports.boolAttribute = field(helpers.getBoolAttribute,
-                              helpers.setBoolAttribute);
-exports.subAttribute = field(helpers.getSubAttribute,
-                             helpers.setSubAttribute);
-exports.boolSubAttribute = field(helpers.getSubBoolAttribute,
-                                 helpers.setSubBoolAttribute);
-exports.text = field(helpers.getText,
-                     helpers.setText);
-exports.subText = field(helpers.getSubText,
-                        helpers.setSubText);
-exports.multiSubText = field(helpers.getMultiSubText,
-                             helpers.setMultiSubText);
-exports.subLangText = field(helpers.getSubLangText,
-                            helpers.setSubLangText);
-exports.boolSub = field(helpers.getBoolSub,
-                        helpers.setBoolSub);
-
-exports.langAttribute = field(
-    function (xml) {
-        return xml.getAttributeNS(helpers.XML_NS, 'lang') || '';
-    },
-    function (xml, value) {
-        xml.setAttributeNS(helpers.XML_NS, 'lang', value);
-    }
-);
-
-exports.b64Text = field(
-    function (xml) {
-        if (xml.textContent && xml.textContent != '=') {
-            return fromB64(xml.textContent);
-        }
-        return '';
-    },
-    function (xml, value) {
-        xml.textContent = toB64(value) || '=';
-    }
-);
-
-exports.dateAttribute = function (attr, now) {
-    return {
-        get: function () {
-            var data = helpers.getAttribute(this.xml, attr);
-            if (data) return new Date(data);
-            if (now) return new Date(Date.now());
-        },
-        set: function (value) {
-            if (!value) return;
-            if (typeof value != 'string') {
-                value = value.toISOString();
-            }
-            helpers.setAttribute(this.xml, attr, value);
-        }
-    };
-};
-
-exports.dateSub = function (NS, sub, now) {
-    return {
-        get: function () {
-            var data = helpers.getSubText(this.xml, NS, sub);
-            if (data) return new Date(data);
-            if (now) return new Date(Date.now());
-        },
-        set: function (value) {
-            if (!value) return;
-            if (typeof value != 'string') {
-                value = value.toISOString();
-            }
-            helpers.setSubText(this.xml, NS, sub, value);
-        }
-    };
-};
-
-exports.dateSubAttribute = function (NS, sub, attr, now) {
-    return {
-        get: function () {
-            var data = helpers.getSubAttribute(this.xml, NS, sub, attr);
-            if (data) return new Date(data);
-            if (now) return new Date(Date.now());
-        },
-        set: function (value) {
-            if (!value) return;
-            if (typeof value != 'string') {
-                value = value.toISOString();
-            }
-            helpers.setSubAttribute(this.xml, NS, sub, attr, value);
-        }
-    };
-};
-
-exports.numberAttribute = field(
-    function (xml, attr)  {
-        return parseInt(helpers.getAttribute(xml, attr, '0'), 10);
-    },
-    function (xml, attr, value) {
-        helpers.setAttribute(xml, attr, value.toString());
-    }
-);
-
-exports.numberSub = field(
-    function (xml, NS, sub) {
-        return parseInt(helpers.getSubText(xml, NS, sub, '0'), 10);
-    },
-    function (xml, NS, sub, value) {
-        helpers.setSubText(xml, NS, sub, value.toString());
-    }
-);
-
-exports.attribute = function (name, defaultVal) {
-    return {
-        get: function () {
-            return helpers.getAttribute(this.xml, name, defaultVal);
-        },
-        set: function (value) {
-            helpers.setAttribute(this.xml, name, value);
-        }
-    };
-};
-
-exports.extension = function (ChildJXT) {
-    return {
-        get: function () {
-            var self = this;
-            var name = ChildJXT.prototype._name;
-            if (!this._extensions[name]) {
-                var existing = find(this.xml, ChildJXT.prototype._NS, ChildJXT.prototype._EL);
-                if (!existing.length) {
-                    this._extensions[name] = new ChildJXT({}, null, self);
-                    this.xml.appendChild(this._extensions[name].xml);
-                } else {
-                    this._extensions[name] = new ChildJXT(null, existing[0], self);
-                }
-                this._extensions[name].parent = this;
-            }
-            return this._extensions[name];
-        },
-        set: function (value) {
-            var child = this[ChildJXT.prototype._name];
-            _.extend(child, value);
-        }
-    };
-};
-
-exports.multiExtension = function (ChildJXT) {
-    return {
-        get: function () {
-            var self = this;
-            var data = find(this.xml, ChildJXT.prototype._NS, ChildJXT.prototype._EL);
-            var results = [];
-
-            _.forEach(data, function (xml) {
-                results.push(new ChildJXT({}, xml, self).toJSON());
-            });
-            return results;
-        },
-        set: function (value) {
-            var self = this;
-            var existing = find(this.xml, ChildJXT.prototype._NS, ChildJXT.prototype._EL);
-
-            _.forEach(existing, function (item) {
-                self.xml.removeChild(item);
-            });
-
-            _.forEach(value, function (data) {
-                var content = new ChildJXT(data, null, self);
-                self.xml.appendChild(content.xml);
-            });
-        }
-    };
-};
-
-},{"./helpers":112,"atob":114,"btoa":115,"underscore":131}],114:[function(require,module,exports){
-var Buffer=require("__browserify_Buffer").Buffer;(function () {
-  "use strict";
-
-  function atob(str) {
-    return new Buffer(str, 'base64').toString('binary');
-  }
-
-  module.exports = atob;
-}());
-
-},{"__browserify_Buffer":72}],115:[function(require,module,exports){
-var Buffer=require("__browserify_Buffer").Buffer;(function () {
-  "use strict";
-
-  function btoa(str) {
-    var buffer
-      ;
-
-    if (str instanceof Buffer) {
-      buffer = str;
-    } else {
-      buffer = new Buffer(str.toString(), 'binary');
-    }
-
-    return buffer.toString('base64');
-  }
-
-  module.exports = btoa;
-}());
-
-},{"__browserify_Buffer":72}],116:[function(require,module,exports){
-exports.XMLSerializer = XMLSerializer;
-exports.DOMParser = DOMParser;
-exports.implementation = document.implementation;
-
-},{}],117:[function(require,module,exports){
-var Buffer=require("__browserify_Buffer").Buffer;//     uuid.js
-//
-//     (c) 2010-2012 Robert Kieffer
-//     MIT License
-//     https://github.com/broofa/node-uuid
-(function() {
-  var _global = this;
-
-  // Unique ID creation requires a high quality random # generator.  We feature
-  // detect to determine the best RNG source, normalizing to a function that
-  // returns 128-bits of randomness, since that's what's usually required
-  var _rng;
-
-  // Node.js crypto-based RNG - http://nodejs.org/docs/v0.6.2/api/crypto.html
-  //
-  // Moderately fast, high quality
-  if (typeof(require) == 'function') {
-    try {
-      var _rb = require('crypto').randomBytes;
-      _rng = _rb && function() {return _rb(16);};
-    } catch(e) {}
-  }
-
-  if (!_rng && _global.crypto && crypto.getRandomValues) {
-    // WHATWG crypto-based RNG - http://wiki.whatwg.org/wiki/Crypto
-    //
-    // Moderately fast, high quality
-    var _rnds8 = new Uint8Array(16);
-    _rng = function whatwgRNG() {
-      crypto.getRandomValues(_rnds8);
-      return _rnds8;
-    };
-  }
-
-  if (!_rng) {
-    // Math.random()-based (RNG)
-    //
-    // If all else fails, use Math.random().  It's fast, but is of unspecified
-    // quality.
-    var  _rnds = new Array(16);
-    _rng = function() {
-      for (var i = 0, r; i < 16; i++) {
-        if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
-        _rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
-      }
-
-      return _rnds;
-    };
-  }
-
-  // Buffer class to use
-  var BufferClass = typeof(Buffer) == 'function' ? Buffer : Array;
-
-  // Maps for number <-> hex string conversion
-  var _byteToHex = [];
-  var _hexToByte = {};
-  for (var i = 0; i < 256; i++) {
-    _byteToHex[i] = (i + 0x100).toString(16).substr(1);
-    _hexToByte[_byteToHex[i]] = i;
-  }
-
-  // **`parse()` - Parse a UUID into it's component bytes**
-  function parse(s, buf, offset) {
-    var i = (buf && offset) || 0, ii = 0;
-
-    buf = buf || [];
-    s.toLowerCase().replace(/[0-9a-f]{2}/g, function(oct) {
-      if (ii < 16) { // Don't overflow!
-        buf[i + ii++] = _hexToByte[oct];
-      }
-    });
-
-    // Zero out remaining bytes if string was short
-    while (ii < 16) {
-      buf[i + ii++] = 0;
-    }
-
-    return buf;
-  }
-
-  // **`unparse()` - Convert UUID byte array (ala parse()) into a string**
-  function unparse(buf, offset) {
-    var i = offset || 0, bth = _byteToHex;
-    return  bth[buf[i++]] + bth[buf[i++]] +
-            bth[buf[i++]] + bth[buf[i++]] + '-' +
-            bth[buf[i++]] + bth[buf[i++]] + '-' +
-            bth[buf[i++]] + bth[buf[i++]] + '-' +
-            bth[buf[i++]] + bth[buf[i++]] + '-' +
-            bth[buf[i++]] + bth[buf[i++]] +
-            bth[buf[i++]] + bth[buf[i++]] +
-            bth[buf[i++]] + bth[buf[i++]];
-  }
-
-  // **`v1()` - Generate time-based UUID**
-  //
-  // Inspired by https://github.com/LiosK/UUID.js
-  // and http://docs.python.org/library/uuid.html
-
-  // random #'s we need to init node and clockseq
-  var _seedBytes = _rng();
-
-  // Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
-  var _nodeId = [
-    _seedBytes[0] | 0x01,
-    _seedBytes[1], _seedBytes[2], _seedBytes[3], _seedBytes[4], _seedBytes[5]
-  ];
-
-  // Per 4.2.2, randomize (14 bit) clockseq
-  var _clockseq = (_seedBytes[6] << 8 | _seedBytes[7]) & 0x3fff;
-
-  // Previous uuid creation time
-  var _lastMSecs = 0, _lastNSecs = 0;
-
-  // See https://github.com/broofa/node-uuid for API details
-  function v1(options, buf, offset) {
-    var i = buf && offset || 0;
-    var b = buf || [];
-
-    options = options || {};
-
-    var clockseq = options.clockseq != null ? options.clockseq : _clockseq;
-
-    // UUID timestamps are 100 nano-second units since the Gregorian epoch,
-    // (1582-10-15 00:00).  JSNumbers aren't precise enough for this, so
-    // time is handled internally as 'msecs' (integer milliseconds) and 'nsecs'
-    // (100-nanoseconds offset from msecs) since unix epoch, 1970-01-01 00:00.
-    var msecs = options.msecs != null ? options.msecs : new Date().getTime();
-
-    // Per 4.2.1.2, use count of uuid's generated during the current clock
-    // cycle to simulate higher resolution clock
-    var nsecs = options.nsecs != null ? options.nsecs : _lastNSecs + 1;
-
-    // Time since last uuid creation (in msecs)
-    var dt = (msecs - _lastMSecs) + (nsecs - _lastNSecs)/10000;
-
-    // Per 4.2.1.2, Bump clockseq on clock regression
-    if (dt < 0 && options.clockseq == null) {
-      clockseq = clockseq + 1 & 0x3fff;
-    }
-
-    // Reset nsecs if clock regresses (new clockseq) or we've moved onto a new
-    // time interval
-    if ((dt < 0 || msecs > _lastMSecs) && options.nsecs == null) {
-      nsecs = 0;
-    }
-
-    // Per 4.2.1.2 Throw error if too many uuids are requested
-    if (nsecs >= 10000) {
-      throw new Error('uuid.v1(): Can\'t create more than 10M uuids/sec');
-    }
-
-    _lastMSecs = msecs;
-    _lastNSecs = nsecs;
-    _clockseq = clockseq;
-
-    // Per 4.1.4 - Convert from unix epoch to Gregorian epoch
-    msecs += 12219292800000;
-
-    // `time_low`
-    var tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
-    b[i++] = tl >>> 24 & 0xff;
-    b[i++] = tl >>> 16 & 0xff;
-    b[i++] = tl >>> 8 & 0xff;
-    b[i++] = tl & 0xff;
-
-    // `time_mid`
-    var tmh = (msecs / 0x100000000 * 10000) & 0xfffffff;
-    b[i++] = tmh >>> 8 & 0xff;
-    b[i++] = tmh & 0xff;
-
-    // `time_high_and_version`
-    b[i++] = tmh >>> 24 & 0xf | 0x10; // include version
-    b[i++] = tmh >>> 16 & 0xff;
-
-    // `clock_seq_hi_and_reserved` (Per 4.2.2 - include variant)
-    b[i++] = clockseq >>> 8 | 0x80;
-
-    // `clock_seq_low`
-    b[i++] = clockseq & 0xff;
-
-    // `node`
-    var node = options.node || _nodeId;
-    for (var n = 0; n < 6; n++) {
-      b[i + n] = node[n];
-    }
-
-    return buf ? buf : unparse(b);
-  }
-
-  // **`v4()` - Generate random UUID**
-
-  // See https://github.com/broofa/node-uuid for API details
-  function v4(options, buf, offset) {
-    // Deprecated - 'format' argument, as supported in v1.2
-    var i = buf && offset || 0;
-
-    if (typeof(options) == 'string') {
-      buf = options == 'binary' ? new BufferClass(16) : null;
-      options = null;
-    }
-    options = options || {};
-
-    var rnds = options.random || (options.rng || _rng)();
-
-    // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
-    rnds[6] = (rnds[6] & 0x0f) | 0x40;
-    rnds[8] = (rnds[8] & 0x3f) | 0x80;
-
-    // Copy bytes to buffer, if provided
-    if (buf) {
-      for (var ii = 0; ii < 16; ii++) {
-        buf[i + ii] = rnds[ii];
-      }
-    }
-
-    return buf || unparse(rnds);
-  }
-
-  // Export public API
-  var uuid = v4;
-  uuid.v1 = v1;
-  uuid.v4 = v4;
-  uuid.parse = parse;
-  uuid.unparse = unparse;
-  uuid.BufferClass = BufferClass;
-
-  if (_global.define && define.amd) {
-    // Publish as AMD module
-    define(function() {return uuid;});
-  } else if (typeof(module) != 'undefined' && module.exports) {
-    // Publish as node.js module
-    module.exports = uuid;
-  } else {
-    // Publish as global (in browsers)
-    var _previousRoot = _global.uuid;
-
-    // **`noConflict()` - (browser only) to reset global 'uuid' var**
-    uuid.noConflict = function() {
-      _global.uuid = _previousRoot;
-      return uuid;
-    };
-
-    _global.uuid = uuid;
-  }
-}());
-
-},{"__browserify_Buffer":72,"crypto":74}],118:[function(require,module,exports){
-/**
-* Written by Nathan Fritz. Copyright © 2011 by &yet, LLC. Released under the
-* terms of the MIT License:
-* 
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-*/ 
-
-var EventEmitter = require("events").EventEmitter;
-
-/**
- * You're up a creek; here's your Paddle. In Javascript, we rely on callback
- * execution, often times without knowing for sure that it will happen. With
- * Paddle, you can know. Paddle is a simple way of noting that your code should
- * reach one of several code-execution points within a timelimit. If the time-
- * limit is exceeded, an error callback is executed.
- *
- * @param freq: number of seconds between timeout checks
- */
-function Paddle(freq) {
-    EventEmitter.call(this);
-    this.registry = new Object();
-    this.insureids = 0;
-    if(freq === undefined) {
-        this.freq = 5;
-    } else {
-        this.freq = freq;
-    }
-    this.run = false;
-    this.start();
-}
-
-//extend Paddle with EventEmitter
-Paddle.super_ = EventEmitter;
-Paddle.prototype = Object.create(EventEmitter.prototype, {
-    constructor: {
-        value: Paddle,
-        enumerable: false
-    }
+emitter.on('*', function (eventName, other, event, payloads) {
+    
 });
 
-/*
- * Register a new check. If the check times out, error_callback will be called
- * with the optionally specified args. You may specify an id, but one will be
- * created otherwise.
- *
- * @param error_callback: function called when timeout is reached without check-in
- * @param timeout: seconds to wait for check-in
- * @param args: Array of arguments to call error_callback with
- * @param id: optional -- insure will generate one for you
- *
- * @return Object: returns the insurance obj you just created
- * {paddle, error_callback, args, id, timeout, done, check_in}
- *
- */
-function insure(error_callback, timeout, args, id) {
-    if(id === undefined) {
-        ++this.insureids;
-        this.insureids %= 65000;
-        id = this.insureids;
+emitter.on('somenamespace*', function (eventName, payloads) {
+    
+});
+
+Please note that callbacks triggered by wildcard registered events also get 
+the event name as the first argument.
+*/
+module.exports = WildEmitter;
+
+function WildEmitter() {
+    this.callbacks = {};
+}
+
+// Listen on the given `event` with `fn`. Store a group name if present.
+WildEmitter.prototype.on = function (event, groupName, fn) {
+    var hasGroup = (arguments.length === 3),
+        group = hasGroup ? arguments[1] : undefined, 
+        func = hasGroup ? arguments[2] : arguments[1];
+    func._groupName = group;
+    (this.callbacks[event] = this.callbacks[event] || []).push(func);
+    return this;
+};
+
+// Adds an `event` listener that will be invoked a single
+// time then automatically removed.
+WildEmitter.prototype.once = function (event, groupName, fn) {
+    var self = this,
+        hasGroup = (arguments.length === 3),
+        group = hasGroup ? arguments[1] : undefined, 
+        func = hasGroup ? arguments[2] : arguments[1];
+    function on() {
+        self.off(event, on);
+        func.apply(this, arguments);
     }
-    expiretime = Date.now() + timeout * 1000;
-    var that = this;
-    var insurance = {
-        paddle: that,
-        error_callback: error_callback,
-        args: args,
-        id: id,
-        timeout: expiretime,
-        done: false,
-        check_in: function() {
-            return this.paddle.check_in(this.id);
+    this.on(event, group, on);
+    return this;
+};
+
+// Unbinds an entire group
+WildEmitter.prototype.releaseGroup = function (groupName) {
+    var item, i, len, handlers;
+    for (item in this.callbacks) {
+        handlers = this.callbacks[item];
+        for (i = 0, len = handlers.length; i < len; i++) {
+            if (handlers[i]._groupName === groupName) {
+                //console.log('removing');
+                // remove it and shorten the array we're looping through
+                handlers.splice(i, 1);
+                i--;
+                len--;
+            }
         }
     }
-    //this.registry[id] = [expiretime, error_callback, args];
-    this.registry[id] = insurance;
-    return insurance;
-}
-
-/*
- * Check in with an id or paddle to confirm that your end-execution point occurred. This
- * will cancel the timeout error, and delete the entry for this id.
- *
- * @param id or insurance: id from insure or insure obj
- */
-function check_in(id) {
-    if(id.id !== undefined) {
-        //perhaps this is an insure object
-        id = id.id;
-    }
-    if(id in this.registry) {
-        this.emit('check_in', this.registry[id]);
-        this.registry[id].done = true;
-        delete this.registry[id];
-        return true;
-    }
-    return false;
-}
-
-/*
- * Executed internally to occasionally make sure all insurance ids are within
- * their timeouts.
- */
-function checkEnsures() {
-    var now = Date.now();
-    for(var id in this.registry) {
-        if(now > this.registry[id].timeout) {
-            this.registry[id].error_callback.apply(this, this.registry[id].args);
-            this.emit('timeout', this.registry[id]);
-            delete this.registry[id];
-        }
-    }
-    if(this.run) {
-        setTimeout(function() { this.checkEnsures() }.bind(this), this.freq * 1000);
-    }
-}
-
-/*
- * Start checking paddle timeouts. Optionally reset frequency.
- *
- * @return bool: true if running, false if it was already running.
- */
-function start(freq) {
-    if(freq !== undefined) {
-        this.freq = freq;
-    }
-    if(!this.run) {
-        this.run = true;
-        setTimeout(function() { this.checkEnsures() }.bind(this), this.freq * 1000);
-        return true;
-    } else {
-        return false;
-    }
-}
-
-/*
- * Stop checking Paddle timeouts.
- * @return bool: true if stopped, false if it was already stopped.
- */
-function stop() {
-    if(this.run) {
-        this.run = false;
-        return true;
-    } else {
-        return true;
-    }
-}
-
-Paddle.prototype.insure = insure;
-Paddle.prototype.check_in = check_in;
-Paddle.prototype.checkEnsures = checkEnsures;
-Paddle.prototype.start = start;
-Paddle.prototype.stop = stop;
-
-exports.Paddle = Paddle;
-
-},{"events":67}],119:[function(require,module,exports){
-(function(root, factory) {
-  if (typeof exports === 'object') {
-    // CommonJS
-    factory(exports, module);
-  } else if (typeof define === 'function' && define.amd) {
-    // AMD
-    define(['exports', 'module'], factory);
-  }
-}(this, function(exports, module) {
-
-  /**
-   * ANONYMOUS `Mechanism` constructor.
-   *
-   * This class implements the ANONYMOUS SASL mechanism.
-   *
-   * The ANONYMOUS SASL mechanism provides support for permitting anonymous
-   * access to various services
-   *
-   * References:
-   *  - [RFC 4505](http://tools.ietf.org/html/rfc4505)
-   *
-   * @api public
-   */
-  function Mechanism() {
-  }
-  
-  Mechanism.prototype.name = 'ANONYMOUS';
-  Mechanism.prototype.clientFirst = true;
-  
-  /**
-   * Encode a response using optional trace information.
-   *
-   * Options:
-   *  - `trace`  trace information (optional)
-   *
-   * @param {Object} cred
-   * @api public
-   */
-  Mechanism.prototype.response = function(cred) {
-    return cred.trace || '';
-  };
-  
-  /**
-   * Decode a challenge issued by the server.
-   *
-   * @param {String} chal
-   * @api public
-   */
-  Mechanism.prototype.challenge = function(chal) {
-  };
-
-  exports = module.exports = Mechanism;
-  
-}));
-
-},{}],120:[function(require,module,exports){
-(function(root, factory) {
-  if (typeof exports === 'object') {
-    // CommonJS
-    factory(exports,
-            module,
-            require('./lib/mechanism'));
-  } else if (typeof define === 'function' && define.amd) {
-    // AMD
-    define(['exports',
-            'module',
-            './lib/mechanism'], factory);
-  }
-}(this, function(exports, module, Mechanism) {
-
-  exports = module.exports = Mechanism;
-  exports.Mechanism = Mechanism;
-  
-}));
-
-},{"./lib/mechanism":119}],121:[function(require,module,exports){
-(function(root, factory) {
-  if (typeof exports === 'object') {
-    // CommonJS
-    factory(exports, module, require('crypto'));
-  } else if (typeof define === 'function' && define.amd) {
-    // AMD
-    define(['exports', 'module', 'crypto'], factory);
-  }
-}(this, function(exports, module, crypto) {
-  
-  /**
-   * DIGEST-MD5 `Mechanism` constructor.
-   *
-   * This class implements the DIGEST-MD5 SASL mechanism.
-   *
-   * References:
-   *  - [RFC 2831](http://tools.ietf.org/html/rfc2831)
-   *
-   * @api public
-   */
-  function Mechanism(options) {
-    options = options || {};
-    this._genNonce = options.genNonce || genNonce(32);
-  }
-  
-  Mechanism.prototype.name = 'DIGEST-MD5';
-  Mechanism.prototype.clientFirst = false;
-  
-  /**
-   * Encode a response using given credential.
-   *
-   * Options:
-   *  - `username`
-   *  - `password`
-   *  - `host`
-   *  - `serviceType`
-   *  - `authzid`   authorization identity (optional)
-   *
-   * @param {Object} cred
-   * @api public
-   */
-  Mechanism.prototype.response = function(cred) {
-    // TODO: Implement support for subsequent authentication.  This requires
-    //       that the client be able to store username, realm, nonce,
-    //       nonce-count, cnonce, and qop values from prior authentication.
-    //       The impact of this requirement needs to be investigated.
-    //
-    //       See RFC 2831 (Section 2.2) for further details.
-    
-    // TODO: Implement support for auth-int and auth-conf, as defined in RFC
-    //       2831 sections 2.3 Integrity Protection and 2.4 Confidentiality
-    //       Protection, respectively.
-    //
-    //       Note that supporting this functionality has implications
-    //       regarding the negotiation of security layers via SASL.  Due to
-    //       the fact that TLS has largely superseded this functionality,
-    //       implementing it is a low priority.
-  
-    var uri = cred.serviceType + '/' + cred.host;
-    if (cred.serviceName && cred.host !== cred.serviceName) {
-      uri += '/' + serviceName;
-    }
-    var realm = cred.realm || this._realm || ''
-      , cnonce = this._genNonce()
-      , nc = '00000001'
-      , qop = 'auth'
-      , ha1
-      , ha2
-      , digest;
-  
-    var str = '';
-    str += 'username="' + cred.username + '"';
-    if (realm) { str += ',realm="' + realm + '"'; };
-    str += ',nonce="' + this._nonce + '"';
-    str += ',cnonce="' + cnonce + '"';
-    str += ',nc=' + nc;
-    str += ',qop=' + qop;
-    str += ',digest-uri="' + uri + '"';
-    
-    if (cred.authzid) {
-      ha1 = md5(md5(cred.username + ":" + realm + ":" + cred.password, 'binary') + ":" + this._nonce + ":" + cnonce + ":" + cred.authzid);
-    } else {
-      ha1 = md5(md5(cred.username + ":" + realm + ":" + cred.password, 'binary') + ":" + this._nonce + ":" + cnonce);
-    }
-    
-    if (qop == 'auth') {
-      ha2 = md5('AUTHENTICATE:' + uri);
-    } else if (qop == 'auth-int' || qop == 'auth-conf') {
-      ha2 = md5('AUTHENTICATE:' + uri + ':00000000000000000000000000000000');
-    }
-    
-    digest = md5(ha1 + ":" + this._nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + ha2);
-    str += ',response=' + digest;
-    
-    if (this._charset == 'utf-8') { str += ',charset=utf-8'; }
-    if (cred.authzid) { str += 'authzid="' + cred.authzid + '"'; }
-    
-    return str;
-  };
-  
-  /**
-   * Decode a challenge issued by the server.
-   *
-   * @param {String} chal
-   * @return {Mechanism} for chaining
-   * @api public
-   */
-  Mechanism.prototype.challenge = function(chal) {
-    var dtives = parse(chal);
-    
-    // TODO: Implement support for multiple realm directives, as allowed by the
-    //       DIGEST-MD5 specification.
-    this._realm = dtives['realm'];
-    this._nonce = dtives['nonce'];
-    this._qop = (dtives['qop'] || 'auth').split(',');
-    this._stale = dtives['stale'];
-    this._maxbuf = parseInt(dtives['maxbuf']) || 65536;
-    this._charset = dtives['charset'];
-    this._algo = dtives['algorithm'];
-    this._cipher = dtives['cipher'];
-    if (this._cipher) { this._cipher.split(','); }
     return this;
-  };
-  
-  
-  /**
-   * Parse challenge.
-   *
-   * @api private
-   */
-  function parse(chal) {
-    var dtives = {};
-    var tokens = chal.split(/,(?=(?:[^"]|"[^"]*")*$)/);
-    for (var i = 0, len = tokens.length; i < len; i++) {
-      var dtiv = /(\w+)=["]?([^"]+)["]?$/.exec(tokens[i]);
-      if (dtiv) {
-        dtives[dtiv[1]] = dtiv[2];
-      }
-    }
-    return dtives;
-  }
-  
-  /**
-   * Return a unique nonce with the given `len`.
-   *
-   *     genNonce(10)();
-   *     // => "FDaS435D2z"
-   *
-   * @param {Number} len
-   * @return {Function}
-   * @api private
-   */
-  function genNonce(len) {
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-      , charlen = chars.length;
-  
-    return function() {
-      var buf = [];
-      for (var i = 0; i < len; ++i) {
-        buf.push(chars[Math.random() * charlen | 0]);
-      }
-      return buf.join('');
-    }
-  }
-  
-  /**
-   * Return md5 hash of the given string and optional encoding,
-   * defaulting to hex.
-   *
-   *     md5('wahoo');
-   *     // => "e493298061761236c96b02ea6aa8a2ad"
-   *
-   * @param {String} str
-   * @param {String} encoding
-   * @return {String}
-   * @api private
-   */
-  function md5(str, encoding){
-    return crypto
-      .createHash('md5')
-      .update(str)
-      .digest(encoding || 'hex');
-  }
+};
 
+// Remove the given callback for `event` or all
+// registered callbacks.
+WildEmitter.prototype.off = function (event, fn) {
+    var callbacks = this.callbacks[event],
+        i;
+    
+    if (!callbacks) return this;
 
-  exports = module.exports = Mechanism;
-  
-}));
-
-},{"crypto":74}],122:[function(require,module,exports){
-arguments[4][120][0].apply(exports,arguments)
-},{"./lib/mechanism":121}],123:[function(require,module,exports){
-(function(root, factory) {
-  if (typeof exports === 'object') {
-    // CommonJS
-    factory(exports, module);
-  } else if (typeof define === 'function' && define.amd) {
-    // AMD
-    define(['exports', 'module'], factory);
-  }
-}(this, function(exports, module) {
-
-  /**
-   * EXTERNAL `Mechanism` constructor.
-   *
-   * This class implements the EXTERNAL SASL mechanism.
-   *
-   * The EXTERNAL SASL mechanism provides support for authentication using
-   * credentials established by external means. 
-   *
-   * References:
-   *  - [RFC 4422](http://tools.ietf.org/html/rfc4422)
-   *
-   * @api public
-   */
-  function Mechanism() {
-  }
-  
-  Mechanism.prototype.name = 'EXTERNAL';
-  Mechanism.prototype.clientFirst = true;
-  
-  /**
-   * Encode a response using given credential.
-   *
-   * Options:
-   *  - `authzid`   authorization identity (optional)
-   *
-   * @param {Object} cred
-   * @api public
-   */
-  Mechanism.prototype.response = function(cred) {
-    return cred.authzid || '';
-  };
-  
-  /**
-   * Decode a challenge issued by the server.
-   *
-   * @param {String} chal
-   * @api public
-   */
-  Mechanism.prototype.challenge = function(chal) {
-  };
-
-  exports = module.exports = Mechanism;
-  
-}));
-
-},{}],124:[function(require,module,exports){
-arguments[4][120][0].apply(exports,arguments)
-},{"./lib/mechanism":123}],125:[function(require,module,exports){
-(function(root, factory) {
-  if (typeof exports === 'object') {
-    // CommonJS
-    factory(exports, module);
-  } else if (typeof define === 'function' && define.amd) {
-    // AMD
-    define(['exports', 'module'], factory);
-  }
-}(this, function(exports, module) {
-
-  /**
-   * PLAIN `Mechanism` constructor.
-   *
-   * This class implements the PLAIN SASL mechanism.
-   *
-   * The PLAIN SASL mechanism provides support for exchanging a clear-text
-   * username and password.  This mechanism should not be used without adequate
-   * security provided by an underlying transport layer. 
-   *
-   * References:
-   *  - [RFC 4616](http://tools.ietf.org/html/rfc4616)
-   *
-   * @api public
-   */
-  function Mechanism() {
-  }
-  
-  Mechanism.prototype.name = 'PLAIN';
-  Mechanism.prototype.clientFirst = true;
-  
-  /**
-   * Encode a response using given credential.
-   *
-   * Options:
-   *  - `username`
-   *  - `password`
-   *  - `authzid`   authorization identity (optional)
-   *
-   * @param {Object} cred
-   * @api public
-   */
-  Mechanism.prototype.response = function(cred) {
-    var str = '';
-    str += cred.authzid || '';
-    str += '\0';
-    str += cred.username;
-    str += '\0';
-    str += cred.password;
-    return str;
-  };
-  
-  /**
-   * Decode a challenge issued by the server.
-   *
-   * @param {String} chal
-   * @return {Mechanism} for chaining
-   * @api public
-   */
-  Mechanism.prototype.challenge = function(chal) {
-    return this;
-  };
-
-  exports = module.exports = Mechanism;
-  
-}));
-
-},{}],126:[function(require,module,exports){
-arguments[4][120][0].apply(exports,arguments)
-},{"./lib/mechanism":125}],127:[function(require,module,exports){
-(function(root, factory) {
-  if (typeof exports === 'object') {
-    // CommonJS
-    factory(exports, module, require('crypto'), require('buffer'));
-  } else if (typeof define === 'function' && define.amd) {
-    // AMD
-    define(['exports', 'module', 'crypto', 'buffer'], factory);
-  }
-}(this, function(exports, module, crypto, buffer) {
-
-    var Buffer = buffer.Buffer;
- 
-    /**
-     * SCRAM-SHA-1 `Mechanism` constructor.
-     *
-     * This class implements the SCRAM-SHA-1 SASL mechanism.
-     *
-     * References:
-     *  - [RFC 5802](http://tools.ietf.org/html/rfc5802)
-     *
-     * @api public
-     */
-    function Mechanism(options) {
-        options = options || {};
-        this._genNonce = options.genNonce || genNonce(32);
-        this._stage = 0;
-    }
-
-    Mechanism.prototype.name = 'SCRAM-SHA-1';
-    Mechanism.prototype.clientFirst = true;
-
-    /**
-     * Encode a response using given credentials.
-     *
-     * Options:
-     *  - `username`
-     *  - `password`
-     *  - `authzid`
-     *
-     * @param {object} cred
-     * @api public
-     */
-    Mechanism.prototype.response = function (cred) {
-        return responses[this._stage](this, cred); 
-    };
-
-    /**
-     * Decode a challenge issued by the server.
-     *
-     * @param {String} chal
-     * @return {Mechanism} for chaining
-     * @api public
-     */
-    Mechanism.prototype.challenge = function (chal) {
-        var values = parse(chal);
-
-        this._salt = new Buffer(values.s || '', 'base64').toString('binary');
-        this._iterationCount = parseInt(values.i, 10);
-        this._nonce = values.r;
-        this._verifier = values.v;
-        this._error = values.e;
-        this._challenge = chal;
-
+    // remove all handlers
+    if (arguments.length === 1) {
+        delete this.callbacks[event];
         return this;
-    };
-
-
-    var responses = {};
-    responses[0] = function (mech, cred) {
-        mech._cnonce = mech._genNonce();
-
-        var authzid = '';
-        if (cred.authzid) {
-            authzid = 'a=' + saslname(cred.authzid);
-        }
-
-        mech._gs2Header = 'n,' + authzid + ',';
-
-        var nonce = 'r=' + mech._cnonce;
-        var username = 'n=' + saslname(cred.username);
-
-        mech._clientFirstMessageBare = username + ',' + nonce;
-        var result = mech._gs2Header + mech._clientFirstMessageBare
-
-        mech._stage = 1;
-
-        return result;
-    };
-    responses[1] = function (mech, cred) {
-        var gs2Header = new Buffer(mech._gs2Header).toString('base64');
-
-        mech._clientFinalMessageWithoutProof = 'c=' + gs2Header + ',r=' + mech._nonce;
-
-        var saltedPassword, clientKey, serverKey;
-        if (cred.clientKey && cred.serverKey) {
-            clientKey = cred.clientKey;
-            serverKey = cred.serverKey;
-        } else {
-            saltedPassword = cred.saltedPassword || Hi(cred.password, mech._salt, mech._iterationCount);
-            clientKey = HMAC(saltedPassword, 'Client Key');
-            serverKey = HMAC(saltedPassword, 'Server Key');
-        }
-
-        var storedKey = H(clientKey);
-        var authMessage = mech._clientFirstMessageBare + ',' +
-                          mech._challenge + ',' + 
-                          mech._clientFinalMessageWithoutProof;
-        var clientSignature = HMAC(storedKey, authMessage);
-
-        var xorstuff = XOR(clientKey, clientSignature);
-
-        var clientProof = new Buffer(xorstuff, 'binary').toString('base64');
-
-        mech._serverSignature = HMAC(serverKey, authMessage);
-
-        var result = mech._clientFinalMessageWithoutProof + ',p=' + clientProof;
-
-        mech._stage = 2;
-
-        mech.cache = {
-            saltedPassword: saltedPassword,
-            clientKey: clientKey,
-            serverKey: serverKey
-        };
-
-        return result;
-    };
-    responses[2] = function (mech, cred) {
-        // TODO: Signal errors 
-        return '';
-    };
-
-    /**
-     * Create a SHA-1 HMAC.
-     *
-     * @param {String} key
-     * @param {String} msg
-     * @api private
-     */
-    function HMAC(key, msg) {
-        return crypto.createHmac('sha1', key).update(msg).digest('binary');
     }
 
-    /**
-     * Iteratively create an HMAC, with a salt.
-     *
-     * @param {String} text
-     * @param {String} salt
-     * @param {Number} iterations
-     * @api private
-     */
-    function Hi(text, salt, iterations) {
-        var ui1 = HMAC(text, salt + '\0\0\0\1');
-        var ui = ui1;
-        for (var i = 0; i < iterations - 1; i++) {
-            ui1 = HMAC(text, ui1);
-            ui = XOR(ui, ui1);
-        }
-        return ui;
-    }
-
-    /**
-     * Create a SHA-1 hash.
-     *
-     * @param {String} text
-     * @api private
-     */
-    function H(text) {
-        return crypto.createHash('sha1').update(text).digest('binary');
-    }
-
-    /**
-     * String XOR
-     *
-     * @param {String} a
-     * @param {String} b
-     * @api private
-     */
-    function XOR(a, b) {
-        a = new Buffer(a, 'binary');
-        b = new Buffer(b, 'binary');
-
-        var len = Math.min(a.length, b.length);
-        result = [];
-        for (var i = 0; i < len; i++) {
-            result.push(a[i] ^ b[i]);
-        }
-        result = new Buffer(result, 'binary');
-        return result.toString('binary');
-    }
-
-    /**
-     * Escape special characters in username values.
-     *
-     * @param {String} name
-     * @api private
-     */
-    function saslname(name) {
-        var escaped = [];
-        var curr = '';
-        for (var i = 0; i < name.length; i++) {
-            curr = name[i];
-            if (curr === ',') {
-                escaped.push('=2C');
-            } else if (curr === '=') {
-                escaped.push('=3D');
-            } else {
-                escaped.push(curr);
-            }
-        }
-        return escaped.join('');
-    }
-
-    /**
-     * Parse challenge.
-     *
-     * @api private
-     */
-    function parse(chal) {
-        var dtives = {};
-        var tokens = chal.split(/,(?=(?:[^"]|"[^"]*")*$)/);
-        for (var i = 0, len = tokens.length; i < len; i++) {
-            var dtiv = /(\w+)=["]?([^"]+)["]?$/.exec(tokens[i]);
-            if (dtiv) {
-                dtives[dtiv[1]] = dtiv[2];
-            }
-        }
-        return dtives;
-    }
-  
- 
-    /**
-    * Return a unique nonce with the given `len`.
-    *
-    *     genNonce(10)();
-    *     // => "FDaS435D2z"
-    *
-    * @param {Number} len
-    * @return {Function}
-    * @api private
-    */
-    function genNonce(len) {
-        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        var charlen = chars.length;
-
-        return function() {
-            var buf = [];
-            for (var i = 0; i < len; ++i) {
-                buf.push(chars[Math.random() * charlen | 0]);
-            }
-            return buf.join('');
-        }
-    }
-
-    exports = module.exports = Mechanism;
-}));
-
-},{"buffer":70,"crypto":74}],128:[function(require,module,exports){
-arguments[4][120][0].apply(exports,arguments)
-},{"./lib/mechanism":127}],129:[function(require,module,exports){
-(function(root, factory) {
-  if (typeof exports === 'object') {
-    // CommonJS
-    factory(exports, module);
-  } else if (typeof define === 'function' && define.amd) {
-    // AMD
-    define(['exports', 'module'], factory);
-  }
-}(this, function(exports, module) {
-  
-  /**
-   * `Factory` constructor.
-   *
-   * @api public
-   */
-  function Factory() {
-    this._mechs = [];
-  }
-  
-  /**
-   * Utilize the given `mech` with optional `name`, overridding the mechanism's
-   * default name.
-   *
-   * Examples:
-   *
-   *     factory.use(FooMechanism);
-   *
-   *     factory.use('XFOO', FooMechanism);
-   *
-   * @param {String|Mechanism} name
-   * @param {Mechanism} mech
-   * @return {Factory} for chaining
-   * @api public
-   */
-  Factory.prototype.use = function(name, mech) {
-    if (!mech) {
-      mech = name;
-      name = mech.prototype.name;
-    }
-    this._mechs.push({ name: name, mech: mech });
+    // remove specific handler
+    i = callbacks.indexOf(fn);
+    callbacks.splice(i, 1);
     return this;
-  };
-  
-  /**
-   * Create a new mechanism from supported list of `mechs`.
-   *
-   * If no mechanisms are supported, returns `null`.
-   *
-   * Examples:
-   *
-   *     var mech = factory.create(['FOO', 'BAR']);
-   *
-   * @param {Array} mechs
-   * @return {Mechanism}
-   * @api public
-   */
-  Factory.prototype.create = function(mechs) {
-    for (var i = 0, len = this._mechs.length; i < len; i++) {
-      for (var j = 0, jlen = mechs.length; j < jlen; j++) {
-        var entry = this._mechs[i];
-        if (entry.name == mechs[j]) {
-          return new entry.mech();
+};
+
+// Emit `event` with the given args.
+// also calls any `*` handlers
+WildEmitter.prototype.emit = function (event) {
+    var args = [].slice.call(arguments, 1),
+        callbacks = this.callbacks[event],
+        specialCallbacks = this.getWildcardCallbacks(event),
+        i,
+        len,
+        item;
+
+    if (callbacks) {
+        for (i = 0, len = callbacks.length; i < len; ++i) {
+            if (callbacks[i]) {
+                callbacks[i].apply(this, args);
+            } else {
+                break;
+            }
         }
-      }
     }
-    return null;
-  };
 
-  exports = module.exports = Factory;
-  
-}));
+    if (specialCallbacks) {
+        for (i = 0, len = specialCallbacks.length; i < len; ++i) {
+            if (specialCallbacks[i]) {
+                specialCallbacks[i].apply(this, [event].concat(args));
+            } else {
+                break;
+            }
+        }
+    }
 
-},{}],130:[function(require,module,exports){
-(function(root, factory) {
-  if (typeof exports === 'object') {
-    // CommonJS
-    factory(exports,
-            module,
-            require('./lib/factory'));
-  } else if (typeof define === 'function' && define.amd) {
-    // AMD
-    define(['exports',
-            'module',
-            './lib/factory'], factory);
-  }
-}(this, function(exports, module, Factory) {
-  
-  exports = module.exports = Factory;
-  exports.Factory = Factory;
-  
-}));
+    return this;
+};
 
-},{"./lib/factory":129}],131:[function(require,module,exports){
-module.exports=require(98)
-},{}],132:[function(require,module,exports){
-module.exports=require(92)
+// Helper for for finding special wildcard event handlers that match the event
+WildEmitter.prototype.getWildcardCallbacks = function (eventName) {
+    var item,
+        split,
+        result = [];
+
+    for (item in this.callbacks) {
+        split = item.split('*');
+        if (item === '*' || (split.length === 2 && eventName.slice(0, split[1].length) === split[1])) {
+            result = result.concat(this.callbacks[item]);
+        }
+    }
+    return result;
+};
+
 },{}]},{},[1])
 (1)
 });
