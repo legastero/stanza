@@ -10,9 +10,9 @@
         "async": "0.2.9",
         "wildemitter": "0.0.5",
         "node-uuid": "1.4.0",
-        "jxt": "0.3.3",
+        "jxt": "0.4.0",
         "paddle": "1.0.0",
-        "hostmeta": "0.2.1",
+        "hostmeta": "0.2.2",
         "saslmechanisms": "0.1.1",
         "sasl-external": "0.1.0",
         "sasl-scram-sha-1": "0.2.1",
@@ -25,13 +25,13 @@
     },
     "devDependencies": {
         "uglify-js": "2.3.6",
-        "browserify": "2.35.2",
-        "grunt": "0.4.1",
+        "browserify": "2.36.1",
+        "grunt": "0.4.2",
         "grunt-browserify": "1.2.11",
-        "grunt-contrib-jshint": "0.7.1",
+        "grunt-contrib-jshint": "0.7.2",
         "grunt-contrib-uglify": "0.2.7",
         "precommit-hook": "0.3.8",
-        "tape": "2.1.0"
+        "tape": "2.3.0"
     },
     "repository": {
         "type": "git",
