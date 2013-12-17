@@ -1,6 +1,6 @@
 {
     "name": "stanza.io",
-    "version": "2.9.1",
+    "version": "2.9.2",
     "description": "Modern XMPP in the browser, with a JSON API",
     "main": "./index.js",
     "browser": {
@@ -20,7 +20,7 @@
         "sasl-plain": "0.1.0",
         "sasl-anonymous": "0.1.0",
         "underscore": "1.5.2",
-        "jingle": "0.3.1",
+        "jingle": "0.3.3",
         "crypto-browserify": "1.0.3"
     },
     "devDependencies": {
