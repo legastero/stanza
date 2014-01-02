@@ -34,6 +34,7 @@ exports.createClient = function (opts) {
     client.use(require('./lib/plugins/extdisco'));
     client.use(require('./lib/plugins/geoloc'));
     client.use(require('./lib/plugins/vcard'));
+    client.use(require('./lib/plugins/oob'));
 
     return client;
 };
