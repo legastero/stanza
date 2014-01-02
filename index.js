@@ -33,6 +33,7 @@ exports.createClient = function (opts) {
     client.use(require('./lib/plugins/hashes'));
     client.use(require('./lib/plugins/extdisco'));
     client.use(require('./lib/plugins/geoloc'));
+    client.use(require('./lib/plugins/vcard'));
 
     return client;
 };
