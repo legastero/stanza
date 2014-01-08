@@ -1,6 +1,6 @@
 {
     "name": "stanza.io",
-    "version": "2.13.1",
+    "version": "3.0.0",
     "description": "Modern XMPP in the browser, with a JSON API",
     "main": "./index.js",
     "browser": {
@@ -8,11 +8,12 @@
     },
     "dependencies": {
         "async": "0.2.9",
+        "bluebird": "0.11.6-0",
         "wildemitter": "0.0.5",
         "node-uuid": "1.4.0",
         "jxt": "0.4.0",
         "paddle": "1.0.0",
-        "hostmeta": "0.2.2",
+        "hostmeta": "0.3.0",
         "saslmechanisms": "0.1.1",
         "sasl-external": "0.1.0",
         "sasl-scram-sha-1": "0.2.1",
