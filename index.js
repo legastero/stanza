@@ -4,6 +4,8 @@ exports.Message = require('./lib/stanza/message');
 exports.Presence = require('./lib/stanza/presence');
 exports.Iq = require('./lib/stanza/iq');
 
+exports.JID = require('./lib/jid');
+
 exports.Client = require('./lib/client');
 exports.crypto = require('crypto');
 
