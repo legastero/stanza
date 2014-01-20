@@ -122,15 +122,10 @@
         if (e.preventDefault) e.preventDefault();
 
         var jid = document.getElementById('jid').value;
-        var username = jid.slice(0, jid.indexOf('@'));
-        var server = jid.slice(jid.indexOf('@') + 1);
 
         client = XMPP.createClient({
           jid: jid,
-          server: server,
-          credentials: {
-            password: document.getElementById('password').value,
-          },
+          password: document.getElementById('password').value,
           wsURL: document.getElementById('wsURL').value
         });
 
