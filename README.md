@@ -36,6 +36,31 @@ The bundled and minified files will be in the generated `build` directory.
 
 If you want to see stanza.io in action in a full-featured client, take a look at [Otalk.im](http://otalk.im) (and its [source](https://github.com/andyet/otalk)).
 
+## Echo Client Demo
+
+```javascript
+var XMPP = require('stanza.io'); // if using browserify
+
+var client = XMPP.createClient({
+    jid: 'echobot@example.com',
+    password: 'hunter2'
+});
+
+client.on('session:started', function () {
+    client.getRoster();
+    client.sendPresence();
+});
+
+client.on('chat', function (msg) {
+    client.sendMessage({
+      to: msg.from,
+      body: 'You sent: ' + msg.body
+    });
+});
+
+client.connect();
+```
+
 ## License
 
 MIT
