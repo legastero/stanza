@@ -1,6 +1,6 @@
 {
     "name": "stanza.io",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "description": "Modern XMPP in the browser, with a JSON API",
     "main": "./index.js",
     "browser": {
