@@ -37,6 +37,8 @@ exports.createClient = function (opts) {
     client.use(require('./lib/plugins/geoloc'));
     client.use(require('./lib/plugins/vcard'));
     client.use(require('./lib/plugins/oob'));
+    client.use(require('./lib/plugins/ping'));
+    client.use(require('./lib/plugins/keepalive'));
 
     return client;
 };
