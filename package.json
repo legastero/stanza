@@ -1,51 +1,52 @@
 {
-    "name": "stanza.io",
-    "version": "3.1.1",
-    "description": "Modern XMPP in the browser, with a JSON API",
-    "main": "./index.js",
-    "browser": {
-        "request": "browser-request"
-    },
-    "dependencies": {
-        "async": "0.2.9",
-        "bluebird": "1.0.0",
-        "wildemitter": "0.0.5",
-        "node-uuid": "1.4.0",
-        "jxt": "0.5.1",
-        "hostmeta": "0.3.3",
-        "saslmechanisms": "0.1.1",
-        "sasl-external": "0.1.0",
-        "sasl-scram-sha-1": "0.2.1",
-        "sasl-digest-md5": "0.1.0",
-        "sasl-plain": "0.1.0",
-        "sasl-anonymous": "0.1.0",
-        "underscore": "1.5.2",
-        "jingle": "0.3.4",
-        "crypto-browserify": "1.0.3"
-    },
-    "devDependencies": {
-        "uglify-js": "2.3.6",
-        "browserify": "2.36.1",
-        "grunt": "0.4.2",
-        "grunt-browserify": "1.2.11",
-        "grunt-contrib-jshint": "0.7.2",
-        "grunt-contrib-uglify": "0.2.7",
-        "precommit-hook": "0.3.8",
-        "tape": "2.3.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/legastero/stanza.io.git"
-    },
-    "bugs": "https://github.com/legastero/stanza.io/issues",
-    "keywords": [
-        "xmpp",
-        "websocket",
-        "stanza.io"
-    ],
-    "contributors": [
-        "Lance Stout <lance@andyet.net>",
-        "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
-    ],
-    "license": "MIT"
+  "name": "stanza.io",
+  "description": "Modern XMPP in the browser, with a JSON API",
+  "version": "3.1.2",
+  "author": "Lance Stout <lance@andyet.net>",
+  "browser": {
+    "request": "browser-request"
+  },
+  "bugs": "https://github.com/legastero/stanza.io/issues",
+  "contributors": [
+    "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
+  ],
+  "dependencies": {
+    "async": "0.2.9",
+    "bluebird": "1.0.0",
+    "crypto-browserify": "1.0.3",
+    "hostmeta": "0.3.3",
+    "jingle": "0.3.4",
+    "jxt": "0.5.1",
+    "node-uuid": "1.4.0",
+    "sasl-anonymous": "0.1.0",
+    "sasl-digest-md5": "0.1.0",
+    "sasl-external": "0.1.0",
+    "sasl-plain": "0.1.0",
+    "sasl-scram-sha-1": "0.2.1",
+    "saslmechanisms": "0.1.1",
+    "underscore": "1.5.2",
+    "wildemitter": "0.0.5"
+  },
+  "devDependencies": {
+    "browserify": "2.36.1",
+    "grunt": "0.4.2",
+    "grunt-browserify": "1.2.11",
+    "grunt-contrib-jshint": "0.7.2",
+    "grunt-contrib-uglify": "0.2.7",
+    "precommit-hook": "0.3.8",
+    "tape": "2.3.0",
+    "uglify-js": "2.3.6"
+  },
+  "homepage": "http://stanza.io",
+  "keywords": [
+    "xmpp",
+    "websocket",
+    "stanza.io"
+  ],
+  "license": "MIT",
+  "main": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/legastero/stanza.io.git"
+  }
 }
