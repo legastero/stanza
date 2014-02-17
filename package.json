@@ -1,7 +1,7 @@
 {
   "name": "stanza.io",
   "description": "Modern XMPP in the browser, with a JSON API",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "author": "Lance Stout <lance@andyet.net>",
   "browser": {
     "request": "browser-request"
@@ -15,7 +15,7 @@
     "bluebird": "1.0.0",
     "crypto-browserify": "1.0.3",
     "hostmeta": "0.3.3",
-    "jingle": "0.3.5",
+    "jingle": "0.3.6",
     "jxt": "0.5.1",
     "node-uuid": "1.4.0",
     "sasl-anonymous": "0.1.0",
