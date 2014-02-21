@@ -14,6 +14,7 @@ exports.crypto = require('crypto');
 exports.createClient = function (opts) {
     var client = new exports.Client(opts);
 
+    client.use(require('./lib/plugins/roster'));
     client.use(require('./lib/plugins/disco'));
     client.use(require('./lib/plugins/chatstates'));
     client.use(require('./lib/plugins/delayed'));
