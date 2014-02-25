@@ -4,7 +4,8 @@
   "version": "3.2.4",
   "author": "Lance Stout <lance@andyet.net>",
   "browser": {
-    "request": "browser-request"
+    "request": "browser-request",
+    "crypto": "crypto-browserify"
   },
   "bugs": "https://github.com/legastero/stanza.io/issues",
   "contributors": [
