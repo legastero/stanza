@@ -79,7 +79,7 @@
       <form id="loginInfo">
         <label>JID: <input id="jid" type="text" name="jid" value="stanzaio@lance.im"/></label>
         <label>Password: <input id="password" type="password" name="password" /></label>
-        <label>WebSocket URL: <input id="wsURL" type="text" name="wsURL" value="" /></label>
+        <label>WebSocket/BOSH URL: <input id="url" type="text" name="url" value="" /></label>
         <input id="connect" type="submit" value="Connect" />
       </form>
     </div>
@@ -123,10 +123,23 @@
 
         var jid = document.getElementById('jid').value;
 
+        var url = document.getElementById('url').value;
+        var wsURL, boshURL, transport;
+
+        if (url.indexOf('http') === 0) {
+            boshURL = url;
+            transport = 'bosh';
+        } else if (url.indexOf('ws') === 0) {
+            wsURL = url;
+            transport = 'websocket';
+        }
+
         client = XMPP.createClient({
           jid: jid,
           password: document.getElementById('password').value,
-          wsURL: document.getElementById('wsURL').value
+          wsURL: wsURL,
+          boshURL: boshURL,
+          transport: transport
         });
 
         client.on('*', log);
