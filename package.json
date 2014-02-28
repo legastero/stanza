@@ -5,7 +5,8 @@
   "author": "Lance Stout <lance@andyet.net>",
   "browser": {
     "request": "browser-request",
-    "crypto": "crypto-browserify"
+    "crypto": "crypto-browserify",
+    "faye-websocket": false
   },
   "bugs": "https://github.com/legastero/stanza.io/issues",
   "contributors": [
@@ -28,7 +29,8 @@
     "sasl-scram-sha-1": "0.2.1",
     "saslmechanisms": "0.1.1",
     "underscore": "1.5.2",
-    "wildemitter": "1.0.1"
+    "wildemitter": "1.0.1",
+    "faye-websocket": ""
   },
   "devDependencies": {
     "browserify": "2.36.1",
