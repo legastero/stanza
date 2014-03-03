@@ -24,7 +24,7 @@ module.exports = function (grunt) {
             }
         },
         jshint: {
-            files: ['Gruntfile.js', 'index.js', 'lib/**.js', 'test/**.js'],
+            files: ['Gruntfile.js', 'index.js', 'lib/**.js', 'lib/stanza/**.js', 'lib/plugins/**.js', 'test/**.js'],
             options: grunt.file.readJSON('.jshintrc')
         }
     });
