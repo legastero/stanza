@@ -6,7 +6,7 @@
   "browser": {
     "request": "browser-request",
     "crypto": "crypto-browserify",
-    "faye-websocket": "",
+    "faye-websocket": false,
     "./lib/plugins/index.js": "./lib/plugins/index-browser.js"
   },
   "bugs": "https://github.com/legastero/stanza.io/issues",
