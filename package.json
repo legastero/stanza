@@ -1,7 +1,7 @@
 {
   "name": "stanza.io",
   "description": "Modern XMPP in the browser, with a JSON API",
-  "version": "3.6.2",
+  "version": "3.6.3",
   "author": "Lance Stout <lance@andyet.net>",
   "browser": {
     "request": "browser-request",
@@ -57,7 +57,7 @@
     "url": "https://github.com/legastero/stanza.io.git"
   },
   "scripts": {
-      "test": "grunt tape"
+    "test": "grunt tape"
   },
   "testling": {
     "files": [
