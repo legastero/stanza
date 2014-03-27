@@ -26,12 +26,19 @@ module.exports = function (grunt) {
         jshint: {
             files: ['Gruntfile.js', 'index.js', 'lib/**.js', 'lib/stanza/**.js', 'lib/plugins/**.js', 'test/**.js'],
             options: grunt.file.readJSON('.jshintrc')
+        },
+        tape: {
+            options: {
+                pretty: true
+            },
+            files: ['test/index.js']
         }
     });
 
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-tape');
 
-    grunt.registerTask('default', ['jshint', 'browserify', 'uglify']);
+    grunt.registerTask('default', ['jshint', 'browserify', 'uglify', 'tape']);
 };
