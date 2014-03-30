@@ -12,6 +12,12 @@
 Stanza.io is a library for using modern XMPP in the browser, and it does that by exposing everything as JSON. Unless you insist, you
 have no need to ever see or touch any XML when using stanza.io.
 
+## Important Protocol Changes
+
+Starting with `v4.0.0`, stanza.io is using the protocol specified in the [latest XMPP over WebSocket draft](http://tools.ietf.org/html/draft-ietf-xmpp-websocket-02), which contains backwards incompatible changes.
+
+Servers have started switching to using the latest protocol; notably, Prosody's WebSocket module. If your server has not yet been upgraded, you will need to use a `3.x` version of stanza.io.
+
 ## Installing
 
 ```sh
