@@ -13,7 +13,7 @@
     "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
   ],
   "dependencies": {
-    "async": "0.4.x",
+    "async": "0.6.x",
     "atob": "1.x",
     "bluebird": "1.x",
     "browser-request": "0.3.x",

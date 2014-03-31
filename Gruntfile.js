@@ -4,12 +4,14 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
-            options: {
-                standalone: 'XMPP'
-            },
             dist: {
                 files: {
                     'build/stanzaio.bundle.js': ['<%= pkg.main %>']
+                },
+                options: {
+                    bundleOptions: {
+                        standalone: 'XMPP'
+                    }
                 }
             }
         },
