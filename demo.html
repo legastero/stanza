@@ -147,7 +147,10 @@
         client.on('session:started', function () {
           client.enableCarbons();
           client.getRoster(function (err, resp) {
-            client.sendPresence();
+            client.updateCaps();
+            client.sendPresence({
+                caps: client.disco.caps
+            });
           });
         });
 
