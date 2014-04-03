@@ -1,7 +1,7 @@
 {
   "name": "stanza.io",
   "description": "Modern XMPP in the browser, with a JSON API",
-  "version": "3.6.1",
+  "version": "4.1.0",
   "author": "Lance Stout <lance@andyet.net>",
   "browser": {
     "request": "browser-request",
@@ -13,7 +13,7 @@
     "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
   ],
   "dependencies": {
-    "async": "0.2.x",
+    "async": "0.6.x",
     "atob": "1.x",
     "bluebird": "1.x",
     "browser-request": "0.3.x",
@@ -34,11 +34,12 @@
     "wildemitter": "1.x"
   },
   "devDependencies": {
-    "browserify": "2.x",
+    "browserify": "3.x",
     "grunt": "0.4.x",
-    "grunt-browserify": "1.2.x",
-    "grunt-contrib-jshint": "0.7.x",
-    "grunt-contrib-uglify": "0.2.x",
+    "grunt-browserify": "2.x",
+    "grunt-contrib-jshint": "0.9.x",
+    "grunt-contrib-uglify": "0.4.x",
+    "grunt-tape": "0.0.x",
     "precommit-hook": "0.3.x",
     "tape": "2.x",
     "uglify-js": "2.x"
@@ -54,5 +55,25 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/legastero/stanza.io.git"
+  },
+  "scripts": {
+    "test": "grunt tape"
+  },
+  "testling": {
+    "files": [
+      "test/index.js"
+    ],
+    "browsers": [
+      "ie/10..latest",
+      "chrome/20..latest",
+      "chrome/canary",
+      "firefox/10..latest",
+      "firefox/nightly",
+      "opera/next",
+      "safari/6..latest",
+      "iphone/6..latest",
+      "ipad/6..latest",
+      "android-browser/4.2..latest"
+    ]
   }
 }
