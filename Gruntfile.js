@@ -41,6 +41,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-tape');
+    grunt.loadNpmTasks('grunt-nsp-package');
 
-    grunt.registerTask('default', ['jshint', 'browserify', 'uglify', 'tape']);
+    grunt.registerTask('default', ['jshint', 'browserify', 'uglify', 'tape', 'validate-package']);
 };
