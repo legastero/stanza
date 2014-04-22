@@ -17,7 +17,7 @@ module.exports = function (grunt) {
         },
         uglify: {
             options: {
-                banner: '/*! stanzaio <%= grunt.template.today("yyyy-mm-dd") %>'
+                banner: '/*! stanzaio <%= grunt.template.today("yyyy-mm-dd") */%>'
             },
             dist: {
                 files: {
