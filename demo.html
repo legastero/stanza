@@ -95,19 +95,17 @@
           header.textContent = name;
           logEntry.appendChild(header);
 
+          var code = document.createElement('code');
+          var codeData = document.createElement('pre');
 
-          if (data && data.toJSON) {
-            var codeJSON = document.createElement('code');
-            codeJSON.textContent = JSON.stringify(data.toJSON());
-
-            altEntry.appendChild(codeJSON);
-            logEntry.appendChild(altEntry);
-            logEntry.appendChild(document.createElement('hr'));
+          if (typeof data === 'string') {
+              codeData.textContent = data;
+          } else {
+              codeData.textContent = JSON.stringify(data, null, '  ');
           }
 
-          var codeData = document.createElement('code');
-          codeData.textContent = data;
-          entry.appendChild(codeData);
+          code.appendChild(codeData);
+          entry.appendChild(code);
           logEntry.appendChild(entry);
 
           container.appendChild(logEntry);
