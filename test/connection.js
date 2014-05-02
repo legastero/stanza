@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var test = require('tape');
 var stanza = require('../index');

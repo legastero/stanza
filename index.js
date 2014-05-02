@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 exports.Stream = require('./lib/stanza/stream');
 exports.BOSH = require('./lib/stanza/bosh');
