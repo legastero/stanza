@@ -34,7 +34,7 @@
     "wildemitter": "1.x"
   },
   "devDependencies": {
-    "browserify": "3.x",
+    "browserify": "4.x",
     "grunt": "0.4.x",
     "grunt-browserify": "2.x",
     "grunt-contrib-jshint": "0.10.x",
