@@ -6,7 +6,7 @@ exports.Message = require('./lib/stanza/message');
 exports.Presence = require('./lib/stanza/presence');
 exports.Iq = require('./lib/stanza/iq');
 
-exports.PubsubEvent = require('./lib/stanza/pubsub').EventItem;
+exports.PubsubEvent = require('./lib/stanza/pubsubEvents').EventItem;
 exports.PubsubItem = require('./lib/stanza/pubsub').Item;
 
 exports.JID = require('./lib/jid');
