@@ -33,7 +33,7 @@ var client = new XMPP.Client({
 
 ### `createClient(options)`
 
-An alternative method for creating a client instance. 
+An alternative method for creating a client instance.
 
 *Instantiating a client via this function will load all built-in plugins.*
 
@@ -51,9 +51,9 @@ var client = XMPP.createClient({
 
 When creating a client instance, the following settings will configure its behaviour:
 
-- `jid` - (required) the requested bare JID for the client. 
+- <a name="config-jid"></a> `jid` - (required) the requested bare JID for the client.
 - `password` - shortcut for setting [`credentials.password`](#config-credentials-password)
-- `server`
+- `server` - specify the hostname of the server to initially connect to, if different from [`jid.domain`](#config-jid).
 - `resource` - suggest a specific resource for this session.
 - `credentials`
     - `username`
@@ -67,16 +67,16 @@ When creating a client instance, the following settings will configure its behav
     - `realm`
     - `authzid`
 - `transports`
-- `wsURL`
-- `boshURL`
-- `sasl`
-- `useStreamManagement` - set to `true` d
-- `rosterVer` - version ID of cached roster data given by the server, typically saved from a previous session
-- `capsNode`
+- `wsURL` - URL for the XMPP over WebSocket connection endpoint.
+- `boshURL` - URL for the BOSH connection endpoint.
+- `sasl` - a list of the SASL mechanisms that are acceptable for use by the client.
+- `useStreamManagement` - set to `true` to enable resuming the session after a disconnect.
+- `rosterVer` - version ID of cached roster data given by the server, typically saved from a previous session.
+- `capsNode` - a URL for identifying the client app.
 - `softwareVersion`
-    - `name`
-    - `version`
-    - `os`
+    - `name` - the name of the client software using stanza.io
+    - `version` - the version of the client software using stanza.io
+    - `os` - the operating system that the client is running on
 - `timeout` - number of seconds that IQ requests will wait for a response before generating a timeout error.
 - `lang` - preferred language used by the client, such as `'en'` or `'de'`.
 
