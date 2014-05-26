@@ -66,7 +66,7 @@ When creating a client instance, the following settings will configure its behav
     - `serviceName`
     - `realm`
     - `authzid`
-- `transports`
+- `transports` - a strings array of transport methods that may be used.
 - `wsURL` - URL for the XMPP over WebSocket connection endpoint.
 - `boshURL` - URL for the BOSH connection endpoint.
 - `sasl` - a list of the SASL mechanisms that are acceptable for use by the client.
@@ -82,6 +82,81 @@ When creating a client instance, the following settings will configure its behav
 
 ### `Client` Properties
 ### `Client` Methods
+#### `client.getAttention(jid, [opts])`
+#### `client.publishAvatar(id, data, [cb])`
+#### `client.useAvatars(info, [cb])`
+#### `client.getAvatar(jid, id, [cb])`
+#### `client.block(jid, [cb])`
+#### `client.unblock(jid, [cb])`
+#### `client.getBlocked([cb])`
+#### `client.getBookmarks([cb])`
+#### `client.setBookmarks(opts, [cb])`
+#### `client.addBookmark(bookmark, [cb])`
+#### `client.removeBookmark(jid, [cb])`
+#### `client.enableCarbons([cb])`
+#### `client.disableCarbons([cb])`
+#### `client.getCommands(jid, [cb])`
+#### `client.getDiscoInfo(jid, node, [cb])`
+#### `client.getDiscoItems(jid, node, [cb])`
+#### `client.updateCaps()`
+#### `client.getCurrentCaps()`
+#### `client.getServices(jid, type, [cb])`
+#### `client.getServiceCredentials(jid, host, [cb])`
+#### `client.publishGeoLoc(data, [cb])`
+#### `client.goInvisible([cb])`
+#### `client.goVisible([cb])`
+#### `client.discoverICEServers([cb])`
+#### `client.enableKeepAlive(opts)`
+#### `client.disableKeepAlive()`
+#### `client.getHistory(opts, [cb])`
+#### `client.getHistoryPreferences([cb])`
+#### `client.setHistoryPreferences(opts, [cb])`
+#### `client.joinRoom(room, nick, opts)`
+#### `client.leaveRoom(room, nick, opts)`
+#### `client.ban(room, jid, reason, [cb])`
+#### `client.kick(room, nick, reason, [cb])`
+#### `client.invite(room, opts)`
+#### `client.directInvite(room, sender, reason)`
+#### `client.changeNick(room, nick)`
+#### `client.setSubject(room, subject)`
+#### `client.discoverReservedNick(room, [cb])`
+#### `client.requestRoomVoice(room)`
+#### `client.setRoomAffiliation(room, jid, affiliation, reason, [cb])`
+#### `client.setRoomRole(room, nick, role, reason, [cb])`
+#### `client.getRoomMembers(room, opts, [cb])`
+#### `client.getRoomConfig(jid, [cb])`
+#### `client.publishNick(nick, [cb])`
+#### `client.ping(jid, [cb])`
+#### `client.getPrivateData(opts, [cb])`
+#### `client.setPrivateData(opts, [cb])`
+#### `client.subscribeToNode(jid, opts, [cb])`
+#### `client.unsubscribeFromNode(jid, opts, [cb])`
+#### `client.publish(jid, node, item, [cb])`
+#### `client.getItem(jid, node, id, [cb])`
+#### `client.getItems(jid, node, opts, [cb])`
+#### `client.retract(jid, node, id, notify, [cb])`
+#### `client.purgeNode(jid, node, [cb])`
+#### `client.deleteNode(jid, node, [cb])`
+#### `client.createNode(jid, node, [cb])`
+#### `client.publishReachability(data, [cb])`
+#### `client.getRoster([cb])`
+#### `client.updateRosterItem(item, [cb])`
+#### `client.removeRosterItem(jid, [cb])`
+#### `client.subscribe(jid)`
+#### `client.unsubscribe(jid)`
+#### `client.acceptSubscription(jid)`
+#### `client.denySubscription(jid)`
+#### `client.getTime(jid, [cb])`
+#### `client.getVCard(jid, [cb])`
+#### `client.publishVCard(vcard, [cb])`
+#### `client.getSoftwareVersion(jid, [cb])`
+#### `client.use(plugin)`
+#### `client.connect([opts])`
+#### `client.disconnect()`
+#### `client.sendMessage(opts)`
+#### `client.sendPresence(opts)`
+#### `client.sendIq(opts)`
+#### `client.sendStreamError(opts)`
 
 ## `XMPP.JID`
 ## `XMPP.Iq`
