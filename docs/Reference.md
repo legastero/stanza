@@ -269,13 +269,15 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.unsubscribe(jid)`
 ##### `client.updateRosterItem(item, [cb])`
 #### Service Discovery
-##### `client.discoverICEServers([cb])`
 ##### `client.getCurrentCaps()`
 ##### `client.getDiscoInfo(jid, node, [cb])`
 ##### `client.getDiscoItems(jid, node, [cb])`
+##### `client.updateCaps()`
+#### Jingle
+##### `client.call(jid)`
+##### `client.discoverICEServers([cb])`
 ##### `client.getServiceCredentials(jid, host, [cb])`
 ##### `client.getServices(jid, type, [cb])`
-##### `client.updateCaps()`
 #### Pubsub
 ##### `client.createNode(jid, node, [cb])`
 ##### `client.deleteNode(jid, node, [cb])`
@@ -399,12 +401,14 @@ When creating a client instance, the following settings will configure its behav
 ### session:error
 ### session:started
 ### stanza
+### stanza:acked
 ### stream:data
 ### stream:end
 ### stream:error
 ### stream:management:enabled
 ### stream:management:failed
 ### stream:management:resumed
+### stream:management:ack
 ### subscribe
 ### subscribed
 ### unavailable
