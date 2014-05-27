@@ -64,11 +64,11 @@
             - [`client.removeBookmark(jid, [cb])`](#clientremovebookmarkjid-cb)
             - [`client.setBookmarks(opts, [cb])`](#clientsetbookmarksopts-cb)
         - [Message Syncing](#message-syncing)
-            - [`client.enableCarbons([cb])`]
-            - [`client.disableCarbons([cb])`]
-            - [`client.getHistory(opts, [cb])`]
-            - [`client.getHistoryPreferences([cb])`]
-            - [`client.setHistoryPreferences(opts, [cb])`]
+            - [`client.enableCarbons([cb])`](#clientenablecarbonscb)
+            - [`client.disableCarbons([cb])`](#clientdisablecarbonscb)
+            - [`client.getHistory(opts, [cb])`](#clientgethistoryopts-cb)
+            - [`client.getHistoryPreferences([cb])`](#clientgethistorypreferencescb)
+            - [`client.setHistoryPreferences(opts, [cb])`](#clientsethistorypreferencesopts-cb)
         - [Other](#other)
             - [`client.getAttention(jid, [opts])`](#clientgetattentionjid-opts)
             - [`client.getAvatar(jid, id, [cb])`](#clientgetavatarjid-id-cb)
