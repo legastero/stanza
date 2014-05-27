@@ -3,6 +3,90 @@
 - [`XMPP.Client`](#xmppclient)
     - [`new Client(options)`](#new-clientoptions)
     - [`createClient(options)`](#createclientoptions)
+    - [`Client` Methods](#client-methods)
+        - [`client.use(plugin)`](#clientuserplugin)
+        - [`client.connect([opts])`]
+        - [`client.disconnect()`]
+        - [`client.sendIq(opts)`]
+        - [`client.sendMessage(opts)`]
+        - [`client.sendPresence(opts)`]
+        - [`client.sendStreamError(opts)`]
+        - [Keepalive](#keepalive)
+            - [`client.enableKeepAlive(opts)`]
+            - [`client.disableKeepAlive()`]
+            - [`client.ping(jid, [cb])`]
+        - [Roster Management](#roster-management)
+            - [`client.acceptSubscription(jid)`]
+            - [`client.block(jid, [cb])`]
+            - [`client.denySubscription(jid)`]
+            - [`client.getBlocked([cb])`]
+            - [`client.removeRosterItem(jid, [cb])`]
+            - [`client.subscribe(jid)`]
+            - [`client.getRoster([cb])`]
+            - [`client.unblock(jid, [cb])`]
+            - [`client.unsubscribe(jid)`]
+            - [`client.updateRosterItem(item, [cb])`]
+        - [Service Discovery](#service-discovery)
+            - [`client.discoverICEServers([cb])`]
+            - [`client.getCurrentCaps()`]
+            - [`client.getDiscoInfo(jid, node, [cb])`]
+            - [`client.getDiscoItems(jid, node, [cb])`]
+            - [`client.getServiceCredentials(jid, host, [cb])`]
+            - [`client.getServices(jid, type, [cb])`]
+            - [`client.updateCaps()`]
+        - [Pubsub](#pubsub)
+            - [`client.createNode(jid, node, [cb])`]
+            - [`client.deleteNode(jid, node, [cb])`]
+            - [`client.getItem(jid, node, id, [cb])`]
+            - [`client.getItems(jid, node, opts, [cb])`]
+            - [`client.publish(jid, node, item, [cb])`]
+            - [`client.purgeNode(jid, node, [cb])`]
+            - [`client.retract(jid, node, id, notify, [cb])`]
+            - [`client.subscribeToNode(jid, opts, [cb])`]
+            - [`client.unsubscribeFromNode(jid, opts, [cb])`]
+        - [Multi-User Chat](#multi-user-chat)
+            - [`client.ban(room, jid, reason, [cb])`]
+            - [`client.changeNick(room, nick)`]
+            - [`client.directInvite(room, sender, reason)`]
+            - [`client.discoverReservedNick(room, [cb])`]
+            - [`client.getRoomConfig(jid, [cb])`]
+            - [`client.getRoomMembers(room, opts, [cb])`]
+            - [`client.invite(room, opts)`]
+            - [`client.joinRoom(room, nick, opts)`]
+            - [`client.kick(room, nick, reason, [cb])`]
+            - [`client.leaveRoom(room, nick, opts)`]
+            - [`client.requestRoomVoice(room)`]
+            - [`client.setRoomAffiliation(room, jid, affiliation, reason, [cb])`]
+            - [`client.setRoomRole(room, nick, role, reason, [cb])`]
+            - [`client.setSubject(room, subject)`]
+            - [`client.addBookmark(bookmark, [cb])`](#clientaddbookmarkbookmark-cb)
+            - [`client.getBookmarks([cb])`]
+            - [`client.removeBookmark(jid, [cb])`]
+            - [`client.setBookmarks(opts, [cb])`]
+        - [Message Syncing](#message-syncing)
+            - [`client.enableCarbons([cb])`]
+            - [`client.disableCarbons([cb])`]
+            - [`client.getHistory(opts, [cb])`]
+            - [`client.getHistoryPreferences([cb])`]
+            - [`client.setHistoryPreferences(opts, [cb])`]
+        - [Other](#other)
+            - [`client.getAttention(jid, [opts])`]
+            - [`client.getAvatar(jid, id, [cb])`]
+            - [`client.getCommands(jid, [cb])`]
+            - [`client.getPrivateData(opts, [cb])`]
+            - [`client.getSoftwareVersion(jid, [cb])`]
+            - [`client.getTime(jid, [cb])`]
+            - [`client.getVCard(jid, [cb])`]
+            - [`client.goInvisible([cb])`]
+            - [`client.goVisible([cb])`]
+            - [`client.publishAvatar(id, data, [cb])`]
+            - [`client.publishGeoLoc(data, [cb])`]
+            - [`client.publishNick(nick, [cb])`]
+            - [`client.publishReachability(data, [cb])`]
+            - [`client.publishVCard(vcard, [cb])`]
+            - [`client.setPrivateData(opts, [cb])`]
+            - [`client.useAvatars(info, [cb])`]
+
 - [`XMPP.JID`](#xmppjid)
 - [`XMPP.Iq`](#xmppiq)
 - [`XMPP.Message`](#xmppmessage)
@@ -82,81 +166,88 @@ When creating a client instance, the following settings will configure its behav
 
 ### `Client` Properties
 ### `Client` Methods
-#### `client.getAttention(jid, [opts])`
-#### `client.publishAvatar(id, data, [cb])`
-#### `client.useAvatars(info, [cb])`
-#### `client.getAvatar(jid, id, [cb])`
-#### `client.block(jid, [cb])`
-#### `client.unblock(jid, [cb])`
-#### `client.getBlocked([cb])`
-#### `client.getBookmarks([cb])`
-#### `client.setBookmarks(opts, [cb])`
-#### `client.addBookmark(bookmark, [cb])`
-#### `client.removeBookmark(jid, [cb])`
-#### `client.enableCarbons([cb])`
-#### `client.disableCarbons([cb])`
-#### `client.getCommands(jid, [cb])`
-#### `client.getDiscoInfo(jid, node, [cb])`
-#### `client.getDiscoItems(jid, node, [cb])`
-#### `client.updateCaps()`
-#### `client.getCurrentCaps()`
-#### `client.getServices(jid, type, [cb])`
-#### `client.getServiceCredentials(jid, host, [cb])`
-#### `client.publishGeoLoc(data, [cb])`
-#### `client.goInvisible([cb])`
-#### `client.goVisible([cb])`
-#### `client.discoverICEServers([cb])`
-#### `client.enableKeepAlive(opts)`
-#### `client.disableKeepAlive()`
-#### `client.getHistory(opts, [cb])`
-#### `client.getHistoryPreferences([cb])`
-#### `client.setHistoryPreferences(opts, [cb])`
-#### `client.joinRoom(room, nick, opts)`
-#### `client.leaveRoom(room, nick, opts)`
-#### `client.ban(room, jid, reason, [cb])`
-#### `client.kick(room, nick, reason, [cb])`
-#### `client.invite(room, opts)`
-#### `client.directInvite(room, sender, reason)`
-#### `client.changeNick(room, nick)`
-#### `client.setSubject(room, subject)`
-#### `client.discoverReservedNick(room, [cb])`
-#### `client.requestRoomVoice(room)`
-#### `client.setRoomAffiliation(room, jid, affiliation, reason, [cb])`
-#### `client.setRoomRole(room, nick, role, reason, [cb])`
-#### `client.getRoomMembers(room, opts, [cb])`
-#### `client.getRoomConfig(jid, [cb])`
-#### `client.publishNick(nick, [cb])`
-#### `client.ping(jid, [cb])`
-#### `client.getPrivateData(opts, [cb])`
-#### `client.setPrivateData(opts, [cb])`
-#### `client.subscribeToNode(jid, opts, [cb])`
-#### `client.unsubscribeFromNode(jid, opts, [cb])`
-#### `client.publish(jid, node, item, [cb])`
-#### `client.getItem(jid, node, id, [cb])`
-#### `client.getItems(jid, node, opts, [cb])`
-#### `client.retract(jid, node, id, notify, [cb])`
-#### `client.purgeNode(jid, node, [cb])`
-#### `client.deleteNode(jid, node, [cb])`
-#### `client.createNode(jid, node, [cb])`
-#### `client.publishReachability(data, [cb])`
-#### `client.getRoster([cb])`
-#### `client.updateRosterItem(item, [cb])`
-#### `client.removeRosterItem(jid, [cb])`
-#### `client.subscribe(jid)`
-#### `client.unsubscribe(jid)`
-#### `client.acceptSubscription(jid)`
-#### `client.denySubscription(jid)`
-#### `client.getTime(jid, [cb])`
-#### `client.getVCard(jid, [cb])`
-#### `client.publishVCard(vcard, [cb])`
-#### `client.getSoftwareVersion(jid, [cb])`
 #### `client.use(plugin)`
 #### `client.connect([opts])`
 #### `client.disconnect()`
+#### `client.sendIq(opts)`
 #### `client.sendMessage(opts)`
 #### `client.sendPresence(opts)`
-#### `client.sendIq(opts)`
 #### `client.sendStreamError(opts)`
+#### Keepalive
+##### `client.enableKeepAlive(opts)`
+##### `client.disableKeepAlive()`
+##### `client.ping(jid, [cb])`
+#### Roster Management
+##### `client.acceptSubscription(jid)`
+##### `client.block(jid, [cb])`
+##### `client.denySubscription(jid)`
+##### `client.getBlocked([cb])`
+##### `client.removeRosterItem(jid, [cb])`
+##### `client.subscribe(jid)`
+##### `client.getRoster([cb])`
+##### `client.unblock(jid, [cb])`
+##### `client.unsubscribe(jid)`
+##### `client.updateRosterItem(item, [cb])`
+#### Service Discovery
+##### `client.discoverICEServers([cb])`
+##### `client.getCurrentCaps()`
+##### `client.getDiscoInfo(jid, node, [cb])`
+##### `client.getDiscoItems(jid, node, [cb])`
+##### `client.getServiceCredentials(jid, host, [cb])`
+##### `client.getServices(jid, type, [cb])`
+##### `client.updateCaps()`
+#### Pubsub
+##### `client.createNode(jid, node, [cb])`
+##### `client.deleteNode(jid, node, [cb])`
+##### `client.getItem(jid, node, id, [cb])`
+##### `client.getItems(jid, node, opts, [cb])`
+##### `client.publish(jid, node, item, [cb])`
+##### `client.purgeNode(jid, node, [cb])`
+##### `client.retract(jid, node, id, notify, [cb])`
+##### `client.subscribeToNode(jid, opts, [cb])`
+##### `client.unsubscribeFromNode(jid, opts, [cb])`
+#### Multi-User Chat
+##### `client.ban(room, jid, reason, [cb])`
+##### `client.changeNick(room, nick)`
+##### `client.directInvite(room, sender, reason)`
+##### `client.discoverReservedNick(room, [cb])`
+##### `client.getRoomConfig(jid, [cb])`
+##### `client.getRoomMembers(room, opts, [cb])`
+##### `client.invite(room, opts)`
+##### `client.joinRoom(room, nick, opts)`
+##### `client.kick(room, nick, reason, [cb])`
+##### `client.leaveRoom(room, nick, opts)`
+##### `client.requestRoomVoice(room)`
+##### `client.setRoomAffiliation(room, jid, affiliation, reason, [cb])`
+##### `client.setRoomRole(room, nick, role, reason, [cb])`
+##### `client.setSubject(room, subject)`
+##### `client.addBookmark(bookmark, [cb])`
+##### `client.getBookmarks([cb])`
+##### `client.removeBookmark(jid, [cb])`
+##### `client.setBookmarks(opts, [cb])`
+#### Message Syncing
+##### `client.enableCarbons([cb])`
+##### `client.disableCarbons([cb])`
+##### `client.getHistory(opts, [cb])`
+##### `client.getHistoryPreferences([cb])`
+##### `client.setHistoryPreferences(opts, [cb])`
+#### Other
+##### `client.getAttention(jid, [opts])`
+##### `client.getAvatar(jid, id, [cb])`
+##### `client.getCommands(jid, [cb])`
+##### `client.getPrivateData(opts, [cb])`
+##### `client.getSoftwareVersion(jid, [cb])`
+##### `client.getTime(jid, [cb])`
+##### `client.getVCard(jid, [cb])`
+##### `client.goInvisible([cb])`
+##### `client.goVisible([cb])`
+##### `client.publishAvatar(id, data, [cb])`
+##### `client.publishGeoLoc(data, [cb])`
+##### `client.publishNick(nick, [cb])`
+##### `client.publishReachability(data, [cb])`
+##### `client.publishVCard(vcard, [cb])`
+##### `client.setPrivateData(opts, [cb])`
+##### `client.useAvatars(info, [cb])`
 
 ## `XMPP.JID`
 ## `XMPP.Iq`
