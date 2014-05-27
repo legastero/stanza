@@ -122,14 +122,14 @@
         var jid = document.getElementById('jid').value;
 
         var url = document.getElementById('url').value;
-        var wsURL, boshURL, transport;
+        var wsURL, boshURL, transports = ['websocket', 'bosh'];
 
         if (url.indexOf('http') === 0) {
             boshURL = url;
-            transport = 'bosh';
+            transports = ['bosh'];
         } else if (url.indexOf('ws') === 0) {
             wsURL = url;
-            transport = 'websocket';
+            transports = ['websocket'];
         }
 
         client = XMPP.createClient({
@@ -137,7 +137,7 @@
           password: document.getElementById('password').value,
           wsURL: wsURL,
           boshURL: boshURL,
-          transport: transport
+          transports: transports
         });
 
         client.on('*', log);
