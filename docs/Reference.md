@@ -116,7 +116,7 @@
     - [`disconnected`](#disconnected)
     - [`geoloc`](#geoloc)
     - [`groupchat`](#groupchat)
-    - [`id:ID`](#id:ID)
+    - [`id:ID`](#idID)
     - [`iq:get:NAME`](#iqgetNAME)
     - [`iq:set:NAME`](#iqsetNAME)
     - [`jingle:accepted`](#jingleaccepted)
