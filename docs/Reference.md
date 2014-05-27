@@ -87,7 +87,6 @@
             - [`client.publishVCard(vcard, [cb])`](#clientpublishvcardvcard-cb)
             - [`client.setPrivateData(opts, [cb])`](#clientsetprivatedataopts-cb)
             - [`client.useAvatars(data, [cb])`](#clientuseavatarsdata-cb)
-
 - [`XMPP.JID`](#xmppjid)
 - [`XMPP.Iq`](#xmppiq)
 - [`XMPP.Message`](#xmppmessage)
@@ -163,7 +162,7 @@
     - [`session:bound`](#sessionbound)
     - [`session:end`](#sessionend)
     - [`session:error`](#sessionerror)
-    - [`session:started`](#session:tarted)
+    - [`session:started`](#sessionstarted)
     - [`stanza`](#stanza)
     - [`stream:data`](#streamdata)
     - [`stream:end`](#streamend)
@@ -177,6 +176,8 @@
     - [`unblock`](#unblock)
     - [`unsubscribe`](#unsubscribe)
     - [`unsubscribed`](#unsubscribed)
+
+
 ## `XMPP.Client`
 
 ### `new Client(options)`
