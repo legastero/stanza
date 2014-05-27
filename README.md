@@ -16,12 +16,12 @@ have no need to ever see or touch any XML when using stanza.io.
 
 Starting with `v4.0.0`, stanza.io is using the protocol specified in the [latest XMPP over WebSocket draft](http://tools.ietf.org/html/draft-ietf-xmpp-websocket-06) by default, which contains backwards incompatible changes.
 
-Servers have started switching to using the latest protocol; notably, Prosody's WebSocket module for `prosody-0.10`. If your server has not yet been upgraded, you can set `transport` to `'old-websocket'` in the config:
+Servers have started switching to using the latest protocol; notably, Prosody's WebSocket module for `prosody-0.10`. If your server has not yet been upgraded, you can set `transports` to `['old-websocket']` in the config:
 
 ```javascript
 var oldws = XMPP.createClient({
     ...
-    transport: 'old-websocket'
+    transports: ['old-websocket']
 });
 ```
 
