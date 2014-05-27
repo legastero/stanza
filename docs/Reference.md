@@ -5,6 +5,7 @@
     - [`createClient(options)`](#createclientoptions)
     - [`Client` Methods](#client-methods)
         - [`client.use(plugin)`](#clientuseplugin)
+        - [`client.on(event, [group], handler)(#clientonevent-group-handler)
         - [`client.connect([opts])`](#clientconnectops)
         - [`client.disconnect()`](#clientdisconnect)
         - [`client.sendIq(opts)`](#clientsendiqopts)
@@ -98,7 +99,84 @@
 - [Presence Stanzas](#presence-stanzas)
 - [IQ Stanzas](#iq-stanzas)
 - [Events](#events)
-
+    - [`attention`](#attention)
+    - [`auth:failed`](#authfailed)
+    - [`auth:success`](#authsuccess)
+    - [`available`](#available)
+    - [`avatar`](#avatar)
+    - [`block`](#block)
+    - [`bosh:terminate`](#boshterminate)
+    - [`carbon:received`](#carbonreceived)
+    - [`carbon:sent`](#carbonsent)
+    - [`chat:state`](#chatstate)
+    - [`chat`](#chat)
+    - [`connected`](#connected)
+    - [`credentials:update`](#credentialsupdate)
+    - [`dataform`](#dataform)
+    - [`disco:caps`](#discocaps)
+    - [`disconnected`](#disconnected)
+    - [`geoloc`](#geoloc)
+    - [`groupchat`](#groupchat)
+    - [`id:ID`](#id:ID)
+    - [`iq:get:NAME`](#iqgetNAME)
+    - [`iq:set:NAME`](#iqsetNAME)
+    - [`jingle:accepted`](#jingleaccepted)
+    - [`jingle:hold`](#jinglehold)
+    - [`jingle:incoming`](#jingleincoming)
+    - [`jingle:localstream:added`](#jinglelocalstreamadded)
+    - [`jingle:localstream:removed`](#jinglelocalstreamremoved)
+    - [`jingle:mute`](#jinglemute)
+    - [`jingle:outgoing`](#jingleoutgoing)
+    - [`jingle:remotestream:added`](#jingleremotestreamadded)
+    - [`jingle:remotestream:removed`](#jingleremotestreamremoved)
+    - [`jingle:resumed`](#jingleresumed)
+    - [`jingle:ringing`](#jingleringing)
+    - [`jingle:terminated`](#jingleterminated)
+    - [`jingle:unmute`](#jingleunmute)
+    - [`message:error`](#messageerror)
+    - [`message:sent`](#messagesent)
+    - [`message`](#message)
+    - [`muc:available`](#mucavailable)
+    - [`muc:declined`](#mucdeclined)
+    - [`muc:destroyed`](#mucdestroyed)
+    - [`muc:error`](#mucerror)
+    - [`muc:invite`](#mucinvite)
+    - [`muc:join`](#mucjoin)
+    - [`muc:leave`](#mucleave)
+    - [`muc:subject`](#mucsubject)
+    - [`muc:unavailable`](#mucunavailable)
+    - [`nick`](#nick)
+    - [`presence:error`](#presenceerror)
+    - [`presence`](#presence)
+    - [`pubsub:event`](#pubsubevent)
+    - [`raw:incoming`](#rawincoming)
+    - [`raw:outgoing`](#rawoutgoing)
+    - [`reachability`](#reachability)
+    - [`receipt[:ID]`](#receiptID)
+    - [`replace[:ID]`](#replaceID)
+    - [`roster:update`](#rosterupdate)
+    - [`roster:ver`](#rosterver)
+    - [`sasl:abort`](#saslabort)
+    - [`sasl:challenge`](#saslchallenge)
+    - [`sasl:failure`](#saslfailure)
+    - [`sasl:success`](#saslsuccess)
+    - [`session:bound`](#sessionbound)
+    - [`session:end`](#sessionend)
+    - [`session:error`](#sessionerror)
+    - [`session:started`](#session:tarted)
+    - [`stanza`](#stanza)
+    - [`stream:data`](#streamdata)
+    - [`stream:end`](#streamend)
+    - [`stream:error`](#streamerror)
+    - [`stream:management:enabled`](#streammanagementenabled)
+    - [`stream:management:failed`](#streammanagementfailed)
+    - [`stream:management:resumed`](#streammanagementresumed)
+    - [`subscribe`](#subscribe)
+    - [`subscribed`](#subscribed)
+    - [`unavailable`](#unavailable)
+    - [`unblock`](#unblock)
+    - [`unsubscribe`](#unsubscribe)
+    - [`unsubscribed`](#unsubscribed)
 ## `XMPP.Client`
 
 ### `new Client(options)`
@@ -167,6 +245,7 @@ When creating a client instance, the following settings will configure its behav
 ### `Client` Properties
 ### `Client` Methods
 #### `client.use(plugin)`
+#### `client.on(event, [group], handler)`
 #### `client.connect([opts])`
 #### `client.disconnect()`
 #### `client.sendIq(opts)`
@@ -249,15 +328,85 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.setPrivateData(opts, [cb])`
 ##### `client.useAvatars(info, [cb])`
 
-## `XMPP.JID`
-## `XMPP.Iq`
-## `XMPP.Message`
-## `XMPP.Presence`
-## `XMPP.PubsubEvent`
-## `XMPP.PubsubItem`
-## `XMPP.jxt`
-
 ## Message Stanzas
 ## Presence Stanzas
 ## IQ Stanzas
 ## Events
+### attention
+### auth:failed
+### auth:success
+### avatar
+### available
+### block
+### bosh:terminate
+### carbon:received
+### carbon:sent
+### chat
+### chat:state
+### connected
+### credentials:update
+### dataform
+### disco:caps
+### disconnected
+### geoloc
+### groupchat
+### id:ID
+### iq:get:NAME
+### iq:set:NAME
+### jingle:accepted
+### jingle:hold
+### jingle:incoming
+### jingle:localstream:added
+### jingle:localstream:removed
+### jingle:mute
+### jingle:outgoing
+### jingle:remotestream:added
+### jingle:remotestream:removed
+### jingle:resumed
+### jingle:ringing
+### jingle:terminated
+### jingle:unmute
+### message
+### message:error
+### message:sent
+### muc:available
+### muc:declined
+### muc:error
+### muc:invite
+### muc:join
+### muc:leave
+### muc:subject
+### muc:unavailable
+### muc:destroyed
+### nick
+### presence
+### presence:error
+### pubsub:event
+### raw:incoming
+### raw:outgoing
+### reachability
+### receipt[:ID]
+### replace[:ID]
+### roster:update
+### roster:ver
+### sasl:abort
+### sasl:challenge
+### sasl:failure
+### sasl:success
+### session:bound
+### session:end
+### session:error
+### session:started
+### stanza
+### stream:data
+### stream:end
+### stream:error
+### stream:management:enabled
+### stream:management:failed
+### stream:management:resumed
+### subscribe
+### subscribed
+### unavailable
+### unblock
+### unsubscribe
+### unsubscribed
