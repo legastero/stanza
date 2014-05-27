@@ -5,7 +5,7 @@
     - [`createClient(options)`](#createclientoptions)
     - [`Client` Methods](#client-methods)
         - [`client.use(plugin)`](#clientuseplugin)
-        - [`client.on(event, [group], handler)](#clientonevent-group-handler)
+        - [`client.on(event, [group], handler)`](#clientonevent-group-handler)
         - [`client.connect([opts])`](#clientconnectops)
         - [`client.disconnect()`](#clientdisconnect)
         - [`client.sendIq(opts)`](#clientsendiqopts)
