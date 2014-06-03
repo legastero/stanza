@@ -1,4 +1,4 @@
-# 5.4.x API Reference
+# 5.5.x API Reference
 
 - [`XMPP.Client`](#xmppclient)
     - [`new Client(options)`](#new-clientoptions)

@@ -74,6 +74,11 @@ client.on('chat', function (msg) {
 client.connect();
 ```
 
+## Documentation
+
+- [API Reference](docs/Reference.md)
+- [Supported XEPs](docs/Supported_XEPs.md)
+
 ## License
 
 MIT
