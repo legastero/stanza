@@ -6,16 +6,13 @@
 - [XEP-0048: Bookmarks](http://xmpp.org/extensions/xep-0048.html)
 
     Using private XML storage.
-
 - [XEP-0049: Private XML Storage](http://xmpp.org/extensions/xep-0049.html)
 - [XEP-0050: Ad-Hoc Commands](http://xmpp.org/extensions/xep-0050.html)
 
     Partial support, for discovering available commands.
-
 - [XEP-0054: vcard-temp](http://xmpp.org/extensions/xep-0054.html)
 
     Partial support, for the most common vCard fields.
-
 - [XEP-0059: Result Set Management](http://xmpp.org/extensions/xep-0059.html)
 - [XEP-0060: Publish-Subscribe](http://xmpp.org/extensions/xep-0060.html)
 - [XEP-0066: Out of Band Data](http://xmpp.org/extensions/xep-0066.html)
@@ -33,11 +30,9 @@
 - [XEP-0153: vCard-Based Avatars](http://xmpp.org/extensions/xep-0153.html)
 
     Read only support. Use XEP-0084 instead for setting user avatars.
-
 - [XEP-0156: Discovering Alternative XMPP Connection Methods](http://xmpp.org/extensions/xep-0156.html)
 
     Support for the HTTP discovery method.
-
 - [XEP-0163: Personal Eventing Protocol](http://xmpp.org/extensions/xep-0163.html)
 - [XEP-0166: Jingle](http://xmpp.org/extensions/xep-0166.html)
 - [XEP-0167: Jingle RTP Sesssions](http://xmpp.org/extensions/xep-0167.html)
