@@ -101,7 +101,11 @@
           if (typeof data === 'string') {
               codeData.textContent = data;
           } else {
-              codeData.textContent = JSON.stringify(data, null, '  ');
+              if (name === 'connected' || name === 'disconnected') {
+                  codeData.textContent = 'Client instance: ' + JSON.stringify(data.config, null, '  ');
+              } else {
+                  codeData.textContent = JSON.stringify(data, null, '  ');
+              }
           }
 
           code.appendChild(codeData);
