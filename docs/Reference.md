@@ -85,6 +85,7 @@
             - [`client.publishAvatar(id, data, [cb])`](#clientpublishavatarid-data-cb)
             - [`client.publishGeoLoc(data, [cb])`](#clientpublishgeolocdata-cb)
             - [`client.publishNick(nick, [cb])`](#clientpublishnicknick-cb)
+            - [`client.publishMood(mood, text, [cb])`](#clientpublishmoodmood-text-cb)
             - [`client.publishReachability(data, [cb])`](#clientpublishreachabilitydata-cb)
             - [`client.publishVCard(vcard, [cb])`](#clientpublishvcardvcard-cb)
             - [`client.setPrivateData(opts, [cb])`](#clientsetprivatedataopts-cb)
