@@ -90,9 +90,17 @@
             - [`client.setPrivateData(opts, [cb])`](#clientsetprivatedataopts-cb)
             - [`client.useAvatars(data, [cb])`](#clientuseavatarsdata-cb)
 - [`XMPP.JID`](#xmppjid)
+    - [`new JID(jid)`](#new-jidjid)
+
 - [`XMPP.Iq`](#xmppiq)
+    - [`new Iq(data, xml)`](#new-iqdata-xml)
+    - [`Iq` Methods](#iq-methods)
+        - [`iq.resultReply(data)`](#iqresultreplydata)
+        - [`iq.errorReply(data)`](#iqerrorreplydata)
 - [`XMPP.Message`](#xmppmessage)
+    - [`new XMPP.Message(data, xml)`](#new-xmpppmessagedata-xml)
 - [`XMPP.Presence`](#xmpppresence)
+    - [`new XMPP.Presence(data, xml)`](#new-xmpppresencedata-xml)
 - [`XMPP.PubsubEvent`](#xmpppubsubevent)
 - [`XMPP.PubsubItem`](#xmpppubsubitemt)
 - [`XMPP.jxt`](#jxt)
@@ -221,16 +229,16 @@ When creating a client instance, the following settings will configure its behav
 - `server` - specify the hostname of the server to initially connect to, if different from [`jid.domain`](#config-jid).
 - `resource` - suggest a specific resource for this session.
 - `credentials`
-    - `username`
-    - <a name="config-credentials-password"></a>`password`
-    - `host`
-    - `serverKey`
-    - `clientKey`
-    - `saltedPassword`
-    - `serviceType`
-    - `serviceName`
-    - `realm`
-    - `authzid`
+    - `username` - username you're presenting for auth. Typically the local portion of the JID, but could be different
+    - <a name="config-credentials-password"></a>`password` - just like it sounds
+    - `host` - the domain of the service
+    - `serverKey` - cached credential created by `SCRAM-SHA-1`, that can be used without needing to know the password
+    - `clientKey` - cached credential created by `SCRAM-SHA-1`, that can be used without needing to know the password
+    - `saltedPassword` - cached credential created by `SCRAM-SHA-1`, that can be used without needing to know the password
+    - `serviceType` - for most cases should be `'XMPP'`, the default
+    - `serviceName` - for most cases should be the same as the `'host'`, the default
+    - `realm` - for most cases should be the same as the `'host'`, the default
+    - `authzid` - 
 - `transports` - a strings array of transport methods that may be used.
 - `wsURL` - URL for the XMPP over WebSocket connection endpoint.
 - `boshURL` - URL for the BOSH connection endpoint.
@@ -315,9 +323,12 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.getHistory(opts, [cb])`
 ##### `client.getHistoryPreferences([cb])`
 ##### `client.setHistoryPreferences(opts, [cb])`
+#### Avatars
+##### `client.getAvatar(jid, id, [cb])`
+##### `client.publishAvatar(id, data, [cb])`
+##### `client.useAvatars(info, [cb])`
 #### Other
 ##### `client.getAttention(jid, [opts])`
-##### `client.getAvatar(jid, id, [cb])`
 ##### `client.getCommands(jid, [cb])`
 ##### `client.getPrivateData(opts, [cb])`
 ##### `client.getSoftwareVersion(jid, [cb])`
@@ -325,13 +336,34 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.getVCard(jid, [cb])`
 ##### `client.goInvisible([cb])`
 ##### `client.goVisible([cb])`
-##### `client.publishAvatar(id, data, [cb])`
 ##### `client.publishGeoLoc(data, [cb])`
 ##### `client.publishNick(nick, [cb])`
 ##### `client.publishReachability(data, [cb])`
 ##### `client.publishVCard(vcard, [cb])`
 ##### `client.setPrivateData(opts, [cb])`
-##### `client.useAvatars(info, [cb])`
+
+## `XMPP.JID`
+### `new JID(jid)`
+
+Creates a new `JID` (Jabber IDentifier) object, which represents an address in the XMPP network.
+
+- `jid` - a string of the form `[username@]domain[/resource]` (or an existing `JID` object)
+
+```javascript
+var someServer = new JID('somedomain.example.com');
+var friendAddress = new JID('friend@example.com');
+var addressOfParticularConnection = new JID('me@example.com/laptopclient');
+```
+
+### `JID` Properties
+
+All `JID` objects expose the following properties:
+
+- `local` - If the `JID` is of the form `'user@example.com'`, then the `local` value would be the `'user'` portion
+- `domain` -  If the `JID` is of the form `'user@example.com'` (or `'example.com'`), then the `domain` value would be `'example.com'`
+- `resource` - If the `JID` is of the form `'user@example.com/res'` (or even `'example.com/res'`), then the `resource` value would be `'res'`
+- `bare` - The bare `JID` contains only the local and domain sections, eg `'user@example.com'`
+- `full` - The full `JID` contains the local, domain, and resource sections, eg `'user@example.com/res'`
 
 ## Message Stanzas
 ## Presence Stanzas
@@ -347,11 +379,47 @@ When creating a client instance, the following settings will configure its behav
 ### carbon:received
 ### carbon:sent
 ### chat
+
+Example:
+```
+{
+    type: 'chat',
+    to: JID,
+    from: JID,
+    body: 'this is a chat'
+}
+```
+
 ### chat:state
+
+Example:
+```
+{
+    type: 'chat',
+    to: JID,
+    from: JID,
+    chatState: 'composing'
+}
+```
+
 ### connected
 ### credentials:update
 ### dataform
 ### disco:caps
+
+Example:
+```
+{
+    to: JID,
+    from: JID,
+    caps: {
+        hash: 'sha-1',
+        node: 'https://stanza.io',
+        ver: 'rs/tl9NCfXBpKoOYUy+JdBbPGDg='
+    }
+}
+```
+
 ### disconnected
 ### geoloc
 ### groupchat
@@ -416,4 +484,23 @@ When creating a client instance, the following settings will configure its behav
 ### unavailable
 ### unblock
 ### unsubscribe
+
+Example:
+```
+{
+    type: 'subscribe',
+    to: JID,
+    from: JID
+}
+```
+
 ### unsubscribed
+
+Example:
+```
+{
+    type: 'unsubscribed',
+    to: JID,
+    from: JID
+}
+```
