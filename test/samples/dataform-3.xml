@@ -1,0 +1,63 @@
+<x xmlns='jabber:x:data' type='result'>
+  <title>Joogle Search: verona</title>
+  <reported>
+    <field var='name'/>
+    <field var='url'/>
+    <field var='recommended' type='boolean' />
+  </reported>
+  <item>
+    <field var='name'>
+      <value>Comune di Verona - Benvenuti nel sito ufficiale</value>
+    </field>
+    <field var='url'>
+      <value>http://www.comune.verona.it/</value>
+    </field>
+    <field var='recommended'>
+      <value>1</value>
+    </field>
+  </item>
+  <item>
+    <field var='name'>
+      <value>benvenuto!</value>
+    </field>
+    <field var='url'>
+      <value>http://www.hellasverona.it/</value>
+    </field>
+    <field var='recommended'>
+      <value>1</value>
+    </field>
+  </item>
+  <item>
+    <field var='name'>
+      <value>Universita degli Studi di Verona - Home Page</value>
+    </field>
+    <field var='url'>
+      <value>http://www.univr.it/</value>
+    </field>
+    <field var='recommended'>
+      <value>1</value>
+    </field>
+  </item>
+  <item>
+    <field var='name'>
+      <value>Aeroporti del Garda</value>
+    </field>
+    <field var='url'>
+      <value>http://www.aeroportoverona.it/</value>
+    </field>
+    <field var='recommended'>
+      <value>1</value>
+    </field>
+  </item>
+  <item>
+    <field var='name'>
+      <value>Veronafiere - fiera di Verona</value>
+    </field>
+    <field var='url'>
+      <value>http://www.veronafiere.it/</value>
+    </field>
+    <field var='recommended'>
+      <value>1</value>
+    </field>
+  </item>
+</x>

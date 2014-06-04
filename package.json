@@ -8,6 +8,9 @@
     "faye-websocket": false,
     "./lib/plugins/index.js": "./lib/plugins/index-browser.js"
   },
+  "browserify": {
+    "transform": "brfs"
+  },
   "bugs": "https://github.com/legastero/stanza.io/issues",
   "contributors": [
     "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
@@ -34,6 +37,7 @@
     "wildemitter": "1.x"
   },
   "devDependencies": {
+    "brfs": "^1.1.1",
     "browserify": "4.x",
     "grunt": "0.4.x",
     "grunt-browserify": "2.x",
@@ -62,7 +66,8 @@
   },
   "testling": {
     "files": [
-      "test/index.js"
+      "test/connection.js",
+      "test/stanza-dataforms.js"
     ],
     "browsers": [
       "ie/10..latest",

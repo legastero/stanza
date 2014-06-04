@@ -1,0 +1,31 @@
+<x xmlns='jabber:x:data' type='submit'>
+  <field var='FORM_TYPE'>
+    <value>jabber:bot</value>
+  </field>
+  <field var='botname'>
+    <value>The Jabber Google Bot</value>
+  </field>
+  <field var='description'>
+    <value>This bot enables you to send requests to</value>
+    <value>Google and receive the search results right</value>
+    <value>in your Jabber client. It&apos;s really cool!</value>
+    <value>It even supports Google News!</value>
+  </field>
+  <field var='public'>
+    <value>0</value>
+  </field>
+  <field var='password'>
+    <value>v3r0na</value>
+  </field>
+  <field var='features'>
+    <value>news</value>
+    <value>search</value>
+  </field>
+  <field var='maxsubs'>
+    <value>50</value>
+  </field>
+  <field var='invitelist'>
+    <value>juliet@capulet.com</value>
+    <value>benvolio@montague.net</value>
+  </field>
+</x>

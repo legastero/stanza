@@ -41,7 +41,7 @@ module.exports = function (grunt) {
             options: {
                 pretty: true
             },
-            files: ['test/index.js']
+            files: ['test/**.js']
         }
     });
 
