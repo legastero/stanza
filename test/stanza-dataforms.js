@@ -9,6 +9,8 @@ var DataForm = dataforms.DataForm;
 var formXML = fs.readFileSync(__dirname + '/samples/dataform-1.xml');
 var submittedXML = fs.readFileSync(__dirname + '/samples/dataform-2.xml');
 var itemsXML = fs.readFileSync(__dirname + '/samples/dataform-3.xml');
+var validationXML = fs.readFileSync(__dirname + '/samples/dataform-4.xml');
+var mediaXML = fs.readFileSync(__dirname + '/samples/dataform-5.xml');
 
 
 test('Convert Form XML to Data Form object', function (t) {
@@ -223,6 +225,115 @@ test('Convert Form Item Results XML to Data Form object', function (t) {
             type: 'boolean',
         }
     ]);
+
+    t.end();
+});
+
+
+test('Convert Form with Validation XML to Data Form object', function (t) {
+    var form = jxt.parse(validationXML, DataForm).toJSON();
+
+    t.equal(form.fields.length, 5);
+
+    t.same(form.fields[0], {
+        type: 'text-single',
+        name: 'evt.date',
+        label: 'Event Date/Time',
+        value: '2003-10-06T11:22:00-07:00',
+        validation: {
+            dataType: 'xs:dateTime',
+            basic: true
+        }
+    });
+
+    t.same(form.fields[1], {
+        type: 'list-single',
+        name: 'evt.category',
+        label: 'Event Category',
+        options: [
+            { value: 'holiday' },
+            { value: 'reminder' },
+            { value: 'appointment' }
+        ],
+        validation: {
+            dataType: 'xs:string',
+            open: true
+        }
+    });
+
+    t.same(form.fields[2], {
+        type: 'text-single',
+        name: 'evt.rsvp',
+        label: 'RSVP Date/Time',
+        value: '2003-10-06T11:22:00-07:00',
+        validation: {
+            dataType: 'xs:dateTime',
+            range: {
+                min: '2003-10-05T00:00:00-07:00',
+                max: '2003-10-24T23:59:59-07:00'
+            }
+        }
+    });
+
+    t.same(form.fields[3], {
+        type: 'text-single',
+        name: 'ssn',
+        label: 'Social Security Number',
+        desc: 'This field should be your SSN, including \'-\' (e.g. 123-12-1234)',
+        validation: {
+            dataType: 'xs:string',
+            regex: '([0-9]{3})-([0-9]{2})-([0-9]{4})'
+        }
+    });
+
+    t.same(form.fields[4], {
+        type: 'list-multi',
+        name: 'evt.notify-methods',
+        label: 'Notify me by',
+        options: [
+            { value: 'e-mail' },
+            { value: 'jabber/xmpp' },
+            { value: 'work phone' },
+            { value: 'home phone' },
+            { value: 'cell phone' }
+        ],
+        validation: {
+            dataType: 'xs:string',
+            basic: true,
+            select: {
+                min: 1,
+                max: 3
+            }
+        }
+    });
+
+    t.end();
+});
+
+
+test('Convert Form with Media Field XML to Data Form object', function (t) {
+    var form = jxt.parse(mediaXML, DataForm).toJSON();
+
+    t.equal(form.fields.length, 1);
+
+    t.same(form.fields[0], {
+        type: 'text-single',
+        name: 'ocr',
+        media: {
+            height: 80,
+            width: 290,
+            uris: [
+                {
+                    type: 'image/jpeg',
+                    uri: 'http://www.victim.example/challenges/ocr.jpeg?F3A6292C'
+                },
+                {
+                    type: 'image/jpeg',
+                    uri: 'cid:sha1+f24030b8d91d233bac14777be5ab531ca3b9f102@bob.xmpp.org'
+                }
+            ]
+        }
+    });
 
     t.end();
 });

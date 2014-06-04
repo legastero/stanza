@@ -1,0 +1,49 @@
+<x xmlns='jabber:x:data' type='form'>
+  <field var='evt.date' type='text-single' label='Event Date/Time'>
+    <validate xmlns='http://jabber.org/protocol/xdata-validate'
+              datatype='xs:dateTime'>
+      <basic/>
+    </validate>
+    <value>2003-10-06T11:22:00-07:00</value>
+  </field>
+  <field var='evt.category'
+         type='list-single'
+         label='Event Category'>
+    <validate xmlns='http://jabber.org/protocol/xdata-validate'
+              datatype='xs:string'>
+      <open/>
+    </validate>
+    <option><value>holiday</value></option>
+    <option><value>reminder</value></option>
+    <option><value>appointment</value></option>
+  </field>
+  <field var='evt.rsvp' type='text-single' label='RSVP Date/Time'>
+    <validate xmlns='http://jabber.org/protocol/xdata-validate'
+              datatype='xs:dateTime'>
+      <range min='2003-10-05T00:00:00-07:00'
+             max='2003-10-24T23:59:59-07:00'/>
+    </validate>
+    <value>2003-10-06T11:22:00-07:00</value>
+  </field>
+  <field var='ssn' type='text-single' label='Social Security Number'>
+    <desc>This field should be your SSN, including '-' (e.g. 123-12-1234)</desc>
+    <validate xmlns='http://jabber.org/protocol/xdata-validate'
+              datatype='xs:string'>
+      <regex>([0-9]{3})-([0-9]{2})-([0-9]{4})</regex>
+    </validate>
+  </field>
+  <field var='evt.notify-methods'
+         type='list-multi'
+         label='Notify me by'>
+    <validate xmlns='http://jabber.org/protocol/xdata-validate'
+              datatype='xs:string'>
+      <basic/>
+      <list-range min='1' max='3'/>
+    </validate>
+    <option><value>e-mail</value></option>
+    <option><value>jabber/xmpp</value></option>
+    <option><value>work phone</value></option>
+    <option><value>home phone</value></option>
+    <option><value>cell phone</value></option>
+  </field>
+</x>
