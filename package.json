@@ -34,10 +34,10 @@
     "sasl-scram-sha-1": "0.2.x",
     "saslmechanisms": "0.1.x",
     "underscore": "1.x",
-    "wildemitter": "1.x"
+    "wildemitter": "1.x",
+    "brfs": "^1.1.1"
   },
   "devDependencies": {
-    "brfs": "^1.1.1",
     "browserify": "4.x",
     "grunt": "0.4.x",
     "grunt-browserify": "2.x",
