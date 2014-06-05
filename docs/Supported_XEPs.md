@@ -55,6 +55,10 @@
 - [XEP-0215: External Service Discovery](http://xmpp.org/extensions/xep-0215.html)
 - [XEP-0221: Data Forms Media Element](http://xmpp.org/extensions/xep-0221.html)
 - [XEP-0224: Attention](http://xmpp.org/extensions/xep-0224.html)
+- [XEP-0231: Bits of Binary](http://xmpp.org/extensions/xep-0231.html)
+
+    Support for requesting bits. Responding to requests for bits is left to the application using stanza.io by listening to the `iq:get:bob` event.
+
 - [XEP-0249: Direct MUC Invitations](http://xmpp.org/extensions/xep-0249.html)
 - [XEP-0276: Presence Decloaking](http://xmpp.org/extensions/xep-0276.html)
 - [XEP-0280: Message Carbons](http://xmpp.org/extensions/xep-0280.html)
