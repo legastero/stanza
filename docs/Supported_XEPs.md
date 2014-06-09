@@ -19,6 +19,10 @@
 - [XEP-0059: Result Set Management](http://xmpp.org/extensions/xep-0059.html)
 - [XEP-0060: Publish-Subscribe](http://xmpp.org/extensions/xep-0060.html)
 - [XEP-0066: Out of Band Data](http://xmpp.org/extensions/xep-0066.html)
+- [XEP-0077: In-Band Registration](http://xmpp.org/extensions/xep-0077.html)
+
+    Support for registering/unregistering with services, and retrieving/updating your XMPP account information. Does **NOT** support in-band registration for new XMPP accounts.
+
 - [XEP-0080: User Location](http://xmpp.org/extensions/xep-0080.html)
 - [XEP-0082: XMPP Date and Time Profiles](http://xmpp.org/extensions/xep-0082.html)
 - [XEP-0084: User Avatar](http://xmpp.org/extensions/xep-0084.html)

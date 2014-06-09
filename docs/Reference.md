@@ -73,6 +73,8 @@
             - [`client.getHistoryPreferences([cb])`](#clientgethistorypreferencescb)
             - [`client.setHistoryPreferences(opts, [cb])`](#clientsethistorypreferencesopts-cb)
         - [Other](#other)
+            - [`client.deleteAccount([jid, cb])`](#clientdeleteaccountjid-cb)
+            - [`client.getAccountInfo([jid, cb])`](#clientgetaccountinfojid-cb)
             - [`client.getAttention(jid, [opts])`](#clientgetattentionjid-opts)
             - [`client.getAvatar(jid, id, [cb])`](#clientgetavatarjid-id-cb)
             - [`client.getCommands(jid, [cb])`](#clientgetcommandsjid-cb)
@@ -84,11 +86,12 @@
             - [`client.goVisible([cb])`](#clientgovisiblecb)
             - [`client.publishAvatar(id, data, [cb])`](#clientpublishavatarid-data-cb)
             - [`client.publishGeoLoc(data, [cb])`](#clientpublishgeolocdata-cb)
-            - [`client.publishNick(nick, [cb])`](#clientpublishnicknick-cb)
             - [`client.publishMood(mood, text, [cb])`](#clientpublishmoodmood-text-cb)
+            - [`client.publishNick(nick, [cb])`](#clientpublishnicknick-cb)
             - [`client.publishReachability(data, [cb])`](#clientpublishreachabilitydata-cb)
             - [`client.publishVCard(vcard, [cb])`](#clientpublishvcardvcard-cb)
             - [`client.setPrivateData(opts, [cb])`](#clientsetprivatedataopts-cb)
+            - [`client.updateAccount(jid, data, [cb])`](#clientgetaccountinfojid-data-cb)
             - [`client.useAvatars(data, [cb])`](#clientuseavatarsdata-cb)
 - [`XMPP.JID`](#xmppjid)
     - [`new JID(jid)`](#new-jidjid)
@@ -239,7 +242,7 @@ When creating a client instance, the following settings will configure its behav
     - `serviceType` - for most cases should be `'XMPP'`, the default
     - `serviceName` - for most cases should be the same as the `'host'`, the default
     - `realm` - for most cases should be the same as the `'host'`, the default
-    - `authzid` - 
+    - `authzid` -
 - `transports` - a strings array of transport methods that may be used.
 - `wsURL` - URL for the XMPP over WebSocket connection endpoint.
 - `boshURL` - URL for the BOSH connection endpoint.
@@ -329,6 +332,8 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.publishAvatar(id, data, [cb])`
 ##### `client.useAvatars(info, [cb])`
 #### Other
+##### `client.deleteAccount([jid, cb])`
+##### `client.getAccountInfo([jid, cb])`
 ##### `client.getAttention(jid, [opts])`
 ##### `client.getCommands(jid, [cb])`
 ##### `client.getPrivateData(opts, [cb])`
@@ -342,6 +347,7 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.publishReachability(data, [cb])`
 ##### `client.publishVCard(vcard, [cb])`
 ##### `client.setPrivateData(opts, [cb])`
+##### `client.updateAccount(jid, data, [cb])`
 
 ## `XMPP.JID`
 ### `new JID(jid)`
