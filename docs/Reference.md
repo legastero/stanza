@@ -1,4 +1,4 @@
-# 5.6.x API Reference
+# 5.10.x API Reference
 
 - [`XMPP.Client`](#xmppclient)
     - [`new Client(options)`](#new-clientoptions)
@@ -54,6 +54,7 @@
             - [`client.discoverReservedNick(room, [cb])`](#clientdiscoverreservednickroom-cb)
             - [`client.getRoomConfig(jid, [cb])`](#clientgetroomconfigjid-cb)
             - [`client.getRoomMembers(room, opts, [cb])`](#clientgetroommembersroom-opts-cb)
+            - [`client.getUniqueRoomName(jid, [cb])`](#clientgetuniqueroomnamejid-cb)
             - [`client.invite(room, opts)`](#clientinviteroom-opts)
             - [`client.joinRoom(room, nick, opts)`](#clientjoinroomroom-nick-opts)
             - [`client.kick(room, nick, reason, [cb])`](#clientkickroom-nick-reason-cb)
@@ -309,6 +310,7 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.discoverReservedNick(room, [cb])`
 ##### `client.getRoomConfig(jid, [cb])`
 ##### `client.getRoomMembers(room, opts, [cb])`
+##### `client.getUniqueRoomName(jid, [cb])`
 ##### `client.invite(room, opts)`
 ##### `client.joinRoom(room, nick, opts)`
 ##### `client.kick(room, nick, reason, [cb])`
