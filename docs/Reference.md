@@ -91,7 +91,7 @@
             - [`client.publishReachability(data, [cb])`](#clientpublishreachabilitydata-cb)
             - [`client.publishVCard(vcard, [cb])`](#clientpublishvcardvcard-cb)
             - [`client.setPrivateData(opts, [cb])`](#clientsetprivatedataopts-cb)
-            - [`client.updateAccount(jid, data, [cb])`](#clientgetaccountinfojid-data-cb)
+            - [`client.updateAccount(jid, data, [cb])`](#clientupdateaccountjid-data-cb)
             - [`client.useAvatars(data, [cb])`](#clientuseavatarsdata-cb)
 - [`XMPP.JID`](#xmppjid)
     - [`new JID(jid)`](#new-jidjid)
