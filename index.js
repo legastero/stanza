@@ -1,5 +1,7 @@
 'use strict';
 
+exports.lang = process.env.LANG;
+
 exports.Stream = require('./lib/stanza/stream');
 exports.BOSH = require('./lib/stanza/bosh');
 exports.Message = require('./lib/stanza/message');

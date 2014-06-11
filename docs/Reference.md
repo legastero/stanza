@@ -91,6 +91,7 @@
             - [`client.publishNick(nick, [cb])`](#clientpublishnicknick-cb)
             - [`client.publishReachability(data, [cb])`](#clientpublishreachabilitydata-cb)
             - [`client.publishVCard(vcard, [cb])`](#clientpublishvcardvcard-cb)
+            - [`client.sendLog(jid, opts)`](#clientsendlogjid-opts)
             - [`client.setPrivateData(opts, [cb])`](#clientsetprivatedataopts-cb)
             - [`client.updateAccount(jid, data, [cb])`](#clientupdateaccountjid-data-cb)
             - [`client.useAvatars(data, [cb])`](#clientuseavatarsdata-cb)
@@ -348,6 +349,7 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.publishNick(nick, [cb])`
 ##### `client.publishReachability(data, [cb])`
 ##### `client.publishVCard(vcard, [cb])`
+##### `client.sendLog(jid, opts)`
 ##### `client.setPrivateData(opts, [cb])`
 ##### `client.updateAccount(jid, data, [cb])`
 
