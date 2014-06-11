@@ -40,7 +40,7 @@
   "devDependencies": {
     "browserify": "4.x",
     "grunt": "0.4.x",
-    "grunt-browserify": "2.x",
+    "grunt-browserify": "2.1.x",
     "grunt-contrib-jshint": "0.10.x",
     "grunt-contrib-uglify": "0.4.x",
     "grunt-nsp-package": "0.0.x",
