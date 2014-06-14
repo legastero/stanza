@@ -13,6 +13,7 @@
   },
   "bugs": "https://github.com/legastero/stanza.io/issues",
   "contributors": [
+    "Philipp Hancke <fippo@andyet.net>",
     "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
   ],
   "dependencies": {
@@ -35,7 +36,8 @@
     "saslmechanisms": "0.1.x",
     "underscore": "1.x",
     "wildemitter": "1.x",
-    "brfs": "^1.1.1"
+    "brfs": "^1.1.1",
+    "iana-hashes": "^1.0.0"
   },
   "devDependencies": {
     "browserify": "4.x",
