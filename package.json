@@ -19,12 +19,16 @@
   "dependencies": {
     "async": "0.9.x",
     "atob": "1.x",
-    "bluebird": "1.x",
+    "bluebird": "^1.2.4",
+    "brfs": "^1.1.1",
     "browser-request": "0.3.x",
+    "browserify": "^4.1.10",
     "btoa": "1.x",
     "faye-websocket": "0.7.x",
+    "grunt-contrib-uglify": "^0.4.0",
     "hostmeta": "1.x",
-    "jingle": "0.4.x",
+    "iana-hashes": "^1.0.0",
+    "jingle": "^0.5.1",
     "jxt": "1.x",
     "node-uuid": "1.x",
     "request": "2.x",
@@ -34,10 +38,10 @@
     "sasl-plain": "0.1.x",
     "sasl-scram-sha-1": "0.2.x",
     "saslmechanisms": "0.1.x",
+    "tape": "^2.13.3",
+    "uglify-js": "^2.4.14",
     "underscore": "1.x",
-    "wildemitter": "1.x",
-    "brfs": "^1.1.1",
-    "iana-hashes": "^1.0.0"
+    "wildemitter": "1.x"
   },
   "devDependencies": {
     "browserify": "4.x",
