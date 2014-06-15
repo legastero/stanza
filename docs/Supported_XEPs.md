@@ -63,6 +63,7 @@
 
     Support for requesting bits. Responding to requests for bits is left to the application using stanza.io by listening to the `iq:get:bob` event.
 
+- [XEP-0234: Jingle File Transfer](http://xmpp.org/extensions/xep-0234.html)
 - [XEP-0249: Direct MUC Invitations](http://xmpp.org/extensions/xep-0249.html)
 - [XEP-0276: Presence Decloaking](http://xmpp.org/extensions/xep-0276.html)
 - [XEP-0280: Message Carbons](http://xmpp.org/extensions/xep-0280.html)
@@ -77,5 +78,7 @@
 - [XEP-0319: Last User Interaction in Presence](http://xmpp.org/extensions/xep-0319.html)
 - [XEP-0320: Use of DTLS-SRTP in Jingle Sessions](http://xmpp.org/extensions/xep-0320.html)
 - [XEP-0335: JSON Containers](http://xmpp.org/extensions/xep-0335.html)
+- [XEP-0337: Event Logging over XMPP](http://xmpp.org/extensions/xep-0337.html)
 - [XEP-0338: Jingle Grouping Framework](http://xmpp.org/extensions/xep-0338.html)
 - [XEP-0339: Source-Specific Media Attributes in Jingle](http://xmpp.org/extensions/xep-0339.html)
+- [XEP-0343: Use of DTLS/SCTP in Jingle ICE-UDP](http://xmpp.org/extensions/xep-0343.html)
