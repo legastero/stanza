@@ -71,6 +71,10 @@
 - [XEP-0294: Jingle RTP Header Extensions Negotiation](http://xmpp.org/extensions/xep-0294.html)
 - [XEP-0297: Stanza Forwarding](http://xmpp.org/extensions/xep-0297.html)
 - [XEP-0300: Use of Cryptographic Hash Functions in XMPP](http://xmpp.org/extensions/xep-0300.html)
+- [XEP-0301: In-Band Real Time Text](http://xmpp.org/extensions/xep-0301.html)
+
+    Support for the RTT protocol only. Processing the RTT information for UI display is left to the user & other modules.
+
 - [XEP-0307: Unique Room Names for Multi-User Chat](http://xmpp.org/extensions/xep-0307.html)
 - [XEP-0308: Last Message Correction](http://xmpp.org/extensions/xep-0308.html)
 - [XEP-0310: Presence State Annotations](http://xmpp.org/extensions/xep-0310.html)
