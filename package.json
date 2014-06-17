@@ -39,6 +39,7 @@
     "tape": "^2.13.3",
     "uglify-js": "^2.4.14",
     "underscore": "^1.6.0",
+    "utf8": "^2.0.0",
     "wildemitter": "^1.0.1"
   },
   "devDependencies": {
