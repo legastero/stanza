@@ -73,7 +73,7 @@
 - [XEP-0300: Use of Cryptographic Hash Functions in XMPP](http://xmpp.org/extensions/xep-0300.html)
 - [XEP-0301: In-Band Real Time Text](http://xmpp.org/extensions/xep-0301.html)
 
-    Support for the RTT protocol only. Processing the RTT information for UI display is left to the user & other modules.
+    Support for the RTT protocol only. Processing the RTT information for UI display is left to the user & other modules such as [rtt-buffer](https://github.com/otalk/rtt-buffer).
 
 - [XEP-0307: Unique Room Names for Multi-User Chat](http://xmpp.org/extensions/xep-0307.html)
 - [XEP-0308: Last Message Correction](http://xmpp.org/extensions/xep-0308.html)
