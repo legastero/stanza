@@ -65,6 +65,7 @@
 
 - [XEP-0234: Jingle File Transfer](http://xmpp.org/extensions/xep-0234.html)
 - [XEP-0249: Direct MUC Invitations](http://xmpp.org/extensions/xep-0249.html)
+- [XEP-0264: File Transfer Thumbnails](http://xmpp.org/extensions/xep-0264.html)
 - [XEP-0276: Presence Decloaking](http://xmpp.org/extensions/xep-0276.html)
 - [XEP-0280: Message Carbons](http://xmpp.org/extensions/xep-0280.html)
 - [XEP-0293: Jingle RTP Feedback Negotiation](http://xmpp.org/extensions/xep-0293.html)
