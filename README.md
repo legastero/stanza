@@ -1,11 +1,11 @@
 # Stanza.io
 **Modern XMPP in the browser, with a JSON API.**
 
-[![Build Status](https://travis-ci.org/legastero/stanza.io.png)](https://travis-ci.org/legastero/stanza.io)
-[![Dependency Status](https://david-dm.org/legastero/stanza.io.png)](https://david-dm.org/legastero/stanza.io)
-[![devDependency Status](https://david-dm.org/legastero/stanza.io/dev-status.png)](https://david-dm.org/legastero/stanza.io#info=devDependencies)
+[![Build Status](https://travis-ci.org/otalk/stanza.io.png)](https://travis-ci.org/otalk/stanza.io)
+[![Dependency Status](https://david-dm.org/otalk/stanza.io.png)](https://david-dm.org/otalk/stanza.io)
+[![devDependency Status](https://david-dm.org/otalk/stanza.io/dev-status.png)](https://david-dm.org/otalk/stanza.io#info=devDependencies)
 
-[![Browser Support](https://ci.testling.com/legastero/stanza.io.png)](https://ci.testling.com/legastero/stanza.io)
+[![Browser Support](https://ci.testling.com/otalk/stanza.io.png)](https://ci.testling.com/otalk/stanza.io)
 
 ## What is this?
 
