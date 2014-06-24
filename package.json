@@ -8,9 +8,6 @@
     "faye-websocket": false,
     "./lib/plugins/index.js": "./lib/plugins/index-browser.js"
   },
-  "browserify": {
-    "transform": "brfs"
-  },
   "bugs": "https://github.com/otalk/stanza.io/issues",
   "contributors": [
     "Philipp Hancke <fippo@andyet.net>",
@@ -71,8 +68,7 @@
   },
   "testling": {
     "files": [
-      "test/connection.js",
-      "test/stanza-dataforms.js"
+      "test/connection.js"
     ],
     "browsers": [
       "ie/10..latest",
