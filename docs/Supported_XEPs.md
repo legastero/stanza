@@ -30,6 +30,7 @@
 - [XEP-0092: Software Version](http://xmpp.org/extensions/xep-0092.html)
 - [XEP-0107: User Mood](http://xmpp.org/extensions/xep-0107.html)
 - [XEP-0115: Entity Capabilities](http://xmpp.org/extensions/xep-0115.html)
+- [XEP-0118: User Tune](http://xmpp.org/extensions/xep-0118.html)
 - [XEP-0122: Data Forms Validation](http://xmpp.org/extensions/xep-0122.html)
 - [XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH)](http://xmpp.org/extensions/xep-0124.html)
 - [XEP-0128: Service Discovery Extensions](http://xmpp.org/extensions/xep-0128.html)

@@ -90,6 +90,7 @@
             - [`client.publishMood(mood, text, [cb])`](#clientpublishmoodmood-text-cb)
             - [`client.publishNick(nick, [cb])`](#clientpublishnicknick-cb)
             - [`client.publishReachability(data, [cb])`](#clientpublishreachabilitydata-cb)
+            - [`client.publishTune(data, [cb])`](#clientpublishtunedata-cb)
             - [`client.publishVCard(vcard, [cb])`](#clientpublishvcardvcard-cb)
             - [`client.sendLog(jid, opts)`](#clientsendlogjid-opts)
             - [`client.setPrivateData(opts, [cb])`](#clientsetprivatedataopts-cb)
@@ -348,6 +349,7 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.publishGeoLoc(data, [cb])`
 ##### `client.publishNick(nick, [cb])`
 ##### `client.publishReachability(data, [cb])`
+##### `client.publishTune(data, [cb])`
 ##### `client.publishVCard(vcard, [cb])`
 ##### `client.sendLog(jid, opts)`
 ##### `client.setPrivateData(opts, [cb])`
@@ -492,6 +494,7 @@ Example:
 ### stream:management:ack
 ### subscribe
 ### subscribed
+### tune
 ### unavailable
 ### unblock
 ### unsubscribe
