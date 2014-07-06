@@ -147,7 +147,12 @@
         client.on('*', log);
 
         client.on('session:started', function () {
-          client.enableCarbons();
+          client.enableCarbons(function (err) {
+              if (err) {
+                  console.log('Server does not support carbons');
+              }
+          });
+
           client.getRoster(function (err, resp) {
             client.updateCaps();
             client.sendPresence({
