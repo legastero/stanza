@@ -28,6 +28,7 @@
 - [XEP-0084: User Avatar](http://xmpp.org/extensions/xep-0084.html)
 - [XEP-0085: Chat State Notifications](http://xmpp.org/extensions/xep-0085.html)
 - [XEP-0092: Software Version](http://xmpp.org/extensions/xep-0092.html)
+- [XEP-0106: JID Escaping](http://xmpp.org/extensions/xep-0106.html)
 - [XEP-0107: User Mood](http://xmpp.org/extensions/xep-0107.html)
 - [XEP-0115: Entity Capabilities](http://xmpp.org/extensions/xep-0115.html)
 - [XEP-0118: User Tune](http://xmpp.org/extensions/xep-0118.html)
