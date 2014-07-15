@@ -2,7 +2,7 @@ var fs = require('fs');
 var jxt = require('jxt');
 var test = require('tape');
 var dataforms = require('../lib/stanza/dataforms');
-var JID = require('../lib/jid');
+var JID = require('xmpp-jid').JID;
 
 var DataForm = dataforms.DataForm;
 
