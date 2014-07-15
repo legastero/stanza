@@ -31,7 +31,7 @@
     "sasl-digest-md5": "^0.1.0",
     "sasl-external": "^0.1.0",
     "sasl-plain": "^0.1.0",
-    "sasl-scram-sha-1": "^0.2.2",
+    "sasl-scram-sha-1": "^1.0.1",
     "saslmechanisms": "^0.1.1",
     "tape": "^2.13.3",
     "uglify-js": "^2.4.14",
