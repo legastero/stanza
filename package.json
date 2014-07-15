@@ -14,6 +14,7 @@
     "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
   ],
   "dependencies": {
+    "alt-sasl-digest-md5": "^1.0.0",
     "async": "^0.9.0",
     "atob": "^1.1.2",
     "bluebird": "^1.2.4",
@@ -28,7 +29,6 @@
     "node-uuid": "^1.4.1",
     "request": "^2.36",
     "sasl-anonymous": "^0.1.0",
-    "sasl-digest-md5": "^0.1.0",
     "sasl-external": "^0.1.0",
     "sasl-plain": "^0.1.0",
     "sasl-scram-sha-1": "^1.0.1",
