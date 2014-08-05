@@ -1,5 +1,9 @@
 # Change Log
 
+## 6.0.0 -> 6.0.1
+* **Bug Fixes**
+    * [#31: Resolve Unicode interop with other clients](https://github.com/otalk/stanza.io/issues/31)
+
 ## 5.x.x -> 6.0.0
 * **Breaking Changes**
     * Removed `client.call()`
