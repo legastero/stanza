@@ -25,7 +25,7 @@
     "hostmeta": "^1.0.1",
     "iana-hashes": "^1.0.0",
     "jingle": "^1.0.0",
-    "jxt": "^1.4.0",
+    "jxt": "^2.0.2",
     "node-uuid": "^1.4.1",
     "request": "^2.36",
     "sasl-anonymous": "^0.1.0",
