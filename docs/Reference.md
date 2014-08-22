@@ -85,6 +85,8 @@
             - [`client.getVCard(jid, [cb])`](#clientgetvcardjid-cb)
             - [`client.goInvisible([cb])`](#clientgoinvisiblecb)
             - [`client.goVisible([cb])`](#clientgovisiblecb)
+            - [`client.markActive()`](#clientmarkactive)
+            - [`client.markInactive()`](#clientmarkinactive)
             - [`client.publishAvatar(id, data, [cb])`](#clientpublishavatarid-data-cb)
             - [`client.publishGeoLoc(data, [cb])`](#clientpublishgeolocdata-cb)
             - [`client.publishMood(mood, text, [cb])`](#clientpublishmoodmood-text-cb)
@@ -346,6 +348,8 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.getVCard(jid, [cb])`
 ##### `client.goInvisible([cb])`
 ##### `client.goVisible([cb])`
+##### `client.markActive()`
+##### `client.markInactive()`
 ##### `client.publishGeoLoc(data, [cb])`
 ##### `client.publishNick(nick, [cb])`
 ##### `client.publishReachability(data, [cb])`
