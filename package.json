@@ -25,7 +25,7 @@
     "hostmeta": "^1.0.1",
     "iana-hashes": "^1.0.0",
     "jingle": "^1.0.0",
-    "jxt": "^2.0.2",
+    "jxt": "^2.5.2",
     "node-uuid": "^1.4.1",
     "request": "^2.36",
     "sasl-anonymous": "^0.1.0",
@@ -37,7 +37,8 @@
     "uglify-js": "^2.4.14",
     "underscore": "^1.6.0",
     "wildemitter": "^1.0.1",
-    "xmpp-jid": "^1.0.0"
+    "xmpp-jid": "^1.0.0",
+    "jxt-xmpp-types": "^1.0.0"
   },
   "devDependencies": {
     "browserify": "^4.1.10",
