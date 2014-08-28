@@ -82,6 +82,7 @@
 - [XEP-0308: Last Message Correction](http://xmpp.org/extensions/xep-0308.html)
 - [XEP-0310: Presence State Annotations](http://xmpp.org/extensions/xep-0310.html)
 - [XEP-0313: Message Archive Management](http://xmpp.org/extensions/xep-0313.html)
+- [XEP-0317: Hats](http://xmpp.org/extensions/xep-0317.html)
 - [XEP-0319: Last User Interaction in Presence](http://xmpp.org/extensions/xep-0319.html)
 - [XEP-0320: Use of DTLS-SRTP in Jingle Sessions](http://xmpp.org/extensions/xep-0320.html)
 - [XEP-0335: JSON Containers](http://xmpp.org/extensions/xep-0335.html)
