@@ -42,5 +42,11 @@ module.exports = function (client, stanzas) {
             client.emit('foo', msg);
         }
     });
-};vi
+};
+```
+
+```javascript
+// 4. Load our plugin
+
+client.use(require('path/to/plugin'));
 ```
