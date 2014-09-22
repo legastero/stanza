@@ -26,6 +26,7 @@
     "iana-hashes": "^1.0.0",
     "jingle": "^1.2.0",
     "jxt": "^2.6.1",
+    "jxt-xmpp-types": "^2.1.0",
     "node-uuid": "^1.4.1",
     "request": "^2.36",
     "sasl-anonymous": "^0.1.0",
@@ -37,20 +38,15 @@
     "uglify-js": "^2.4.14",
     "underscore": "1.6.0",
     "wildemitter": "^1.0.1",
-    "xmpp-jid": "^1.0.0",
-    "jxt-xmpp-types": "^1.0.0"
+    "xmpp-jid": "^1.0.0"
   },
   "devDependencies": {
-    "browserify": "^4.1.10",
-    "grunt": "^0.4.5",
-    "grunt-browserify": "^2.1.0",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-uglify": "^0.5.0",
-    "grunt-nsp-package": "^0.0.4",
-    "grunt-tape": "^0.0.2",
-    "precommit-hook": "^1.0.2",
-    "tape": "^2.13.3",
-    "uglify-js": "^2.4.14"
+    "browserify": "^5.11.0",
+    "precommit-hook": "^1.0.0",
+    "tape": "^2.14.0",
+    "uglify-js": "^2.4.15",
+    "tap-spec": "^0.2.1",
+    "nsp": "^0.2.3"
   },
   "homepage": "http://stanza.io",
   "keywords": [
@@ -65,7 +61,9 @@
     "url": "https://github.com/otalk/stanza.io.git"
   },
   "scripts": {
-    "test": "grunt tape"
+    "audit": "make audit",
+    "build": "make build",
+    "test": "make test"
   },
   "testling": {
     "files": [

@@ -1,10 +1,13 @@
 var fs = require('fs');
-var jxt = require('jxt');
+var jxt = require('jxt').createRegistry();
 var test = require('tape');
-var dataforms = require('../lib/stanza/dataforms');
 var JID = require('xmpp-jid').JID;
 
-var DataForm = dataforms.DataForm;
+jxt.use(require('jxt-xmpp-types'));
+jxt.use(require('../lib/stanza/dataforms'));
+
+var DataForm = jxt.getDefinition('x', 'jabber:x:data');
+
 
 var formXML = fs.readFileSync(__dirname + '/samples/dataform-1.xml');
 var submittedXML = fs.readFileSync(__dirname + '/samples/dataform-2.xml');
