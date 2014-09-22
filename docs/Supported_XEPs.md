@@ -92,3 +92,4 @@
 - [XEP-0338: Jingle Grouping Framework](http://xmpp.org/extensions/xep-0338.html)
 - [XEP-0339: Source-Specific Media Attributes in Jingle](http://xmpp.org/extensions/xep-0339.html)
 - [XEP-0343: Use of DTLS/SCTP in Jingle ICE-UDP](http://xmpp.org/extensions/xep-0343.html)
+- [XEP-0352: Client State Indication](http://xmpp.org/extensions/xep-0352.html)
