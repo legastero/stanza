@@ -36,6 +36,7 @@
 - [XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH)](http://xmpp.org/extensions/xep-0124.html)
 - [XEP-0128: Service Discovery Extensions](http://xmpp.org/extensions/xep-0128.html)
 - [XEP-0131: Stanza Headers and Internet Metadata](http://xmpp.org/extensions/xep-0131.html)
+- [XEP-0141: Data Forms Layout](http://xmpp.org/extensions/xep-0141.html)
 - [XEP-0152: Reachability Addresses](http://xmpp.org/extensions/xep-0152.html)
 - [XEP-0153: vCard-Based Avatars](http://xmpp.org/extensions/xep-0153.html)
 

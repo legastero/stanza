@@ -11,6 +11,8 @@ var submittedXML = fs.readFileSync(__dirname + '/samples/dataform-2.xml');
 var itemsXML = fs.readFileSync(__dirname + '/samples/dataform-3.xml');
 var validationXML = fs.readFileSync(__dirname + '/samples/dataform-4.xml');
 var mediaXML = fs.readFileSync(__dirname + '/samples/dataform-5.xml');
+var layoutXML = fs.readFileSync(__dirname + '/samples/dataform-6.xml');
+var nestedLayoutXML = fs.readFileSync(__dirname + '/samples/dataform-7.xml');
 
 
 test('Convert Form XML to Data Form object', function (t) {
@@ -334,6 +336,108 @@ test('Convert Form with Media Field XML to Data Form object', function (t) {
             ]
         }
     });
+
+    t.end();
+});
+
+
+test('Form layout', function (t) {
+    var form = jxt.parse(layoutXML, DataForm).toJSON();
+
+    t.same(form.layout, [
+        {
+            label: 'Personal Information',
+            contents: [
+                {text: 'This is page one of three.'},
+                {text: 'Note: In accordance with the XSF privacy policy, your personal information will never be shared outside the organization in any way for any purpose; however, your name and JID may be published in the XSF membership directory.'},
+                {field: 'name.first'},
+                {field: 'name.last'},
+                {field: 'email'},
+                {field: 'jid'},
+                {field: 'background'},
+            ]
+        },
+        {
+            label: 'Community Activity',
+            contents: [
+                {text: 'This is page two of three.'},
+                {text: 'We use this page to gather information about any XEPs you\'ve worked on, as well as your mailing list activity.'},
+                {text: 'You do post to the mailing lists, don\'t you?'},
+                {field: 'activity.mailing-lists'},
+                {field: 'activity.xeps'}
+            ]
+        },
+        {
+            label: 'Plans and Reasonings',
+            contents: [
+                {text: 'This is page three of three.'},
+                {text: 'You\'re almost done!'},
+                {text: 'This is where you describe your future plans and why you think you deserve to be a member of the XMPP Standards Foundation.'},
+                {field: 'future'},
+                {field: 'reasoning'}
+            ]
+        }
+    ]);
+
+    t.end();
+});
+
+
+test('Form layout with nested sections', function (t) {
+    var form = jxt.parse(nestedLayoutXML, DataForm).toJSON();
+
+    t.same(form.layout, [
+        {
+            contents: [
+                {
+                    section: {
+                        label: 'Personal Information',
+                        contents: [
+                            {text: 'Note: In accordance with the XSF privacy policy, your personal information will never be shared outside the organization in any way for any purpose; however, your name and JID may be published in the XSF membership directory.'},
+                            {section: {
+                                label: 'Name',
+                                contents: [
+                                    {text: 'Who are you?'},
+                                    {field: 'name.first'},
+                                    {field: 'name.last'}
+                                ]
+                            }},
+                            {section: {
+                                label: 'Contact Information',
+                                contents: [
+                                    {text: 'How can we contact you?'},
+                                    {field: 'email'},
+                                    {field: 'jid'}
+                                ]
+                            }},
+                            {field: 'background'},
+                        ]
+                    }
+                },
+                {
+                    section: {
+                        label: 'Community Activity',
+                        contents: [
+                            {text: 'We use this page to gather information about any XEPs you\'ve worked on, as well as your mailing list activity.'},
+                            {text: 'You do post to the mailing lists, don\'t you?'},
+                            {field: 'activity.mailing-lists'},
+                            {field: 'activity.xeps'}
+                        ]
+                    },
+                },
+                {
+                    section: {
+                        label: 'Plans and Reasonings',
+                        contents: [
+                            {text: 'This is where you describe your future plans and why you think you deserve to be a member of the XMPP Standards Foundation.'},
+                            {field: 'future'},
+                            {field: 'reasoning'}
+                        ]
+                    }
+                }
+            ]
+        }
+    ]);
 
     t.end();
 });
