@@ -14,7 +14,7 @@ BIN = ./node_modules/.bin
 
 all: test build audit
 
-build: build/$(NAME).zip
+build: lint build/$(NAME).zip
 
 clean:
 	rm -rf build
