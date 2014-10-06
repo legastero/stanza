@@ -1,4 +1,5 @@
 # Stanza.io
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/otalk/stanza.io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 **Modern XMPP in the browser, with a JSON API.**
 
 [![Build Status](https://travis-ci.org/otalk/stanza.io.png)](https://travis-ci.org/otalk/stanza.io)
