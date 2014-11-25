@@ -56,7 +56,14 @@ var XMPP = require('stanza.io'); // if using browserify
 
 var client = XMPP.createClient({
     jid: 'echobot@example.com',
-    password: 'hunter2'
+    password: 'hunter2',
+
+    // If you have a .well-known/host-meta.json file for your
+    // domain, the connection transport config can be skipped.
+
+    transport: 'websocket',
+    wsURL: 'wss://example.com:5281/xmpp-websocket'
+    // (or `boshURL` if using 'bosh' as the transport)
 });
 
 client.on('session:started', function () {
