@@ -7,18 +7,20 @@ There are several existing payload formats that you can use, notably `json`, `tu
 To create your own, the first step is to make a plugin for JXT to register the new stanza content:
 
 ```javascript
-var MyContentPlugin = function (client, stanzas) {
+var MyContentPlugin = function (client, stanza) {
+    var types = stanza.utils;
+
     var MyContent = stanza.define({
         name: 'mypubsubcontent',
         namespace: 'http://example.org/mypubsub',
         element: 'stuff',
         fields: {
-            value: stanzas.utils.text()
+            value: types.text()
         }
     });
 
     // We want the content to be available for both publishing, and receiving update events.
-    stanzas.withPubsubItem(function (Item) {
+    stanza.withPubsubItem(function (Item) {
         stanza.extend(Item, MyContent);
     });
 });
