@@ -24,7 +24,7 @@
     "faye-websocket": "^0.7.2",
     "hostmeta": "^1.0.1",
     "iana-hashes": "^1.0.0",
-    "jingle": "^1.2.0",
+    "jingle": "^1.4.0",
     "jxt": "^2.6.1",
     "node-uuid": "^1.4.1",
     "request": "^2.36",
