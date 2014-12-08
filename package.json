@@ -1,7 +1,7 @@
 {
   "name": "stanza.io",
   "description": "Modern XMPP in the browser, with a JSON API",
-  "version": "6.10.0",
+  "version": "6.10.2",
   "author": "Lance Stout <lance@andyet.net>",
   "browser": {
     "request": "browser-request",
@@ -24,8 +24,9 @@
     "faye-websocket": "^0.7.2",
     "hostmeta": "^1.0.1",
     "iana-hashes": "^1.0.0",
-    "jingle": "^1.5.0",
+    "jingle": "^1.5.1",
     "jxt": "^2.6.1",
+    "jxt-xmpp-types": "^1.0.0",
     "node-uuid": "^1.4.1",
     "request": "^2.36",
     "sasl-anonymous": "^0.1.0",
@@ -37,8 +38,7 @@
     "uglify-js": "^2.4.14",
     "underscore": "1.6.0",
     "wildemitter": "^1.0.1",
-    "xmpp-jid": "^1.0.0",
-    "jxt-xmpp-types": "^1.0.0"
+    "xmpp-jid": "^1.0.0"
   },
   "devDependencies": {
     "browserify": "^4.1.10",
