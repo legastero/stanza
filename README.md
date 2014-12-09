@@ -34,7 +34,7 @@ $ npm install stanza.io
 ## Building bundled/minified version (for AMD, etc)
 
 ```sh
-$ grunt
+$ make
 ```
 
 The bundled and minified files will be in the generated `build` directory.
@@ -42,7 +42,7 @@ The bundled and minified files will be in the generated `build` directory.
 ## Getting Started
 
 1. Find or install a server which supports XMPP over WebSocket (Prosody recommended).
-2. Run `grunt` to build `build/stanzaio.bundle.js`
+2. Run `make` to build `build/stanzaio.bundle.js`
 3. Open `demo.html` in your browser
 4. Enter your connection info, click connect.
 5. Use the JS console to play with the XMPP client (`var client`).
