@@ -85,6 +85,8 @@ client.connect();
 
 - [API Reference](docs/Reference.md)
 - [Supported XEPs](docs/Supported_XEPs.md)
+- [Creating Plugins](docs/Create_Plugin.md)
+- [Using PubSub](docs/Using_Pubsub.md)
 
 ## License
 
