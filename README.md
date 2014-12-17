@@ -14,9 +14,9 @@ have no need to ever see or touch any XML when using stanza.io.
 
 ## Important Protocol Changes
 
-Starting with `v4.0.0`, stanza.io is using the protocol specified in the [latest XMPP over WebSocket draft](http://tools.ietf.org/html/draft-ietf-xmpp-websocket-06) by default, which contains backwards incompatible changes.
+Starting with `v4.0.0`, stanza.io is using the protocol specified in [RFC 7395](http://tools.ietf.org/html/rfc7395) by default, which contains backwards incompatible changes.
 
-Servers have started switching to using the latest protocol; notably, Prosody's WebSocket module for `prosody-0.10`. If your server has not yet been upgraded, you can set `transports` to `['old-websocket']` in the config:
+Servers have started switching to using the RFC version of the WebSocket binding; notably, Prosody's WebSocket module for `prosody-0.10`. If your server has not yet been upgraded, you can set `transports` to `['old-websocket']` in the config:
 
 ```javascript
 var oldws = XMPP.createClient({
@@ -46,8 +46,6 @@ The bundled and minified files will be in the generated `build` directory.
 3. Open `demo.html` in your browser
 4. Enter your connection info, click connect.
 5. Use the JS console to play with the XMPP client (`var client`).
-
-If you want to see stanza.io in action in a full-featured client, take a look at [Otalk.im](http://otalk.im) (and its [source](https://github.com/andyet/otalk)).
 
 ## Echo Client Demo
 
