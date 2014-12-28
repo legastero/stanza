@@ -52,7 +52,17 @@ client.publish('pubsub.example.com', 'ournode', {
 }, cb);
 ```
 
-## 3. Receiving events
+## 3. Subscribing to our content
+
+```javascript
+client.subscribeToNode('pubsub.example.com', 'ournode', function (err) {
+   if (!err) {
+      console.log('subscribed');
+   }
+});
+```
+
+## 4. Receiving events
 
 ```javascript
 client.on('pubsub:event', function (msg) {
@@ -71,5 +81,15 @@ client.on('pubsub:event', function (msg) {
         jid: msg.from,
         mypubsubcontent: msg.event.updated.published[0].mypubsubcontent
     });
+});
+```
+
+## 5. Unsubscribing
+
+```javascript
+client.unsubscribeFromNode('pubsub.example.com', 'ournode', function (err) {
+   if (!err) {
+      console.log('unsubscribed');
+   }
 });
 ```
