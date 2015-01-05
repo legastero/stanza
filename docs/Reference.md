@@ -50,6 +50,7 @@
         - [Multi-User Chat](#multi-user-chat)
             - [`client.ban(room, jid, reason, [cb])`](#clientbanroom-jid-reason-cb)
             - [`client.changeNick(room, nick)`](#clientchangenickroom-nick)
+            - [`client.configureRoom(room, form, [cb])`](#clientconfigureroomroom-form-cb)
             - [`client.directInvite(room, sender, reason)`](#clientdirectinviteroom-sender-reason)
             - [`client.discoverReservedNick(room, [cb])`](#clientdiscoverreservednickroom-cb)
             - [`client.getRoomConfig(jid, [cb])`](#clientgetroomconfigjid-cb)
@@ -311,7 +312,8 @@ When creating a client instance, the following settings will configure its behav
 #### Multi-User Chat
 ##### `client.ban(room, jid, reason, [cb])`
 ##### `client.changeNick(room, nick)`
-##### `client.directInvite(room, sender, reason)`
+##### `client.configureRoom(room, form, [cb])`
+##### `client.directInvite(room, sender, [reason])`
 ##### `client.discoverReservedNick(room, [cb])`
 ##### `client.getRoomConfig(jid, [cb])`
 ##### `client.getRoomMembers(room, opts, [cb])`
