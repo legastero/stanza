@@ -1,4 +1,4 @@
-# 6.3.x API Reference
+# 7.0.x API Reference
 
 - [`XMPP.Client`](#xmppclient)
     - [`new Client(options)`](#new-clientoptions)
@@ -70,9 +70,10 @@
         - [Message Syncing](#message-syncing)
             - [`client.enableCarbons([cb])`](#clientenablecarbonscb)
             - [`client.disableCarbons([cb])`](#clientdisablecarbonscb)
-            - [`client.getHistory(opts, [cb])`](#clientgethistoryopts-cb)
+            - [`client.getHistorySearchForm(jid, [cb])`](#clientgethistoryopts-cb)
             - [`client.getHistoryPreferences([cb])`](#clientgethistorypreferencescb)
             - [`client.setHistoryPreferences(opts, [cb])`](#clientsethistorypreferencesopts-cb)
+            - [`client.searchHistory(opts, [cb])`](#clientsearchhistoryopts-cb)
         - [Other](#other)
             - [`client.deleteAccount([jid, cb])`](#clientdeleteaccountjid-cb)
             - [`client.getAccountInfo([jid, cb])`](#clientgetaccountinfojid-cb)
@@ -330,9 +331,10 @@ When creating a client instance, the following settings will configure its behav
 #### Message Syncing
 ##### `client.enableCarbons([cb])`
 ##### `client.disableCarbons([cb])`
-##### `client.getHistory(opts, [cb])`
+##### `client.getHistorySearchForm(jid, [cb])`
 ##### `client.getHistoryPreferences([cb])`
 ##### `client.setHistoryPreferences(opts, [cb])`
+##### `client.searchHistory(opts, [cb])`
 #### Avatars
 ##### `client.getAvatar(jid, id, [cb])`
 ##### `client.publishAvatar(id, data, [cb])`
