@@ -1,6 +1,6 @@
 'use strict';
 
-exports.VERSION = '7.0.4';
+exports.VERSION = '7.0.5';
 
 exports.JID = require('xmpp-jid').JID;
 exports.Client = require('./lib/client');
