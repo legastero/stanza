@@ -5,7 +5,7 @@
 [![Dependency Status](https://david-dm.org/otalk/stanza.io.png)](https://david-dm.org/otalk/stanza.io)
 [![devDependency Status](https://david-dm.org/otalk/stanza.io/dev-status.png)](https://david-dm.org/otalk/stanza.io#info=devDependencies)
 
-[![Browser Support](https://ci.testling.com/otalk/stanza.io.png)](https://ci.testling.com/otalk/stanza.io)
+<!--[![Browser Support](https://ci.testling.com/otalk/stanza.io.png)](https://ci.testling.com/otalk/stanza.io)-->
 
 ## What is this?
 
