@@ -16,11 +16,9 @@
   "dependencies": {
     "alt-sasl-digest-md5": "^1.0.0",
     "async": "^0.9.0",
-    "atob": "^1.1.2",
     "bluebird": "^2.3.2",
     "brfs": "^1.1.1",
     "browser-request": "^0.3.1",
-    "btoa": "^1.1.2",
     "faye-websocket": "^0.9.0",
     "hostmeta": "^1.0.1",
     "iana-hashes": "^1.0.0",
@@ -39,10 +37,10 @@
     "xmpp-jid": "^1.0.0"
   },
   "devDependencies": {
-    "browserify": "^7.0.2",
-    "nsp": "^0.5.2",
+    "browserify": "^8.0.0",
+    "nsp": "^1.0.0",
     "precommit-hook": "^1.0.0",
-    "tap-spec": "^0.2.1",
+    "tap-spec": "^2.0.0",
     "tape": "^3.0.3",
     "uglify-js": "^2.4.15"
   },
