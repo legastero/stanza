@@ -47,10 +47,10 @@
     "xmpp-jid": "^1.0.0"
   },
   "devDependencies": {
-    "browserify": "^8.0.0",
+    "browserify": "^9.0.0",
     "browserify-versionify": "^1.0.4",
     "nsp": "^1.0.0",
-    "precommit-hook": "^1.0.0",
+    "precommit-hook": "^2.0.0",
     "tap-spec": "^2.0.0",
     "tape": "^3.0.3",
     "uglify-js": "^2.4.15"
