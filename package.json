@@ -8,6 +8,11 @@
     "faye-websocket": false,
     "./lib/plugins/index.js": "./lib/plugins/index-browser.js"
   },
+  "browserify": {
+    "transform": [
+      ["browserify-versionify", { "placeholder": "__STANZAIO_VERSION__" }]
+    ]
+  },
   "bugs": "https://github.com/otalk/stanza.io/issues",
   "contributors": [
     "Philipp Hancke <fippo@andyet.net>",
@@ -38,6 +43,7 @@
   },
   "devDependencies": {
     "browserify": "^8.0.0",
+    "browserify-versionify": "^1.0.4",
     "nsp": "^1.0.0",
     "precommit-hook": "^1.0.0",
     "tap-spec": "^2.0.0",
