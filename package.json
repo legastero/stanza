@@ -1,7 +1,7 @@
 {
   "name": "stanza.io",
   "description": "Modern XMPP in the browser, with a JSON API",
-  "version": "7.0.8",
+  "version": "7.1.0",
   "author": "Lance Stout <lance@andyet.net>",
   "browser": {
     "request": "browser-request",
@@ -10,7 +10,12 @@
   },
   "browserify": {
     "transform": [
-      ["browserify-versionify", { "placeholder": "__STANZAIO_VERSION__" }]
+      [
+        "browserify-versionify",
+        {
+          "placeholder": "__STANZAIO_VERSION__"
+        }
+      ]
     ]
   },
   "bugs": "https://github.com/otalk/stanza.io/issues",
