@@ -301,6 +301,7 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.ban(room, jid, reason, [cb])`
 ##### `client.changeNick(room, nick)`
 ##### `client.configureRoom(room, form, [cb])`
+##### `client.destroyRoom(room, opts, [cb])`
 ##### `client.directInvite(room, sender, [reason])`
 ##### `client.discoverReservedNick(room, [cb])`
 ##### `client.getRoomConfig(jid, [cb])`
