@@ -49,6 +49,7 @@
   "devDependencies": {
     "browserify": "^9.0.0",
     "browserify-versionify": "^1.0.4",
+    "jshint": "^2.6.3",
     "nsp": "^1.0.0",
     "precommit-hook": "^2.0.0",
     "tap-spec": "^2.0.0",
