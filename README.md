@@ -33,7 +33,10 @@ $ npm install stanza.io
 
 ## Building bundled/minified version (for AMD, etc)
 
+First run `npm install` to get all of the dependencies, and then run `make`:
+
 ```sh
+$ npm install
 $ make
 ```
 
