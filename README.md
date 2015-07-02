@@ -25,12 +25,16 @@ var oldws = XMPP.createClient({
 });
 ```
 
+## Stanza Definitions Moved
+
+As of `v7.3.0`, the XML/JSON mapping definitions have been split out into the [jxt-xmpp module](https://github.com/otalk/jxt-xmpp) to allow their use outside of stanza.io itself.
+
 ## Installing
 
 ```sh
 $ npm install stanza.io
-```
 
+```
 ## Building bundled/minified version (for AMD, etc)
 
 First run `npm install` to get all of the dependencies, and then run `make`:
