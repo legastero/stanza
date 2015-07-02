@@ -38,4 +38,4 @@ build/$(NAME).bundle.js: $(MAIN) $(LIB)
 	browserify --full-paths --standalone $(STANDALONE) $(MAIN) > $@
 
 build/$(NAME).bundle.min.js: build/$(NAME).bundle.js
-	uglifyjs --screw-ie8 build/$(NAME).bundle.js > $@
+	uglifyjs --screw-ie8 --compress --mangle --keep-fnames build/$(NAME).bundle.js > $@
