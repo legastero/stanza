@@ -4,7 +4,7 @@ var test = require('tape');
 var JID = require('xmpp-jid').JID;
 
 jxt.use(require('jxt-xmpp-types'));
-jxt.use(require('../lib/stanza/dataforms'));
+jxt.use(require('jxt-xmpp'));
 
 var DataForm = jxt.getDefinition('x', 'jabber:x:data');
 
