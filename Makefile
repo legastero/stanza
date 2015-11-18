@@ -24,10 +24,6 @@ test: lint
 lint:
 	jshint .
 
-audit:
-	nsp package
-
-
 # -- Build artifacts --------------------------------------------------
 
 build/$(NAME).zip: build/$(NAME).bundle.js build/$(NAME).bundle.min.js

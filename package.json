@@ -55,7 +55,6 @@
     "browserify": "^11.0.1",
     "jshint": "^2.6.3",
     "make-better": "^0.4.1",
-    "nsp": "^1.0.0",
     "precommit-hook": "^3.0.0",
     "tap-spec": "^4.1.0",
     "tape": "^4.2.0",
@@ -80,7 +79,6 @@
     "url": "https://github.com/otalk/stanza.io.git"
   },
   "scripts": {
-    "audit": "make audit",
     "build": "make build",
     "test": "make test",
     "lint": "jshint .",
