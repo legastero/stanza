@@ -309,6 +309,28 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.getUniqueRoomName(jid, [cb])`
 ##### `client.invite(room, opts)`
 ##### `client.joinRoom(room, nick, opts)`
+
+Request to join a Multi-User Chat room.
+
+- `room` - The bare JID of the room to join
+- `nick` - The requested nickname to use in the room. *Note:* You are not guaranteed to be assigned this nick.
+- `options` - Additional presence information to attach to the join request, in particular:
+  - `joinMuc` - A dictionary of options for how to join the room:
+    - `password` - Optional password for entering the room
+    - `history` - May be `true` to receive the room's default history replay, or may specify `maxstanzas`, `seconds`, or `since` to specify a history replay range in terms of number of messages, a given time range, or since a particular time.
+
+```javascript
+client.joinRoom('room@muc.example.com', 'User', {
+    status: 'This will be my status in the MUC',
+    joinMuc: {
+        password: 'hunter2',
+        history: {
+            maxstanzas: 20
+        }
+    }
+});
+```
+
 ##### `client.kick(room, nick, reason, [cb])`
 ##### `client.leaveRoom(room, nick, opts)`
 ##### `client.requestRoomVoice(room)`
