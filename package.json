@@ -45,6 +45,7 @@
     "sasl-external": "^0.1.0",
     "sasl-plain": "^0.1.0",
     "sasl-scram-sha-1": "^1.1.0",
+    "sasl-x-oauth2": "^0.1.0",
     "saslmechanisms": "^0.1.1",
     "uuid": "^2.0.1",
     "wildemitter": "^1.0.1",
