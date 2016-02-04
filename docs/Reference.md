@@ -281,6 +281,13 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.getCurrentCaps()`
 ##### `client.getDiscoInfo(jid, node, [cb])`
 ##### `client.getDiscoItems(jid, node, [cb])`
+Fetch the jids of all available rooms
+Example:
+```
+client.getDiscoItems('conference.xxx.yyy.zz','', (err, data) => {
+            //Get list of available rooms
+        }
+```
 ##### `client.updateCaps()`
 #### Jingle
 ##### `client.call(jid)`
@@ -343,11 +350,23 @@ client.joinRoom('room@muc.example.com', 'User', {
 ##### `client.setBookmarks(opts, [cb])`
 #### Message Syncing
 ##### `client.enableCarbons([cb])`
+Enable carbon messages. This is useful if you want to receive a copy of a message that you sent from one device, and receive on all other logged devices. 
+
 ##### `client.disableCarbons([cb])`
 ##### `client.getHistorySearchForm(jid, [cb])`
 ##### `client.getHistoryPreferences([cb])`
 ##### `client.setHistoryPreferences(opts, [cb])`
 ##### `client.searchHistory(opts, [cb])`
+Fetch chat history for the specified jid. By default, you will receive all the messages.
+Optionally you can pass an object to get max number of messages.
+Example:
+```
+client.searchHistory({
+            with: jid,
+            rsm: {max: 50, before: true},  -- 
+            complete: false
+        }
+```
 #### Avatars
 ##### `client.getAvatar(jid, id, [cb])`
 ##### `client.publishAvatar(id, data, [cb])`
