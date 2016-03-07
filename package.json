@@ -26,7 +26,6 @@
   "dependencies": {
     "alt-sasl-digest-md5": "^1.0.0",
     "async": "^1.4.0",
-    "bluebird": "^2.3.2",
     "browserify-versionify": "^1.0.4",
     "faye-websocket": "^0.10.0",
     "hostmeta": "^2.0.0",
@@ -53,13 +52,13 @@
     "xmpp-jid": "^1.0.0"
   },
   "devDependencies": {
-    "browserify": "^11.0.1",
+    "browserify": "^13.0.0",
     "jshint": "^2.6.3",
     "make-better": "^0.4.1",
     "precommit-hook": "^3.0.0",
     "tap-spec": "^4.1.0",
     "tape": "^4.2.0",
-    "uglify-js": "^2.4.24"
+    "uglify-js": "^2.6.2"
   },
   "homepage": "http://stanza.io",
   "keywords": [
@@ -74,7 +73,7 @@
     "jingle"
   ],
   "license": "MIT",
-  "main": "./index.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/otalk/stanza.io.git"
@@ -84,23 +83,6 @@
     "test": "make test",
     "lint": "jshint .",
     "validate": "npm ls"
-  },
-  "testling": {
-    "files": [
-      "test/connection.js"
-    ],
-    "browsers": [
-      "ie/10..latest",
-      "chrome/20..latest",
-      "chrome/canary",
-      "firefox/10..latest",
-      "firefox/nightly",
-      "opera/next",
-      "safari/6..latest",
-      "iphone/6..latest",
-      "ipad/6..latest",
-      "android-browser/4.2..latest"
-    ]
   },
   "pre-commit": [
     "lint",
