@@ -191,7 +191,9 @@
 
 ### `new Client(options)`
 
-Creates a new XMPP client instance, with no plugins loaded.
+Creates a new XMPP client instance.
+
+*Instantiating a client via this function will not load any built-in plugins.*
 
 - `options` - An object with the client configuration as described in [client options](#client-options).
 
@@ -201,6 +203,9 @@ var client = new XMPP.Client({
     jid: 'test@example.com',
     password: 'hunter2'
 });
+// Loading plugins
+var plugins = require('stanza.io/lib/plugins');
+client.use(plugins)
 ```
 
 ### `createClient(options)`
@@ -255,12 +260,49 @@ When creating a client instance, the following settings will configure its behav
 ### `Client` Properties
 ### `Client` Methods
 #### `client.use(plugin)`
+Load a plugin.
+
+Example:
+```js
+client.use(myAwesomePlugin);
+```
 #### `client.on(event, [group], handler)`
+Listen for an event.
+
+Example:
+```js
+
+client.on('chat', chat => {
+  // chat event handler
+});
+
+```
 #### `client.connect([opts])`
 #### `client.disconnect()`
 #### `client.sendIq(opts)`
 #### `client.sendMessage(opts)`
+Send a message.
+
+Example:
+```js
+
+client.sendMessage({
+  to: JID,
+  body: "Hello!"
+});
+
+```
 #### `client.sendPresence(opts)`
+Send presence to the server.
+```js
+client.on('session:started', () => {
+    client.getRoster(() => {
+        client.sendPresence();
+    })
+});
+```
+Note the `session:started`. You'll need to send your presence immediately to get presence from rosters.
+
 #### `client.sendStreamError(opts)`
 #### Keepalive
 ##### `client.enableKeepAlive(opts)`
@@ -282,8 +324,9 @@ When creating a client instance, the following settings will configure its behav
 ##### `client.getDiscoInfo(jid, node, [cb])`
 ##### `client.getDiscoItems(jid, node, [cb])`
 Fetch the jids of all available rooms
+
 Example:
-```
+```js
 client.getDiscoItems('conference.xxx.yyy.zz','', (err, data) => {
             //Get list of available rooms
         }
@@ -326,7 +369,8 @@ Request to join a Multi-User Chat room.
     - `password` - Optional password for entering the room
     - `history` - May be `true` to receive the room's default history replay, or may specify `maxstanzas`, `seconds`, or `since` to specify a history replay range in terms of number of messages, a given time range, or since a particular time.
 
-```javascript
+Example:
+```js
 client.joinRoom('room@muc.example.com', 'User', {
     status: 'This will be my status in the MUC',
     joinMuc: {
@@ -350,8 +394,15 @@ client.joinRoom('room@muc.example.com', 'User', {
 ##### `client.setBookmarks(opts, [cb])`
 #### Message Syncing
 ##### `client.enableCarbons([cb])`
-Enable carbon messages. This is useful if you want to receive a copy of a message that you sent from one device, and receive on all other logged devices. 
+Enable carbon messages. This is useful if you want to receive a copy of a message that you sent from one device, and receive on all other logged devices.
 
+Example:
+```js
+ client.on('session:started', () => {
+        client.sendPresence();
+        client.enableCarbons();
+    });
+```
 ##### `client.disableCarbons([cb])`
 ##### `client.getHistorySearchForm(jid, [cb])`
 ##### `client.getHistoryPreferences([cb])`
@@ -359,11 +410,12 @@ Enable carbon messages. This is useful if you want to receive a copy of a messag
 ##### `client.searchHistory(opts, [cb])`
 Fetch chat history for the specified jid. By default, you will receive all the messages.
 Optionally you can pass an object to get max number of messages.
+
 Example:
-```
+```js
 client.searchHistory({
             with: jid,
-            rsm: {max: 50, before: true},  -- 
+            rsm: {max: 50, before: true},  --
             complete: false
         }
 ```
@@ -432,7 +484,7 @@ All `JID` objects expose the following properties:
 ### chat
 
 Example:
-```
+```js
 {
     type: 'chat',
     to: JID,
@@ -444,7 +496,7 @@ Example:
 ### chat:state
 
 Example:
-```
+```js
 {
     type: 'chat',
     to: JID,
@@ -491,6 +543,19 @@ Example:
 ### jingle:terminated
 ### jingle:unmute
 ### message
+
+Example:
+```js
+client.on('message', (message) => {
+  /*
+  {
+      from: JID,
+      to: JID,
+      body: 'Message',
+  }
+  */
+})
+```
 ### message:error
 ### message:sent
 ### muc:available
@@ -504,10 +569,60 @@ Example:
 ### muc:destroyed
 ### nick
 ### presence
+I order to get presence, you have to send your presence first when session starts.
+
+Example:
+```javascript
+client.on('session:started', () => {
+        client.sendPresence();
+});
+
+client.on('presence', (presence) => {
+  /*
+  {   lang:"en",
+      id:"12345",
+      to: JID,
+      from: JID,
+      priority:0,
+      type:"available" // Type
+    }
+  */
+});
+```
 ### presence:error
 ### pubsub:event
 ### raw:incoming
+You will get pretty much any data going through your client as raw XML. Great for debugging.
+
+Example:
+```
+client.on('raw:incoming', (xml) => {
+/*
+ <presence xmlns="jabber:client" to="jid@example.com" type="chat" id="id" from="jid2@example.com" />
+
+ <message xmlns="jabber:client" to="jid@example.com" type="chat" id="id" from="jid2@example.com">
+    <body>Hi!</body>
+ </message>
+
+*/
+});
+```
 ### raw:outgoing
+Same as raw:incoming, only for outgoing.
+
+Example:
+```
+client.on('raw:outgoing', (xml) => {
+/*
+ <presence xmlns="jabber:client" to="jid@example.com" type="chat" id="id" from="jid2@example.com" />
+
+ <message xmlns="jabber:client" to="jid@example.com" type="chat" id="id" from="jid2@example.com">
+    <body>Hi!</body>
+ </message>  
+
+*/
+});
+```
 ### reachability
 ### receipt[:ID]
 ### replace[:ID]
@@ -530,7 +645,7 @@ Example:
 ### stream:management:failed
 ### stream:management:resumed
 ### stream:management:ack
-### subscribe
+### subscribeMM
 ### subscribed
 ### tune
 ### unavailable
@@ -538,7 +653,7 @@ Example:
 ### unsubscribe
 
 Example:
-```
+```js
 {
     type: 'subscribe',
     to: JID,
@@ -549,7 +664,7 @@ Example:
 ### unsubscribed
 
 Example:
-```
+```js
 {
     type: 'unsubscribed',
     to: JID,
