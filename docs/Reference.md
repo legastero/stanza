@@ -511,7 +511,7 @@ Example:
 ### disco:caps
 
 Example:
-```
+```js
 {
     to: JID,
     from: JID,
@@ -595,7 +595,7 @@ client.on('presence', (presence) => {
 You will get pretty much any data going through your client as raw XML. Great for debugging.
 
 Example:
-```
+```js
 client.on('raw:incoming', (xml) => {
 /*
  <presence xmlns="jabber:client" to="jid@example.com" type="chat" id="id" from="jid2@example.com" />
@@ -611,7 +611,7 @@ client.on('raw:incoming', (xml) => {
 Same as raw:incoming, only for outgoing.
 
 Example:
-```
+```js
 client.on('raw:outgoing', (xml) => {
 /*
  <presence xmlns="jabber:client" to="jid@example.com" type="chat" id="id" from="jid2@example.com" />
