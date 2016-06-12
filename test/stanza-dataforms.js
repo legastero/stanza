@@ -190,8 +190,8 @@ test('Convert Form Submission Results XML to Data Form object', function (t) {
         type: 'jid-multi',
         name: 'invitelist',
         value: [
-            new JID('juliet@capulet.com').toJSON(),
-            new JID('benvolio@montague.net').toJSON()
+            new JID('juliet@capulet.com'),
+            new JID('benvolio@montague.net')
         ]
     });
 
