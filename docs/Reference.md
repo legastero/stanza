@@ -645,7 +645,7 @@ client.on('raw:outgoing', (xml) => {
 ### stream:management:failed
 ### stream:management:resumed
 ### stream:management:ack
-### subscribeMM
+### subscribe
 ### subscribed
 ### tune
 ### unavailable
