@@ -243,6 +243,7 @@ When creating a client instance, the following settings will configure its behav
     - `serviceName` - for most cases should be the same as the `'host'`, the default
     - `realm` - for most cases should be the same as the `'host'`, the default
     - `authzid` -
+- `sendReceipts` - boolean value to determine whether or not client automatically sends acknowledgements if they are requested (XEP-0184). Default value is true, set to false if you want to send acknowledgements yourself.
 - `transports` - a strings array of transport methods that may be used.
 - `wsURL` - URL for the XMPP over WebSocket connection endpoint.
 - `boshURL` - URL for the BOSH connection endpoint.
