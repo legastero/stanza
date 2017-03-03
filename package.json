@@ -5,8 +5,7 @@
   "author": "Lance Stout <lancestout@gmail.com>",
   "browser": {
     "request": "xhr",
-    "faye-websocket": false,
-    "./lib/plugins/index.js": "./lib/plugins/index-browser.js"
+    "faye-websocket": false
   },
   "browserify": {
     "transform": [
@@ -30,7 +29,7 @@
     "faye-websocket": "^0.10.0",
     "hostmeta": "^2.0.0",
     "iana-hashes": "^1.0.2",
-    "jingle": "^2.0.0",
+    "jingle": "^3.0.0",
     "jxt": "^3.0.1",
     "jxt-xmpp": "^2.0.0",
     "jxt-xmpp-types": "^3.0.0",
