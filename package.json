@@ -31,7 +31,7 @@
     "iana-hashes": "^1.0.2",
     "jingle": "^3.0.0",
     "jxt": "^3.0.1",
-    "jxt-xmpp": "^2.0.0",
+    "jxt-xmpp": "git+https://github.com/latentflip/jxt-xmpp#build",
     "jxt-xmpp-types": "^3.0.0",
     "lodash.assign": "^3.0.0",
     "lodash.filter": "^3.1.0",
