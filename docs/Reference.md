@@ -570,7 +570,7 @@ client.on('message', (message) => {
 ### muc:destroyed
 ### nick
 ### presence
-I order to get presence, you have to send your presence first when session starts.
+In order to get presence, you have to send your presence first when session starts.
 
 Example:
 ```javascript
