@@ -246,6 +246,7 @@ When creating a client instance, the following settings will configure its behav
 - `sendReceipts` - boolean value to determine whether or not client automatically sends acknowledgements if they are requested (XEP-0184). Default value is true, set to false if you want to send acknowledgements yourself.
 - `transports` - a strings array of transport methods that may be used.
 - `wsURL` - URL for the XMPP over WebSocket connection endpoint.
+- `wsOptions` - additional options passed to WebSocket constructor (optional and not supported by all WebSocket clients)
 - `boshURL` - URL for the BOSH connection endpoint.
 - `sasl` - a list of the SASL mechanisms that are acceptable for use by the client.
 - `useStreamManagement` - set to `true` to enable resuming the session after a disconnect.
