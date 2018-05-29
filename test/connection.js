@@ -10,7 +10,7 @@ test('Connect using WebSocket', function (t) {
     var client = stanza.createClient({
         jid: 'anon@anon.lance.im',
         transport: 'websocket',
-        wsURL: 'wss://lance.im:5281/xmpp-websocket'
+        wsURL: 'wss://anon.lance.im/xmpp-websocket'
     });
 
     client.on('session:started', function () {
@@ -27,7 +27,7 @@ test('Connect using BOSH', function (t) {
     var client = stanza.createClient({
         jid: 'anon@anon.lance.im',
         transport: 'bosh',
-        boshURL: 'https://lance.im:5281/http-bind'
+        boshURL: 'https://anon.lance.im/http-bind'
     });
 
     client.on('session:started', function () {
