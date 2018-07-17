@@ -75,6 +75,9 @@
             - [`client.getHistoryPreferences([cb])`](#clientgethistorypreferencescb)
             - [`client.setHistoryPreferences(opts, [cb])`](#clientsethistorypreferencesopts-cb)
             - [`client.searchHistory(opts, [cb])`](#clientsearchhistoryopts-cb)
+        - [Push Notifications](#push-notifications)
+            - [`client.enableNotifications(jid, node, fieldList, [cb])`](#clientenablenotifications)
+            - [`client.disableNotifications(jid, node, [cb])`](#clientdisablenotifications)
         - [Other](#other)
             - [`client.deleteAccount([jid, cb])`](#clientdeleteaccountjid-cb)
             - [`client.getAccountInfo([jid, cb])`](#clientgetaccountinfojid-cb)
@@ -420,6 +423,29 @@ client.searchHistory({
             rsm: {max: 50, before: true},  --
             complete: false
         }
+```
+#### Push Notifications
+##### `client.enableNotifications(jid, node, fieldList, [cb])`
+Enable push notifications for the given `node` in the given push
+server (`jid`).  `fieldList` is an array of objects with `name` and
+`value` properties to be passed as form's fields to the outgoing `iq`
+stanza.
+
+Example:
+```js
+client.enableNotifications('push.example.im',
+                           'e4109a84-89aa-11e8-9373-431c37c82976',
+						   [{name: 'secret', value: 's3cr3t'}]);
+```
+
+##### `client.disableNotifications(jid, node, [cb])`
+Disable push notifications from the given push server (`jid`).  If
+`node` is provided, only unsubscribes from notifications from such
+node.
+
+Example:
+```js
+client.disableNotifications('push.example.im', 'e4109a84-89aa-11e8-9373-431c37c82976')
 ```
 #### Avatars
 ##### `client.getAvatar(jid, id, [cb])`
