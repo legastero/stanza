@@ -253,6 +253,12 @@ When creating a client instance, the following settings will configure its behav
 - `boshURL` - URL for the BOSH connection endpoint.
 - `sasl` - a list of the SASL mechanisms that are acceptable for use by the client.
 - `useStreamManagement` - set to `true` to enable resuming the session after a disconnect.
+- `smHardResumption` 
+    - `id` - previous stream resumption id
+    - `lastAck` - lastAck counter
+    - `handled` - handled counter
+    - `unacked` - array of unacked stanzas
+    - `cb` - a callback handler receiving id, lastAck, handled, unacked for the user persist
 - `rosterVer` - version ID of cached roster data given by the server, typically saved from a previous session.
 - `capsNode` - a URL for identifying the client app.
 - `softwareVersion`
