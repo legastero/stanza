@@ -1,5 +1,8 @@
 # Change Log
 
+## 9.1.0 vnc
+* patched to use correct namespace
+
 ## 6.0.0 -> 6.0.1
 * **Bug Fixes**
     * [#31: Resolve Unicode interop with other clients](https://github.com/otalk/stanza.io/issues/31)
