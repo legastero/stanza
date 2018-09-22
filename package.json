@@ -32,7 +32,7 @@
     "jingle": "^3.0.0",
     "jxt": "^3.1.0",
     "jxt-xmpp": "^3.1.0",
-    "jxt-xmpp-types": "^3.0.0",
+    "jxt-xmpp-types": "github.com:stefansaenger/jxt-xmpp-types",
     "lodash.assign": "^3.0.0",
     "lodash.filter": "^3.1.0",
     "lodash.foreach": "^3.0.2",
