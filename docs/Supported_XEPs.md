@@ -87,6 +87,7 @@
 - [XEP-0319: Last User Interaction in Presence](http://xmpp.org/extensions/xep-0319.html)
 - [XEP-0320: Use of DTLS-SRTP in Jingle Sessions](http://xmpp.org/extensions/xep-0320.html)
 - [XEP-0328: JID Prep](http://xmpp.org/extensions/xep-0328.html)
+- [XEP-0333: Chat Markers](http://xmpp.org/extensions/xep-0333.html)
 - [XEP-0335: JSON Containers](http://xmpp.org/extensions/xep-0335.html)
 - [XEP-0337: Event Logging over XMPP](http://xmpp.org/extensions/xep-0337.html)
 - [XEP-0338: Jingle Grouping Framework](http://xmpp.org/extensions/xep-0338.html)
