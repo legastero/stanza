@@ -3,7 +3,7 @@
 var test = require('tape');
 var JXT = require('jxt').createRegistry();
 
-var HostMeta = require('../lib/plugins/hostmeta');
+var HostMeta = require('../src/plugins/hostmeta');
 
 
 var xml = '<?xml version="1.0" encoding="UTF-8"?>' +

@@ -1,7 +1,7 @@
 'use strict';
 
 var test = require('tape');
-var stanza = require('../index');
+var stanza = require('../src');
 
 
 test('Connect using WebSocket', function (t) {

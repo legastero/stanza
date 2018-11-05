@@ -5,7 +5,7 @@ const Pkg = require('./package.json');
 
 
 module.exports = {
-    entry: './index.js',
+    entry: './src/index.js',
 
     output: {
         filename: 'stanzaio.bundle.js',
