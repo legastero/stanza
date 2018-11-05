@@ -78,6 +78,9 @@
         - [Push Notifications](#push-notifications)
             - [`client.enableNotifications(jid, node, fieldList, [cb])`](#clientenablenotifications)
             - [`client.disableNotifications(jid, node, [cb])`](#clientdisablenotifications)
+        - [Chat Markers](#chat-markers)
+            - [`client.markDisplayed(msg)`](#clientmarkdisplayed)
+            - [`client.markAcknowledged(msg)`](#clientmarkacknowledged)
         - [Other](#other)
             - [`client.deleteAccount([jid, cb])`](#clientdeleteaccountjid-cb)
             - [`client.getAccountInfo([jid, cb])`](#clientgetaccountinfojid-cb)
@@ -447,6 +450,14 @@ Example:
 ```js
 client.disableNotifications('push.example.im', 'e4109a84-89aa-11e8-9373-431c37c82976')
 ```
+
+#### Chat Markers
+Chat Markers are enabled by setting `config.chatMarkers` to `true`.
+##### `client.markDisplayed(msg))`
+Marks a message as displayed by using [Chat Markers](http://xmpp.org/extensions/xep-0333.html).
+##### `client.markAcknowledged(msg))`
+Marks a message as acknowledged by using [Chat Markers](http://xmpp.org/extensions/xep-0333.html).
+
 #### Avatars
 ##### `client.getAvatar(jid, id, [cb])`
 ##### `client.publishAvatar(id, data, [cb])`
