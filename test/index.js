@@ -3,3 +3,6 @@ require('./connection');
 
 // Stanza Support Tests
 require('./stanza-dataforms');
+
+// Host-meta Tests
+require('./hostmeta')

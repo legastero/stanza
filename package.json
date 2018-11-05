@@ -15,9 +15,7 @@
   "dependencies": {
     "alt-sasl-digest-md5": "^1.0.0",
     "async": "^2.5.0",
-    "browserify-versionify": "^1.0.4",
     "faye-websocket": "^0.11.0",
-    "hostmeta": "^2.0.0",
     "iana-hashes": "^1.0.2",
     "jingle": "^3.0.0",
     "jxt": "^3.1.0",
