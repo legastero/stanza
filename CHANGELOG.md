@@ -1,5 +1,9 @@
 # Change Log
 
+## 9.1.0 -> 9.2.0
+* Fixed CSI namespace to use `urn:xmpp:csi:0`
+* Added support for XEP-0333 Chat Markers
+
 ## 6.0.0 -> 6.0.1
 * **Bug Fixes**
     * [#31: Resolve Unicode interop with other clients](https://github.com/otalk/stanza.io/issues/31)
