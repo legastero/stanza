@@ -7,17 +7,7 @@
     "request": "xhr",
     "faye-websocket": false
   },
-  "browserify": {
-    "transform": [
-      [
-        "browserify-versionify",
-        {
-          "placeholder": "__STANZAIO_VERSION__"
-        }
-      ]
-    ]
-  },
-  "bugs": "https://github.com/otalk/stanza.io/issues",
+  "bugs": "https://github.com/legastero/stanza.io/issues",
   "contributors": [
     "Philipp Hancke <fippo@andyet.net>",
     "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
@@ -51,41 +41,54 @@
     "xmpp-jid": "^1.0.0"
   },
   "devDependencies": {
-    "browserify": "^13.0.0",
-    "jshint": "^2.6.3",
-    "make-better": "^0.4.1",
-    "precommit-hook": "^3.0.0",
-    "tap-spec": "^4.1.0",
-    "tape": "^4.2.0",
-    "uglify-js": "^2.6.2"
+    "eslint": "^5.8.0",
+    "husky": "^1.1.3",
+    "string-replace-loader": "^2.1.1",
+    "tap-spec": "^5.0.0",
+    "tape": "^4.8.0",
+    "webpack": "^4.25.0",
+    "webpack-bundle-analyzer": "^3.0.3",
+    "webpack-cli": "^3.1.2"
   },
-  "homepage": "http://stanza.io",
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true
+    },
+    "rules": {
+      "no-console": 0
+    }
+  },
+  "eslintIgnore": [
+    "build/*"
+  ],
+  "homepage": "https://stanza.io",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm test"
+    }
+  },
   "keywords": [
-    "XMPP",
-    "xmpp",
-    "websocket",
-    "stanza",
-    "json",
     "bosh",
+    "jingle",
+    "json",
+    "stanza",
     "stanza.io",
-    "otalk",
-    "jingle"
+    "websocket",
+    "xmpp"
   ],
   "license": "MIT",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/otalk/stanza.io.git"
+    "url": "https://github.com/legastero/stanza.io.git"
   },
   "scripts": {
-    "build": "make build",
-    "test": "make test",
-    "lint": "jshint .",
+    "build": "webpack --mode production",
+    "lint": "eslint .",
+    "test": "node test/index.js | tap-spec",
     "validate": "npm ls"
-  },
-  "pre-commit": [
-    "lint",
-    "validate",
-    "test"
-  ]
+  }
 }
