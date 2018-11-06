@@ -1,10 +1,8 @@
-'use strict';
-
-const NS = 'http://jabber.org/protocol/shim';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature(NS);
-    client.disco.addFeature(NS + '#SubID', NS);
+    client.disco.addFeature(Namespaces.SHIM);
+    client.disco.addFeature(`${Namespaces.SHIM}#SubID`, Namespaces.SHIM);
 }

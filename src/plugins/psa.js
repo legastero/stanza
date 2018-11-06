@@ -1,7 +1,7 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:psa');
+    client.disco.addFeature(Namespaces.PSA);
 }

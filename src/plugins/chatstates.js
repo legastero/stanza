@@ -1,6 +1,9 @@
+import { Namespaces } from '../protocol';
+
+
 export default function (client) {
 
-    client.disco.addFeature('http://jabber.org/protocol/chatstates');
+    client.disco.addFeature(Namespaces.CHAT_STATES);
 
     const allowedTypes = ['chat', 'groupchat', 'normal'];
 

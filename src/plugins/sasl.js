@@ -1,6 +1,3 @@
-'use strict';
-
-
 const NS = 'urn:ietf:params:xml:ns:xmpp-sasl';
 
 

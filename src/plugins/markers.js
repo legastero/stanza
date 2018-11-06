@@ -1,4 +1,5 @@
-'use strict';
+import { Namespaces } from '../protocol';
+
 
 export default function (client) {
 
@@ -6,7 +7,7 @@ export default function (client) {
         return msg.markable && client.config.chatMarkers !== false;
     }
 
-    client.disco.addFeature('urn:xmpp:chat-markers:0');
+    client.disco.addFeature(Namespaces.CHAT_MARKERS_0);
 
     client.on('message', function(msg) {
         if (enabled(msg)) {

@@ -1,18 +1,16 @@
-'use strict';
-
-const NS = 'http://jabber.org/protocol/nick';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature(NS);
-    client.disco.addFeature(NS + '+notify');
+    client.disco.addFeature(Namespaces.NICK);
+    client.disco.addFeature(Namespaces.PEP_NOTIFY(Namespaces.NICK));
 
     client.on('pubsub:event', function (msg) {
         if (!msg.event.updated) {
             return;
         }
-        if (msg.event.updated.node !== NS) {
+        if (msg.event.updated.node !== Namespaces.NICK) {
             return;
         }
 
@@ -23,7 +21,7 @@ export default function (client) {
     });
 
     client.publishNick = function (nick, cb) {
-        return this.publish('', NS, {
+        return this.publish('', Namespaces.NICK, {
             nick: nick
         }, cb);
     };

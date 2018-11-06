@@ -1,5 +1,7 @@
 import { JID } from 'xmpp-jid';
 
+import { Namespaces } from '../protocol';
+
 
 function timeoutPromise(targetPromise, queryid, delay) {
     let timeoutRef;
@@ -25,7 +27,7 @@ function timeoutPromise(targetPromise, queryid, delay) {
 
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:mam:2');
+    client.disco.addFeature(Namespaces.MAM_2);
 
     client.getHistorySearchForm = function (jid, cb) {
         return client.sendIq({
@@ -61,7 +63,7 @@ export default function (client) {
                     val = val.toISOString();
                 }
                 if (name === 'FORM_TYPE') {
-                    val = 'urn:xmpp:mam:2';
+                    val = Namespaces.MAM_2;
                 }
 
                 const existing = false;

@@ -1,16 +1,16 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:reach:0');
-    client.disco.addFeature('urn:xmpp:reach:0+notify');
+    client.disco.addFeature(Namespaces.REACH_0);
+    client.disco.addFeature(`${Namespaces.REACH_0}+notify`);
 
     client.on('pubsub:event', function (msg) {
         if (!msg.event.updated) {
             return;
         }
-        if (msg.event.updated.node !== 'urn:xmpp:reach:0') {
+        if (msg.event.updated.node !== Namespaces.REACH_0) {
             return;
         }
 
@@ -32,7 +32,7 @@ export default function (client) {
     });
 
     client.publishReachability = function (data, cb) {
-        return this.publish('', 'urn:xmpp:reach:0', {
+        return this.publish('', Namespaces.REACH_0, {
             reach: data
         }, cb);
     };

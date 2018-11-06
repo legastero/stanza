@@ -1,5 +1,6 @@
 import { JID } from 'xmpp-jid';
 
+
 export default function (client, stanzas, config) {
 
     client.registerFeature('bind', 300, function (features, cb) {

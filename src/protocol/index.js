@@ -62,6 +62,7 @@ import Tune from './stanzas/tune';
 import VCardTemp from './stanzas/vcard';
 import Version from './stanzas/version';
 import Visibility from './stanzas/visibility';
+import XRD from './stanzas/xrd';
 
 import * as Namespaces from './namespaces';
 
@@ -140,4 +141,5 @@ export default function (JXT) {
     JXT.use(VCardTemp);
     JXT.use(Version);
     JXT.use(Visibility);
+    JXT.use(XRD);
 }

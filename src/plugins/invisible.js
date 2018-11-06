@@ -1,7 +1,3 @@
-'use strict';
-
-
-
 export default function (client) {
 
     client.goInvisible = function (cb) {

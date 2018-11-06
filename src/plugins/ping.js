@@ -1,9 +1,9 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:ping');
+    client.disco.addFeature(Namespaces.PING);
 
     client.on('iq:get:ping', function (iq) {
         client.sendIq(iq.resultReply());

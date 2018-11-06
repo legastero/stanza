@@ -1,9 +1,9 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:rtt:0');
+    client.disco.addFeature(Namespaces.RTT_0);
 
     client.on('message', function (msg) {
         if (msg.rtt) {

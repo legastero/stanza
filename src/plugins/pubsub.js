@@ -1,6 +1,3 @@
-'use strict';
-
-
 export default function (client) {
 
     client.on('message', function (msg) {

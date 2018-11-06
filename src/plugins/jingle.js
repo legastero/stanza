@@ -1,6 +1,6 @@
-'use strict';
-
 import Jingle from 'jingle';
+
+import { Namespaces } from '../protocol';
 
 
 const window = window || global;
@@ -16,19 +16,19 @@ export default function (client) {
         turns: true
     };
 
-    client.disco.addFeature('urn:xmpp:jingle:1');
+    client.disco.addFeature(Namespaces.JINGLE_1);
     if (window.RTCPeerConnection) {
         const caps = [
-            'urn:xmpp:jingle:apps:rtp:1',
-            'urn:xmpp:jingle:apps:rtp:audio',
-            'urn:xmpp:jingle:apps:rtp:video',
-            'urn:xmpp:jingle:apps:rtp:rtcb-fb:0',
-            'urn:xmpp:jingle:apps:rtp:rtp-hdrext:0',
-            'urn:xmpp:jingle:apps:rtp:ssma:0',
-            'urn:xmpp:jingle:apps:dtls:0',
-            'urn:xmpp:jingle:apps:grouping:0',
-            'urn:xmpp:jingle:apps:file-transfer:3',
-            'urn:xmpp:jingle:transports:ice-udp:1',
+            Namespaces.JINGLE_RTP_1,
+            Namespaces.JINGLE_RTP_RTCP_FB_0,
+            Namespaces.JINGLE_RTP_HDREXT_0,
+            Namespaces.JINGLE_RTP_SSMA_0,
+            Namespaces.JINGLE_DTLS_0,
+            Namespaces.JINGLE_GROUPING_0,
+            Namespaces.FILE_TRANSFER_3,
+            Namespaces.JINGLE_ICE_UDP_1,
+            Namespaces.JINGLE_RTP_AUDIO,
+            Namespaces.JINGLE_RTP_VIDEO,
             'urn:xmpp:jingle:transports:dtls-sctp:1',
             'urn:ietf:rfc:3264',
             'urn:ietf:rfc:5576',

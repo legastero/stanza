@@ -1,7 +1,7 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:reference:0');
+    client.disco.addFeature(Namespaces.REFERENCE_0);
 }

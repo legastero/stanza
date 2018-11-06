@@ -1,7 +1,7 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:idle:1');
+    client.disco.addFeature(Namespaces.IDLE_1);
 }

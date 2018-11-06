@@ -1,9 +1,9 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature('', 'urn:xmpp:eventlog');
+    client.disco.addFeature('', Namespaces.EVENTLOG);
 
     client.sendLog = function (jid, logData) {
         client.sendMessage({

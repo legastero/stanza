@@ -1,18 +1,17 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
-const NS = 'http://jabber.org/protocol/tune';
 
 export default function (client) {
 
-    client.disco.addFeature(NS);
-    client.disco.addFeature(NS + '+notify');
+    client.disco.addFeature(Namespaces.TUNE);
+    client.disco.addFeature(Namespaces.PEP_NOTIFY(Namespaces.TUNE));
 
     client.on('pubsub:event', function (msg) {
         if (!msg.event.updated) {
             return;
         }
 
-        if (msg.event.updated.node !== NS) {
+        if (msg.event.updated.node !== Namespaces.TUNE) {
             return;
         }
 
@@ -23,7 +22,7 @@ export default function (client) {
     });
 
     client.publishTune = function (tune, cb) {
-        return this.publish('', NS, {
+        return this.publish('', Namespaces.TUNE, {
             tune: tune
         }, cb);
     };

@@ -154,8 +154,15 @@ export const REACH_0 = 'urn:xmpp:reach:0';
 // XEP-0153
 export const VCARD_TEMP_UPDATE = 'vcard-temp:x:update';
 
+// XEP-0156
+export const ALT_CONNECTIONS_WEBSOCKET = 'urn:xmpp:alt-connections:websocket';
+export const ALT_CONNECTIONS_XBOSH = 'urn:xmpp:alt-connections:xbosh';
+
 // XEP-0158
 export const CAPTCHA = 'urn:xmpp:captcha';
+
+// XEP-0163
+export const PEP_NOTIFY = (ns) => `${ns}+notify`; 
 
 // XEP-0166
 export const JINGLE_1 = 'urn:xmpp:jingle:1';
@@ -165,6 +172,8 @@ export const JINGLE_ERRORS_1 = 'urn:xmpp:jingle:errors:1';
 export const JINGLE_RTP_1 = 'urn:xmpp:jingle:apps:rtp:1';
 export const JINGLE_RTP_ERRORS_1 = 'urn:xmpp:jingle:apps:rtp:errors:1';
 export const JINGLE_RTP_INFO_1 = 'urn:xmpp:jingle:apps:rtp:info:1';
+export const JINGLE_RTP_AUDIO = 'urn:xmpp:jingle:apps:rtp:audio';
+export const JINGLE_RTP_VIDEO = 'urn:xmpp:jingle:apps:rtp:video';
 
 // XEP-0171
 export const LANG_TRANS = 'urn:xmpp:langtrans';
@@ -258,6 +267,7 @@ export const FORWARD_0 = 'urn:xmpp:forward:0';
 
 // XEP-0300
 export const HASHES_1 = 'urn:xmpp:hashes:1';
+export const HASH_NAME = (name) => `urn:xmpp:hash-function-text-names:${name}`;
 
 // XEP-0301
 export const RTT_0 = 'urn:xmpp:rtt:0';
@@ -290,7 +300,7 @@ export const JINGLE_DTLS_0 = 'urn:xmpp:jingle:apps:dtls:0';
 export const JID_PREP_0 = 'urn:xmpp:jidprep:0';
 
 // XEP-0333
-export const CHAT_MARKERS = 'urn:xmpp:chat-markers:0';
+export const CHAT_MARKERS_0 = 'urn:xmpp:chat-markers:0';
 
 // XEP-0334
 export const HINTS = 'urn:xmpp:hints';

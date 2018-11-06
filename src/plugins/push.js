@@ -1,8 +1,9 @@
-'use strict';
+import { Namespaces } from '../protocol';
+
 
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:push:0');
+    client.disco.addFeature(Namespaces.PUSH_0);
 
     client.enableNotifications = function(jid, node, fieldList, cb) {
         const fields = [{

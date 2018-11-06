@@ -1,16 +1,16 @@
-const NS = 'http://jabber.org/protocol/commands';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature(NS);
+    client.disco.addFeature(Namespaces.ADHOC_COMMANDS);
     client.disco.addItem({
         name: 'Ad-Hoc Commands',
-        node: NS
+        node: Namespaces.ADHOC_COMMANDS
     });
 
 
     client.getCommands = function (jid, cb) {
-        return client.getDiscoItems(jid, NS, cb);
+        return client.getDiscoItems(jid, Namespaces.ADHOC_COMMANDS, cb);
     };
 }

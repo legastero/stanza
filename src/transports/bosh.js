@@ -4,6 +4,8 @@ const filter = require('lodash.filter');
 import request from 'request';
 import WildEmitter from 'wildemitter';
 
+import { Namespaces } from '../protocol';
+
 
 function timeoutPromise(targetPromise, delay) {
     let timeoutRef;
@@ -68,7 +70,7 @@ export default class BOSHConnection extends WildEmitter {
         const self = this;
         self.sm = sm;
         self.stanzas = {
-            BOSH: stanzas.getDefinition('body', 'http://jabber.org/protocol/httpbind'),
+            BOSH: stanzas.getDefinition('body', Namespaces.BOSH),
             StreamError: stanzas.getStreamError()
         };
         self.sendQueue = [];

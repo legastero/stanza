@@ -1,9 +1,8 @@
-'use strict';
-
+import { Namespaces } from '../protocol';
 
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:message-correct:0');
+    client.disco.addFeature(Namespaces.CORRECTION_0);
 
     client.on('message', function (msg) {
         if (msg.replace) {

@@ -10,7 +10,6 @@ export default class Plain {
     }
 
     challenge() {
-        return this;
     }
 }
   

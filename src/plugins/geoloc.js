@@ -1,17 +1,16 @@
-'use strict';
-
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature('http://jabber.org/protocol/geoloc');
-    client.disco.addFeature('http://jabber.org/protocol/geoloc+notify');
+    client.disco.addFeature(Namespaces.GEOLOC);
+    client.disco.addFeature(`${Namespaces.GEOLOC}+notify`);
 
     client.on('pubsub:event', function (msg) {
         if (!msg.event.updated) {
             return;
         }
-        if (msg.event.updated.node !== 'http://jabber.org/protocol/geoloc') {
+        if (msg.event.updated.node !== Namespaces.GEOLOC) {
             return;
         }
 
@@ -22,7 +21,7 @@ export default function (client) {
     });
 
     client.publishGeoLoc = function (data, cb) {
-        return this.publish('', 'http://jabber.org/protocol/geoloc', {
+        return this.publish('', Namespaces.GEOLOC, {
             geoloc: data
         }, cb);
     };

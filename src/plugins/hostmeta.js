@@ -1,60 +1,8 @@
-'use strict';
-
 import * as async from 'async';
 import request from 'request';
 
-const NS = 'http://docs.oasis-open.org/ns/xri/xrd-1.0';
 
-
-export function XRD(registry) {
-    const jxt = registry.utils;
-
-    const Properties = {
-        get: function () {
-            const results = {};
-            const props = jxt.find(this.xml, NS, 'Property');
-    
-            for (let i = 0, len = props.length; i < len; i++) {
-                const property = props[i];
-                const type = jxt.getAttribute(property, 'type');
-                results[type] = property.textContent;
-            }
-    
-            return results;
-        }
-    };
-    
-    const XRD = registry.define({
-        name: 'xrd',
-        namespace: NS,
-        element: 'XRD',
-        fields: {
-            subject: jxt.subText(NS, 'Subject'),
-            expires: jxt.dateSub(NS, 'Expires'),
-            aliases: jxt.multiSubText(NS, 'Alias'),
-            properties: Properties
-        }
-    });
-    
-    
-    const Link = registry.define({
-        name: '_xrdlink',
-        namespace: NS,
-        element: 'Link',
-        fields: {
-            rel: jxt.attribute('rel'),
-            href: jxt.attribute('href'),
-            type: jxt.attribute('type'),
-            template: jxt.attribute('template'),
-            titles: jxt.subLangText(NS, 'Title', 'default'),
-            properties: Properties
-        }
-    });
-    
-    registry.extend(XRD, Link, 'links');
-
-    return XRD;
-}
+import { Namespaces } from '../protocol';
 
 
 export function getHostMeta(JXT, opts, cb) {
@@ -112,12 +60,6 @@ export function getHostMeta(JXT, opts, cb) {
 
 export default function (client, stanzas) {
 
-    if (!client && !stanzas) {
-        return;
-    }
-
-    stanzas.use(XRD);
-
     client.discoverBindings = function (server, cb) {
         getHostMeta(stanzas, server, function (err, data) {
             if (err) {
@@ -131,16 +73,10 @@ export default function (client, stanzas) {
             const links = data.links || [];
     
             links.forEach(function (link) {
-                if (link.href && link.rel === 'urn:xmpp:alt-connections:websocket') {
+                if (link.href && link.rel === Namespaces.ALT_CONNECTIONS_WEBSOCKET) {
                     results.websocket.push(link.href);
                 }
-                if (link.href && link.rel === 'urn:xmpp:altconnect:websocket') {
-                    results.websocket.push(link.href);
-                }
-                if (link.href && link.rel === 'urn:xmpp:alt-connections:xbosh') {
-                    results.bosh.push(link.href);
-                }
-                if (link.href && link.rel === 'urn:xmpp:altconnect:bosh') {
+                if (link.href && link.rel === Namespaces.ALT_CONNECTIONS_XBOSH) {
                     results.bosh.push(link.href);
                 }
             });

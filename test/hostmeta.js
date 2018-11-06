@@ -4,6 +4,7 @@ const test = require('tape');
 const JXT = require('jxt').createRegistry();
 
 const HostMeta = require('../lib/plugins/hostmeta');
+const XRD = require('../lib/protocol/stanzas/xrd');
 
 
 const xml = '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -66,7 +67,7 @@ const json = {
 test('XRD', function (t) {
     t.plan(4);
 
-    JXT.use(HostMeta.XRD);
+    JXT.use(XRD.default);
 
     const xrd = JXT.parse(xml).toJSON();
 

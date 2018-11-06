@@ -1,11 +1,10 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
 
 export default function (client, stanzas) {
 
-    const Active = stanzas.getDefinition('active', 'urn:xmpp:csi:0');
-    const Inactive = stanzas.getDefinition('inactive', 'urn:xmpp:csi:0');
-
+    const Active = stanzas.getDefinition('active', Namespaces.CSI);
+    const Inactive = stanzas.getDefinition('inactive', Namespaces.CSI);
 
     client.registerFeature('clientStateIndication', 400, function (features, cb) {
         this.features.negotiated.clientStateIndication = true;

@@ -1,6 +1,3 @@
-'use strict';
-
-
 export default function (client) {
 
     client.registerFeature('session', 1000, function (features, cb) {

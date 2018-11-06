@@ -1,10 +1,11 @@
-'use strict';
+import { Namespaces } from '../protocol';
+
 
 export default function (client, stanzas, config) {
 
     const sendReceipts =  config.sendReceipts !== false;
 
-    client.disco.addFeature('urn:xmpp:receipts');
+    client.disco.addFeature(Namespaces.RECEIPTS);
 
     client.on('message', function (msg) {
         const ackTypes = {

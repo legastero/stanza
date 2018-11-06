@@ -1,12 +1,12 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature('jabber:x:data');
-    client.disco.addFeature('urn:xmpp:media-element');
-    client.disco.addFeature('http://jabber.org/protocol/xdata-validate');
-    client.disco.addFeature('http://jabber.org/protocol/xdata-layout');
+    client.disco.addFeature(Namespaces.DATAFORM);
+    client.disco.addFeature(Namespaces.DATAFORM_MEDIA);
+    client.disco.addFeature(Namespaces.DATAFORM_VALIDATION);
+    client.disco.addFeature(Namespaces.DATAFORM_LAYOUT);
 
     client.on('message', function (msg) {
         if (msg.form) {

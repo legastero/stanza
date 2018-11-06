@@ -1,6 +1,3 @@
-/* global Promise */
-'use strict';
-
 function timeoutPromise(targetPromise, delay) {
     let timeoutRef;
     return Promise.race([

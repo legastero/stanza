@@ -1,6 +1,3 @@
-'use strict';
-
-
 export default function (client, stanzas, config) {
 
     const smacks = function (features, cb) {

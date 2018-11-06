@@ -1,10 +1,10 @@
-'use strict';
-
 const each = require('lodash.foreach');
 const unique = require('lodash.uniq');
 
 import { JID } from 'xmpp-jid';
 import * as hashes from 'iana-hashes';
+
+import { Namespaces } from '../protocol';
 
 
 function generateVerString(info, hash) {
@@ -155,8 +155,8 @@ export default function (client) {
 
     client.disco = new Disco(client);
 
-    client.disco.addFeature('http://jabber.org/protocol/disco#info');
-    client.disco.addFeature('http://jabber.org/protocol/disco#items');
+    client.disco.addFeature(Namespaces.DISCO_INFO);
+    client.disco.addFeature(Namespaces.DISCO_ITEMS);
     client.disco.addIdentity({
         category: 'client',
         type: 'web'

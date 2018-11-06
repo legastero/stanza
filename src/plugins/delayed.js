@@ -1,7 +1,6 @@
-'use strict';
-
+import { Namespaces } from '../protocol';
 
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:delay');
+    client.disco.addFeature(Namespaces.DELAY);
 }

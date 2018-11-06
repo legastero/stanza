@@ -1,19 +1,17 @@
-'use strict';
-
-const NS = 'http://jabber.org/protocol/mood';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature(NS);
-    client.disco.addFeature(NS + '+notify');
+    client.disco.addFeature(Namespaces.MOOD);
+    client.disco.addFeature(Namespaces.PEP_NOTIFY(Namespaces.MOOD));
 
     client.on('pubsub:event', function (msg) {
         if (!msg.event.updated) {
             return;
         }
 
-        if (msg.event.updated.node !== NS) {
+        if (msg.event.updated.node !== Namespaces.MOOD) {
             return;
         }
 
@@ -24,7 +22,7 @@ export default function (client) {
     });
 
     client.publishMood = function (mood, text, cb) {
-        return this.publish('', NS, {
+        return this.publish('', Namespaces.MOOD, {
             mood: {
                 value: mood,
                 text: text

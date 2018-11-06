@@ -1,12 +1,14 @@
 const each = require('lodash.foreach');
 import { JID } from 'xmpp-jid';
 
+import { Namespaces } from '../protocol';
+
 
 export default function (client) {
 
-    client.disco.addFeature('http://jabber.org/protocol/muc');
-    client.disco.addFeature('jabber:x:conference');
-    client.disco.addFeature('urn:xmpp:hats:0');
+    client.disco.addFeature(Namespaces.MUC);
+    client.disco.addFeature(Namespaces.MUC_DIRECT_INVITE);
+    client.disco.addFeature(Namespaces.HATS_0);
 
     client.joinedRooms = {};
     client.joiningRooms = {};

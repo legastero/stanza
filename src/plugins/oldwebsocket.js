@@ -1,5 +1,3 @@
-'use strict';
-
 import OldWSConnection from '../transports/old-websocket';
 
 

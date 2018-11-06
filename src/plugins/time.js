@@ -1,9 +1,9 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
 
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:time');
+    client.disco.addFeature(Namespaces.TIME);
 
     client.getTime = function (jid, cb) {
         return this.sendIq({

@@ -1,6 +1,9 @@
+import { Namespaces } from '../protocol';
+
+
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:carbons:2');
+    client.disco.addFeature(Namespaces.CARBONS_2);
 
     client.enableCarbons = function (cb) {
         return this.sendIq({

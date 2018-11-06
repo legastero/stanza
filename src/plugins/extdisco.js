@@ -1,9 +1,8 @@
-'use strict';
-
+import { Namespaces } from '../protocol';
 
 export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:extdisco:1');
+    client.disco.addFeature(Namespaces.DISCO_EXTERNAL_1);
 
     client.getServices = function (jid, type, cb) {
         return this.sendIq({
