@@ -20,10 +20,10 @@ export const SUBSCRIPTION_PREAPPROVAL = 'urn:xmpp:features:pre-approval';
 // RFC 7395
 export const FRAMING = 'urn:ietf:params:xml:ns:xmpp-framing';
 
+
 // ================================================================
 // XEPS
 // ================================================================
-
 
 // XEP-0004
 export const DATAFORM = 'jabber:x:data';
@@ -350,3 +350,10 @@ export const REFERENCE_0 = 'urn:xmpp:reference:0';
 
 // XEP-0382
 export const SPOILER_0 = 'urn:xmppp:spoiler:0';
+
+
+// ================================================================
+// OTHER
+// ================================================================
+
+export const XRD = 'http://docs.oasis-open.org/ns/xri/xrd-1.0';
