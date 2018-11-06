@@ -17,15 +17,15 @@ export default function(client) {
         }
 
         if (msg.received) {
-            return client.emit('marker:received', msg.received);
+            return client.emit('marker:received', msg);
         }
 
         if (msg.displayed) {
-            return client.emit('marker:displayed', msg.displayed);
+            return client.emit('marker:displayed', msg);
         }
 
         if (msg.acknowledged) {
-            return client.emit('marker:acknowledged', msg.acknowledged);
+            return client.emit('marker:acknowledged', msg);
         }
     });
 
