@@ -1,4 +1,4 @@
-var NS = 'http://jabber.org/protocol/commands';
+const NS = 'http://jabber.org/protocol/commands';
 
 
 export default function (client) {

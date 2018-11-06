@@ -1,22 +1,22 @@
 'use strict';
 
-var async = require('async');
-var request = require('request');
+import * as async from 'async';
+import request from 'request';
 
-var NS = 'http://docs.oasis-open.org/ns/xri/xrd-1.0';
+const NS = 'http://docs.oasis-open.org/ns/xri/xrd-1.0';
 
 
 export function XRD(registry) {
-    var jxt = registry.utils;
+    const jxt = registry.utils;
 
-    var Properties = {
+    const Properties = {
         get: function () {
-            var results = {};
-            var props = jxt.find(this.xml, NS, 'Property');
+            const results = {};
+            const props = jxt.find(this.xml, NS, 'Property');
     
-            for (var i = 0, len = props.length; i < len; i++) {
-                var property = props[i];
-                var type = jxt.getAttribute(property, 'type');
+            for (let i = 0, len = props.length; i < len; i++) {
+                const property = props[i];
+                const type = jxt.getAttribute(property, 'type');
                 results[type] = property.textContent;
             }
     
@@ -24,7 +24,7 @@ export function XRD(registry) {
         }
     };
     
-    var XRD = registry.define({
+    const XRD = registry.define({
         name: 'xrd',
         namespace: NS,
         element: 'XRD',
@@ -37,7 +37,7 @@ export function XRD(registry) {
     });
     
     
-    var Link = registry.define({
+    const Link = registry.define({
         name: '_xrdlink',
         namespace: NS,
         element: 'Link',
@@ -62,17 +62,17 @@ export function getHostMeta(JXT, opts, cb) {
         opts = {host: opts};
     }
 
-    var config = {
+    const config = {
         ssl: true,
         json: true,
         xrd: true
     };
 
-    for (var prop in opts) {
+    for (const prop in opts) {
         config[prop] = opts[prop];
     }
 
-    var scheme = config.ssl ? 'https://' : 'http://';
+    const scheme = config.ssl ? 'https://' : 'http://';
 
     async.parallel([
         function (done) {
@@ -81,7 +81,7 @@ export function getHostMeta(JXT, opts, cb) {
                     return done(null);
                 }
 
-                var data;
+                let data;
                 try {
                     data = JSON.parse(body);
                 } catch (e) {
@@ -96,7 +96,7 @@ export function getHostMeta(JXT, opts, cb) {
                     return done(null);
                 }
 
-                var xrd = JXT.parse(body);
+                const xrd = JXT.parse(body);
                 return done(xrd.toJSON());
             });
         }
@@ -124,11 +124,11 @@ export default function (client, stanzas) {
                 return cb(err, []);
             }
     
-            var results = {
+            const results = {
                 websocket: [],
                 bosh: []
             };
-            var links = data.links || [];
+            const links = data.links || [];
     
             links.forEach(function (link) {
                 if (link.href && link.rel === 'urn:xmpp:alt-connections:websocket') {

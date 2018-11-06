@@ -2,7 +2,7 @@ export default function (client) {
 
     client.disco.addFeature('http://jabber.org/protocol/chatstates');
 
-    var allowedTypes = ['chat', 'groupchat', 'normal'];
+    const allowedTypes = ['chat', 'groupchat', 'normal'];
 
     client.on('message', function (msg) {
         if (allowedTypes.indexOf(msg.type || 'normal') < 0) {

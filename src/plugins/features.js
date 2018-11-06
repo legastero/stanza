@@ -1,6 +1,4 @@
-'use strict';
-
-var async = require('async');
+import * as async from 'async';
 
 
 export default function (client) {
@@ -29,12 +27,12 @@ export default function (client) {
     };
 
     client.on('streamFeatures', function (features) {
-        var series = [];
-        var negotiated = client.features.negotiated;
-        var handlers = client.features.handlers;
+        const series = [];
+        const negotiated = client.features.negotiated;
+        const handlers = client.features.handlers;
 
         client.features.order.forEach(function (feature) {
-            var name = feature.name;
+            const name = feature.name;
             if (features[name] && handlers[name] && !negotiated[name]) {
                 series.push(function (cb) {
                     if (!negotiated[name]) {

@@ -1,9 +1,9 @@
-var test = require('tape');
-var Mech = require('../../src/sasl/digest-md5');
+const test = require('tape');
+const Mech = require('../../src/sasl/digest-md5');
 
 
 test('DIGEST-MD5', function (t) {
-    var mech = new Mech({
+    const mech = new Mech({
         genNonce: function () {
             return 'OA6MHXh6VqTrRk';
         }
@@ -12,7 +12,7 @@ test('DIGEST-MD5', function (t) {
 
     mech.challenge('realm="elwood.innosoft.com",nonce="OA6MG9tEQGm2hh",qop="auth",algorithm=md5-sess,charset=utf-8');
 
-    var res = mech.response({
+    const res = mech.response({
         username: 'chris',
         password: 'secret',
         host: 'elwood.innosoft.com',

@@ -1,6 +1,6 @@
 'use strict';
 
-var NS = 'http://jabber.org/protocol/mood';
+const NS = 'http://jabber.org/protocol/mood';
 
 
 export default function (client) {

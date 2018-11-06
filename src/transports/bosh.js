@@ -1,13 +1,12 @@
-var extend = require('lodash.assign');
-var filter = require('lodash.filter');
+const extend = require('lodash.assign');
+const filter = require('lodash.filter');
 
-var request = require('request');
-var WildEmitter = require('wildemitter');
-
+import request from 'request';
+import WildEmitter from 'wildemitter';
 
 
 function timeoutPromise(targetPromise, delay) {
-    var timeoutRef;
+    let timeoutRef;
     return Promise.race([
         targetPromise,
         new Promise(function (resolve, reject) {
@@ -44,7 +43,7 @@ function makeRequest(opts) {
 
 function retryRequest(opts, timeout, allowedRetries) {
     return timeoutPromise(makeRequest(opts), (timeout || 20) * 1000).then(function (result) {
-        var req = result[0], body = result[1];
+        const req = result[0], body = result[1];
 
         if (req.statusCode < 200 || req.statusCode >= 400) {
             throw new Error('HTTP Status Error' + req.statusCode);
@@ -66,7 +65,7 @@ export default class BOSHConnection extends WildEmitter {
     constructor(sm, stanzas) {
         super();
 
-        var self = this;
+        const self = this;
         self.sm = sm;
         self.stanzas = {
             BOSH: stanzas.getDefinition('body', 'http://jabber.org/protocol/httpbind'),
@@ -83,7 +82,7 @@ export default class BOSHConnection extends WildEmitter {
             if (data === '') {
                 return;
             }
-            var bosh, err;
+            let bosh, err;
             try {
                 bosh = stanzas.parse(data, self.stanzas.BOSH);
             }
@@ -107,7 +106,7 @@ export default class BOSHConnection extends WildEmitter {
                 self.sid = bosh.sid || self.sid;
                 self.maxRequests = bosh.requests || self.maxRequests;
             }
-            var payload = bosh.payload;
+            const payload = bosh.payload;
             payload.forEach(function (stanzaObj) {
                 if (!stanzaObj.lang) {
                     stanzaObj.lang = self.stream.lang;
@@ -125,7 +124,7 @@ export default class BOSHConnection extends WildEmitter {
     }
 
     connect(opts) {
-        var self = this;
+        const self = this;
         self.config = extend({
             rid: Math.ceil(Math.random() * 9999999999),
             wait: 30,
@@ -172,7 +171,7 @@ export default class BOSHConnection extends WildEmitter {
     }
 
     restart() {
-        var self = this;
+        const self = this;
         self.rid++;
         self.request(new self.stanzas.BOSH({
             to: self.config.server,
@@ -182,7 +181,7 @@ export default class BOSHConnection extends WildEmitter {
     }
 
     send(data) {
-        var self = this;
+        const self = this;
         if (self.hasStream) {
             self.sendQueue.push(data);
             process.nextTick(self.longPoll.bind(self));
@@ -190,12 +189,12 @@ export default class BOSHConnection extends WildEmitter {
     }
 
     longPoll() {
-        var canReceive = !this.maxRequests || (this.requests.length < this.maxRequests);
-        var canSend = !this.maxRequests || (this.sendQueue.length > 0 && this.requests.length < this.maxRequests);
+        const canReceive = !this.maxRequests || (this.requests.length < this.maxRequests);
+        const canSend = !this.maxRequests || (this.sendQueue.length > 0 && this.requests.length < this.maxRequests);
         if (!this.sid || (!canReceive && !canSend)) {
             return;
         }
-        var stanzas = this.sendQueue;
+        const stanzas = this.sendQueue;
         this.sendQueue = [];
         this.rid++;
         this.request(new this.stanzas.BOSH({
@@ -204,15 +203,15 @@ export default class BOSHConnection extends WildEmitter {
     }
 
     request(bosh) {
-        var self = this;
-        var ticket = { id: self.rid, request: null };
+        const self = this;
+        const ticket = { id: self.rid, request: null };
         bosh.rid = self.rid;
         bosh.sid = self.sid;
-        var body = Buffer.from(bosh.toString(), 'utf8').toString();
+        const body = Buffer.from(bosh.toString(), 'utf8').toString();
         self.emit('raw:outgoing', body);
         self.emit('raw:outgoing:' + ticket.id, body);
         self.requests.push(ticket);
-        var req = retryRequest({
+        const req = retryRequest({
             uri: self.url,
             body: body,
             method: 'POST',
@@ -222,7 +221,7 @@ export default class BOSHConnection extends WildEmitter {
             }
         }, self.config.wait * 1.5, this.config.maxRetries).catch(function (err) {
             self.hasStream = false;
-            var serr = new self.stanzas.StreamError({
+            const serr = new self.stanzas.StreamError({
                 condition: 'connection-timeout'
             });
             self.emit('stream:error', serr, err);

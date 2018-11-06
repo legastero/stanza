@@ -1,7 +1,5 @@
-'use strict';
-
-var each = require('lodash.foreach');
-var JID = require('xmpp-jid').JID;
+const each = require('lodash.foreach');
+import { JID } from 'xmpp-jid';
 
 
 export default function (client) {
@@ -67,7 +65,7 @@ export default function (client) {
             client.emit('muc:failed', pres);
             client.emit('muc:error', pres);
         } else if (pres.muc) {
-            var isSelf = pres.muc.codes && pres.muc.codes.indexOf('110') >= 0;
+            const isSelf = pres.muc.codes && pres.muc.codes.indexOf('110') >= 0;
             if (pres.type === 'error') {
                 client.emit('muc:error', pres);
             } else if (pres.type === 'unavailable') {
@@ -169,7 +167,7 @@ export default function (client) {
             if (err) {
                 return cb(err);
             }
-            var ident = res.discoInfo.identities[0] || {};
+            const ident = res.discoInfo.identities[0] || {};
             cb(null, ident.name);
         });
     };

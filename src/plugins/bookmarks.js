@@ -1,7 +1,7 @@
 import { JID } from 'xmpp-jid';
 
-var extend = require('lodash.assign');
-var filter = require('lodash.filter');
+const extend = require('lodash.assign');
+const filter = require('lodash.filter');
 
 
 export default function (client) {
@@ -18,8 +18,8 @@ export default function (client) {
         bookmark.jid = new JID(bookmark.jid);
 
         return this.getBookmarks().then(function (res) {
-            var bookmarks = res.privateStorage.bookmarks.conferences || [];
-            var existing = filter(bookmarks, function (bm) {
+            const bookmarks = res.privateStorage.bookmarks.conferences || [];
+            const existing = filter(bookmarks, function (bm) {
                 return bm.jid.bare === bookmark.jid.bare;
             });
 
@@ -47,7 +47,7 @@ export default function (client) {
     client.removeBookmark = function (jid, cb) {
         jid = new JID(jid);
         return this.getBookmarks().then(function (res) {
-            var bookmarks = res.privateStorage.bookmarks.conferences || [];
+            let bookmarks = res.privateStorage.bookmarks.conferences || [];
             bookmarks = filter(bookmarks, function (bm) {
                 return jid.bare !== bm.jid.bare;
             });

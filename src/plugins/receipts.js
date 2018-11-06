@@ -2,12 +2,12 @@
 
 export default function (client, stanzas, config) {
 
-    var sendReceipts =  config.sendReceipts !== false;
+    const sendReceipts =  config.sendReceipts !== false;
 
     client.disco.addFeature('urn:xmpp:receipts');
 
     client.on('message', function (msg) {
-        var ackTypes = {
+        const ackTypes = {
             normal: true,
             chat: true,
             headline: true

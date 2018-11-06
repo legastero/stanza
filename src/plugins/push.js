@@ -5,11 +5,11 @@ export default function (client) {
     client.disco.addFeature('urn:xmpp:push:0');
 
     client.enableNotifications = function(jid, node, fieldList, cb) {
-        var fields = [{
+        const fields = [{
             name: 'FORM_TYPE',
             value: 'http://jabber.org/protocol/pubsub#publish-options'
         }];
-        var iq = {
+        const iq = {
             type: 'set',
             enablePush: {
                 jid: jid,
@@ -25,7 +25,7 @@ export default function (client) {
     };
 
     client.disableNotifications = function(jid, node, cb) {
-        var iq = {
+        const iq = {
             type: 'set',
             disablePush: {
                 jid: jid

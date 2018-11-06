@@ -9,10 +9,10 @@ const SERVER_KEY = 'Server Key';
 
 
 function parse(chal) {
-    var dtives = {};
-    var tokens = chal.split(/,(?=(?:[^"]|"[^"]*")*$)/);
-    for (var i = 0, len = tokens.length; i < len; i++) {
-        var dtiv = /(\w+)=["]?([^"]+)["]?$/.exec(tokens[i]);
+    const dtives = {};
+    const tokens = chal.split(/,(?=(?:[^"]|"[^"]*")*$)/);
+    for (let i = 0, len = tokens.length; i < len; i++) {
+        const dtiv = /(\w+)=["]?([^"]+)["]?$/.exec(tokens[i]);
         if (dtiv) {
             dtives[dtiv[1]] = dtiv[2];
         }
@@ -21,9 +21,9 @@ function parse(chal) {
 }
 
 function saslname(name) {
-    var escaped = [];
-    var curr = '';
-    for (var i = 0; i < name.length; i++) {
+    const escaped = [];
+    let curr = '';
+    for (let i = 0; i < name.length; i++) {
         curr = name[i];
         if (curr === ',') {
             escaped.push('=2C');
@@ -61,9 +61,9 @@ function HMAC(key, msg) {
 }
 
 function Hi(text, salt, iterations) {
-    var ui1 = HMAC(text, Buffer.concat([salt, new Buffer([0, 0, 0, 1], 'binary')]));
-    var ui = ui1;
-    for (var i = 0; i < iterations - 1; i++) {
+    let ui1 = HMAC(text, Buffer.concat([salt, new Buffer([0, 0, 0, 1], 'binary')]));
+    let ui = ui1;
+    for (let i = 0; i < iterations - 1; i++) {
         ui1 = HMAC(text, ui1);
         ui = XOR(ui, ui1);
     }
@@ -82,7 +82,7 @@ export default class SCRAM {
         return RESP[this._stage](this, cred);
     }
     challenge(chal) {
-        var values = parse(chal);
+        const values = parse(chal);
         this._salt = new Buffer(values.s || '', 'base64');
         this._iterationCount = parseInt(values.i, 10);
         this._nonce = values.r;
@@ -100,18 +100,18 @@ SCRAM.prototype.clientFirst = true;
 RESP.initial = function (mech, cred) {
     mech._cnonce = mech._genNonce();
 
-    var authzid = '';
+    let authzid = '';
     if (cred.authzid) {
         authzid = 'a=' + saslname(cred.authzid);
     }
 
     mech._gs2Header = 'n,' + authzid + ',';
 
-    var nonce = 'r=' + mech._cnonce;
-    var username = 'n=' + saslname(cred.username || '');
+    const nonce = 'r=' + mech._cnonce;
+    const username = 'n=' + saslname(cred.username || '');
 
     mech._clientFirstMessageBare = username + ',' + nonce;
-    var result = mech._gs2Header + mech._clientFirstMessageBare;
+    const result = mech._gs2Header + mech._clientFirstMessageBare;
 
     mech._stage = 'challenge';
 
@@ -120,11 +120,11 @@ RESP.initial = function (mech, cred) {
 
 
 RESP.challenge = function (mech, cred) {
-    var gs2Header = new Buffer(mech._gs2Header).toString('base64');
+    const gs2Header = new Buffer(mech._gs2Header).toString('base64');
 
     mech._clientFinalMessageWithoutProof = 'c=' + gs2Header + ',r=' + mech._nonce;
 
-    var saltedPassword, clientKey, serverKey;
+    let saltedPassword, clientKey, serverKey;
 
     // If our cached salt is the same, we can reuse cached credentials to speed
     // up the hashing process.
@@ -143,17 +143,17 @@ RESP.challenge = function (mech, cred) {
         serverKey = HMAC(saltedPassword, SERVER_KEY);
     }
 
-    var storedKey = H(clientKey);
-    var authMessage = mech._clientFirstMessageBare + ',' +
+    const storedKey = H(clientKey);
+    const authMessage = mech._clientFirstMessageBare + ',' +
                       mech._challenge + ',' +
                       mech._clientFinalMessageWithoutProof;
-    var clientSignature = HMAC(storedKey, authMessage);
+    const clientSignature = HMAC(storedKey, authMessage);
 
-    var clientProof = XOR(clientKey, clientSignature).toString('base64');
+    const clientProof = XOR(clientKey, clientSignature).toString('base64');
 
     mech._serverSignature = HMAC(serverKey, authMessage);
 
-    var result = mech._clientFinalMessageWithoutProof + ',p=' + clientProof;
+    const result = mech._clientFinalMessageWithoutProof + ',p=' + clientProof;
 
     mech._stage = 'final';
 

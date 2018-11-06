@@ -1,11 +1,11 @@
-var WildEmitter = require('wildemitter');
-var async = require('async');
+import WildEmitter from 'wildemitter';
+import * as async from 'async';
 
-var WS = (require('faye-websocket') && require('faye-websocket').Client) ?
+const WS = (require('faye-websocket') && require('faye-websocket').Client) ?
     require('faye-websocket').Client :
     window.WebSocket;
 
-var WS_OPEN = 1;
+const WS_OPEN = 1;
 
 
 
@@ -13,7 +13,7 @@ export default class WSConnection extends WildEmitter {
     constructor(sm, stanzas) {
         super();
 
-        var self = this;
+        const self = this;
         self.sm = sm;
         self.closing = false;
         self.stanzas = {
@@ -41,7 +41,7 @@ export default class WSConnection extends WildEmitter {
         });
 
         self.on('raw:incoming', function (data) {
-            var stanzaObj, err;
+            let stanzaObj, err;
             data = data.trim();
             if (data === '') {
                 return;
@@ -77,7 +77,7 @@ export default class WSConnection extends WildEmitter {
     }
 
     connect(opts) {
-        var self = this;
+        const self = this;
         self.config = opts;
         self.hasStream = false;
         self.closing = false;
@@ -126,7 +126,7 @@ export default class WSConnection extends WildEmitter {
     }
 
     restart() {
-        var self = this;
+        const self = this;
         self.hasStream = false;
         self.send(this.startHeader());
     }

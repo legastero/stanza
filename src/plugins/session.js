@@ -4,7 +4,7 @@
 export default function (client) {
 
     client.registerFeature('session', 1000, function (features, cb) {
-        var self = this;
+        const self = this;
 
         if (features.session.optional || self.sessionStarted) {
             self.features.negotiated.session = true;

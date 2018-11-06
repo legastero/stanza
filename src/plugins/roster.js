@@ -4,7 +4,7 @@
 export default function (client) {
 
     client.on('iq:set:roster', function (iq) {
-        var allowed = {};
+        const allowed = {};
         allowed[''] = true;
         allowed[client.jid.bare] = true;
         allowed[client.jid.domain] = true;
@@ -26,7 +26,7 @@ export default function (client) {
     });
 
     client.getRoster = function (cb) {
-        var self = this;
+        const self = this;
 
         return client.sendIq({
             type: 'get',
@@ -35,7 +35,7 @@ export default function (client) {
             }
         }).then(function (resp) {
             if (resp.roster) {
-                var ver = resp.roster.ver;
+                const ver = resp.roster.ver;
                 if (ver) {
                     self.config.rosterVer = ver;
                     self.emit('roster:ver', ver);

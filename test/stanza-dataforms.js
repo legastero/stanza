@@ -1,24 +1,24 @@
-var fs = require('fs');
-var jxt = require('jxt').createRegistry();
-var test = require('tape');
-var JID = require('xmpp-jid').JID;
+const fs = require('fs');
+const jxt = require('jxt').createRegistry();
+const test = require('tape');
+const JID = require('xmpp-jid').JID;
 
 jxt.use(require('../lib/protocol').default);
 
-var DataForm = jxt.getDefinition('x', 'jabber:x:data');
+const DataForm = jxt.getDefinition('x', 'jabber:x:data');
 
 
-var formXML = fs.readFileSync(__dirname + '/samples/dataform-1.xml');
-var submittedXML = fs.readFileSync(__dirname + '/samples/dataform-2.xml');
-var itemsXML = fs.readFileSync(__dirname + '/samples/dataform-3.xml');
-var validationXML = fs.readFileSync(__dirname + '/samples/dataform-4.xml');
-var mediaXML = fs.readFileSync(__dirname + '/samples/dataform-5.xml');
-var layoutXML = fs.readFileSync(__dirname + '/samples/dataform-6.xml');
-var nestedLayoutXML = fs.readFileSync(__dirname + '/samples/dataform-7.xml');
+const formXML = fs.readFileSync(__dirname + '/samples/dataform-1.xml');
+const submittedXML = fs.readFileSync(__dirname + '/samples/dataform-2.xml');
+const itemsXML = fs.readFileSync(__dirname + '/samples/dataform-3.xml');
+const validationXML = fs.readFileSync(__dirname + '/samples/dataform-4.xml');
+const mediaXML = fs.readFileSync(__dirname + '/samples/dataform-5.xml');
+const layoutXML = fs.readFileSync(__dirname + '/samples/dataform-6.xml');
+const nestedLayoutXML = fs.readFileSync(__dirname + '/samples/dataform-7.xml');
 
 
 test('Convert Form XML to Data Form object', function (t) {
-    var form = jxt.parse(formXML, DataForm).toJSON();
+    const form = jxt.parse(formXML, DataForm).toJSON();
 
     t.equal(form.type, 'form');
     t.equal(form.title, 'Bot Configuration');
@@ -116,12 +116,12 @@ test('Convert Form XML to Data Form object', function (t) {
 });
 
 test('Convert Form Submission Results XML to Data Form object', function (t) {
-    var form = jxt.parse(submittedXML, DataForm).toJSON();
+    let form = jxt.parse(submittedXML, DataForm).toJSON();
 
     // Clients are required to send the type attribute back when
     // submitting forms, so we have to apply the type values back
     // if we want values cast properly.
-    var fieldTypes = {
+    const fieldTypes = {
         'FORM_TYPE': 'hidden',
         'botname': 'text-single',
         'description': 'text-multi',
@@ -131,7 +131,7 @@ test('Convert Form Submission Results XML to Data Form object', function (t) {
         'maxsubs': 'list-single',
         'invitelist': 'jid-multi'
     };
-    for (var i = 0; i < form.fields.length; i++) {
+    for (let i = 0; i < form.fields.length; i++) {
         form.fields[i].type = fieldTypes[form.fields[i].name];
     }
     form = new DataForm(form).toJSON();
@@ -199,7 +199,7 @@ test('Convert Form Submission Results XML to Data Form object', function (t) {
 
 
 test('Convert Form Item Results XML to Data Form object', function (t) {
-    var form = jxt.parse(itemsXML, DataForm).toJSON();
+    const form = jxt.parse(itemsXML, DataForm).toJSON();
 
     t.equal(form.type, 'result');
     t.equal(form.title, 'Joogle Search: verona');
@@ -235,7 +235,7 @@ test('Convert Form Item Results XML to Data Form object', function (t) {
 
 
 test('Convert Form with Validation XML to Data Form object', function (t) {
-    var form = jxt.parse(validationXML, DataForm).toJSON();
+    const form = jxt.parse(validationXML, DataForm).toJSON();
 
     t.equal(form.fields.length, 5);
 
@@ -316,7 +316,7 @@ test('Convert Form with Validation XML to Data Form object', function (t) {
 
 
 test('Convert Form with Media Field XML to Data Form object', function (t) {
-    var form = jxt.parse(mediaXML, DataForm).toJSON();
+    const form = jxt.parse(mediaXML, DataForm).toJSON();
 
     t.equal(form.fields.length, 1);
 
@@ -344,7 +344,7 @@ test('Convert Form with Media Field XML to Data Form object', function (t) {
 
 
 test('Form layout', function (t) {
-    var form = jxt.parse(layoutXML, DataForm).toJSON();
+    const form = jxt.parse(layoutXML, DataForm).toJSON();
 
     t.same(form.layout, [
         {
@@ -386,7 +386,7 @@ test('Form layout', function (t) {
 
 
 test('Form layout with nested sections', function (t) {
-    var form = jxt.parse(nestedLayoutXML, DataForm).toJSON();
+    const form = jxt.parse(nestedLayoutXML, DataForm).toJSON();
 
     t.same(form.layout, [
         {

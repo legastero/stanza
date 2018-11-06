@@ -1,13 +1,11 @@
-'use strict';
-
-var hashes = require('iana-hashes');
+import * as hashes from 'iana-hashes';
 
 
 export default function (client) {
 
     client.disco.addFeature('urn:xmpp:hashes:1');
 
-    var names = hashes.getHashes();
+    const names = hashes.getHashes();
     names.forEach(function (name) {
         client.disco.addFeature('urn:xmpp:hash-function-text-names:' + name);
     });

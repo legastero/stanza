@@ -3,8 +3,8 @@
 
 export default function (client, stanzas) {
 
-    var Active = stanzas.getDefinition('active', 'urn:xmpp:csi:0');
-    var Inactive = stanzas.getDefinition('inactive', 'urn:xmpp:csi:0');
+    const Active = stanzas.getDefinition('active', 'urn:xmpp:csi:0');
+    const Inactive = stanzas.getDefinition('inactive', 'urn:xmpp:csi:0');
 
 
     client.registerFeature('clientStateIndication', 400, function (features, cb) {

@@ -1,12 +1,12 @@
 'use strict';
 
-var test = require('tape');
-var JXT = require('jxt').createRegistry();
+const test = require('tape');
+const JXT = require('jxt').createRegistry();
 
-var HostMeta = require('../lib/plugins/hostmeta');
+const HostMeta = require('../lib/plugins/hostmeta');
 
 
-var xml = '<?xml version="1.0" encoding="UTF-8"?>' +
+const xml = '<?xml version="1.0" encoding="UTF-8"?>' +
 '<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0"' +
 '     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
 '  <Subject>http://blog.example.com/article/id/314</Subject>' +
@@ -28,7 +28,7 @@ var xml = '<?xml version="1.0" encoding="UTF-8"?>' +
 '  </Link>' +
 '</XRD>';
 
-var json = {
+const json = {
     'subject': 'http://blog.example.com/article/id/314',
     'expires': '2010-01-30T09:30:00.000Z',
     'aliases': [
@@ -68,7 +68,7 @@ test('XRD', function (t) {
 
     JXT.use(HostMeta.XRD);
 
-    var xrd = JXT.parse(xml).toJSON();
+    const xrd = JXT.parse(xml).toJSON();
 
     t.equal(xrd.subject, json.subject);
     t.deepEqual(xrd.expires, new Date(json.expires));

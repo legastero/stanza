@@ -3,8 +3,8 @@
 
 export default function (client, stanzas, config) {
 
-    var smacks = function (features, cb) {
-        var self = this;
+    const smacks = function (features, cb) {
+        const self = this;
 
         if (!config.useStreamManagement) {
             return cb();

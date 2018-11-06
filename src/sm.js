@@ -38,7 +38,7 @@ export default class StreamManagement {
     }
 
     enable() {
-        var enable = new this.stanzas.Enable();
+        const enable = new this.stanzas.Enable();
         enable.resume = this.allowResume;
         this.client.send(enable);
         this.handled = 0;
@@ -46,7 +46,7 @@ export default class StreamManagement {
     }
 
     resume() {
-        var resume = new this.stanzas.Resume({
+        const resume = new this.stanzas.Resume({
             h: this.handled,
             previd: this.id
         });
@@ -89,18 +89,18 @@ export default class StreamManagement {
     }
 
     process(ack, resend) {
-        var self = this;
-        var numAcked = mod(ack.h - this.lastAck, MAX_SEQ);
+        const self = this;
+        const numAcked = mod(ack.h - this.lastAck, MAX_SEQ);
 
         this.pendingAck = false;
 
-        for (var i = 0; i < numAcked && this.unacked.length > 0; i++) {
+        for (let i = 0; i < numAcked && this.unacked.length > 0; i++) {
             this.client.emit('stanza:acked', this.unacked.shift());
         }
         this.lastAck = ack.h;
 
         if (resend) {
-            var resendUnacked = this.unacked;
+            const resendUnacked = this.unacked;
             this.unacked = [];
             resendUnacked.forEach(function (stanza) {
                 self.client.send(stanza);
@@ -113,8 +113,8 @@ export default class StreamManagement {
     }
 
     track(stanza) {
-        var name = stanza._name;
-        var acceptable = {
+        const name = stanza._name;
+        const acceptable = {
             message: true,
             presence: true,
             iq: true

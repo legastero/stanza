@@ -1,12 +1,7 @@
-const each = require('lodash.foreach');
-const extend = require('lodash.assign');
-const isArray = require('lodash.isarray');
-
-const jxt = require('jxt');
-const WildEmitter = require('wildemitter');
-
 import { JID } from 'xmpp-jid';
 import * as uuid from 'uuid';
+import jxt from 'jxt';
+import WildEmitter from 'wildemitter';
 
 import * as SASL from './sasl';
 import StreamManagement from './sm';
@@ -31,7 +26,7 @@ const SASL_MECHS = {
 
 
 function timeoutRequest(targetPromise, id, delay) {
-    var timeoutRef;
+    let timeoutRef;
     return Promise.race([
         targetPromise,
         new Promise(function (resolve, reject) {
@@ -56,7 +51,7 @@ export default class Client extends WildEmitter {
     constructor(opts) {
         super();
 
-        var self = this;
+        const self = this;
         opts = opts || {};
         this._initConfig(opts);
 
@@ -76,17 +71,17 @@ export default class Client extends WildEmitter {
         this.transports = {};
 
         this.on('stream:data', function (data) {
-            var json = data ? data.toJSON() : null;
+            const json = data ? data.toJSON() : null;
             if (!json) {
                 return;
             }
             if (data._name === 'iq') {
                 json._xmlChildCount = 0;
-                each(data.xml.childNodes, function (child) {
+                for (const child of data.xml.childNodes || []) {
                     if (child.nodeType === 1) {
                         json._xmlChildCount += 1;
                     }
-                });
+                }
             }
             self.emit(data._eventname || data._name, json);
             if (data._name === 'message' || data._name === 'presence' || data._name === 'iq') {
@@ -120,10 +115,10 @@ export default class Client extends WildEmitter {
         });
 
         this.on('iq', function (iq) {
-            var iqType = iq.type;
-            var xmlChildCount = iq._xmlChildCount;
+            const iqType = iq.type;
+            const xmlChildCount = iq._xmlChildCount;
             delete iq._xmlChildCount;
-            var exts = Object.keys(iq).filter(function (ext) {
+            const exts = Object.keys(iq).filter(function (ext) {
                 return ext !== 'id' &&
                     ext !== 'to' &&
                     ext !== 'from' &&
@@ -152,7 +147,7 @@ export default class Client extends WildEmitter {
                         }
                     }));
                 }
-                var iqEvent = 'iq:' + iqType + ':' + exts[0];
+                const iqEvent = 'iq:' + iqType + ':' + exts[0];
                 if (self.callbacks[iqEvent]) {
                     self.emit(iqEvent, iq);
                 }
@@ -184,7 +179,7 @@ export default class Client extends WildEmitter {
         });
 
         this.on('presence', function (pres) {
-            var presType = pres.type || 'available';
+            let presType = pres.type || 'available';
             if (presType === 'error') {
                 presType = 'presence:error';
             }
@@ -197,23 +192,25 @@ export default class Client extends WildEmitter {
     }
 
     _initConfig(opts) {
-        var self = this;
-        var currConfig = this.config || {};
-        this.config = extend({
+        const self = this;
+        const currConfig = this.config || {};
+        this.config = {
             useStreamManagement: true,
             transports: ['websocket', 'bosh'],
-            sasl: ['external', 'scram-sha-1', 'digest-md5', 'plain', 'anonymous']
-        }, currConfig, opts);
+            sasl: ['external', 'scram-sha-1', 'digest-md5', 'plain', 'anonymous'],
+            ...currConfig,
+            ...opts
+        };
 
         // Enable SASL authentication mechanisms (and their preferred order)
         // based on user configuration.
-        if (!isArray(this.config.sasl)) {
+        if (!Array.isArray(this.config.sasl)) {
             this.config.sasl = [this.config.sasl];
         }
         this.SASLFactory = new SASL.Factory();
         this.config.sasl.forEach(function (mech) {
             if (typeof mech === 'string') {
-                var existingMech = SASL_MECHS[mech.toLowerCase()];
+                const existingMech = SASL_MECHS[mech.toLowerCase()];
                 if (existingMech && existingMech.prototype && existingMech.prototype.name) {
                     self.SASLFactory.use(existingMech);
                 }
@@ -236,7 +233,7 @@ export default class Client extends WildEmitter {
         if (this.config.transport) {
             this.config.transports = [this.config.transport];
         }
-        if (!isArray(this.config.transports)) {
+        if (!Array.isArray(this.config.transports)) {
             this.config.transports = [this.config.transports];
         }
     }
@@ -253,21 +250,20 @@ export default class Client extends WildEmitter {
     }
 
     _getConfiguredCredentials() {
-        var creds = this.config.credentials || {};
-        var requestedJID = new JID(this.config.jid);
-        var username = creds.username || requestedJID.local;
-        var server = creds.server || requestedJID.domain;
-        var defaultCreds = {
+        const creds = this.config.credentials || {};
+        const requestedJID = new JID(this.config.jid);
+        const username = creds.username || requestedJID.local;
+        const server = creds.server || requestedJID.domain;
+        return {
             username: username,
             password: this.config.password,
             server: server,
             host: server,
             realm: server,
             serviceType: 'xmpp',
-            serviceName: server
+            serviceName: server,
+            ...creds
         };
-        var result = extend(defaultCreds, creds);
-        return result;
     }
 
     getCredentials(cb) {
@@ -275,7 +271,7 @@ export default class Client extends WildEmitter {
     }
 
     connect(opts, transInfo) {
-        var self = this;
+        const self = this;
         this._initConfig(opts);
         if (!transInfo && self.config.transports.length === 1) {
             transInfo = {};
@@ -289,7 +285,7 @@ export default class Client extends WildEmitter {
             if (transInfo.name === 'bosh') {
                 this.use(require('./plugins/bosh').default);
             }
-            var trans = self.transport = new self.transports[transInfo.name](self.sm, self.stanzas);
+            const trans = self.transport = new self.transports[transInfo.name](self.sm, self.stanzas);
             trans.on('*', function (event, data) {
                 self.emit(event, data);
             });
@@ -301,11 +297,11 @@ export default class Client extends WildEmitter {
                 console.error('Could not find https://' + self.config.server + '/.well-known/host-meta file to discover connection endpoints for the requested transports.');
                 return self.disconnect();
             }
-            for (var t = 0, tlen = self.config.transports.length; t < tlen; t++) {
-                var transport = self.config.transports[t];
+            for (let t = 0, tlen = self.config.transports.length; t < tlen; t++) {
+                const transport = self.config.transports[t];
                 console.log('Checking for %s endpoints', transport);
-                for (var i = 0, len = (endpoints[transport] || []).length; i < len; i++) {
-                    var uri = endpoints[transport][i];
+                for (let i = 0, len = (endpoints[transport] || []).length; i < len; i++) {
+                    const uri = endpoints[transport][i];
                     if (uri.indexOf('wss://') === 0 || uri.indexOf('https://') === 0) {
                         if (transport === 'websocket') {
                             self.config.wsURL = uri;
@@ -360,8 +356,8 @@ export default class Client extends WildEmitter {
         if (!data.id) {
             data.id = this.nextId();
         }
-        var Message = this.stanzas.getMessage();
-        var msg = new Message(data);
+        const Message = this.stanzas.getMessage();
+        const msg = new Message(data);
         this.emit('message:sent', msg.toJSON());
         this.send(msg);
         return data.id;
@@ -372,35 +368,34 @@ export default class Client extends WildEmitter {
         if (!data.id) {
             data.id = this.nextId();
         }
-        var Presence = this.stanzas.getPresence();
+        const Presence = this.stanzas.getPresence();
         this.send(new Presence(data));
         return data.id;
     }
 
     sendIq(data, cb) {
-        var request, respEvent, allowed, dest;
-        var self = this;
+        const self = this;
         data = data || {};
         if (!data.id) {
             data.id = this.nextId();
         }
-        var Iq = this.stanzas.getIq();
-        var iq = (!data.toJSON) ? new Iq(data) : data;
+        const Iq = this.stanzas.getIq();
+        const iq = (!data.toJSON) ? new Iq(data) : data;
         if (data.type === 'error' || data.type === 'result') {
             this.send(iq);
             return;
         }
-        dest = new JID(data.to);
-        allowed = {};
+        const dest = new JID(data.to);
+        const allowed = {};
         allowed[''] = true;
         allowed[dest.full] = true;
         allowed[dest.bare] = true;
         allowed[dest.domain] = true;
         allowed[self.jid.bare] = true;
         allowed[self.jid.domain] = true;
-        respEvent = 'iq:id:' + data.id;
-        request = new Promise(function (resolve, reject) {
-            var handler = function (res) {
+        const respEvent = 'iq:id:' + data.id;
+        const request = new Promise(function (resolve, reject) {
+            const handler = function (res) {
                 // Only process result from the correct responder
                 if (!allowed[res.from.full]) {
                     return;
@@ -437,8 +432,8 @@ export default class Client extends WildEmitter {
 
     sendStreamError(data) {
         data = data || {};
-        var StreamError = this.stanzas.getStreamError();
-        var error = new StreamError(data);
+        const StreamError = this.stanzas.getStreamError();
+        const error = new StreamError(data);
         this.emit('stream:error', error.toJSON());
         this.send(error);
         this.disconnect();

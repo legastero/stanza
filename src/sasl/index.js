@@ -31,9 +31,9 @@ export class Factory {
     }
 
     create(mechs) {
-        for (var i = 0, len = this._mechs.length; i < len; i++) {
-            for (var j = 0, jlen = mechs.length; j < jlen; j++) {
-                var entry = this._mechs[i];
+        for (let i = 0, len = this._mechs.length; i < len; i++) {
+            for (let j = 0, jlen = mechs.length; j < jlen; j++) {
+                const entry = this._mechs[i];
                 if (entry.name == mechs[j]) {
                     return new entry.mech();
                 }

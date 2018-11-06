@@ -1,6 +1,6 @@
 export default class Plain {
     response(cred) {
-        var str = '';
+        let str = '';
         str += cred.authzid || '';
         str += '\0';
         str += cred.username;

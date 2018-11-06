@@ -26,13 +26,13 @@ export default function (client) {
     });
 
     client.on('carbon:*', function (name, carbon) {
-        var dir = name.split(':')[1];
+        const dir = name.split(':')[1];
 
         if (carbon.from.bare !== client.jid.bare) {
             return;
         }
 
-        var msg, delay;
+        let msg, delay;
         if (dir === 'received') {
             msg = carbon.carbonReceived.forwarded.message;
             delay = carbon.carbonReceived.forwarded.delay;

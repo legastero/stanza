@@ -14,7 +14,7 @@ export default function (client) {
     };
 
     client.on('iq:get:time', function (iq) {
-        var time = new Date();
+        const time = new Date();
         client.sendIq(iq.resultReply({
             time: {
                 utc: time,

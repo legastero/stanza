@@ -3,7 +3,7 @@ import { JID } from 'xmpp-jid';
 export default function (client, stanzas, config) {
 
     client.registerFeature('bind', 300, function (features, cb) {
-        var self = this;
+        const self = this;
 
         self.sendIq({
             type: 'set',
@@ -19,7 +19,7 @@ export default function (client, stanzas, config) {
             self.features.negotiated.bind = true;
             self.emit('session:prebind', resp.bind.jid);
 
-            var canStartSession = !features.session || (features.session && features.session.optional);
+            const canStartSession = !features.session || (features.session && features.session.optional);
             if (!self.sessionStarted && canStartSession) {
                 self.emit('session:started', self.jid);
             }

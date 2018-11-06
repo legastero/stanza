@@ -1,6 +1,6 @@
 export default class XOAuth2 {
     response(cred) {
-        var str = '';
+        let str = '';
         str += '\0';
         str += cred.username;
         str += '\0';

@@ -1,6 +1,6 @@
 'use strict';
 
-var NS = 'http://jabber.org/protocol/shim';
+const NS = 'http://jabber.org/protocol/shim';
 
 
 export default function (client) {

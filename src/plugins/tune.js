@@ -1,6 +1,6 @@
 'use strict';
 
-var NS = 'http://jabber.org/protocol/tune';
+const NS = 'http://jabber.org/protocol/tune';
 
 export default function (client) {
 

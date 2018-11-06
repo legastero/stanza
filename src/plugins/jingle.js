@@ -1,12 +1,14 @@
 'use strict';
 
-var Jingle = require('jingle');
-var window = window || global;
+import Jingle from 'jingle';
+
+
+const window = window || global;
 
 
 export default function (client) {
 
-    var jingle = client.jingle = new Jingle();
+    const jingle = client.jingle = new Jingle();
     client.supportedICEServiceTypes = {
         stun: true,
         stuns: true,
@@ -16,7 +18,7 @@ export default function (client) {
 
     client.disco.addFeature('urn:xmpp:jingle:1');
     if (window.RTCPeerConnection) {
-        var caps = [
+        const caps = [
             'urn:xmpp:jingle:apps:rtp:1',
             'urn:xmpp:jingle:apps:rtp:audio',
             'urn:xmpp:jingle:apps:rtp:video',
@@ -37,7 +39,7 @@ export default function (client) {
         });
     }
 
-    var mappedEvents = [
+    const mappedEvents = [
         'outgoing', 'incoming', 'accepted', 'terminated',
         'ringing', 'mute', 'unmute', 'hold', 'resumed'
     ];
@@ -77,18 +79,18 @@ export default function (client) {
     });
 
     client.on('unavailable', 'jingle', function (pres) {
-        var peer = pres.from.full;
+        const peer = pres.from.full;
         jingle.endPeerSessions(peer, true);
     });
 
     client.discoverICEServers = function (cb) {
         return this.getServices(client.config.server).then(function (res) {
-            var services = res.services.services;
-            var discovered = [];
+            const services = res.services.services;
+            const discovered = [];
 
-            for (var i = 0; i < services.length; i++) {
-                var service = services[i];
-                var ice = {};
+            for (let i = 0; i < services.length; i++) {
+                const service = services[i];
+                const ice = {};
 
                 if (!client.supportedICEServiceTypes[service.type]) {
                     continue;

@@ -1,11 +1,8 @@
-/* global Promise */
-'use strict';
-
-var JID = require('xmpp-jid').JID;
+import { JID } from 'xmpp-jid';
 
 
 function timeoutPromise(targetPromise, queryid, delay) {
-    var timeoutRef;
+    let timeoutRef;
     return Promise.race([
         targetPromise,
         new Promise(function (resolve, reject) {
@@ -39,13 +36,13 @@ export default function (client) {
     };
 
     client.searchHistory = function (opts, cb) {
-        var self = this;
-        var queryid = this.nextId();
+        const self = this;
+        const queryid = this.nextId();
 
         opts = opts || {};
         opts.queryid = queryid;
 
-        var to = opts.jid || opts.to || '';
+        const to = opts.jid || opts.to || '';
         delete opts.jid;
         delete opts.to;
 
@@ -53,13 +50,13 @@ export default function (client) {
             opts.form = {};
         }
         opts.form.type = 'submit';
-        var fields = opts.form.fields = opts.form.fields || [];
+        const fields = opts.form.fields = opts.form.fields || [];
 
-        var defaultFields = ['FORM_TYPE', 'with', 'start', 'end'];
+        const defaultFields = ['FORM_TYPE', 'with', 'start', 'end'];
         defaultFields.forEach(function (name) {
             if (opts[name] || name === 'FORM_TYPE') {
-                var val = opts[name];
-                var isDate = (name === 'start' || name === 'end');
+                let val = opts[name];
+                const isDate = (name === 'start' || name === 'end');
                 if (isDate && typeof val !== 'string') {
                     val = val.toISOString();
                 }
@@ -67,8 +64,8 @@ export default function (client) {
                     val = 'urn:xmpp:mam:2';
                 }
 
-                var existing = false;
-                for (var i = 0, len = fields.length; i < len; i++) {
+                const existing = false;
+                for (let i = 0, len = fields.length; i < len; i++) {
                     if (fields[i].name === name) {
                         continue;
                     }
@@ -85,8 +82,8 @@ export default function (client) {
             }
         });
 
-        var dest = new JID(to || client.jid.bare);
-        var allowed = {};
+        const dest = new JID(to || client.jid.bare);
+        const allowed = {};
         allowed[''] = true;
         allowed[dest.full] = true;
         allowed[dest.bare] = true;
@@ -94,7 +91,7 @@ export default function (client) {
         allowed[client.jid.bare] = true;
         allowed[client.jid.domain] = true;
 
-        var results = [];
+        const results = [];
 
         this.on('mam:item:' + queryid, 'session', function (msg) {
             if (!allowed[msg.from.full]) {
@@ -103,7 +100,7 @@ export default function (client) {
             results.push(msg.mamItem);
         });
 
-        var mamQuery = this.sendIq({
+        const mamQuery = this.sendIq({
             type: 'set',
             to: to,
             id: queryid,

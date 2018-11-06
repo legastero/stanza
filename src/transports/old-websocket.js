@@ -1,4 +1,4 @@
-var each = require('lodash.foreach');
+const each = require('lodash.foreach');
 
 import WSConnection from './websocket';
 
@@ -7,7 +7,7 @@ export default class OldWSConnection extends WSConnection {
     constructor(sm, stanzas) {
         super(sm, stanzas);
     
-        var self = this;
+        const self = this;
 
         function wrap(data) {
             return [self.streamStart, data, self.streamEnd].join('');
@@ -20,7 +20,7 @@ export default class OldWSConnection extends WSConnection {
 
         self.off('raw:incoming');
         self.on('raw:incoming', function (data) {
-            var streamData, ended, err;
+            let streamData, ended, err;
             data = data.trim();
             data = data.replace(/^(\s*<\?.*\?>\s*)*/, '');
             if (data === '') {
@@ -44,7 +44,7 @@ export default class OldWSConnection extends WSConnection {
             }
             else {
                 // Inspect start of stream element to get NS prefix name
-                var parts = data.trim().split(' ')[0].slice(1).split(':');
+                const parts = data.trim().split(' ')[0].slice(1).split(':');
                 self.streamStart = data;
                 self.streamEnd = '</' + parts[0] + (parts[1] ? ':' + parts[1] : '') + '>';
                 ended = false;

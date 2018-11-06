@@ -1,18 +1,18 @@
 'use strict';
 
-var each = require('lodash.foreach');
-var unique = require('lodash.uniq');
+const each = require('lodash.foreach');
+const unique = require('lodash.uniq');
 
-var JID = require('xmpp-jid').JID;
-var hashes = require('iana-hashes');
+import { JID } from 'xmpp-jid';
+import * as hashes from 'iana-hashes';
 
 
 function generateVerString(info, hash) {
-    var S = '';
-    var features = info.features.sort();
-    var identities = [];
-    var formTypes = {};
-    var formOrder = [];
+    let S = '';
+    let features = info.features.sort();
+    let identities = [];
+    const formTypes = {};
+    const formOrder = [];
 
     each(info.identities, function (identity) {
         identities.push([
@@ -25,8 +25,8 @@ function generateVerString(info, hash) {
 
     identities.sort();
 
-    var idLen = identities.length;
-    var featureLen = features.length;
+    const idLen = identities.length;
+    const featureLen = features.length;
 
     identities = unique(identities, true);
     features = unique(features, true);
@@ -40,12 +40,12 @@ function generateVerString(info, hash) {
     S += features.join('<') + '<';
 
 
-    var illFormed = false;
+    let illFormed = false;
     each(info.extensions, function (ext) {
-        var fields = ext.fields;
-        for (var i = 0, len = fields.length; i < len; i++) {
+        const fields = ext.fields;
+        for (let i = 0, len = fields.length; i < len; i++) {
             if (fields[i].name === 'FORM_TYPE' && fields[i].type === 'hidden') {
-                var name = fields[i].value;
+                const name = fields[i].value;
                 if (formTypes[name]) {
                     illFormed = true;
                     return;
@@ -63,16 +63,16 @@ function generateVerString(info, hash) {
     formOrder.sort();
 
     each(formOrder, function (name) {
-        var ext = formTypes[name];
-        var fields = {};
-        var fieldOrder = [];
+        const ext = formTypes[name];
+        const fields = {};
+        const fieldOrder = [];
 
         S += '<' + name;
 
         each(ext.fields, function (field) {
-            var fieldName = field.name;
+            const fieldName = field.name;
             if (fieldName !== 'FORM_TYPE') {
-                var values = field.value || '';
+                let values = field.value || '';
                 if (typeof values !== 'object') {
                     values = values.split('\n');
                 }
@@ -91,20 +91,20 @@ function generateVerString(info, hash) {
         });
     });
 
-    var ver = hashes.createHash(hash).update(Buffer.from(S, 'utf8')).digest('base64');
-    var padding = 4 - ver.length % 4;
+    let ver = hashes.createHash(hash).update(Buffer.from(S, 'utf8')).digest('base64');
+    let padding = 4 - ver.length % 4;
     if (padding === 4) {
         padding = 0;
     }
 
-    for (var i = 0; i < padding; i++) {
+    for (let i = 0; i < padding; i++) {
         ver += '=';
     }
     return ver;
 }
 
 function verifyVerString(info, hash, check) {
-    var computed = generateVerString(info, hash);
+    const computed = generateVerString(info, hash);
     return computed && computed === check;
 }
 
@@ -192,14 +192,14 @@ export default function (client) {
     };
 
     client.updateCaps = function () {
-        var node = this.config.capsNode || 'https://stanza.io';
-        var data = JSON.parse(JSON.stringify({
+        let node = this.config.capsNode || 'https://stanza.io';
+        const data = JSON.parse(JSON.stringify({
             identities: this.disco.identities[''],
             features: this.disco.features[''],
             extensions: this.disco.extensions['']
         }));
 
-        var ver = generateVerString(data, 'sha-1');
+        const ver = generateVerString(data, 'sha-1');
 
         this.disco.caps = {
             node: node,
@@ -216,12 +216,12 @@ export default function (client) {
     };
 
     client.getCurrentCaps = function () {
-        var caps = client.disco.caps;
+        const caps = client.disco.caps;
         if (!caps.ver) {
             return {ver: null, discoInfo: null};
         }
 
-        var node = caps.node + '#' + caps.ver;
+        const node = caps.node + '#' + caps.ver;
         return {
             ver: caps.ver,
             discoInfo: {
@@ -239,8 +239,8 @@ export default function (client) {
     });
 
     client.on('iq:get:discoInfo', function (iq) {
-        var node = iq.discoInfo.node || '';
-        var reportedNode = iq.discoInfo.node || '';
+        let node = iq.discoInfo.node || '';
+        let reportedNode = iq.discoInfo.node || '';
 
         if (node === client.disco.caps.node + '#' + client.disco.caps.ver) {
             reportedNode = node;
@@ -258,7 +258,7 @@ export default function (client) {
     });
 
     client.on('iq:get:discoItems', function (iq) {
-        var node = iq.discoItems.node;
+        const node = iq.discoItems.node;
         client.sendIq(iq.resultReply({
             discoItems: {
                 node: node,

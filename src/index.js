@@ -12,7 +12,7 @@ export {
 };
 
 export function createClient (opts) {
-    var client = new Client(opts);
+    const client = new Client(opts);
     client.use(Plugins);
 
     return client;

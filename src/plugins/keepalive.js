@@ -2,7 +2,7 @@
 'use strict';
 
 function timeoutPromise(targetPromise, delay) {
-    var timeoutRef;
+    let timeoutRef;
     return Promise.race([
         targetPromise,
         new Promise(function (resolve, reject) {

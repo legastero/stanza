@@ -3,10 +3,10 @@ const createHash = require('create-hash');
 
 
 function parse(chal) {
-    var dtives = {};
-    var tokens = chal.split(/,(?=(?:[^"]|"[^"]*")*$)/);
-    for (var i = 0, len = tokens.length; i < len; i++) {
-        var dtiv = /(\w+)=["]?([^"]+)["]?$/.exec(tokens[i]);
+    const dtives = {};
+    const tokens = chal.split(/,(?=(?:[^"]|"[^"]*")*$)/);
+    for (let i = 0, len = tokens.length; i < len; i++) {
+        const dtiv = /(\w+)=["]?([^"]+)["]?$/.exec(tokens[i]);
         if (dtiv) {
             dtives[dtiv[1]] = dtiv[2];
         }
@@ -29,15 +29,15 @@ export default class DigestMD5 {
         if (this._completed) {
             return undefined;
         }
-        var uri = cred.serviceType + '/' + cred.host;
+        let uri = cred.serviceType + '/' + cred.host;
         if (cred.serviceName && cred.host !== cred.serviceName) {
             uri += '/' + cred.serviceName;
         }
-        var realm = cred.realm || this._realm || '';
-        var cnonce = this._genNonce();
-        var nc = '00000001';
-        var qop = 'auth';
-        var str = '';
+        const realm = cred.realm || this._realm || '';
+        const cnonce = this._genNonce();
+        const nc = '00000001';
+        const qop = 'auth';
+        let str = '';
         str += 'username="' + cred.username + '"';
         if (realm) {
             str += ',realm="' + realm + '"';
@@ -47,13 +47,13 @@ export default class DigestMD5 {
         str += ',nc=' + nc;
         str += ',qop=' + qop;
         str += ',digest-uri="' + uri + '"';
-        var base = createHash('md5').update(cred.username)
+        const base = createHash('md5').update(cred.username)
             .update(':')
             .update(realm)
             .update(':')
             .update(cred.password)
             .digest();
-        var ha1 = createHash('md5').update(base)
+        let ha1 = createHash('md5').update(base)
             .update(':')
             .update(this._nonce)
             .update(':')
@@ -62,13 +62,13 @@ export default class DigestMD5 {
             ha1.update(':').update(cred.authzid);
         }
         ha1 = ha1.digest('hex');
-        var ha2 = createHash('md5').update('AUTHENTICATE:')
+        let ha2 = createHash('md5').update('AUTHENTICATE:')
             .update(uri);
         if (qop === 'auth-int' || qop === 'auth-conf') {
             ha2.update(':00000000000000000000000000000000');
         }
         ha2 = ha2.digest('hex');
-        var digest = createHash('md5').update(ha1)
+        const digest = createHash('md5').update(ha1)
             .update(':')
             .update(this._nonce)
             .update(':')
@@ -91,7 +91,7 @@ export default class DigestMD5 {
     }
 
     challenge(chal) {
-        var dtives = parse(chal);
+        const dtives = parse(chal);
         this._completed = !!dtives.rspauth;
         this._realm = dtives.realm;
         this._nonce = dtives.nonce;

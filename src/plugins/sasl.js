@@ -1,19 +1,19 @@
 'use strict';
 
 
-var NS = 'urn:ietf:params:xml:ns:xmpp-sasl';
+const NS = 'urn:ietf:params:xml:ns:xmpp-sasl';
 
 
 export default function (client, stanzas) {
 
-    var Auth = stanzas.getDefinition('auth', NS);
-    var Response = stanzas.getDefinition('response', NS);
-    var Abort = stanzas.getDefinition('abort', NS);
+    const Auth = stanzas.getDefinition('auth', NS);
+    const Response = stanzas.getDefinition('response', NS);
+    const Abort = stanzas.getDefinition('abort', NS);
 
     client.registerFeature('sasl', 100, function (features, cb) {
-        var self = this;
+        const self = this;
 
-        var mech = self.SASLFactory.create(features.sasl.mechanisms);
+        const mech = self.SASLFactory.create(features.sasl.mechanisms);
         if (!mech) {
             self.releaseGroup('sasl');
             self.emit('auth:failed');
@@ -34,7 +34,7 @@ export default function (client, stanzas) {
                     return self.send(new Abort());
                 }
 
-                var resp = mech.response(credentials);
+                const resp = mech.response(credentials);
                 if (resp || resp === '') {
                     self.send(new Response({
                         value: Buffer.from(resp).toString('base64')
@@ -69,7 +69,7 @@ export default function (client, stanzas) {
             cb('disconnect', 'authentication failed');
         });
 
-        var auth = {
+        const auth = {
             mechanism: mech.name
         };
 

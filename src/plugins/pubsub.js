@@ -9,8 +9,8 @@ export default function (client) {
             client.emit('pubsubEvent', msg);
 
             if (msg.event.updated) {
-                var published = msg.event.updated.published;
-                var retracted = msg.event.updated.retracted;
+                const published = msg.event.updated.published;
+                const retracted = msg.event.updated.retracted;
 
 
                 if (published && published.length) {
@@ -155,7 +155,7 @@ export default function (client) {
     };
 
     client.createNode = function (jid, node, config, cb) {
-        var cmd = {
+        const cmd = {
             type: 'set',
             to: jid,
             pubsub: {
