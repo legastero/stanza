@@ -35,6 +35,7 @@ import Message from './stanzas/message';
 import Mood from './stanzas/mood';
 import MUC from './stanzas/muc';
 import Nick from './stanzas/nick';
+import OMEMO from './stanzas/omemo';
 import OOB from './stanzas/oob';
 import Ping from './stanzas/ping';
 import Presence from './stanzas/presence';
@@ -116,6 +117,7 @@ export default function (JXT) {
     JXT.use(Mood);
     JXT.use(MUC);
     JXT.use(Nick);
+    JXT.use(OMEMO);
     JXT.use(OOB);
     JXT.use(Ping);
     JXT.use(Presence);
