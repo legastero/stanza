@@ -215,13 +215,13 @@ export default function (JXT) {
                     const hist = Utils.createElement(NS.MUC, 'history', NS.MUC);
                     this.xml.appendChild(hist);
 
-                    if (opts.maxchars) {
+                    if (opts.maxchars !== undefined) {
                         hist.setAttribute('maxchars', '' + opts.maxchars);
                     }
-                    if (opts.maxstanzas) {
+                    if (opts.maxstanzas !== undefined) {
                         hist.setAttribute('maxstanzas', '' + opts.maxstanzas);
                     }
-                    if (opts.seconds) {
+                    if (opts.seconds !== undefined) {
                         hist.setAttribute('seconds', '' + opts.seconds);
                     }
                     if (opts.since) {
