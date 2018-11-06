@@ -1,6 +1,3 @@
-const each = require('lodash.foreach');
-const unique = require('lodash.uniq');
-
 import { JID } from 'xmpp-jid';
 import * as hashes from 'iana-hashes';
 
@@ -8,12 +5,15 @@ import { Namespaces } from '../protocol';
 
 function generateVerString(info, hash) {
     let S = '';
-    let features = info.features.sort();
+
+    let features = info.features || [];
     let identities = [];
+    const extensions = info.extensions || [];
+
     const formTypes = {};
     const formOrder = [];
 
-    each(info.identities, function(identity) {
+    for (const identity of info.identities || []) {
         identities.push(
             [
                 identity.category || '',
@@ -22,15 +22,13 @@ function generateVerString(info, hash) {
                 identity.name || ''
             ].join('/')
         );
-    });
-
-    identities.sort();
+    }
 
     const idLen = identities.length;
     const featureLen = features.length;
 
-    identities = unique(identities, true);
-    features = unique(features, true);
+    identities = [...new Set(identities)].sort();
+    features = [...new Set(features)].sort();
 
     if (featureLen !== features.length || idLen !== identities.length) {
         return false;
@@ -40,7 +38,7 @@ function generateVerString(info, hash) {
     S += features.join('<') + '<';
 
     let illFormed = false;
-    each(info.extensions, function(ext) {
+    for (const ext of extensions) {
         const fields = ext.fields;
         for (let i = 0, len = fields.length; i < len; i++) {
             if (fields[i].name === 'FORM_TYPE' && fields[i].type === 'hidden') {
@@ -54,21 +52,21 @@ function generateVerString(info, hash) {
                 return;
             }
         }
-    });
+    }
     if (illFormed) {
         return false;
     }
 
     formOrder.sort();
 
-    each(formOrder, function(name) {
+    for (const name of formOrder) {
         const ext = formTypes[name];
         const fields = {};
         const fieldOrder = [];
 
         S += '<' + name;
 
-        each(ext.fields, function(field) {
+        for (const field of ext.fields) {
             const fieldName = field.name;
             if (fieldName !== 'FORM_TYPE') {
                 let values = field.value || '';
@@ -78,17 +76,17 @@ function generateVerString(info, hash) {
                 fields[fieldName] = values.sort();
                 fieldOrder.push(fieldName);
             }
-        });
+        }
 
         fieldOrder.sort();
 
-        each(fieldOrder, function(fieldName) {
+        for (const fieldName of fieldOrder) {
             S += '<' + fieldName;
-            each(fields[fieldName], function(val) {
+            for (const val of fields[fieldName]) {
                 S += '<' + val;
-            });
-        });
-    });
+            }
+        }
+    }
 
     let ver = hashes
         .createHash(hash)

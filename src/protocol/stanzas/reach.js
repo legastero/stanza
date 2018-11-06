@@ -1,5 +1,4 @@
 import * as NS from '../namespaces';
-import each from 'lodash.foreach';
 
 export default function(JXT) {
     const Utils = JXT.utils;
@@ -33,19 +32,19 @@ export default function(JXT) {
             const results = [];
             if (reach.length) {
                 const addrs = Utils.find(reach[0], NS.REACH_0, 'addr');
-                each(addrs, function(addr) {
+                for (const addr of addrs) {
                     results.push(new ReachURI({}, addr));
-                });
+                }
             }
             return results;
         },
         set: function(value) {
             const reach = Utils.findOrCreate(this.xml, NS.REACH_0, 'reach');
             Utils.setAttribute(reach, 'xmlns', NS.REACH_0);
-            each(value, function(info) {
+            for (const info of value) {
                 const addr = new ReachURI(info);
                 reach.appendChild(addr.xml);
-            });
+            }
         }
     };
 

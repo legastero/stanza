@@ -1,5 +1,4 @@
 import * as NS from '../namespaces';
-import each from 'lodash.foreach';
 
 export default function(JXT) {
     const Utils = JXT.utils;
@@ -24,19 +23,19 @@ export default function(JXT) {
             const results = [];
             if (metadata.length) {
                 const avatars = Utils.find(metadata[0], NS.AVATAR_METADATA, 'info');
-                each(avatars, function(info) {
+                for (const info of avatars) {
                     results.push(new Avatar({}, info));
-                });
+                }
             }
             return results;
         },
         set: function(value) {
             const metadata = Utils.findOrCreate(this.xml, NS.AVATAR_METADATA, 'metadata');
             Utils.setAttribute(metadata, 'xmlns', NS.AVATAR_METADATA);
-            each(value, function(info) {
+            for (const info of value) {
                 const avatar = new Avatar(info);
                 metadata.appendChild(avatar.xml);
-            });
+            }
         }
     };
 

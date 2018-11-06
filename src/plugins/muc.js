@@ -1,4 +1,3 @@
-const each = require('lodash.foreach');
 import { JID } from 'xmpp-jid';
 
 import { Namespaces } from '../protocol';
@@ -12,14 +11,19 @@ export default function(client) {
     client.joiningRooms = {};
 
     function rejoinRooms() {
-        each(client.joiningRooms, function(nick, room) {
-            delete client.joiningRooms[room];
+        const oldJoiningRooms = client.joiningRooms;
+        client.joiningRooms = {};
+        for (const room of Object.keys(oldJoiningRooms)) {
+            const nick = oldJoiningRooms[room];
             client.joinRoom(room, nick);
-        });
-        each(client.joinedRooms, function(nick, room) {
-            delete client.joinedRooms[room];
+        }
+
+        const oldJoinedRooms = client.joinedRooms;
+        client.joinedRooms = {};
+        for (const room of Object.keys(oldJoinedRooms)) {
+            const nick = oldJoinedRooms[room];
             client.joinRoom(room, nick);
-        });
+        }
     }
     client.on('session:started', rejoinRooms);
     client.on('stream:management:resumed', rejoinRooms);

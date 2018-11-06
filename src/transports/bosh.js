@@ -1,6 +1,3 @@
-const extend = require('lodash.assign');
-const filter = require('lodash.filter');
-
 import request from 'request';
 import WildEmitter from 'wildemitter';
 
@@ -126,14 +123,12 @@ export default class BOSHConnection extends WildEmitter {
 
     connect(opts) {
         const self = this;
-        self.config = extend(
-            {
-                rid: Math.ceil(Math.random() * 9999999999),
-                wait: 30,
-                maxRetries: 5
-            },
-            opts
-        );
+        self.config = {
+            rid: Math.ceil(Math.random() * 9999999999),
+            wait: 30,
+            maxRetries: 5,
+            ...opts
+        };
         self.hasStream = false;
         self.sm.started = false;
         self.url = opts.boshURL;
@@ -246,7 +241,7 @@ export default class BOSHConnection extends WildEmitter {
                 self.disconnect();
             })
             .then(function(body) {
-                self.requests = filter(self.requests, function(item) {
+                self.requests = self.requests.filter(item => {
                     return item.id !== ticket.id;
                 });
                 if (body) {

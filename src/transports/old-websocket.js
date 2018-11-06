@@ -1,5 +1,3 @@
-const each = require('lodash.foreach');
-
 import WSConnection from './websocket';
 
 export default class OldWSConnection extends WSConnection {
@@ -67,12 +65,15 @@ export default class OldWSConnection extends WSConnection {
                 self.stream = streamData;
                 self.emit('stream:start', streamData);
             }
-            each(streamData._extensions, function(stanzaObj) {
+
+            for (const ext of Object.keys(streamData._extensions)) {
+                const stanzaObj = streamData._extensions[ext];
                 if (!stanzaObj.lang && self.stream) {
                     stanzaObj.lang = self.stream.lang;
                 }
                 self.emit('stream:data', stanzaObj);
-            });
+            }
+
             if (ended) {
                 self.emit('stream:end');
             }
