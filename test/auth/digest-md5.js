@@ -1,5 +1,5 @@
 const test = require('tape');
-const Mech = require('../../src/sasl/digest-md5');
+const Mech = require('../../lib/sasl/digest-md5').default;
 
 test('DIGEST-MD5', function(t) {
     const mech = new Mech({

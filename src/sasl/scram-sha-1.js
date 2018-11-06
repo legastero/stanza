@@ -62,7 +62,7 @@ function HMAC(key, msg) {
 }
 
 function Hi(text, salt, iterations) {
-    let ui1 = HMAC(text, Buffer.concat([salt, new Buffer([0, 0, 0, 1], 'binary')]));
+    let ui1 = HMAC(text, Buffer.concat([salt, Buffer.from([0, 0, 0, 1], 'binary')]));
     let ui = ui1;
     for (let i = 0; i < iterations - 1; i++) {
         ui1 = HMAC(text, ui1);
@@ -83,7 +83,7 @@ export default class SCRAM {
     }
     challenge(chal) {
         const values = parse(chal);
-        this._salt = new Buffer(values.s || '', 'base64');
+        this._salt = Buffer.from(values.s || '', 'base64');
         this._iterationCount = parseInt(values.i, 10);
         this._nonce = values.r;
         this._verifier = values.v;
@@ -118,7 +118,7 @@ RESP.initial = function(mech, cred) {
 };
 
 RESP.challenge = function(mech, cred) {
-    const gs2Header = new Buffer(mech._gs2Header).toString('base64');
+    const gs2Header = Buffer.from(mech._gs2Header).toString('base64');
 
     mech._clientFinalMessageWithoutProof = 'c=' + gs2Header + ',r=' + mech._nonce;
 
