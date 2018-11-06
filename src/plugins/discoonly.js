@@ -8,6 +8,7 @@ export default function (client) {
     client.disco.addFeature('jid\\20escaping');
 
     client.disco.addFeature(Namespaces.DELAY);
+    client.disco.addFeature(Namespaces.EME_0);
     client.disco.addFeature(Namespaces.FORWARD_0);
     client.disco.addFeature(Namespaces.HASHES_1);
     client.disco.addFeature(Namespaces.IDLE_1);

@@ -348,6 +348,9 @@ export const JINGLE_HTTP_UPLOAD_0 = 'urn:xmpp:jingle:transports:http:upload:0';
 // XEP-0372
 export const REFERENCE_0 = 'urn:xmpp:reference:0';
 
+// XEP-0380
+export const EME_0 = 'urn:xmpp:eme:0';
+
 // XEP-0382
 export const SPOILER_0 = 'urn:xmppp:spoiler:0';
 

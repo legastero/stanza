@@ -12,6 +12,7 @@ import Dataforms from './stanzas/dataforms';
 import Delayed from './stanzas/delayed';
 import Disco from './stanzas/disco';
 import StanzaError from './stanzas/error';
+import EME from './stanzas/eme';
 import ExtDisco from './stanzas/extdisco';
 import File from './stanzas/file';
 import File3 from './stanzas/file3';
@@ -92,6 +93,7 @@ export default function (JXT) {
     JXT.use(Delayed);
     JXT.use(Disco);
     JXT.use(StanzaError);
+    JXT.use(EME);
     JXT.use(ExtDisco);
     JXT.use(File);
     JXT.use(File3);
