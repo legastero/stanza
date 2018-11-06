@@ -1,7 +1,6 @@
 const randomBytes = require('randombytes');
 const createHash = require('create-hash');
 
-
 function parse(chal) {
     const dtives = {};
     const tokens = chal.split(/,(?=(?:[^"]|"[^"]*")*$)/);
@@ -17,7 +16,6 @@ function parse(chal) {
 function genNonce() {
     return randomBytes(16).toString('hex');
 }
-
 
 export default class DigestMD5 {
     constructor(options) {
@@ -47,13 +45,15 @@ export default class DigestMD5 {
         str += ',nc=' + nc;
         str += ',qop=' + qop;
         str += ',digest-uri="' + uri + '"';
-        const base = createHash('md5').update(cred.username)
+        const base = createHash('md5')
+            .update(cred.username)
             .update(':')
             .update(realm)
             .update(':')
             .update(cred.password)
             .digest();
-        let ha1 = createHash('md5').update(base)
+        let ha1 = createHash('md5')
+            .update(base)
             .update(':')
             .update(this._nonce)
             .update(':')
@@ -62,13 +62,15 @@ export default class DigestMD5 {
             ha1.update(':').update(cred.authzid);
         }
         ha1 = ha1.digest('hex');
-        let ha2 = createHash('md5').update('AUTHENTICATE:')
+        let ha2 = createHash('md5')
+            .update('AUTHENTICATE:')
             .update(uri);
         if (qop === 'auth-int' || qop === 'auth-conf') {
             ha2.update(':00000000000000000000000000000000');
         }
         ha2 = ha2.digest('hex');
-        const digest = createHash('md5').update(ha1)
+        const digest = createHash('md5')
+            .update(ha1)
             .update(':')
             .update(this._nonce)
             .update(':')

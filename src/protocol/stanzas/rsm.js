@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     JXT.define({
@@ -12,12 +10,10 @@ export default function (JXT) {
         fields: {
             after: Utils.textSub(NS.RSM, 'after'),
             before: {
-                get: function () {
-
+                get: function() {
                     return Utils.getSubText(this.xml, NS.RSM, 'before');
                 },
-                set: function (value) {
-
+                set: function(value) {
                     if (value === true) {
                         Utils.findOrCreate(this.xml, NS.RSM, 'before');
                     } else {

@@ -1,13 +1,11 @@
 import * as async from 'async';
 import request from 'request';
 
-
 import { Namespaces } from '../protocol';
-
 
 export function getHostMeta(JXT, opts, cb) {
     if (typeof opts === 'string') {
-        opts = {host: opts};
+        opts = { host: opts };
     }
 
     const config = {
@@ -22,57 +20,62 @@ export function getHostMeta(JXT, opts, cb) {
 
     const scheme = config.ssl ? 'https://' : 'http://';
 
-    async.parallel([
-        function (done) {
-            request(scheme + config.host + '/.well-known/host-meta.json', function (err, req, body) {
-                if (err) {
-                    return done(null);
-                }
+    async.parallel(
+        [
+            function(done) {
+                request(scheme + config.host + '/.well-known/host-meta.json', function(
+                    err,
+                    req,
+                    body
+                ) {
+                    if (err) {
+                        return done(null);
+                    }
 
-                let data;
-                try {
-                    data = JSON.parse(body);
-                } catch (e) {
-                    data = null;
-                }
-                return done(data);
-            });
-        },
-        function (done) {
-            request(scheme + config.host + '/.well-known/host-meta', function (err, req, body) {
-                if (err) {
-                    return done(null);
-                }
+                    let data;
+                    try {
+                        data = JSON.parse(body);
+                    } catch (e) {
+                        data = null;
+                    }
+                    return done(data);
+                });
+            },
+            function(done) {
+                request(scheme + config.host + '/.well-known/host-meta', function(err, req, body) {
+                    if (err) {
+                        return done(null);
+                    }
 
-                const xrd = JXT.parse(body);
-                return done(xrd.toJSON());
-            });
+                    const xrd = JXT.parse(body);
+                    return done(xrd.toJSON());
+                });
+            }
+        ],
+        function(result) {
+            if (result) {
+                cb(null, result);
+            } else {
+                cb('no-host-meta');
+            }
         }
-    ], function (result) {
-        if (result) {
-            cb(null, result);
-        } else {
-            cb('no-host-meta');
-        }
-    });
+    );
 }
 
-
-export default function (client, stanzas) {
-
-    client.discoverBindings = function (server, cb) {
-        getHostMeta(stanzas, server, function (err, data) {
+export default function(client, stanzas) {
+    client.discoverBindings = function(server, cb) {
+        getHostMeta(stanzas, server, function(err, data) {
             if (err) {
                 return cb(err, []);
             }
-    
+
             const results = {
                 websocket: [],
                 bosh: []
             };
             const links = data.links || [];
-    
-            links.forEach(function (link) {
+
+            links.forEach(function(link) {
                 if (link.href && link.rel === Namespaces.ALT_CONNECTIONS_WEBSOCKET) {
                     results.websocket.push(link.href);
                 }
@@ -80,7 +83,7 @@ export default function (client, stanzas) {
                     results.bosh.push(link.href);
                 }
             });
-    
+
             cb(false, results);
         });
     };

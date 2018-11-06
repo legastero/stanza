@@ -1,32 +1,26 @@
 import * as NS from '../namespaces';
 import { JID } from 'xmpp-jid';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const jidList = {
-        get: function () {
-
+        get: function() {
             const result = [];
             const items = Utils.find(this.xml, NS.BLOCKING, 'item');
             if (!items.length) {
                 return result;
             }
 
-            items.forEach(function (item) {
-
+            items.forEach(function(item) {
                 result.push(new JID(Utils.getAttribute(item, 'jid', '')));
             });
 
             return result;
         },
-        set: function (values) {
-
+        set: function(values) {
             const self = this;
-            values.forEach(function (value) {
-
+            values.forEach(function(value) {
                 const item = Utils.createElement(NS.BLOCKING, 'item', NS.BLOCKING);
                 Utils.setAttribute(item, 'jid', value.toString());
                 self.xml.appendChild(item);
@@ -60,7 +54,6 @@ export default function (JXT) {
             jids: jidList
         }
     });
-
 
     JXT.extendIQ(Block);
     JXT.extendIQ(Unblock);

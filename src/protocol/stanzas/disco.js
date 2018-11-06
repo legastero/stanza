@@ -1,10 +1,7 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
-
 
     const DiscoCaps = JXT.define({
         name: 'caps',
@@ -60,7 +57,6 @@ export default function (JXT) {
         }
     });
 
-
     JXT.extend(DiscoItems, DiscoItem, 'items');
     JXT.extend(DiscoInfo, DiscoIdentity, 'identities');
 
@@ -69,13 +65,11 @@ export default function (JXT) {
     JXT.extendPresence(DiscoCaps);
     JXT.extendStreamFeatures(DiscoCaps);
 
-    JXT.withDataForm(function (DataForm) {
-
+    JXT.withDataForm(function(DataForm) {
         JXT.extend(DiscoInfo, DataForm, 'extensions');
     });
 
-    JXT.withDefinition('set', NS.RSM, function (RSM) {
-
+    JXT.withDefinition('set', NS.RSM, function(RSM) {
         JXT.extend(DiscoItems, RSM);
     });
 }

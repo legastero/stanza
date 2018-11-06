@@ -3,7 +3,6 @@ import { Namespaces as NS } from './protocol';
 const MAX_SEQ = Math.pow(2, 32);
 const mod = (v, n) => ((v % n) + n) % n;
 
-
 export default class StreamManagement {
     constructor(client) {
         this.client = client;
@@ -78,9 +77,11 @@ export default class StreamManagement {
     }
 
     ack() {
-        this.client.send(new this.stanzas.Ack({
-            h: this.handled
-        }));
+        this.client.send(
+            new this.stanzas.Ack({
+                h: this.handled
+            })
+        );
     }
 
     request() {
@@ -102,7 +103,7 @@ export default class StreamManagement {
         if (resend) {
             const resendUnacked = this.unacked;
             this.unacked = [];
-            resendUnacked.forEach(function (stanza) {
+            resendUnacked.forEach(function(stanza) {
                 self.client.send(stanza);
             });
         }

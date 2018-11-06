@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const VCardTemp = JXT.define({
@@ -97,7 +95,6 @@ export default function (JXT) {
             url: Utils.textSub(NS.VCARD_TEMP, 'EXTVAL')
         }
     });
-
 
     JXT.extend(VCardTemp, Email, 'emails');
     JXT.extend(VCardTemp, Address, 'addresses');

@@ -20,7 +20,6 @@ export const SUBSCRIPTION_PREAPPROVAL = 'urn:xmpp:features:pre-approval';
 // RFC 7395
 export const FRAMING = 'urn:ietf:params:xml:ns:xmpp-framing';
 
-
 // ================================================================
 // XEPS
 // ================================================================
@@ -162,7 +161,7 @@ export const ALT_CONNECTIONS_XBOSH = 'urn:xmpp:alt-connections:xbosh';
 export const CAPTCHA = 'urn:xmpp:captcha';
 
 // XEP-0163
-export const PEP_NOTIFY = (ns) => `${ns}+notify`; 
+export const PEP_NOTIFY = ns => `${ns}+notify`;
 
 // XEP-0166
 export const JINGLE_1 = 'urn:xmpp:jingle:1';
@@ -267,7 +266,7 @@ export const FORWARD_0 = 'urn:xmpp:forward:0';
 
 // XEP-0300
 export const HASHES_1 = 'urn:xmpp:hashes:1';
-export const HASH_NAME = (name) => `urn:xmpp:hash-function-text-names:${name}`;
+export const HASH_NAME = name => `urn:xmpp:hash-function-text-names:${name}`;
 
 // XEP-0301
 export const RTT_0 = 'urn:xmpp:rtt:0';
@@ -357,8 +356,8 @@ export const SPOILER_0 = 'urn:xmppp:spoiler:0';
 // XEP-0384
 export const OMEMO_AXOLOTL = 'eu.siacs.conversations.axolotl';
 export const OMEMO_AXOLOTL_DEVICELIST = 'eu.siacs.conversations.axolotl.devicelist';
-export const OMEMO_AXOLOTL_BUNDLE = (deviceId) => `eu.siacs.conversations.axolotl.bundles:${deviceId}`;
-
+export const OMEMO_AXOLOTL_BUNDLE = deviceId =>
+    `eu.siacs.conversations.axolotl.bundles:${deviceId}`;
 
 // ================================================================
 // OTHER

@@ -1,6 +1,5 @@
-export default function (client) {
-
-    client.on('message', function (msg) {
+export default function(client) {
+    client.on('message', function(msg) {
         if (msg.event) {
             client.emit('pubsub:event', msg);
             client.emit('pubsubEvent', msg);
@@ -8,7 +7,6 @@ export default function (client) {
             if (msg.event.updated) {
                 const published = msg.event.updated.published;
                 const retracted = msg.event.updated.retracted;
-
 
                 if (published && published.length) {
                     client.emit('pubsub:published', msg);
@@ -41,7 +39,7 @@ export default function (client) {
         }
     });
 
-    client.subscribeToNode = function (jid, opts, cb) {
+    client.subscribeToNode = function(jid, opts, cb) {
         if (typeof opts === 'string') {
             opts = {
                 node: opts
@@ -49,16 +47,19 @@ export default function (client) {
         }
         opts.jid = opts.jid || client.jid;
 
-        return this.sendIq({
-            type: 'set',
-            to: jid,
-            pubsub: {
-                subscribe: opts
-            }
-        }, cb);
+        return this.sendIq(
+            {
+                type: 'set',
+                to: jid,
+                pubsub: {
+                    subscribe: opts
+                }
+            },
+            cb
+        );
     };
 
-    client.unsubscribeFromNode = function (jid, opts, cb) {
+    client.unsubscribeFromNode = function(jid, opts, cb) {
         if (typeof opts === 'string') {
             opts = {
                 node: opts
@@ -66,92 +67,113 @@ export default function (client) {
         }
         opts.jid = opts.jid || client.jid.bare;
 
-        return this.sendIq({
-            type: 'set',
-            to: jid,
-            pubsub: {
-                unsubscribe: opts
-            }
-        }, cb);
-    };
-
-    client.publish = function (jid, node, item, cb) {
-        return this.sendIq({
-            type: 'set',
-            to: jid,
-            pubsub: {
-                publish: {
-                    node: node,
-                    item: item
+        return this.sendIq(
+            {
+                type: 'set',
+                to: jid,
+                pubsub: {
+                    unsubscribe: opts
                 }
-            }
-        }, cb);
+            },
+            cb
+        );
     };
 
-    client.getItem = function (jid, node, id, cb) {
-        return this.sendIq({
-            type: 'get',
-            to: jid,
-            pubsub: {
-                retrieve: {
-                    node: node,
-                    item: id
+    client.publish = function(jid, node, item, cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                to: jid,
+                pubsub: {
+                    publish: {
+                        node: node,
+                        item: item
+                    }
                 }
-            }
-        }, cb);
+            },
+            cb
+        );
     };
 
-    client.getItems = function (jid, node, opts, cb) {
+    client.getItem = function(jid, node, id, cb) {
+        return this.sendIq(
+            {
+                type: 'get',
+                to: jid,
+                pubsub: {
+                    retrieve: {
+                        node: node,
+                        item: id
+                    }
+                }
+            },
+            cb
+        );
+    };
+
+    client.getItems = function(jid, node, opts, cb) {
         opts = opts || {};
         opts.node = node;
-        return this.sendIq({
-            type: 'get',
-            to: jid,
-            pubsub: {
-                retrieve: {
-                    node: node,
-                    max: opts.max
-                },
-                rsm: opts.rsm
-            }
-        }, cb);
-    };
-
-    client.retract = function (jid, node, id, notify, cb) {
-        return this.sendIq({
-            type: 'set',
-            to: jid,
-            pubsub: {
-                retract: {
-                    node: node,
-                    notify: notify,
-                    id: id
+        return this.sendIq(
+            {
+                type: 'get',
+                to: jid,
+                pubsub: {
+                    retrieve: {
+                        node: node,
+                        max: opts.max
+                    },
+                    rsm: opts.rsm
                 }
-            }
-        }, cb);
+            },
+            cb
+        );
     };
 
-    client.purgeNode = function (jid, node, cb) {
-        return this.sendIq({
-            type: 'set',
-            to: jid,
-            pubsubOwner: {
-                purge: node
-            }
-        }, cb);
+    client.retract = function(jid, node, id, notify, cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                to: jid,
+                pubsub: {
+                    retract: {
+                        node: node,
+                        notify: notify,
+                        id: id
+                    }
+                }
+            },
+            cb
+        );
     };
 
-    client.deleteNode = function (jid, node, cb) {
-        return this.sendIq({
-            type: 'set',
-            to: jid,
-            pubsubOwner: {
-                del: node
-            }
-        }, cb);
+    client.purgeNode = function(jid, node, cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                to: jid,
+                pubsubOwner: {
+                    purge: node
+                }
+            },
+            cb
+        );
     };
 
-    client.createNode = function (jid, node, config, cb) {
+    client.deleteNode = function(jid, node, cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                to: jid,
+                pubsubOwner: {
+                    del: node
+                }
+            },
+            cb
+        );
+    };
+
+    client.createNode = function(jid, node, config, cb) {
         const cmd = {
             type: 'set',
             to: jid,
@@ -161,85 +183,103 @@ export default function (client) {
         };
 
         if (config) {
-            cmd.pubsub.config = {form: config};
+            cmd.pubsub.config = { form: config };
         }
 
         return this.sendIq(cmd, cb);
     };
 
-    client.getSubscriptions = function (jid, opts, cb) {
+    client.getSubscriptions = function(jid, opts, cb) {
         opts = opts || {};
 
-        return this.sendIq({
-            type: 'get',
-            to: jid,
-            pubsub: {
-                subscriptions: opts
-            }
-        }, cb);
+        return this.sendIq(
+            {
+                type: 'get',
+                to: jid,
+                pubsub: {
+                    subscriptions: opts
+                }
+            },
+            cb
+        );
     };
 
-    client.getAffiliations = function (jid, opts, cb) {
+    client.getAffiliations = function(jid, opts, cb) {
         opts = opts || {};
 
-        return this.sendIq({
-            type: 'get',
-            to: jid,
-            pubsub: {
-                affiliations: opts
-            }
-        }, cb);
+        return this.sendIq(
+            {
+                type: 'get',
+                to: jid,
+                pubsub: {
+                    affiliations: opts
+                }
+            },
+            cb
+        );
     };
 
-    client.getNodeSubscribers = function (jid, node, opts, cb) {
+    client.getNodeSubscribers = function(jid, node, opts, cb) {
         opts = opts || {};
         opts.node = node;
 
-        return this.sendIq({
-            type: 'get',
-            to: jid,
-            pubsubOwner: {
-                subscriptions: opts
-            }
-        }, cb);
-    };
-
-    client.updateNodeSubscriptions = function (jid, node, delta, cb) {
-        return this.sendIq({
-            type: 'set',
-            to: jid,
-            pubsubOwner: {
-                subscriptions: {
-                    node: node,
-                    list: delta
+        return this.sendIq(
+            {
+                type: 'get',
+                to: jid,
+                pubsubOwner: {
+                    subscriptions: opts
                 }
-            }
-        }, cb);
+            },
+            cb
+        );
     };
 
-    client.getNodeAffiliations = function (jid, node, opts, cb) {
+    client.updateNodeSubscriptions = function(jid, node, delta, cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                to: jid,
+                pubsubOwner: {
+                    subscriptions: {
+                        node: node,
+                        list: delta
+                    }
+                }
+            },
+            cb
+        );
+    };
+
+    client.getNodeAffiliations = function(jid, node, opts, cb) {
         opts = opts || {};
         opts.node = node;
 
-        return this.sendIq({
-            type: 'get',
-            to: jid,
-            pubsubOwner: {
-                affiliations: opts
-            }
-        }, cb);
+        return this.sendIq(
+            {
+                type: 'get',
+                to: jid,
+                pubsubOwner: {
+                    affiliations: opts
+                }
+            },
+            cb
+        );
     };
 
-    client.updateNodeAffiliations = function (jid, node, delta, cb) {
-        return this.sendIq({
-            type: 'set',
-            to: jid,
-            pubsubOwner: {
-                affiliations: {
-                    node: node,
-                    list: delta
+    client.updateNodeAffiliations = function(jid, node, delta, cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                to: jid,
+                pubsubOwner: {
+                    affiliations: {
+                        node: node,
+                        list: delta
+                    }
                 }
-            }
-        }, cb);
+            },
+            cb
+        );
     };
 }

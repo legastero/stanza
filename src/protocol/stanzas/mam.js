@@ -1,9 +1,7 @@
 import * as NS from '../namespaces';
 import { JID } from 'xmpp-jid';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const MAMQuery = JXT.define({
@@ -43,8 +41,7 @@ export default function (JXT) {
         fields: {
             defaultCondition: Utils.attribute('default'),
             always: {
-                get: function () {
-
+                get: function() {
                     const results = [];
                     let container = Utils.find(this.xml, NS.MAM_2, 'always');
                     if (container.length === 0) {
@@ -52,14 +49,12 @@ export default function (JXT) {
                     }
                     container = container[0];
                     const jids = Utils.getMultiSubText(container, NS.MAM_2, 'jid');
-                    jids.forEach(function (jid) {
-
+                    jids.forEach(function(jid) {
                         results.push(new JID(jid.textContent));
                     });
                     return results;
                 },
-                set: function (value) {
-
+                set: function(value) {
                     if (value.length > 0) {
                         const container = Utils.findOrCreate(this.xml, NS.MAM_2, 'always');
                         Utils.setMultiSubText(container, NS.MAM_2, 'jid', value);
@@ -67,8 +62,7 @@ export default function (JXT) {
                 }
             },
             never: {
-                get: function () {
-
+                get: function() {
                     const results = [];
                     let container = Utils.find(this.xml, NS.MAM_2, 'always');
                     if (container.length === 0) {
@@ -76,14 +70,12 @@ export default function (JXT) {
                     }
                     container = container[0];
                     const jids = Utils.getMultiSubText(container, NS.MAM_2, 'jid');
-                    jids.forEach(function (jid) {
-
+                    jids.forEach(function(jid) {
                         results.push(new JID(jid.textContent));
                     });
                     return results;
                 },
-                set: function (value) {
-
+                set: function(value) {
                     if (value.length > 0) {
                         const container = Utils.findOrCreate(this.xml, NS.MAM_2, 'never');
                         Utils.setMultiSubText(container, NS.MAM_2, 'jid', value);
@@ -93,25 +85,21 @@ export default function (JXT) {
         }
     });
 
-
     JXT.extendMessage(Result);
 
     JXT.extendIQ(MAMQuery);
     JXT.extendIQ(Prefs);
     JXT.extendIQ(Fin);
 
-    JXT.withDataForm(function (DataForm) {
-
+    JXT.withDataForm(function(DataForm) {
         JXT.extend(MAMQuery, DataForm);
     });
 
-    JXT.withDefinition('forwarded', NS.FORWARD_0, function (Forwarded) {
-
+    JXT.withDefinition('forwarded', NS.FORWARD_0, function(Forwarded) {
         JXT.extend(Result, Forwarded);
     });
 
-    JXT.withDefinition('set', NS.RSM, function (RSM) {
-
+    JXT.withDefinition('set', NS.RSM, function(RSM) {
         JXT.extend(MAMQuery, RSM);
         JXT.extend(Fin, RSM);
     });

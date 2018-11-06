@@ -2,11 +2,9 @@ const createHash = require('create-hash');
 const createHmac = require('create-hmac');
 const randomBytes = require('randombytes');
 
-
 const RESP = {};
 const CLIENT_KEY = 'Client Key';
 const SERVER_KEY = 'Server Key';
-
 
 function parse(chal) {
     const dtives = {};
@@ -40,24 +38,27 @@ function genNonce(len) {
     return randomBytes((len || 32) / 2).toString('hex');
 }
 
-
 function XOR(a, b) {
     const length = Math.min(a.length, b.length);
     const buffer = Buffer.alloc(Math.max(a.length, b.length));
-  
+
     for (let i = 0; i < length; ++i) {
         buffer[i] = a[i] ^ b[i];
     }
-  
+
     return buffer;
 }
 
 function H(text) {
-    return createHash('sha1').update(text).digest();
+    return createHash('sha1')
+        .update(text)
+        .digest();
 }
 
 function HMAC(key, msg) {
-    return createHmac('sha1', key).update(msg).digest();
+    return createHmac('sha1', key)
+        .update(msg)
+        .digest();
 }
 
 function Hi(text, salt, iterations) {
@@ -70,7 +71,6 @@ function Hi(text, salt, iterations) {
 
     return ui;
 }
-
 
 export default class SCRAM {
     constructor(options) {
@@ -96,8 +96,7 @@ export default class SCRAM {
 SCRAM.prototype.name = 'SCRAM-SHA-1';
 SCRAM.prototype.clientFirst = true;
 
-
-RESP.initial = function (mech, cred) {
+RESP.initial = function(mech, cred) {
     mech._cnonce = mech._genNonce();
 
     let authzid = '';
@@ -118,8 +117,7 @@ RESP.initial = function (mech, cred) {
     return result;
 };
 
-
-RESP.challenge = function (mech, cred) {
+RESP.challenge = function(mech, cred) {
     const gs2Header = new Buffer(mech._gs2Header).toString('base64');
 
     mech._clientFinalMessageWithoutProof = 'c=' + gs2Header + ',r=' + mech._nonce;
@@ -144,9 +142,12 @@ RESP.challenge = function (mech, cred) {
     }
 
     const storedKey = H(clientKey);
-    const authMessage = mech._clientFirstMessageBare + ',' +
-                      mech._challenge + ',' +
-                      mech._clientFinalMessageWithoutProof;
+    const authMessage =
+        mech._clientFirstMessageBare +
+        ',' +
+        mech._challenge +
+        ',' +
+        mech._clientFinalMessageWithoutProof;
     const clientSignature = HMAC(storedKey, authMessage);
 
     const clientProof = XOR(clientKey, clientSignature).toString('base64');
@@ -167,7 +168,7 @@ RESP.challenge = function (mech, cred) {
     return result;
 };
 
-RESP.final = function () {
+RESP.final = function() {
     // TODO: Signal errors
     return '';
 };

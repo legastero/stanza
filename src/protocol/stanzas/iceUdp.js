@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const ICE = JXT.define({
@@ -11,7 +9,7 @@ export default function (JXT) {
         element: 'transport',
         tags: ['jingle-transport'],
         fields: {
-            transportType: {value: 'iceUdp', writable: true},
+            transportType: { value: 'iceUdp', writable: true },
             pwd: Utils.attribute('pwd'),
             ufrag: Utils.attribute('ufrag'),
             gatheringComplete: Utils.boolSub(NS.JINGLE_ICE_UDP_1, 'gathering-complete')
@@ -73,14 +71,12 @@ export default function (JXT) {
         }
     });
 
-
     JXT.extend(ICE, Candidate, 'candidates');
     JXT.extend(ICE, RemoteCandidate);
     JXT.extend(ICE, Fingerprint, 'fingerprints');
     JXT.extend(ICE, SctpMap, 'sctp');
 
-    JXT.withDefinition('content', NS.JINGLE_1, function (Content) {
-
+    JXT.withDefinition('content', NS.JINGLE_1, function(Content) {
         JXT.extend(Content, ICE);
     });
 }

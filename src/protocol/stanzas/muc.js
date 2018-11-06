@@ -1,25 +1,19 @@
 import * as NS from '../namespaces';
 
-
-function proxy (child, field) {
-
+function proxy(child, field) {
     return {
-        get: function () {
-
+        get: function() {
             if (this._extensions[child]) {
                 return this[child][field];
             }
         },
-        set: function (value) {
-
+        set: function(value) {
             this[child][field] = value;
         }
     };
 }
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const UserItem = JXT.define({
@@ -64,7 +58,7 @@ export default function (JXT) {
             from: Utils.jidAttribute('from'),
             reason: Utils.textSub(NS.MUC_USER, 'reason'),
             thread: Utils.subAttribute(NS.MUC_USER, 'continue', 'thread'),
-            'continue': Utils.boolSub(NS.MUC_USER, 'continue')
+            continue: Utils.boolSub(NS.MUC_USER, 'continue')
         }
     });
 
@@ -126,18 +120,14 @@ export default function (JXT) {
             reason: proxy('_mucUserItem', 'reason'),
             password: Utils.textSub(NS.MUC_USER, 'password'),
             codes: {
-                get: function () {
-
-                    return Utils.getMultiSubText(this.xml, NS.MUC_USER, 'status', function (sub) {
-
+                get: function() {
+                    return Utils.getMultiSubText(this.xml, NS.MUC_USER, 'status', function(sub) {
                         return Utils.getAttribute(sub, 'code');
                     });
                 },
-                set: function (value) {
-
+                set: function(value) {
                     const self = this;
-                    Utils.setMultiSubText(this.xml, NS.MUC_USER, 'status', value, function (val) {
-
+                    Utils.setMultiSubText(this.xml, NS.MUC_USER, 'status', value, function(val) {
                         const child = Utils.createElement(NS.MUC_USER, 'status', NS.MUC_USER);
                         Utils.setAttribute(child, 'code', val);
                         self.xml.appendChild(child);
@@ -174,8 +164,7 @@ export default function (JXT) {
         fields: {
             password: Utils.textSub(NS.MUC, 'password'),
             history: {
-                get: function () {
-
+                get: function() {
                     const result = {};
                     let hist = Utils.find(this.xml, NS.MUC, 'history');
 
@@ -188,7 +177,6 @@ export default function (JXT) {
                     const maxstanzas = hist.getAttribute('maxstanzas') || '';
                     const seconds = hist.getAttribute('seconds') || '';
                     const since = hist.getAttribute('since') || '';
-
 
                     if (maxchars) {
                         result.maxchars = parseInt(maxchars, 10);
@@ -203,8 +191,7 @@ export default function (JXT) {
                         result.since = new Date(since);
                     }
                 },
-                set: function (opts) {
-
+                set: function(opts) {
                     const existing = Utils.find(this.xml, NS.MUC, 'history');
                     if (existing.length) {
                         for (let i = 0; i < existing.length; i++) {
@@ -241,10 +228,9 @@ export default function (JXT) {
             password: Utils.attribute('password'),
             reason: Utils.attribute('reason'),
             thread: Utils.attribute('thread'),
-            'continue': Utils.boolAttribute('continue')
+            continue: Utils.boolAttribute('continue')
         }
     });
-
 
     JXT.extend(UserItem, UserActor);
     JXT.extend(MUC, UserItem);
@@ -255,22 +241,19 @@ export default function (JXT) {
     JXT.extend(MUCAdmin, AdminItem, 'items');
     JXT.extend(MUCOwner, Destroy);
 
-
     JXT.extendPresence(MUC);
     JXT.extendPresence(MUCJoin);
 
     JXT.extendMessage(MUC);
     JXT.extendMessage(DirectInvite);
 
-    JXT.withIQ(function (IQ) {
-
+    JXT.withIQ(function(IQ) {
         JXT.add(IQ, 'mucUnique', Utils.textSub(NS.MUC_UNIQUE, 'unique'));
         JXT.extend(IQ, MUCAdmin);
         JXT.extend(IQ, MUCOwner);
     });
 
-    JXT.withDataForm(function (DataForm) {
-
+    JXT.withDataForm(function(DataForm) {
         JXT.extend(MUCOwner, DataForm);
     });
 }

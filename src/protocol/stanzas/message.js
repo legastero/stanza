@@ -1,11 +1,8 @@
 import * as NS from '../namespaces';
 
-
 const internals = {};
 
-
-internals.defineMessage = function (JXT, name, namespace) {
-
+internals.defineMessage = function(JXT, name, namespace) {
     const Utils = JXT.utils;
 
     JXT.define({
@@ -23,25 +20,26 @@ internals.defineMessage = function (JXT, name, namespace) {
             parentThread: Utils.subAttribute(namespace, 'thread', 'parent'),
             subject: Utils.textSub(namespace, 'subject'),
             $body: {
-                get: function getBody$ () {
-
+                get: function getBody$() {
                     return Utils.getSubLangText(this.xml, namespace, 'body', this.lang);
                 }
             },
             body: {
-                get: function getBody () {
-
+                get: function getBody() {
                     const bodies = this.$body;
                     return bodies[this.lang] || '';
                 },
-                set: function setBody (value) {
-
+                set: function setBody(value) {
                     Utils.setSubLangText(this.xml, namespace, 'body', value, this.lang);
                 }
             },
             attention: Utils.boolSub(NS.ATTENTION_0, 'attention'),
             chatState: Utils.enumSub(NS.CHAT_STATES, [
-                'active', 'composing', 'paused', 'inactive', 'gone'
+                'active',
+                'composing',
+                'paused',
+                'inactive',
+                'gone'
             ]),
             replace: Utils.subAttribute(NS.CORRECTION_0, 'replace', 'id'),
             requestReceipt: Utils.boolSub(NS.RECEIPTS, 'request'),
@@ -50,9 +48,7 @@ internals.defineMessage = function (JXT, name, namespace) {
     });
 };
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     internals.defineMessage(JXT, 'message', NS.CLIENT);
     internals.defineMessage(JXT, 'serverMessage', NS.SERVER);
     internals.defineMessage(JXT, 'componentMessage', NS.COMPONENT);

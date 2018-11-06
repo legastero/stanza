@@ -1,17 +1,13 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const SHIM = {
-        get: function () {
-
+        get: function() {
             const headerSet = Utils.find(this.xml, NS.SHIM, 'headers');
             if (headerSet.length) {
-                return Utils.getMultiSubText(headerSet[0], NS.SHIM, 'header', function (header) {
-
+                return Utils.getMultiSubText(headerSet[0], NS.SHIM, 'header', function(header) {
                     const name = Utils.getAttribute(header, 'name');
                     if (name) {
                         return {
@@ -23,11 +19,9 @@ export default function (JXT) {
             }
             return [];
         },
-        set: function (values) {
-
+        set: function(values) {
             const headerSet = Utils.findOrCreate(this.xml, NS.SHIM, 'headers');
-            JXT.setMultiSubText(headerSet, NS.SHIM, 'header', values, function (val) {
-
+            JXT.setMultiSubText(headerSet, NS.SHIM, 'header', values, function(val) {
                 const header = Utils.createElement(NS.SHIM, 'header', NS.SHIM);
                 Utils.setAttribute(header, 'name', val.name);
                 Utils.setText(header, val.value);
@@ -36,14 +30,11 @@ export default function (JXT) {
         }
     };
 
-
-    JXT.withMessage(function (Message) {
-
+    JXT.withMessage(function(Message) {
         JXT.add(Message, 'headers', SHIM);
     });
 
-    JXT.withPresence(function (Presence) {
-
+    JXT.withPresence(function(Presence) {
         JXT.add(Presence, 'headers', SHIM);
     });
 }

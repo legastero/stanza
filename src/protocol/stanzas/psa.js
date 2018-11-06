@@ -1,14 +1,8 @@
 import * as NS from '../namespaces';
 
+const CONDITIONS = ['server-unavailable', 'connection-paused'];
 
-const CONDITIONS = [
-    'server-unavailable',
-    'connection-paused'
-];
-
-
-export default function (JXT) {
-
+export default function(JXT) {
     const PSA = JXT.define({
         name: 'state',
         namespace: NS.PSA,
@@ -19,7 +13,6 @@ export default function (JXT) {
             description: JXT.utils.textSub(NS.PSA, 'description')
         }
     });
-
 
     JXT.extendPresence(PSA);
 }

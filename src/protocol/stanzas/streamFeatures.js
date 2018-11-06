@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     JXT.define({
         name: 'streamFeatures',
         namespace: NS.STREAM,
@@ -21,7 +19,6 @@ export default function (JXT) {
         namespace: NS.SUBSCRIPTION_PREAPPROVAL,
         element: 'sub'
     });
-
 
     JXT.extendStreamFeatures(RosterVerFeature);
     JXT.extendStreamFeatures(SubscriptionPreApprovalFeature);

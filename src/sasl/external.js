@@ -3,9 +3,8 @@ export default class External {
         return cred.authzid || '';
     }
 
-    challenge() {
-    }
+    challenge() {}
 }
 
 External.prototype.name = 'EXTERNAL';
-External.prototype.clientFirst = true; 
+External.prototype.clientFirst = true;

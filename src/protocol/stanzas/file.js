@@ -1,11 +1,8 @@
 import * as NS from '../namespaces';
 
-
 const FT_NS = NS.FILE_TRANSFER_4;
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const File = JXT.define({
@@ -35,9 +32,9 @@ export default function (JXT) {
         name: '_' + FT_NS,
         namespace: FT_NS,
         element: 'description',
-        tags: [ 'jingle-application' ],
+        tags: ['jingle-application'],
         fields: {
-            applicationType: { value: FT_NS, writable: true, }
+            applicationType: { value: FT_NS, writable: true }
         }
     });
 
@@ -45,7 +42,7 @@ export default function (JXT) {
         name: '_{' + FT_NS + '}received',
         namespace: FT_NS,
         element: 'received',
-        tags: [ 'jingle-info' ],
+        tags: ['jingle-info'],
         fields: {
             infoType: { value: '{' + FT_NS + '}received' },
             creator: Utils.attribute('creator'),
@@ -57,7 +54,7 @@ export default function (JXT) {
         name: '_{' + FT_NS + '}checksum',
         namespace: FT_NS,
         element: 'checksum',
-        tags: [ 'jingle-info' ],
+        tags: ['jingle-info'],
         fields: {
             infoType: { value: '{' + FT_NS + '}checksum' },
             creator: Utils.attribute('creator'),
@@ -69,21 +66,17 @@ export default function (JXT) {
     JXT.extend(Checksum, File);
     JXT.extend(FileTransfer, File);
 
-    JXT.withDefinition('hash', NS.HASHES_1, function (Hash) {
-
+    JXT.withDefinition('hash', NS.HASHES_1, function(Hash) {
         JXT.extend(File, Hash, 'hashes');
         JXT.extend(Range, Hash, 'hashes');
     });
 
-    JXT.withDefinition('content', NS.JINGLE_1, function (Content) {
-
+    JXT.withDefinition('content', NS.JINGLE_1, function(Content) {
         JXT.extend(Content, FileTransfer);
     });
 
-    JXT.withDefinition('jingle', NS.JINGLE_1, function (Jingle) {
-
+    JXT.withDefinition('jingle', NS.JINGLE_1, function(Jingle) {
         JXT.extend(Jingle, Received);
         JXT.extend(Jingle, Checksum);
     });
 }
-

@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const Roster = JXT.define({
@@ -11,13 +9,11 @@ export default function (JXT) {
         element: 'query',
         fields: {
             ver: {
-                get: function () {
-
+                get: function() {
                     return Utils.getAttribute(this.xml, 'ver');
                 },
-                set: function (value) {
-
-                    const force = (value === '');
+                set: function(value) {
+                    const force = value === '';
                     Utils.setAttribute(this.xml, 'ver', value, force);
                 }
             }
@@ -33,8 +29,7 @@ export default function (JXT) {
             name: Utils.attribute('name'),
             subscription: Utils.attribute('subscription', 'none'),
             subscriptionRequested: {
-                get: function () {
-
+                get: function() {
                     const ask = Utils.getAttribute(this.xml, 'ask');
                     return ask === 'subscribe';
                 }
@@ -43,7 +38,6 @@ export default function (JXT) {
             groups: Utils.multiTextSub(NS.ROSTER, 'group')
         }
     });
-
 
     JXT.extend(Roster, RosterItem, 'items');
 

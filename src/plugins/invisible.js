@@ -1,16 +1,21 @@
-export default function (client) {
-
-    client.goInvisible = function (cb) {
-        return this.sendIq({
-            type: 'set',
-            invisible: true
-        }, cb);
+export default function(client) {
+    client.goInvisible = function(cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                invisible: true
+            },
+            cb
+        );
     };
 
-    client.goVisible = function (cb) {
-        return this.sendIq({
-            type: 'set',
-            visible: true
-        }, cb);
+    client.goVisible = function(cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                visible: true
+            },
+            cb
+        );
     };
 }

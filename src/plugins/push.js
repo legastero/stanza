@@ -1,20 +1,20 @@
 import { Namespaces } from '../protocol';
 
-
-export default function (client) {
-
+export default function(client) {
     client.disco.addFeature(Namespaces.PUSH_0);
 
     client.enableNotifications = function(jid, node, fieldList, cb) {
-        const fields = [{
-            name: 'FORM_TYPE',
-            value: 'http://jabber.org/protocol/pubsub#publish-options'
-        }];
+        const fields = [
+            {
+                name: 'FORM_TYPE',
+                value: 'http://jabber.org/protocol/pubsub#publish-options'
+            }
+        ];
         const iq = {
             type: 'set',
             enablePush: {
                 jid: jid,
-                node: node,
+                node: node
             }
         };
         if (fieldList && fieldList.length) {

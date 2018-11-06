@@ -1,6 +1,5 @@
 import * as NS from '../namespaces';
 
-
 const EXPORT_MAP = {
     noPermanentStore: 'no-permanent-store',
     noStore: 'no-store',
@@ -12,16 +11,15 @@ const IMPORT_MAP = {
     'no-permanent-store': 'noPermanentStore',
     'no-store': 'noStore',
     'no-copy': 'noCopy',
-    'store': 'store'
+    store: 'store'
 };
 
-
-export default function (JXT) {
+export default function(JXT) {
     const Utils = JXT.utils;
 
-    JXT.withMessage(function (Message) {
+    JXT.withMessage(function(Message) {
         JXT.add(Message, 'processingHints', {
-            get: function () {
+            get: function() {
                 const results = {};
 
                 for (let i = 0, len = this.xml.childNodes.length; i < len; i++) {
@@ -39,7 +37,7 @@ export default function (JXT) {
 
                 return results;
             },
-            set: function (hints) {
+            set: function(hints) {
                 for (let i = 0, len = this.xml.childNodes.length; i < len; i++) {
                     const child = this.xml.childNodes[i];
                     if (child.namespaceURI !== NS.HINTS) {

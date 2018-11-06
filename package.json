@@ -1,119 +1,130 @@
 {
-  "name": "stanza.io",
-  "description": "Modern XMPP in the browser, with a JSON API",
-  "version": "9.3.0",
-  "author": "Lance Stout <lancestout@gmail.com>",
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
+    "name": "stanza.io",
+    "description": "Modern XMPP in the browser, with a JSON API",
+    "version": "9.3.0",
+    "author": "Lance Stout <lancestout@gmail.com>",
+    "babel": {
+        "presets": [
+            "@babel/preset-env"
+        ],
+        "plugins": [
+            "@babel/plugin-transform-runtime"
+        ]
+    },
+    "browser": {
+        "request": "xhr",
+        "faye-websocket": false
+    },
+    "bugs": "https://github.com/legastero/stanza.io/issues",
+    "contributors": [
+        "Philipp Hancke <fippo@andyet.net>",
+        "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
     ],
-    "plugins": [
-      "@babel/plugin-transform-runtime"
-    ]
-  },
-  "browser": {
-    "request": "xhr",
-    "faye-websocket": false
-  },
-  "bugs": "https://github.com/legastero/stanza.io/issues",
-  "contributors": [
-    "Philipp Hancke <fippo@andyet.net>",
-    "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
-  ],
-  "dependencies": {
-    "@babel/runtime": "^7.1.2",
-    "async": "^2.5.0",
-    "create-hash": "^1.2.0",
-    "create-hmac": "^1.1.7",
-    "faye-websocket": "^0.11.0",
-    "iana-hashes": "^1.0.2",
-    "jingle": "^3.0.0",
-    "jxt": "^3.1.0",
-    "lodash.assign": "^3.0.0",
-    "lodash.filter": "^3.1.0",
-    "lodash.foreach": "^3.0.2",
-    "lodash.uniq": "^3.1.0",
-    "randombytes": "^2.0.6",
-    "request": "^2.53.0",
-    "uuid": "^3.0.1",
-    "wildemitter": "^1.0.1",
-    "xhr": "^2.0.1",
-    "xmpp-jid": "^1.0.0"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.1.2",
-    "@babel/core": "^7.1.2",
-    "@babel/node": "^7.0.0",
-    "@babel/plugin-transform-runtime": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
-    "babel-loader": "^8.0.4",
-    "eslint": "^5.8.0",
-    "husky": "^1.1.3",
-    "rimraf": "^2.6.2",
-    "rollup": "^0.67.0",
-    "string-replace-loader": "^2.1.1",
-    "tap-spec": "^5.0.0",
-    "tape": "^4.8.0",
-    "webpack": "^4.25.0",
-    "webpack-bundle-analyzer": "^3.0.3",
-    "webpack-cli": "^3.1.2"
-  },
-  "eslintConfig": {
-    "extends": "eslint:recommended",
-    "env": {
-      "browser": true,
-      "node": true,
-      "es6": true
+    "dependencies": {
+        "@babel/runtime": "^7.1.2",
+        "async": "^2.5.0",
+        "create-hash": "^1.2.0",
+        "create-hmac": "^1.1.7",
+        "faye-websocket": "^0.11.0",
+        "iana-hashes": "^1.0.2",
+        "jingle": "^3.0.0",
+        "jxt": "^3.1.0",
+        "lodash.assign": "^3.0.0",
+        "lodash.filter": "^3.1.0",
+        "lodash.foreach": "^3.0.2",
+        "lodash.uniq": "^3.1.0",
+        "randombytes": "^2.0.6",
+        "request": "^2.53.0",
+        "uuid": "^3.0.1",
+        "wildemitter": "^1.0.1",
+        "xhr": "^2.0.1",
+        "xmpp-jid": "^1.0.0"
     },
-    "rules": {
-      "indent": [
-        "error",
-        4
-      ],
-      "prefer-const": "error",
-      "no-console": 0,
-      "no-var": "error",
-      "semi": [
-        "error",
-        "always"
-      ]
+    "devDependencies": {
+        "@babel/cli": "^7.1.2",
+        "@babel/core": "^7.1.2",
+        "@babel/node": "^7.0.0",
+        "@babel/plugin-transform-runtime": "^7.1.0",
+        "@babel/preset-env": "^7.1.0",
+        "babel-loader": "^8.0.4",
+        "eslint": "^5.8.0",
+        "husky": "^1.1.3",
+        "prettier": "^1.14.3",
+        "pretty-quick": "^1.8.0",
+        "rimraf": "^2.6.2",
+        "rollup": "^0.67.0",
+        "string-replace-loader": "^2.1.1",
+        "tap-spec": "^5.0.0",
+        "tape": "^4.8.0",
+        "webpack": "^4.25.0",
+        "webpack-bundle-analyzer": "^3.0.3",
+        "webpack-cli": "^3.1.2"
     },
-    "parserOptions": {
-      "sourceType": "module",
-      "ecmaVersion": "2018"
+    "eslintConfig": {
+        "extends": "eslint:recommended",
+        "env": {
+            "browser": true,
+            "node": true,
+            "es6": true
+        },
+        "rules": {
+            "indent": [
+                "error",
+                4,
+                {
+                    "SwitchCase": 1
+                }
+            ],
+            "prefer-const": "error",
+            "no-console": 0,
+            "no-var": "error",
+            "semi": [
+                "error",
+                "always"
+            ]
+        },
+        "parserOptions": {
+            "sourceType": "module",
+            "ecmaVersion": "2018"
+        }
+    },
+    "eslintIgnore": [
+        "build/*",
+        "lib/*"
+    ],
+    "homepage": "https://stanza.io",
+    "husky": {
+        "hooks": {
+            "pre-commit": "pretty-quick --stage && npm run lint && npm test"
+        }
+    },
+    "keywords": [
+        "bosh",
+        "jingle",
+        "json",
+        "stanza",
+        "stanza.io",
+        "websocket",
+        "xmpp"
+    ],
+    "license": "MIT",
+    "main": "./lib/index.js",
+    "prettier": {
+        "tabWidth": 4,
+        "printWidth": 100,
+        "semi": true,
+        "singleQuote": true
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/legastero/stanza.io.git"
+    },
+    "scripts": {
+        "build": "webpack --mode production",
+        "compile": "rimraf lib && babel --optional runtime -sd lib/ src/",
+        "lint": "eslint .",
+        "prepublish": "npm run compile",
+        "test": "npm run compile && node test/index.js | tap-spec",
+        "validate": "npm ls"
     }
-  },
-  "eslintIgnore": [
-    "build/*",
-    "lib/*"
-  ],
-  "homepage": "https://stanza.io",
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint && npm test"
-    }
-  },
-  "keywords": [
-    "bosh",
-    "jingle",
-    "json",
-    "stanza",
-    "stanza.io",
-    "websocket",
-    "xmpp"
-  ],
-  "license": "MIT",
-  "main": "./lib/index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/legastero/stanza.io.git"
-  },
-  "scripts": {
-    "build": "webpack --mode production",
-    "compile": "rimraf lib && babel --optional runtime -sd lib/ src/",
-    "lint": "eslint .",
-    "prepublish": "npm run compile",
-    "test": "npm run compile && node test/index.js | tap-spec",
-    "validate": "npm ls"
-  }
 }

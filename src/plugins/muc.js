@@ -3,9 +3,7 @@ import { JID } from 'xmpp-jid';
 
 import { Namespaces } from '../protocol';
 
-
-export default function (client) {
-
+export default function(client) {
     client.disco.addFeature(Namespaces.MUC);
     client.disco.addFeature(Namespaces.MUC_DIRECT_INVITE);
     client.disco.addFeature(Namespaces.HATS_0);
@@ -14,11 +12,11 @@ export default function (client) {
     client.joiningRooms = {};
 
     function rejoinRooms() {
-        each(client.joiningRooms, function (nick, room) {
+        each(client.joiningRooms, function(nick, room) {
             delete client.joiningRooms[room];
             client.joinRoom(room, nick);
         });
-        each(client.joinedRooms, function (nick, room) {
+        each(client.joinedRooms, function(nick, room) {
             delete client.joinedRooms[room];
             client.joinRoom(room, nick);
         });
@@ -26,7 +24,7 @@ export default function (client) {
     client.on('session:started', rejoinRooms);
     client.on('stream:management:resumed', rejoinRooms);
 
-    client.on('message', function (msg) {
+    client.on('message', function(msg) {
         if (msg.muc) {
             if (msg.muc.invite) {
                 client.emit('muc:invite', {
@@ -61,7 +59,7 @@ export default function (client) {
         }
     });
 
-    client.on('presence', function (pres) {
+    client.on('presence', function(pres) {
         if (client.joiningRooms[pres.from.bare] && pres.type === 'error') {
             delete client.joiningRooms[pres.from.bare];
             client.emit('muc:failed', pres);
@@ -95,7 +93,7 @@ export default function (client) {
         }
     });
 
-    client.joinRoom = function (room, nick, opts) {
+    client.joinRoom = function(room, nick, opts) {
         opts = opts || {};
         opts.to = room + '/' + nick;
         opts.caps = this.disco.caps;
@@ -106,22 +104,22 @@ export default function (client) {
         this.sendPresence(opts);
     };
 
-    client.leaveRoom = function (room, nick, opts) {
+    client.leaveRoom = function(room, nick, opts) {
         opts = opts || {};
         opts.to = room + '/' + nick;
         opts.type = 'unavailable';
         this.sendPresence(opts);
     };
 
-    client.ban = function (room, jid, reason, cb) {
+    client.ban = function(room, jid, reason, cb) {
         client.setRoomAffiliation(room, jid, 'outcast', reason, cb);
     };
 
-    client.kick = function (room, nick, reason, cb) {
+    client.kick = function(room, nick, reason, cb) {
         client.setRoomRole(room, nick, 'none', reason, cb);
     };
 
-    client.invite = function (room, opts) {
+    client.invite = function(room, opts) {
         client.sendMessage({
             to: room,
             muc: {
@@ -130,7 +128,7 @@ export default function (client) {
         });
     };
 
-    client.directInvite = function (room, opts) {
+    client.directInvite = function(room, opts) {
         opts.jid = room;
         client.sendMessage({
             to: opts.to,
@@ -138,7 +136,7 @@ export default function (client) {
         });
     };
 
-    client.declineInvite = function (room, sender, reason) {
+    client.declineInvite = function(room, sender, reason) {
         client.sendMessage({
             to: room,
             muc: {
@@ -150,13 +148,13 @@ export default function (client) {
         });
     };
 
-    client.changeNick = function (room, nick) {
+    client.changeNick = function(room, nick) {
         client.sendPresence({
-            to: (new JID(room)).bare + '/' + nick
+            to: new JID(room).bare + '/' + nick
         });
     };
 
-    client.setSubject = function (room, subject) {
+    client.setSubject = function(room, subject) {
         client.sendMessage({
             to: room,
             type: 'groupchat',
@@ -164,8 +162,8 @@ export default function (client) {
         });
     };
 
-    client.discoverReservedNick = function (room, cb) {
-        client.getDiscoInfo(room, 'x-roomuser-item', function (err, res) {
+    client.discoverReservedNick = function(room, cb) {
+        client.getDiscoInfo(room, 'x-roomuser-item', function(err, res) {
             if (err) {
                 return cb(err);
             }
@@ -174,7 +172,7 @@ export default function (client) {
         });
     };
 
-    client.requestRoomVoice = function (room) {
+    client.requestRoomVoice = function(room) {
         client.sendMessage({
             to: room,
             form: {
@@ -193,74 +191,95 @@ export default function (client) {
         });
     };
 
-    client.setRoomAffiliation = function (room, jid, affiliation, reason, cb) {
-        return this.sendIq({
-            type: 'set',
-            to: room,
-            mucAdmin: {
-                jid: jid,
-                affiliation: affiliation,
-                reason: reason
-            }
-        }, cb);
+    client.setRoomAffiliation = function(room, jid, affiliation, reason, cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                to: room,
+                mucAdmin: {
+                    jid: jid,
+                    affiliation: affiliation,
+                    reason: reason
+                }
+            },
+            cb
+        );
     };
 
-    client.setRoomRole = function (room, nick, role, reason, cb) {
-        return this.sendIq({
-            type: 'set',
-            to: room,
-            mucAdmin: {
-                nick: nick,
-                role: role,
-                reason: reason
-            }
-        }, cb);
+    client.setRoomRole = function(room, nick, role, reason, cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                to: room,
+                mucAdmin: {
+                    nick: nick,
+                    role: role,
+                    reason: reason
+                }
+            },
+            cb
+        );
     };
 
-    client.getRoomMembers = function (room, opts, cb) {
-        return this.sendIq({
-            type: 'get',
-            to: room,
-            mucAdmin: opts
-        }, cb);
+    client.getRoomMembers = function(room, opts, cb) {
+        return this.sendIq(
+            {
+                type: 'get',
+                to: room,
+                mucAdmin: opts
+            },
+            cb
+        );
     };
 
-    client.getRoomConfig = function (jid, cb) {
-        return this.sendIq({
-            to: jid,
-            type: 'get',
-            mucOwner: true
-        }, cb);
+    client.getRoomConfig = function(jid, cb) {
+        return this.sendIq(
+            {
+                to: jid,
+                type: 'get',
+                mucOwner: true
+            },
+            cb
+        );
     };
 
-    client.configureRoom = function (jid, form, cb) {
+    client.configureRoom = function(jid, form, cb) {
         if (!form.type) {
             form.type = 'submit';
         }
-        return this.sendIq({
-            to: jid,
-            type: 'set',
-            mucOwner: {
-                form: form
-            }
-        }, cb);
+        return this.sendIq(
+            {
+                to: jid,
+                type: 'set',
+                mucOwner: {
+                    form: form
+                }
+            },
+            cb
+        );
     };
 
-    client.destroyRoom = function (jid, opts, cb) {
-        return this.sendIq({
-            to: jid,
-            type: 'set',
-            mucOwner: {
-                destroy: opts
-            }
-        }, cb);
+    client.destroyRoom = function(jid, opts, cb) {
+        return this.sendIq(
+            {
+                to: jid,
+                type: 'set',
+                mucOwner: {
+                    destroy: opts
+                }
+            },
+            cb
+        );
     };
 
-    client.getUniqueRoomName = function (jid, cb) {
-        return this.sendIq({
-            type: 'get',
-            to: jid,
-            mucUnique: true
-        }, cb);
+    client.getUniqueRoomName = function(jid, cb) {
+        return this.sendIq(
+            {
+                type: 'get',
+                to: jid,
+                mucUnique: true
+            },
+            cb
+        );
     };
 }

@@ -1,25 +1,29 @@
 import { Namespaces } from '../protocol';
 
-
-export default function (client) {
-
+export default function(client) {
     client.disco.addFeature(Namespaces.CARBONS_2);
 
-    client.enableCarbons = function (cb) {
-        return this.sendIq({
-            type: 'set',
-            enableCarbons: true
-        }, cb);
+    client.enableCarbons = function(cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                enableCarbons: true
+            },
+            cb
+        );
     };
 
-    client.disableCarbons = function (cb) {
-        return this.sendIq({
-            type: 'set',
-            disableCarbons: true
-        }, cb);
+    client.disableCarbons = function(cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                disableCarbons: true
+            },
+            cb
+        );
     };
 
-    client.on('message', function (msg) {
+    client.on('message', function(msg) {
         if (msg.carbonSent) {
             return client.emit('carbon:sent', msg);
         }
@@ -28,7 +32,7 @@ export default function (client) {
         }
     });
 
-    client.on('carbon:*', function (name, carbon) {
+    client.on('carbon:*', function(name, carbon) {
         const dir = name.split(':')[1];
 
         if (carbon.from.bare !== client.jid.bare) {

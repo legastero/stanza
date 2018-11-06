@@ -1,6 +1,5 @@
 import * as NS from '../namespaces';
 
-
 const CONDITIONS = [
     'aborted',
     'account-disabled',
@@ -16,9 +15,7 @@ const CONDITIONS = [
     'not-supported'
 ];
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const Mechanisms = JXT.define({
@@ -91,36 +88,30 @@ export default function (JXT) {
         topLevel: true,
         fields: {
             lang: {
-                get: function () {
-
+                get: function() {
                     return this._lang || '';
                 },
-                set: function (value) {
-
+                set: function(value) {
                     this._lang = value;
                 }
             },
             condition: Utils.enumSub(NS.SASL, CONDITIONS),
             $text: {
-                get: function () {
-
+                get: function() {
                     return Utils.getSubLangText(this.xml, NS.SASL, 'text', this.lang);
                 }
             },
             text: {
-                get: function () {
-
+                get: function() {
                     const text = this.$text;
                     return text[this.lang] || '';
                 },
-                set: function (value) {
-
+                set: function(value) {
                     Utils.setSubLangText(this.xml, NS.SASL, 'text', value, this.lang);
                 }
             }
         }
     });
-
 
     JXT.extendStreamFeatures(Mechanisms);
 }

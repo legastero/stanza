@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     JXT.define({
@@ -45,8 +43,7 @@ export default function (JXT) {
             restart: Utils.attribute('xmpp:restart'),
             restartLogic: Utils.boolAttribute('xmpp:restartLogic'),
             payload: {
-                get: function () {
-
+                get: function() {
                     const results = [];
                     for (let i = 0, len = this.xml.childNodes.length; i < len; i++) {
                         const obj = JXT.build(this.xml.childNodes[i]);
@@ -56,10 +53,8 @@ export default function (JXT) {
                     }
                     return results;
                 },
-                set: function (values) {
-
-                    values.forEach((types) => {
-
+                set: function(values) {
+                    values.forEach(types => {
                         this.xml.appendChild(types.xml);
                     });
                 }

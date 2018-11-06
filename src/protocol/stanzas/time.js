@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const EntityTime = JXT.define({
         name: 'time',
         namespace: NS.TIME,
@@ -12,7 +10,6 @@ export default function (JXT) {
             tzo: JXT.utils.tzoSub(NS.TIME, 'tzo', 0)
         }
     });
-
 
     JXT.extendIQ(EntityTime);
 }

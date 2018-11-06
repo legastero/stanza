@@ -1,9 +1,7 @@
 import * as NS from '../namespaces';
 import each from 'lodash.foreach';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const Avatar = JXT.define({
@@ -21,34 +19,28 @@ export default function (JXT) {
     });
 
     const avatars = {
-        get: function () {
-
+        get: function() {
             const metadata = Utils.find(this.xml, NS.AVATAR_METADATA, 'metadata');
             const results = [];
             if (metadata.length) {
                 const avatars = Utils.find(metadata[0], NS.AVATAR_METADATA, 'info');
-                each(avatars, function (info) {
-
+                each(avatars, function(info) {
                     results.push(new Avatar({}, info));
                 });
             }
             return results;
         },
-        set: function (value) {
-
+        set: function(value) {
             const metadata = Utils.findOrCreate(this.xml, NS.AVATAR_METADATA, 'metadata');
             Utils.setAttribute(metadata, 'xmlns', NS.AVATAR_METADATA);
-            each(value, function (info) {
-
+            each(value, function(info) {
                 const avatar = new Avatar(info);
                 metadata.appendChild(avatar.xml);
             });
         }
     };
 
-
-    JXT.withPubsubItem(function (Item) {
-
+    JXT.withPubsubItem(function(Item) {
         JXT.add(Item, 'avatars', avatars);
         JXT.add(Item, 'avatarData', Utils.textSub(NS.AVATAR_DATA, 'data'));
     });

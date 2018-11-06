@@ -5,16 +5,7 @@ import DigestMD5 from './digest-md5';
 import ScramSha1 from './scram-sha-1';
 import XOauth2 from './x-oauth2';
 
-
-export {
-    Anonymous,
-    External,
-    Plain,
-    DigestMD5,
-    ScramSha1,
-    XOauth2
-};
-
+export { Anonymous, External, Plain, DigestMD5, ScramSha1, XOauth2 };
 
 export class Factory {
     constructor() {

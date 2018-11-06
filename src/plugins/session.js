@@ -1,6 +1,5 @@
-export default function (client) {
-
-    client.registerFeature('session', 1000, function (features, cb) {
+export default function(client) {
+    client.registerFeature('session', 1000, function(features, cb) {
         const self = this;
 
         if (features.session.optional || self.sessionStarted) {
@@ -8,24 +7,27 @@ export default function (client) {
             return cb();
         }
 
-        self.sendIq({
-            type: 'set',
-            session: {}
-        }, function (err) {
-            if (err) {
-                return cb('disconnect', 'session request failed');
-            }
+        self.sendIq(
+            {
+                type: 'set',
+                session: {}
+            },
+            function(err) {
+                if (err) {
+                    return cb('disconnect', 'session request failed');
+                }
 
-            self.features.negotiated.session = true;
-            if (!self.sessionStarted) {
-                self.sessionStarted = true;
-                self.emit('session:started', self.jid);
+                self.features.negotiated.session = true;
+                if (!self.sessionStarted) {
+                    self.sessionStarted = true;
+                    self.emit('session:started', self.jid);
+                }
+                cb();
             }
-            cb();
-        });
+        );
     });
 
-    client.on('disconnected', function () {
+    client.on('disconnected', function() {
         client.sessionStarted = false;
         client.features.negotiated.session = false;
     });

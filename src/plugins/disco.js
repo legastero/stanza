@@ -6,7 +6,6 @@ import * as hashes from 'iana-hashes';
 
 import { Namespaces } from '../protocol';
 
-
 function generateVerString(info, hash) {
     let S = '';
     let features = info.features.sort();
@@ -14,13 +13,15 @@ function generateVerString(info, hash) {
     const formTypes = {};
     const formOrder = [];
 
-    each(info.identities, function (identity) {
-        identities.push([
-            identity.category || '',
-            identity.type || '',
-            identity.lang || '',
-            identity.name || ''
-        ].join('/'));
+    each(info.identities, function(identity) {
+        identities.push(
+            [
+                identity.category || '',
+                identity.type || '',
+                identity.lang || '',
+                identity.name || ''
+            ].join('/')
+        );
     });
 
     identities.sort();
@@ -35,13 +36,11 @@ function generateVerString(info, hash) {
         return false;
     }
 
-
     S += identities.join('<') + '<';
     S += features.join('<') + '<';
 
-
     let illFormed = false;
-    each(info.extensions, function (ext) {
+    each(info.extensions, function(ext) {
         const fields = ext.fields;
         for (let i = 0, len = fields.length; i < len; i++) {
             if (fields[i].name === 'FORM_TYPE' && fields[i].type === 'hidden') {
@@ -62,14 +61,14 @@ function generateVerString(info, hash) {
 
     formOrder.sort();
 
-    each(formOrder, function (name) {
+    each(formOrder, function(name) {
         const ext = formTypes[name];
         const fields = {};
         const fieldOrder = [];
 
         S += '<' + name;
 
-        each(ext.fields, function (field) {
+        each(ext.fields, function(field) {
             const fieldName = field.name;
             if (fieldName !== 'FORM_TYPE') {
                 let values = field.value || '';
@@ -83,16 +82,19 @@ function generateVerString(info, hash) {
 
         fieldOrder.sort();
 
-        each(fieldOrder, function (fieldName) {
+        each(fieldOrder, function(fieldName) {
             S += '<' + fieldName;
-            each(fields[fieldName], function (val) {
+            each(fields[fieldName], function(val) {
                 S += '<' + val;
             });
         });
     });
 
-    let ver = hashes.createHash(hash).update(Buffer.from(S, 'utf8')).digest('base64');
-    let padding = 4 - ver.length % 4;
+    let ver = hashes
+        .createHash(hash)
+        .update(Buffer.from(S, 'utf8'))
+        .digest('base64');
+    let padding = 4 - (ver.length % 4);
     if (padding === 4) {
         padding = 0;
     }
@@ -108,7 +110,6 @@ function verifyVerString(info, hash, check) {
     return computed && computed === check;
 }
 
-
 function Disco() {
     this.features = {};
     this.identities = {};
@@ -121,28 +122,28 @@ Disco.prototype = {
     constructor: {
         value: Disco
     },
-    addFeature: function (feature, node) {
+    addFeature: function(feature, node) {
         node = node || '';
         if (!this.features[node]) {
             this.features[node] = [];
         }
         this.features[node].push(feature);
     },
-    addIdentity: function (identity, node) {
+    addIdentity: function(identity, node) {
         node = node || '';
         if (!this.identities[node]) {
             this.identities[node] = [];
         }
         this.identities[node].push(identity);
     },
-    addItem: function (item, node) {
+    addItem: function(item, node) {
         node = node || '';
         if (!this.items[node]) {
             this.items[node] = [];
         }
         this.items[node].push(item);
     },
-    addExtension: function (form, node) {
+    addExtension: function(form, node) {
         node = node || '';
         if (!this.extensions[node]) {
             this.extensions[node] = [];
@@ -151,8 +152,7 @@ Disco.prototype = {
     }
 };
 
-export default function (client) {
-
+export default function(client) {
     client.disco = new Disco(client);
 
     client.disco.addFeature(Namespaces.DISCO_INFO);
@@ -162,7 +162,7 @@ export default function (client) {
         type: 'web'
     });
 
-    client.registerFeature('caps', 100, function (features, cb) {
+    client.registerFeature('caps', 100, function(features, cb) {
         this.emit('disco:caps', {
             from: new JID(client.jid.domain || client.config.server),
             caps: features.caps
@@ -171,33 +171,41 @@ export default function (client) {
         cb();
     });
 
-    client.getDiscoInfo = function (jid, node, cb) {
-        return this.sendIq({
-            to: jid,
-            type: 'get',
-            discoInfo: {
-                node: node
-            }
-        }, cb);
+    client.getDiscoInfo = function(jid, node, cb) {
+        return this.sendIq(
+            {
+                to: jid,
+                type: 'get',
+                discoInfo: {
+                    node: node
+                }
+            },
+            cb
+        );
     };
 
-    client.getDiscoItems = function (jid, node, cb) {
-        return this.sendIq({
-            to: jid,
-            type: 'get',
-            discoItems: {
-                node: node
-            }
-        }, cb);
+    client.getDiscoItems = function(jid, node, cb) {
+        return this.sendIq(
+            {
+                to: jid,
+                type: 'get',
+                discoItems: {
+                    node: node
+                }
+            },
+            cb
+        );
     };
 
-    client.updateCaps = function () {
+    client.updateCaps = function() {
         let node = this.config.capsNode || 'https://stanza.io';
-        const data = JSON.parse(JSON.stringify({
-            identities: this.disco.identities[''],
-            features: this.disco.features[''],
-            extensions: this.disco.extensions['']
-        }));
+        const data = JSON.parse(
+            JSON.stringify({
+                identities: this.disco.identities[''],
+                features: this.disco.features[''],
+                extensions: this.disco.extensions['']
+            })
+        );
 
         const ver = generateVerString(data, 'sha-1');
 
@@ -215,10 +223,10 @@ export default function (client) {
         return client.getCurrentCaps();
     };
 
-    client.getCurrentCaps = function () {
+    client.getCurrentCaps = function() {
         const caps = client.disco.caps;
         if (!caps.ver) {
-            return {ver: null, discoInfo: null};
+            return { ver: null, discoInfo: null };
         }
 
         const node = caps.node + '#' + caps.ver;
@@ -232,13 +240,13 @@ export default function (client) {
         };
     };
 
-    client.on('presence', function (pres) {
+    client.on('presence', function(pres) {
         if (pres.caps) {
             client.emit('disco:caps', pres);
         }
     });
 
-    client.on('iq:get:discoInfo', function (iq) {
+    client.on('iq:get:discoInfo', function(iq) {
         let node = iq.discoInfo.node || '';
         let reportedNode = iq.discoInfo.node || '';
 
@@ -247,24 +255,28 @@ export default function (client) {
             node = '';
         }
 
-        client.sendIq(iq.resultReply({
-            discoInfo: {
-                node: reportedNode,
-                identities: client.disco.identities[node] || [],
-                features: client.disco.features[node] || [],
-                extensions: client.disco.extensions[node] || []
-            }
-        }));
+        client.sendIq(
+            iq.resultReply({
+                discoInfo: {
+                    node: reportedNode,
+                    identities: client.disco.identities[node] || [],
+                    features: client.disco.features[node] || [],
+                    extensions: client.disco.extensions[node] || []
+                }
+            })
+        );
     });
 
-    client.on('iq:get:discoItems', function (iq) {
+    client.on('iq:get:discoItems', function(iq) {
         const node = iq.discoItems.node;
-        client.sendIq(iq.resultReply({
-            discoItems: {
-                node: node,
-                items: client.disco.items[node] || []
-            }
-        }));
+        client.sendIq(
+            iq.resultReply({
+                discoItems: {
+                    node: node,
+                    items: client.disco.items[node] || []
+                }
+            })
+        );
     });
 
     client.verifyVerString = verifyVerString;

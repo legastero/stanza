@@ -1,12 +1,10 @@
 import { Namespaces } from '../protocol';
 
-
-export default function (client) {
-
+export default function(client) {
     client.disco.addFeature(Namespaces.REACH_0);
     client.disco.addFeature(`${Namespaces.REACH_0}+notify`);
 
-    client.on('pubsub:event', function (msg) {
+    client.on('pubsub:event', function(msg) {
         if (!msg.event.updated) {
             return;
         }
@@ -20,7 +18,7 @@ export default function (client) {
         });
     });
 
-    client.on('presence', function (pres) {
+    client.on('presence', function(pres) {
         if (!pres.reach || !pres.reach.length) {
             return;
         }
@@ -31,9 +29,14 @@ export default function (client) {
         });
     });
 
-    client.publishReachability = function (data, cb) {
-        return this.publish('', Namespaces.REACH_0, {
-            reach: data
-        }, cb);
+    client.publishReachability = function(data, cb) {
+        return this.publish(
+            '',
+            Namespaces.REACH_0,
+            {
+                reach: data
+            },
+            cb
+        );
     };
 }

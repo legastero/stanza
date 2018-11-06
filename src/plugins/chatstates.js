@@ -1,13 +1,11 @@
 import { Namespaces } from '../protocol';
 
-
-export default function (client) {
-
+export default function(client) {
     client.disco.addFeature(Namespaces.CHAT_STATES);
 
     const allowedTypes = ['chat', 'groupchat', 'normal'];
 
-    client.on('message', function (msg) {
+    client.on('message', function(msg) {
         if (allowedTypes.indexOf(msg.type || 'normal') < 0) {
             return;
         }

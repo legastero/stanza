@@ -1,6 +1,5 @@
 import * as NS from '../namespaces';
 
-
 const CONDITIONS = [
     'bad-request',
     'conflict',
@@ -26,9 +25,7 @@ const CONDITIONS = [
     'unexpected-request'
 ];
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const StanzaError = JXT.define({
@@ -37,30 +34,25 @@ export default function (JXT) {
         element: 'error',
         fields: {
             lang: {
-                get: function () {
-
+                get: function() {
                     return (this.parent || {}).lang || '';
                 }
             },
             condition: Utils.enumSub(NS.STANZA_ERROR, CONDITIONS),
             gone: {
-                get: function () {
-
+                get: function() {
                     return Utils.getSubText(this.xml, NS.STANZA_ERROR, 'gone');
                 },
-                set: function (value) {
-
+                set: function(value) {
                     this.condition = 'gone';
                     Utils.setSubText(this.xml, NS.STANZA_ERROR, 'gone', value);
                 }
             },
             redirect: {
-                get: function () {
-
+                get: function() {
                     return Utils.getSubText(this.xml, NS.STANZA_ERROR, 'redirect');
                 },
-                set: function (value) {
-
+                set: function(value) {
                     this.condition = 'redirect';
                     Utils.setSubText(this.xml, NS.STANZA_ERROR, 'redirect', value);
                 }
@@ -69,25 +61,21 @@ export default function (JXT) {
             type: Utils.attribute('type'),
             by: Utils.jidAttribute('by'),
             $text: {
-                get: function () {
-
+                get: function() {
                     return Utils.getSubLangText(this.xml, NS.STANZA_ERROR, 'text', this.lang);
                 }
             },
             text: {
-                get: function () {
-
+                get: function() {
                     const text = this.$text;
                     return text[this.lang] || '';
                 },
-                set: function (value) {
-
+                set: function(value) {
                     Utils.setSubLangText(this.xml, NS.STANZA_ERROR, 'text', value, this.lang);
                 }
             }
         }
     });
-
 
     JXT.extendMessage(StanzaError);
     JXT.extendPresence(StanzaError);

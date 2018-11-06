@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const Enable = JXT.define({
@@ -31,8 +29,7 @@ export default function (JXT) {
         namespace: NS.PUSH_0
     });
 
-
-    JXT.withDataForm((DataForm) => {
+    JXT.withDataForm(DataForm => {
         JXT.extend(Notification, DataForm);
         JXT.extend(Enable, DataForm);
     });

@@ -1,10 +1,7 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
-
 
     const Address = JXT.define({
         name: '_address',
@@ -22,15 +19,11 @@ export default function (JXT) {
 
     const Addresses = Utils.subMultiExtension(NS.ADDRESS, 'addresses', Address);
 
-
-    JXT.withMessage(function (Message) {
-
+    JXT.withMessage(function(Message) {
         JXT.add(Message, 'addresses', Addresses);
     });
 
-    JXT.withPresence(function (Presence) {
-
+    JXT.withPresence(function(Presence) {
         JXT.add(Presence, 'addresses', Addresses);
     });
 }
-

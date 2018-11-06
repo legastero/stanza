@@ -1,8 +1,6 @@
 import { Namespaces } from '../protocol';
 
-
-export default function (client) {
-
+export default function(client) {
     function enabled(msg) {
         return msg.markable && client.config.chatMarkers !== false;
     }
@@ -15,7 +13,7 @@ export default function (client) {
                 to: msg.from,
                 received: msg.id
             });
-            return ;
+            return;
         }
 
         if (msg.received) {
@@ -30,7 +28,7 @@ export default function (client) {
             return client.emit('marker:acknowledged', msg.acknowledged);
         }
     });
-    
+
     client.markDisplayed = function(msg) {
         if (enabled(msg)) {
             client.sendMessage({

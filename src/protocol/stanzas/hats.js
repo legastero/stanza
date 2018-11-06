@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Hat = JXT.define({
         name: '_hat',
         namespace: NS.HATS_0,
@@ -14,9 +12,7 @@ export default function (JXT) {
         }
     });
 
-
-    JXT.withPresence(function (Presence) {
-
+    JXT.withPresence(function(Presence) {
         JXT.add(Presence, 'hats', JXT.utils.subMultiExtension(NS.HATS_0, 'hats', Hat));
     });
 }

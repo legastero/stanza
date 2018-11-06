@@ -1,19 +1,24 @@
-export default function (client) {
-
+export default function(client) {
     client.disco.addFeature('vcard-temp');
 
-    client.getVCard = function (jid, cb) {
-        return this.sendIq({
-            to: jid,
-            type: 'get',
-            vCardTemp: true
-        }, cb);
+    client.getVCard = function(jid, cb) {
+        return this.sendIq(
+            {
+                to: jid,
+                type: 'get',
+                vCardTemp: true
+            },
+            cb
+        );
     };
 
-    client.publishVCard = function (vcard, cb) {
-        return this.sendIq({
-            type: 'set',
-            vCardTemp: vcard
-        }, cb);
+    client.publishVCard = function(vcard, cb) {
+        return this.sendIq(
+            {
+                type: 'set',
+                vCardTemp: vcard
+            },
+            cb
+        );
     };
 }

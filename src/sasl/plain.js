@@ -9,9 +9,8 @@ export default class Plain {
         return str;
     }
 
-    challenge() {
-    }
+    challenge() {}
 }
-  
+
 Plain.prototype.name = 'PLAIN';
 Plain.prototype.clientFirst = true;

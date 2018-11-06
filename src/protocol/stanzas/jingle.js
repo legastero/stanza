@@ -1,11 +1,6 @@
 import * as NS from '../namespaces';
 
-const CONDITIONS = [
-    'out-of-order',
-    'tie-break',
-    'unknown-session',
-    'unsupported-info'
-];
+const CONDITIONS = ['out-of-order', 'tie-break', 'unknown-session', 'unsupported-info'];
 const REASONS = [
     'alternative-session',
     'busy',
@@ -26,9 +21,7 @@ const REASONS = [
     'unsupported-transports'
 ];
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const Jingle = JXT.define({
@@ -41,10 +34,8 @@ export default function (JXT) {
             responder: Utils.attribute('responder'),
             sid: Utils.attribute('sid'),
             info: {
-                get: function () {
-
-                    const opts = JXT.tagged('jingle-info').map(function (Info) {
-
+                get: function() {
+                    const opts = JXT.tagged('jingle-info').map(function(Info) {
                         return Info.prototype._name;
                     });
                     for (let i = 0, len = opts.length; i < len; i++) {
@@ -63,8 +54,7 @@ export default function (JXT) {
                         };
                     }
                 },
-                set: function (value) {
-
+                set: function(value) {
                     if (value.infoType === 'ping') {
                         return;
                     }
@@ -86,10 +76,8 @@ export default function (JXT) {
             name: Utils.attribute('name'),
             senders: Utils.attribute('senders', 'both'),
             application: {
-                get: function () {
-
-                    const opts = JXT.tagged('jingle-application').map(function (Description) {
-
+                get: function() {
+                    const opts = JXT.tagged('jingle-application').map(function(Description) {
                         return Description.prototype._name;
                     });
                     for (let i = 0, len = opts.length; i < len; i++) {
@@ -98,17 +86,14 @@ export default function (JXT) {
                         }
                     }
                 },
-                set: function (value) {
-
+                set: function(value) {
                     const ext = '_' + value.applicationType;
                     this[ext] = value;
                 }
             },
             transport: {
-                get: function () {
-
-                    const opts = JXT.tagged('jingle-transport').map(function (Transport) {
-
+                get: function() {
+                    const opts = JXT.tagged('jingle-transport').map(function(Transport) {
                         return Transport.prototype._name;
                     });
                     for (let i = 0, len = opts.length; i < len; i++) {
@@ -117,17 +102,14 @@ export default function (JXT) {
                         }
                     }
                 },
-                set: function (value) {
-
+                set: function(value) {
                     const ext = '_' + value.transportType;
                     this[ext] = value;
                 }
             },
             security: {
-                get: function () {
-
-                    const opts = JXT.tagged('jingle-security').map(function (Security) {
-
+                get: function() {
+                    const opts = JXT.tagged('jingle-security').map(function(Security) {
                         return Security.prototype._name;
                     });
                     for (let i = 0, len = opts.length; i < len; i++) {
@@ -136,8 +118,7 @@ export default function (JXT) {
                         }
                     }
                 },
-                set: function (value) {
-
+                set: function(value) {
                     const ext = '_' + value.securityType;
                     this[ext] = value;
                 }
@@ -152,12 +133,10 @@ export default function (JXT) {
         fields: {
             condition: Utils.enumSub(NS.JINGLE_1, REASONS),
             alternativeSession: {
-                get: function () {
-
+                get: function() {
                     return Utils.getSubText(this.xml, NS.JINGLE_1, 'alternative-session');
                 },
-                set: function (value) {
-
+                set: function(value) {
                     this.condition = 'alternative-session';
                     Utils.setSubText(this.xml, NS.JINGLE_1, 'alternative-session', value);
                 }
@@ -166,14 +145,12 @@ export default function (JXT) {
         }
     });
 
-
     JXT.extend(Jingle, Content, 'contents');
     JXT.extend(Jingle, Reason);
 
     JXT.extendIQ(Jingle);
 
-    JXT.withStanzaError(function (StanzaError) {
-
+    JXT.withStanzaError(function(StanzaError) {
         JXT.add(StanzaError, 'jingleCondition', Utils.enumSub(NS.JINGLE_ERRORS_1, CONDITIONS));
     });
 }

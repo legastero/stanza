@@ -1,36 +1,24 @@
 import * as NS from '../namespaces';
 import { JID } from 'xmpp-jid';
 
+const SINGLE_FIELDS = ['text-single', 'text-private', 'list-single', 'jid-single'];
 
-const SINGLE_FIELDS = [
-    'text-single',
-    'text-private',
-    'list-single',
-    'jid-single'
-];
-
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
-
 
     const Field = JXT.define({
         name: '_field',
         namespace: NS.DATAFORM,
         element: 'field',
-        init: function (data) {
-
+        init: function(data) {
             this._type = (data || {}).type || this.type;
         },
         fields: {
             type: {
-                get: function () {
-
+                get: function() {
                     return Utils.getAttribute(this.xml, 'type', 'text-single');
                 },
-                set: function (value) {
-
+                set: function(value) {
                     this._type = value;
                     Utils.setAttribute(this.xml, 'type', value);
                 }
@@ -40,8 +28,7 @@ export default function (JXT) {
             required: Utils.boolSub(NS.DATAFORM, 'required'),
             label: Utils.attribute('label'),
             value: {
-                get: function () {
-
+                get: function() {
                     const vals = Utils.getMultiSubText(this.xml, NS.DATAFORM, 'value');
                     if (this._type === 'boolean') {
                         return vals[0] === '1' || vals[0] === 'true';
@@ -52,8 +39,7 @@ export default function (JXT) {
                         }
 
                         if (this._type === 'jid-multi') {
-                            return vals.map(function (jid) {
-
+                            return vals.map(function(jid) {
                                 return new JID(jid);
                             });
                         }
@@ -69,8 +55,7 @@ export default function (JXT) {
 
                     return vals;
                 },
-                set: function (value) {
-
+                set: function(value) {
                     if (this._type === 'boolean' || value === true || value === false) {
                         const truthy = value === true || value === 'true' || value === '1';
                         const sub = Utils.createElement(NS.DATAFORM, 'value', NS.DATAFORM);
@@ -80,12 +65,17 @@ export default function (JXT) {
                         if (this._type === 'text-multi' && typeof value === 'string') {
                             value = value.split('\n');
                         }
-                        Utils.setMultiSubText(this.xml, NS.DATAFORM, 'value', value, function (val) {
-
-                            const sub = Utils.createElement(NS.DATAFORM, 'value', NS.DATAFORM);
-                            sub.textContent = val;
-                            this.xml.appendChild(sub);
-                        }.bind(this));
+                        Utils.setMultiSubText(
+                            this.xml,
+                            NS.DATAFORM,
+                            'value',
+                            value,
+                            function(val) {
+                                const sub = Utils.createElement(NS.DATAFORM, 'value', NS.DATAFORM);
+                                sub.textContent = val;
+                                this.xml.appendChild(sub);
+                            }.bind(this)
+                        );
                     }
                 }
             }
@@ -161,8 +151,7 @@ export default function (JXT) {
     });
 
     const layoutContents = {
-        get: function () {
-
+        get: function() {
             const result = [];
             for (let i = 0, len = this.xml.childNodes.length; i < len; i++) {
                 const child = this.xml.childNodes[i];
@@ -171,50 +160,63 @@ export default function (JXT) {
                 }
 
                 switch (child.localName) {
-                case 'text':
-                    result.push({
-                        text: child.textContent
-                    });
-                    break;
-                case 'fieldref':
-                    result.push({
-                        field: child.getAttribute('var')
-                    });
-                    break;
-                case 'reportedref':
-                    result.push({
-                        reported: true
-                    });
-                    break;
-                case 'section':
-                    result.push({
-                        section: new Section(null, child, this).toJSON()
-                    });
-                    break;
+                    case 'text':
+                        result.push({
+                            text: child.textContent
+                        });
+                        break;
+                    case 'fieldref':
+                        result.push({
+                            field: child.getAttribute('var')
+                        });
+                        break;
+                    case 'reportedref':
+                        result.push({
+                            reported: true
+                        });
+                        break;
+                    case 'section':
+                        result.push({
+                            section: new Section(null, child, this).toJSON()
+                        });
+                        break;
                 }
             }
 
             return result;
         },
-        set: function (values) {
-
+        set: function(values) {
             for (let i = 0, len = values.length; i < len; i++) {
                 const value = values[i];
                 if (value.text) {
-                    const text = Utils.createElement(NS.DATAFORM_LAYOUT, 'text', NS.DATAFORM_LAYOUT);
+                    const text = Utils.createElement(
+                        NS.DATAFORM_LAYOUT,
+                        'text',
+                        NS.DATAFORM_LAYOUT
+                    );
                     text.textContent = value.text;
                     this.xml.appendChild(text);
                 }
                 if (value.field) {
-                    const field = Utils.createElement(NS.DATAFORM_LAYOUT, 'fieldref', NS.DATAFORM_LAYOUT);
+                    const field = Utils.createElement(
+                        NS.DATAFORM_LAYOUT,
+                        'fieldref',
+                        NS.DATAFORM_LAYOUT
+                    );
                     field.setAttribute('var', value.field);
                     this.xml.appendChild(field);
                 }
                 if (value.reported) {
-                    this.xml.appendChild(Utils.createElement(NS.DATAFORM_LAYOUT, 'reportedref', NS.DATAFORM_LAYOUT));
+                    this.xml.appendChild(
+                        Utils.createElement(NS.DATAFORM_LAYOUT, 'reportedref', NS.DATAFORM_LAYOUT)
+                    );
                 }
                 if (value.section) {
-                    const sectionXML = Utils.createElement(NS.DATAFORM_LAYOUT, 'section', NS.DATAFORM_LAYOUT);
+                    const sectionXML = Utils.createElement(
+                        NS.DATAFORM_LAYOUT,
+                        'section',
+                        NS.DATAFORM_LAYOUT
+                    );
                     this.xml.appendChild(sectionXML);
 
                     const section = new Section(null, sectionXML);
@@ -249,8 +251,7 @@ export default function (JXT) {
         name: 'form',
         namespace: NS.DATAFORM,
         element: 'x',
-        init: function () {
-
+        init: function() {
             // Propagate reported field types to items
 
             if (!this.reportedFields.length) {
@@ -258,14 +259,11 @@ export default function (JXT) {
             }
 
             const fieldTypes = {};
-            this.reportedFields.forEach(function (reported) {
-
+            this.reportedFields.forEach(function(reported) {
                 fieldTypes[reported.name] = reported.type;
             });
-            this.items.forEach(function (item) {
-
-                item.fields.forEach(function (field) {
-
+            this.items.forEach(function(item) {
+                item.fields.forEach(function(field) {
                     field.type = field._type = fieldTypes[field.name];
                 });
             });
@@ -277,7 +275,6 @@ export default function (JXT) {
             reportedFields: Utils.subMultiExtension(NS.DATAFORM, 'reported', Field)
         }
     });
-
 
     JXT.extend(DataForm, Field, 'fields');
     JXT.extend(DataForm, Item, 'items');

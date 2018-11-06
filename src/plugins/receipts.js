@@ -1,13 +1,11 @@
 import { Namespaces } from '../protocol';
 
-
-export default function (client, stanzas, config) {
-
-    const sendReceipts =  config.sendReceipts !== false;
+export default function(client, stanzas, config) {
+    const sendReceipts = config.sendReceipts !== false;
 
     client.disco.addFeature(Namespaces.RECEIPTS);
 
-    client.on('message', function (msg) {
+    client.on('message', function(msg) {
         const ackTypes = {
             normal: true,
             chat: true,

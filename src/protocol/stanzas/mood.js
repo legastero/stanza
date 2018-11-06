@@ -1,6 +1,5 @@
 import * as NS from '../namespaces';
 
-
 const MOODS = [
     'afraid',
     'amazed',
@@ -86,9 +85,7 @@ const MOODS = [
     'worried'
 ];
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Mood = JXT.define({
         name: 'mood',
         namespace: NS.MOOD,
@@ -98,7 +95,6 @@ export default function (JXT) {
             value: JXT.utils.enumSub(NS.MOOD, MOODS)
         }
     });
-
 
     JXT.extendMessage(Mood);
     JXT.extendPubsubItem(Mood);

@@ -7,7 +7,6 @@ jxt.use(require('../lib/protocol').default);
 
 const DataForm = jxt.getDefinition('x', 'jabber:x:data');
 
-
 const formXML = fs.readFileSync(__dirname + '/samples/dataform-1.xml');
 const submittedXML = fs.readFileSync(__dirname + '/samples/dataform-2.xml');
 const itemsXML = fs.readFileSync(__dirname + '/samples/dataform-3.xml');
@@ -16,8 +15,7 @@ const mediaXML = fs.readFileSync(__dirname + '/samples/dataform-5.xml');
 const layoutXML = fs.readFileSync(__dirname + '/samples/dataform-6.xml');
 const nestedLayoutXML = fs.readFileSync(__dirname + '/samples/dataform-7.xml');
 
-
-test('Convert Form XML to Data Form object', function (t) {
+test('Convert Form XML to Data Form object', function(t) {
     const form = jxt.parse(formXML, DataForm).toJSON();
 
     t.equal(form.type, 'form');
@@ -115,27 +113,26 @@ test('Convert Form XML to Data Form object', function (t) {
     t.end();
 });
 
-test('Convert Form Submission Results XML to Data Form object', function (t) {
+test('Convert Form Submission Results XML to Data Form object', function(t) {
     let form = jxt.parse(submittedXML, DataForm).toJSON();
 
     // Clients are required to send the type attribute back when
     // submitting forms, so we have to apply the type values back
     // if we want values cast properly.
     const fieldTypes = {
-        'FORM_TYPE': 'hidden',
-        'botname': 'text-single',
-        'description': 'text-multi',
-        'public': 'boolean',
-        'password': 'text-private',
-        'features': 'list-multi',
-        'maxsubs': 'list-single',
-        'invitelist': 'jid-multi'
+        FORM_TYPE: 'hidden',
+        botname: 'text-single',
+        description: 'text-multi',
+        public: 'boolean',
+        password: 'text-private',
+        features: 'list-multi',
+        maxsubs: 'list-single',
+        invitelist: 'jid-multi'
     };
     for (let i = 0; i < form.fields.length; i++) {
         form.fields[i].type = fieldTypes[form.fields[i].name];
     }
     form = new DataForm(form).toJSON();
-
 
     t.equal(form.type, 'submit');
     t.equal(form.fields.length, 8);
@@ -155,10 +152,11 @@ test('Convert Form Submission Results XML to Data Form object', function (t) {
     t.same(form.fields[2], {
         type: 'text-multi',
         name: 'description',
-        value: 'This bot enables you to send requests to\n' +
-               'Google and receive the search results right\n' +
-               'in your Jabber client. It\'s really cool!\n' +
-               'It even supports Google News!'
+        value:
+            'This bot enables you to send requests to\n' +
+            'Google and receive the search results right\n' +
+            "in your Jabber client. It's really cool!\n" +
+            'It even supports Google News!'
     });
 
     t.same(form.fields[3], {
@@ -188,17 +186,13 @@ test('Convert Form Submission Results XML to Data Form object', function (t) {
     t.same(form.fields[7], {
         type: 'jid-multi',
         name: 'invitelist',
-        value: [
-            new JID('juliet@capulet.com'),
-            new JID('benvolio@montague.net')
-        ]
+        value: [new JID('juliet@capulet.com'), new JID('benvolio@montague.net')]
     });
 
     t.end();
 });
 
-
-test('Convert Form Item Results XML to Data Form object', function (t) {
+test('Convert Form Item Results XML to Data Form object', function(t) {
     const form = jxt.parse(itemsXML, DataForm).toJSON();
 
     t.equal(form.type, 'result');
@@ -226,15 +220,14 @@ test('Convert Form Item Results XML to Data Form object', function (t) {
         {
             name: 'recommended',
             value: true,
-            type: 'boolean',
+            type: 'boolean'
         }
     ]);
 
     t.end();
 });
 
-
-test('Convert Form with Validation XML to Data Form object', function (t) {
+test('Convert Form with Validation XML to Data Form object', function(t) {
     const form = jxt.parse(validationXML, DataForm).toJSON();
 
     t.equal(form.fields.length, 5);
@@ -254,11 +247,7 @@ test('Convert Form with Validation XML to Data Form object', function (t) {
         type: 'list-single',
         name: 'evt.category',
         label: 'Event Category',
-        options: [
-            { value: 'holiday' },
-            { value: 'reminder' },
-            { value: 'appointment' }
-        ],
+        options: [{ value: 'holiday' }, { value: 'reminder' }, { value: 'appointment' }],
         validation: {
             dataType: 'xs:string',
             open: true
@@ -283,7 +272,7 @@ test('Convert Form with Validation XML to Data Form object', function (t) {
         type: 'text-single',
         name: 'ssn',
         label: 'Social Security Number',
-        desc: 'This field should be your SSN, including \'-\' (e.g. 123-12-1234)',
+        desc: "This field should be your SSN, including '-' (e.g. 123-12-1234)",
         validation: {
             dataType: 'xs:string',
             regex: '([0-9]{3})-([0-9]{2})-([0-9]{4})'
@@ -314,8 +303,7 @@ test('Convert Form with Validation XML to Data Form object', function (t) {
     t.end();
 });
 
-
-test('Convert Form with Media Field XML to Data Form object', function (t) {
+test('Convert Form with Media Field XML to Data Form object', function(t) {
     const form = jxt.parse(mediaXML, DataForm).toJSON();
 
     t.equal(form.fields.length, 1);
@@ -342,41 +330,49 @@ test('Convert Form with Media Field XML to Data Form object', function (t) {
     t.end();
 });
 
-
-test('Form layout', function (t) {
+test('Form layout', function(t) {
     const form = jxt.parse(layoutXML, DataForm).toJSON();
 
     t.same(form.layout, [
         {
             label: 'Personal Information',
             contents: [
-                {text: 'This is page one of three.'},
-                {text: 'Note: In accordance with the XSF privacy policy, your personal information will never be shared outside the organization in any way for any purpose; however, your name and JID may be published in the XSF membership directory.'},
-                {field: 'name.first'},
-                {field: 'name.last'},
-                {field: 'email'},
-                {field: 'jid'},
-                {field: 'background'},
+                { text: 'This is page one of three.' },
+                {
+                    text:
+                        'Note: In accordance with the XSF privacy policy, your personal information will never be shared outside the organization in any way for any purpose; however, your name and JID may be published in the XSF membership directory.'
+                },
+                { field: 'name.first' },
+                { field: 'name.last' },
+                { field: 'email' },
+                { field: 'jid' },
+                { field: 'background' }
             ]
         },
         {
             label: 'Community Activity',
             contents: [
-                {text: 'This is page two of three.'},
-                {text: 'We use this page to gather information about any XEPs you\'ve worked on, as well as your mailing list activity.'},
-                {text: 'You do post to the mailing lists, don\'t you?'},
-                {field: 'activity.mailing-lists'},
-                {field: 'activity.xeps'}
+                { text: 'This is page two of three.' },
+                {
+                    text:
+                        "We use this page to gather information about any XEPs you've worked on, as well as your mailing list activity."
+                },
+                { text: "You do post to the mailing lists, don't you?" },
+                { field: 'activity.mailing-lists' },
+                { field: 'activity.xeps' }
             ]
         },
         {
             label: 'Plans and Reasonings',
             contents: [
-                {text: 'This is page three of three.'},
-                {text: 'You\'re almost done!'},
-                {text: 'This is where you describe your future plans and why you think you deserve to be a member of the XMPP Standards Foundation.'},
-                {field: 'future'},
-                {field: 'reasoning'}
+                { text: 'This is page three of three.' },
+                { text: "You're almost done!" },
+                {
+                    text:
+                        'This is where you describe your future plans and why you think you deserve to be a member of the XMPP Standards Foundation.'
+                },
+                { field: 'future' },
+                { field: 'reasoning' }
             ]
         }
     ]);
@@ -384,8 +380,7 @@ test('Form layout', function (t) {
     t.end();
 });
 
-
-test('Form layout with nested sections', function (t) {
+test('Form layout with nested sections', function(t) {
     const form = jxt.parse(nestedLayoutXML, DataForm).toJSON();
 
     t.same(form.layout, [
@@ -395,24 +390,31 @@ test('Form layout with nested sections', function (t) {
                     section: {
                         label: 'Personal Information',
                         contents: [
-                            {text: 'Note: In accordance with the XSF privacy policy, your personal information will never be shared outside the organization in any way for any purpose; however, your name and JID may be published in the XSF membership directory.'},
-                            {section: {
-                                label: 'Name',
-                                contents: [
-                                    {text: 'Who are you?'},
-                                    {field: 'name.first'},
-                                    {field: 'name.last'}
-                                ]
-                            }},
-                            {section: {
-                                label: 'Contact Information',
-                                contents: [
-                                    {text: 'How can we contact you?'},
-                                    {field: 'email'},
-                                    {field: 'jid'}
-                                ]
-                            }},
-                            {field: 'background'},
+                            {
+                                text:
+                                    'Note: In accordance with the XSF privacy policy, your personal information will never be shared outside the organization in any way for any purpose; however, your name and JID may be published in the XSF membership directory.'
+                            },
+                            {
+                                section: {
+                                    label: 'Name',
+                                    contents: [
+                                        { text: 'Who are you?' },
+                                        { field: 'name.first' },
+                                        { field: 'name.last' }
+                                    ]
+                                }
+                            },
+                            {
+                                section: {
+                                    label: 'Contact Information',
+                                    contents: [
+                                        { text: 'How can we contact you?' },
+                                        { field: 'email' },
+                                        { field: 'jid' }
+                                    ]
+                                }
+                            },
+                            { field: 'background' }
                         ]
                     }
                 },
@@ -420,20 +422,26 @@ test('Form layout with nested sections', function (t) {
                     section: {
                         label: 'Community Activity',
                         contents: [
-                            {text: 'We use this page to gather information about any XEPs you\'ve worked on, as well as your mailing list activity.'},
-                            {text: 'You do post to the mailing lists, don\'t you?'},
-                            {field: 'activity.mailing-lists'},
-                            {field: 'activity.xeps'}
+                            {
+                                text:
+                                    "We use this page to gather information about any XEPs you've worked on, as well as your mailing list activity."
+                            },
+                            { text: "You do post to the mailing lists, don't you?" },
+                            { field: 'activity.mailing-lists' },
+                            { field: 'activity.xeps' }
                         ]
-                    },
+                    }
                 },
                 {
                     section: {
                         label: 'Plans and Reasonings',
                         contents: [
-                            {text: 'This is where you describe your future plans and why you think you deserve to be a member of the XMPP Standards Foundation.'},
-                            {field: 'future'},
-                            {field: 'reasoning'}
+                            {
+                                text:
+                                    'This is where you describe your future plans and why you think you deserve to be a member of the XMPP Standards Foundation.'
+                            },
+                            { field: 'future' },
+                            { field: 'reasoning' }
                         ]
                     }
                 }

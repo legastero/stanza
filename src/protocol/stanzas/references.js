@@ -1,7 +1,6 @@
 import * as NS from '../namespaces';
 
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const Reference = JXT.define({
@@ -19,8 +18,7 @@ export default function (JXT) {
 
     const References = Utils.multiExtension(Reference);
 
-    JXT.withMessage(function (Message) {
-
+    JXT.withMessage(function(Message) {
         JXT.add(Message, 'references', References);
     });
 }

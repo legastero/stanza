@@ -3,8 +3,7 @@
 const test = require('tape');
 const stanza = require('../lib');
 
-
-test('Connect using WebSocket', function (t) {
+test('Connect using WebSocket', function(t) {
     t.plan(1);
 
     const client = stanza.createClient({
@@ -13,7 +12,7 @@ test('Connect using WebSocket', function (t) {
         wsURL: 'wss://anon.lance.im/xmpp-websocket'
     });
 
-    client.on('session:started', function () {
+    client.on('session:started', function() {
         t.pass('Connected with WebSocket');
         client.disconnect();
     });
@@ -21,7 +20,7 @@ test('Connect using WebSocket', function (t) {
     client.connect();
 });
 
-test('Connect using BOSH', function (t) {
+test('Connect using BOSH', function(t) {
     t.plan(1);
 
     const client = stanza.createClient({
@@ -30,7 +29,7 @@ test('Connect using BOSH', function (t) {
         boshURL: 'https://anon.lance.im/http-bind'
     });
 
-    client.on('session:started', function () {
+    client.on('session:started', function() {
         t.pass('Connected with BOSH');
         client.disconnect();
     });

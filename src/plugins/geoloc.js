@@ -1,12 +1,10 @@
 import { Namespaces } from '../protocol';
 
-
-export default function (client) {
-
+export default function(client) {
     client.disco.addFeature(Namespaces.GEOLOC);
     client.disco.addFeature(`${Namespaces.GEOLOC}+notify`);
 
-    client.on('pubsub:event', function (msg) {
+    client.on('pubsub:event', function(msg) {
         if (!msg.event.updated) {
             return;
         }
@@ -20,9 +18,14 @@ export default function (client) {
         });
     });
 
-    client.publishGeoLoc = function (data, cb) {
-        return this.publish('', Namespaces.GEOLOC, {
-            geoloc: data
-        }, cb);
+    client.publishGeoLoc = function(data, cb) {
+        return this.publish(
+            '',
+            Namespaces.GEOLOC,
+            {
+                geoloc: data
+            },
+            cb
+        );
     };
 }

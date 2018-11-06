@@ -1,20 +1,24 @@
-export default function (client) {
-
+export default function(client) {
     client.disco.addFeature('jabber:iq:version');
 
-    client.on('iq:get:version', function (iq) {
-        client.sendIq(iq.resultReply({
-            version: client.config.softwareVersion || {
-                name: 'stanza.io'
-            }
-        }));
+    client.on('iq:get:version', function(iq) {
+        client.sendIq(
+            iq.resultReply({
+                version: client.config.softwareVersion || {
+                    name: 'stanza.io'
+                }
+            })
+        );
     });
 
-    client.getSoftwareVersion = function (jid, cb) {
-        return this.sendIq({
-            to: jid,
-            type: 'get',
-            version: true
-        }, cb);
+    client.getSoftwareVersion = function(jid, cb) {
+        return this.sendIq(
+            {
+                to: jid,
+                type: 'get',
+                version: true
+            },
+            cb
+        );
     };
 }

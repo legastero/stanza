@@ -1,11 +1,8 @@
 import * as NS from '../namespaces';
 
-
 const internals = {};
 
-
-internals.defineIQ = function (JXT, name, namespace) {
-
+internals.defineIQ = function(JXT, name, namespace) {
     const Utils = JXT.utils;
 
     const IQ = JXT.define({
@@ -25,16 +22,14 @@ internals.defineIQ = function (JXT, name, namespace) {
     const toJSON = IQ.prototype.toJSON;
 
     Object.assign(IQ.prototype, {
-        toJSON () {
-
+        toJSON() {
             const result = toJSON.call(this);
             result.resultReply = this.resultReply;
             result.errorReply = this.errorReply;
             return result;
         },
 
-        resultReply (data) {
-
+        resultReply(data) {
             data = data || {};
             data.to = this.from;
             data.id = this.id;
@@ -42,8 +37,7 @@ internals.defineIQ = function (JXT, name, namespace) {
             return new IQ(data);
         },
 
-        errorReply (data) {
-
+        errorReply(data) {
             data = data || {};
             data.to = this.from;
             data.id = this.id;
@@ -53,9 +47,7 @@ internals.defineIQ = function (JXT, name, namespace) {
     });
 };
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     internals.defineIQ(JXT, 'iq', NS.CLIENT);
     internals.defineIQ(JXT, 'serverIQ', NS.SERVER);
     internals.defineIQ(JXT, 'componentIQ', NS.COMPONENT);

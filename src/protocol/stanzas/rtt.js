@@ -1,6 +1,5 @@
 import * as NS from '../namespaces';
 
-
 const TYPE_MAP = {
     insert: 't',
     erase: 'e',
@@ -13,9 +12,7 @@ const ACTION_MAP = {
     w: 'wait'
 };
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const RTT = JXT.define({
@@ -27,8 +24,7 @@ export default function (JXT) {
             event: Utils.attribute('event', 'edit'),
             seq: Utils.numberAttribute('seq'),
             actions: {
-                get: function () {
-
+                get: function() {
                     const results = [];
                     for (let i = 0, len = this.xml.childNodes.length; i < len; i++) {
                         const child = this.xml.childNodes[i];
@@ -65,21 +61,23 @@ export default function (JXT) {
 
                     return results;
                 },
-                set: function (actions) {
-
+                set: function(actions) {
                     const self = this;
 
                     for (let i = 0, len = this.xml.childNodes.length; i < len; i++) {
                         this.xml.removeChild(this.xml.childNodes[i]);
                     }
 
-                    actions.forEach(function (action ) {
-
+                    actions.forEach(function(action) {
                         if (!TYPE_MAP[action.type]) {
                             return;
                         }
 
-                        const child = Utils.createElement(NS.RTT_0, TYPE_MAP[action.type], NS.RTT_0);
+                        const child = Utils.createElement(
+                            NS.RTT_0,
+                            TYPE_MAP[action.type],
+                            NS.RTT_0
+                        );
 
                         if (action.pos !== undefined) {
                             Utils.setAttribute(child, 'p', action.pos.toString());
@@ -99,7 +97,6 @@ export default function (JXT) {
             }
         }
     });
-
 
     JXT.extendMessage(RTT);
 }

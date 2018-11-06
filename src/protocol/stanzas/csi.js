@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const CSIFeature = JXT.define({
         name: 'clientStateIndication',
         namespace: NS.CSI,
@@ -24,7 +22,6 @@ export default function (JXT) {
         element: 'inactive',
         topLevel: true
     });
-
 
     JXT.extendStreamFeatures(CSIFeature);
 }

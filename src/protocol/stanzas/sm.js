@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const SMFeature = JXT.define({
@@ -84,7 +82,6 @@ export default function (JXT) {
         element: 'r',
         topLevel: true
     });
-
 
     JXT.extendStreamFeatures(SMFeature);
 }

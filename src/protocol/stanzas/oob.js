@@ -1,9 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
-
+export default function(JXT) {
     const OOB = JXT.define({
         name: 'oob',
         element: 'x',

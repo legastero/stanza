@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const Register = JXT.define({
@@ -35,13 +33,11 @@ export default function (JXT) {
 
     JXT.extendIQ(Register);
 
-    JXT.withDefinition('x', NS.OOB, function (OOB) {
-
+    JXT.withDefinition('x', NS.OOB, function(OOB) {
         JXT.extend(Register, OOB);
     });
 
-    JXT.withDataForm(function (DataForm) {
-
+    JXT.withDataForm(function(DataForm) {
         JXT.extend(Register, DataForm);
     });
 }

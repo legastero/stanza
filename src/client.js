@@ -14,23 +14,21 @@ import Smacks from './plugins/smacks';
 import Bind from './plugins/bind';
 import Session from './plugins/session';
 
-
 const SASL_MECHS = {
-    'external': SASL.External,
+    external: SASL.External,
     'scram-sha-1': SASL.ScramSha1,
     'digest-md5': SASL.DigestMD5,
     'x-oauth2': SASL.XOauth2,
-    'plain': SASL.Plain,
-    'anonymous': SASL.Anonymous
+    plain: SASL.Plain,
+    anonymous: SASL.Anonymous
 };
-
 
 function timeoutRequest(targetPromise, id, delay) {
     let timeoutRef;
     return Promise.race([
         targetPromise,
-        new Promise(function (resolve, reject) {
-            timeoutRef = setTimeout(function () {
+        new Promise(function(resolve, reject) {
+            timeoutRef = setTimeout(function() {
                 reject({
                     id: id,
                     type: 'error',
@@ -40,12 +38,11 @@ function timeoutRequest(targetPromise, id, delay) {
                 });
             }, delay);
         })
-    ]).then(function (result) {
+    ]).then(function(result) {
         clearTimeout(timeoutRef);
         return result;
     });
 }
-
 
 export default class Client extends WildEmitter {
     constructor(opts) {
@@ -70,7 +67,7 @@ export default class Client extends WildEmitter {
         this.sm = new StreamManagement(this);
         this.transports = {};
 
-        this.on('stream:data', function (data) {
+        this.on('stream:data', function(data) {
             const json = data ? data.toJSON() : null;
             if (!json) {
                 return;
@@ -87,11 +84,9 @@ export default class Client extends WildEmitter {
             if (data._name === 'message' || data._name === 'presence' || data._name === 'iq') {
                 self.sm.handle(json);
                 self.emit('stanza', json);
-            }
-            else if (data._name === 'smAck') {
+            } else if (data._name === 'smAck') {
                 return self.sm.process(json);
-            }
-            else if (data._name === 'smRequest') {
+            } else if (data._name === 'smRequest') {
                 return self.sm.ack();
             }
             if (json.id) {
@@ -100,7 +95,7 @@ export default class Client extends WildEmitter {
             }
         });
 
-        this.on('disconnected', function () {
+        this.on('disconnected', function() {
             if (self.transport) {
                 self.transport.off('*');
                 delete self.transport;
@@ -108,68 +103,74 @@ export default class Client extends WildEmitter {
             self.releaseGroup('connection');
         });
 
-        this.on('auth:success', function () {
+        this.on('auth:success', function() {
             if (self.transport) {
                 self.transport.authenticated = true;
             }
         });
 
-        this.on('iq', function (iq) {
+        this.on('iq', function(iq) {
             const iqType = iq.type;
             const xmlChildCount = iq._xmlChildCount;
             delete iq._xmlChildCount;
-            const exts = Object.keys(iq).filter(function (ext) {
-                return ext !== 'id' &&
+            const exts = Object.keys(iq).filter(function(ext) {
+                return (
+                    ext !== 'id' &&
                     ext !== 'to' &&
                     ext !== 'from' &&
                     ext !== 'lang' &&
                     ext !== 'type' &&
                     ext !== 'errorReply' &&
-                    ext !== 'resultReply';
+                    ext !== 'resultReply'
+                );
             });
             if (iq.type === 'get' || iq.type === 'set') {
                 // Invalid request
                 if (xmlChildCount !== 1) {
-                    return self.sendIq(iq.errorReply({
-                        error: {
-                            type: 'modify',
-                            condition: 'bad-request'
-                        }
-                    }));
+                    return self.sendIq(
+                        iq.errorReply({
+                            error: {
+                                type: 'modify',
+                                condition: 'bad-request'
+                            }
+                        })
+                    );
                 }
                 // Valid request, but we don't have support for the
                 // payload data.
                 if (!exts.length) {
-                    return self.sendIq(iq.errorReply({
-                        error: {
-                            type: 'cancel',
-                            condition: 'service-unavailable'
-                        }
-                    }));
+                    return self.sendIq(
+                        iq.errorReply({
+                            error: {
+                                type: 'cancel',
+                                condition: 'service-unavailable'
+                            }
+                        })
+                    );
                 }
                 const iqEvent = 'iq:' + iqType + ':' + exts[0];
                 if (self.callbacks[iqEvent]) {
                     self.emit(iqEvent, iq);
-                }
-                else {
+                } else {
                     // We support the payload data, but there's
                     // nothing registered to handle it.
-                    self.sendIq(iq.errorReply({
-                        error: {
-                            type: 'cancel',
-                            condition: 'service-unavailable'
-                        }
-                    }));
+                    self.sendIq(
+                        iq.errorReply({
+                            error: {
+                                type: 'cancel',
+                                condition: 'service-unavailable'
+                            }
+                        })
+                    );
                 }
             }
         });
 
-        this.on('message', function (msg) {
+        this.on('message', function(msg) {
             if (Object.keys(msg.$body || {}).length) {
                 if (msg.type === 'chat' || msg.type === 'normal') {
                     self.emit('chat', msg);
-                }
-                else if (msg.type === 'groupchat') {
+                } else if (msg.type === 'groupchat') {
                     self.emit('groupchat', msg);
                 }
             }
@@ -178,7 +179,7 @@ export default class Client extends WildEmitter {
             }
         });
 
-        this.on('presence', function (pres) {
+        this.on('presence', function(pres) {
             let presType = pres.type || 'available';
             if (presType === 'error') {
                 presType = 'presence:error';
@@ -208,14 +209,13 @@ export default class Client extends WildEmitter {
             this.config.sasl = [this.config.sasl];
         }
         this.SASLFactory = new SASL.Factory();
-        this.config.sasl.forEach(function (mech) {
+        this.config.sasl.forEach(function(mech) {
             if (typeof mech === 'string') {
                 const existingMech = SASL_MECHS[mech.toLowerCase()];
                 if (existingMech && existingMech.prototype && existingMech.prototype.name) {
                     self.SASLFactory.use(existingMech);
                 }
-            }
-            else {
+            } else {
                 self.SASLFactory.use(mech);
             }
         });
@@ -285,16 +285,23 @@ export default class Client extends WildEmitter {
             if (transInfo.name === 'bosh') {
                 this.use(require('./plugins/bosh').default);
             }
-            const trans = self.transport = new self.transports[transInfo.name](self.sm, self.stanzas);
-            trans.on('*', function (event, data) {
+            const trans = (self.transport = new self.transports[transInfo.name](
+                self.sm,
+                self.stanzas
+            ));
+            trans.on('*', function(event, data) {
                 self.emit(event, data);
             });
             return trans.connect(self.config);
         }
 
-        return self.discoverBindings(self.config.server, function (err, endpoints) {
+        return self.discoverBindings(self.config.server, function(err, endpoints) {
             if (err) {
-                console.error('Could not find https://' + self.config.server + '/.well-known/host-meta file to discover connection endpoints for the requested transports.');
+                console.error(
+                    'Could not find https://' +
+                        self.config.server +
+                        '/.well-known/host-meta file to discover connection endpoints for the requested transports.'
+                );
                 return self.disconnect();
             }
             for (let t = 0, tlen = self.config.transports.length; t < tlen; t++) {
@@ -305,18 +312,23 @@ export default class Client extends WildEmitter {
                     if (uri.indexOf('wss://') === 0 || uri.indexOf('https://') === 0) {
                         if (transport === 'websocket') {
                             self.config.wsURL = uri;
-                        }
-                        else {
+                        } else {
                             self.config.boshURL = uri;
                         }
                         console.log('Using %s endpoint: %s', transport, uri);
-                        return self.connect(null, {
-                            name: transport,
-                            url: uri
-                        });
-                    }
-                    else {
-                        console.warn('Discovered unencrypted %s endpoint (%s). Ignoring', transport, uri);
+                        return self.connect(
+                            null,
+                            {
+                                name: transport,
+                                url: uri
+                            }
+                        );
+                    } else {
+                        console.warn(
+                            'Discovered unencrypted %s endpoint (%s). Ignoring',
+                            transport,
+                            uri
+                        );
                     }
                 }
             }
@@ -338,8 +350,7 @@ export default class Client extends WildEmitter {
         this.releaseGroup('connection');
         if (this.transport) {
             this.transport.disconnect();
-        }
-        else {
+        } else {
             this.emit('disconnected');
         }
     }
@@ -380,7 +391,7 @@ export default class Client extends WildEmitter {
             data.id = this.nextId();
         }
         const Iq = this.stanzas.getIq();
-        const iq = (!data.toJSON) ? new Iq(data) : data;
+        const iq = !data.toJSON ? new Iq(data) : data;
         if (data.type === 'error' || data.type === 'result') {
             this.send(iq);
             return;
@@ -394,8 +405,8 @@ export default class Client extends WildEmitter {
         allowed[self.jid.bare] = true;
         allowed[self.jid.domain] = true;
         const respEvent = 'iq:id:' + data.id;
-        const request = new Promise(function (resolve, reject) {
-            const handler = function (res) {
+        const request = new Promise(function(resolve, reject) {
+            const handler = function(res) {
                 // Only process result from the correct responder
                 if (!allowed[res.from.full]) {
                     return;
@@ -409,25 +420,27 @@ export default class Client extends WildEmitter {
                 self.off(respEvent, handler);
                 if (!res.error) {
                     resolve(res);
-                }
-                else {
+                } else {
                     reject(res);
                 }
             };
             self.on(respEvent, 'session', handler);
         });
         this.send(iq);
-        return timeoutRequest(request, data.id, (self.config.timeout || 15) * 1000).then(function (result) {
-            if (cb) {
-                cb(null, result);
+        return timeoutRequest(request, data.id, (self.config.timeout || 15) * 1000).then(
+            function(result) {
+                if (cb) {
+                    cb(null, result);
+                }
+                return result;
+            },
+            function(err) {
+                if (cb) {
+                    return cb(err);
+                }
+                throw err;
             }
-            return result;
-        }, function (err) {
-            if (cb) {
-                return cb(err);
-            }
-            throw err;
-        });
+        );
     }
 
     sendStreamError(data) {

@@ -1,6 +1,5 @@
 import * as NS from '../namespaces';
 
-
 const CONDITIONS = [
     'bad-format',
     'bad-namespace-prefix',
@@ -29,9 +28,7 @@ const CONDITIONS = [
     'unsupported-version'
 ];
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     JXT.define({
@@ -41,41 +38,34 @@ export default function (JXT) {
         topLevel: true,
         fields: {
             lang: {
-                get: function () {
-
+                get: function() {
                     return this._lang || '';
                 },
-                set: function (value) {
-
+                set: function(value) {
                     this._lang = value;
                 }
             },
             condition: Utils.enumSub(NS.STREAM_ERROR, CONDITIONS),
             seeOtherHost: {
-                get: function () {
-
+                get: function() {
                     return Utils.getSubText(this.xml, NS.STREAM_ERROR, 'see-other-host');
                 },
-                set: function (value) {
-
+                set: function(value) {
                     this.condition = 'see-other-host';
                     Utils.setSubText(this.xml, NS.STREAM_ERROR, 'see-other-host', value);
                 }
             },
             $text: {
-                get: function () {
-
+                get: function() {
                     return Utils.getSubLangText(this.xml, NS.STREAM_ERROR, 'text', this.lang);
                 }
             },
             text: {
-                get: function () {
-
+                get: function() {
                     const text = this.$text;
                     return text[this.lang] || '';
                 },
-                set: function (value) {
-
+                set: function(value) {
                     Utils.setSubLangText(this.xml, NS.STREAM_ERROR, 'text', value, this.lang);
                 }
             }

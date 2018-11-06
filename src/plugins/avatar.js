@@ -1,11 +1,9 @@
 import { Namespaces } from '../protocol';
 
-
-export default function (client) {
-
+export default function(client) {
     client.disco.addFeature(`${Namespaces.AVATAR_METADATA}+notify`);
 
-    client.on('pubsub:event', function (msg) {
+    client.on('pubsub:event', function(msg) {
         if (!msg.event.updated) {
             return;
         }
@@ -20,33 +18,45 @@ export default function (client) {
         });
     });
 
-    client.on('presence', function (pres) {
+    client.on('presence', function(pres) {
         if (pres.avatarId) {
             client.emit('avatar', {
                 jid: pres.from,
                 source: 'vcard',
-                avatars: [{
-                    id: pres.avatarId
-                }]
+                avatars: [
+                    {
+                        id: pres.avatarId
+                    }
+                ]
             });
         }
     });
 
-    client.publishAvatar = function (id, data, cb) {
-        return this.publish('', Namespaces.AVATAR_DATA, {
-            id: id,
-            avatarData: data
-        }, cb);
+    client.publishAvatar = function(id, data, cb) {
+        return this.publish(
+            '',
+            Namespaces.AVATAR_DATA,
+            {
+                id: id,
+                avatarData: data
+            },
+            cb
+        );
     };
 
-    client.useAvatars = function (info, cb) {
-        return this.publish('', Namespaces.AVATAR_METADATA, {
-            id: 'current',
-            avatars: info
-        }, cb);
+    client.useAvatars = function(info, cb) {
+        return this.publish(
+            '',
+            Namespaces.AVATAR_METADATA,
+            {
+                id: 'current',
+                avatars: info
+            },
+            cb
+        );
     };
 
-    client.getAvatar = function (jid, id, cb) {
+    client.getAvatar = function(jid, id, cb) {
         return this.getItem(jid, Namespaces.AVATAR_DATA, id, cb);
     };
 }

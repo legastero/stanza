@@ -1,25 +1,20 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const Feedback = {
-        get: function () {
-
+        get: function() {
             let existing = Utils.find(this.xml, NS.JINGLE_RTP_RTCP_FB_0, 'rtcp-fb');
             const result = [];
-            existing.forEach(function (xml) {
-
+            existing.forEach(function(xml) {
                 result.push({
                     type: Utils.getAttribute(xml, 'type'),
                     subtype: Utils.getAttribute(xml, 'subtype')
                 });
             });
             existing = Utils.find(this.xml, NS.JINGLE_RTP_RTCP_FB_0, 'rtcp-fb-trr-int');
-            existing.forEach(function (xml) {
-
+            existing.forEach(function(xml) {
                 result.push({
                     type: Utils.getAttribute(xml, 'type'),
                     value: Utils.getAttribute(xml, 'value')
@@ -27,25 +22,25 @@ export default function (JXT) {
             });
             return result;
         },
-        set: function (values) {
-
+        set: function(values) {
             const self = this;
             let existing = Utils.find(this.xml, NS.JINGLE_RTP_RTCP_FB_0, 'rtcp-fb');
-            existing.forEach(function (item) {
-
+            existing.forEach(function(item) {
                 self.xml.removeChild(item);
             });
             existing = Utils.find(this.xml, NS.JINGLE_RTP_RTCP_FB_0, 'rtcp-fb-trr-int');
-            existing.forEach(function (item) {
-
+            existing.forEach(function(item) {
                 self.xml.removeChild(item);
             });
 
-            values.forEach(function (value) {
-
+            values.forEach(function(value) {
                 let fb;
                 if (value.type === 'trr-int') {
-                    fb = Utils.createElement(NS.JINGLE_RTP_RTCP_FB_0, 'rtcp-fb-trr-int', NS.JINGLE_RTP_1);
+                    fb = Utils.createElement(
+                        NS.JINGLE_RTP_RTCP_FB_0,
+                        'rtcp-fb-trr-int',
+                        NS.JINGLE_RTP_1
+                    );
                     Utils.setAttribute(fb, 'type', value.type);
                     Utils.setAttribute(fb, 'value', value.value);
                 } else {
@@ -74,13 +69,12 @@ export default function (JXT) {
         element: 'description',
         tags: ['jingle-application'],
         fields: {
-            applicationType: {value: 'rtp', writable: true,},
+            applicationType: { value: 'rtp', writable: true },
             media: Utils.attribute('media'),
             ssrc: Utils.attribute('ssrc'),
             mux: Utils.boolSub(NS.JINGLE_RTP_1, 'rtcp-mux'),
             encryption: {
-                get: function () {
-
+                get: function() {
                     let enc = Utils.find(this.xml, NS.JINGLE_RTP_1, 'encryption');
                     if (!enc.length) {
                         return [];
@@ -91,14 +85,12 @@ export default function (JXT) {
                     const data = Utils.find(enc, NS.JINGLE_RTP_1, 'crypto');
                     const results = [];
 
-                    data.forEach(function (xml) {
-
+                    data.forEach(function(xml) {
                         results.push(new Crypto({}, xml, self).toJSON());
                     });
                     return results;
                 },
-                set: function (values) {
-
+                set: function(values) {
                     let enc = Utils.find(this.xml, NS.JINGLE_RTP_1, 'encryption');
                     if (enc.length) {
                         this.xml.removeChild(enc);
@@ -108,12 +100,17 @@ export default function (JXT) {
                         return;
                     }
 
-                    Utils.setBoolSubAttribute(this.xml, NS.JINGLE_RTP_1, 'encryption', 'required', true);
+                    Utils.setBoolSubAttribute(
+                        this.xml,
+                        NS.JINGLE_RTP_1,
+                        'encryption',
+                        'required',
+                        true
+                    );
                     enc = Utils.find(this.xml, NS.JINGLE_RTP_1, 'encryption')[0];
 
                     const self = this;
-                    values.forEach(function (value) {
-
+                    values.forEach(function(value) {
                         const content = new Crypto(value, null, self);
                         enc.appendChild(content.xml);
                     });
@@ -121,12 +118,10 @@ export default function (JXT) {
             },
             feedback: Feedback,
             headerExtensions: {
-                get: function () {
-
+                get: function() {
                     const existing = Utils.find(this.xml, NS.JINGLE_RTP_HDREXT_0, 'rtp-hdrext');
                     const result = [];
-                    existing.forEach(function (xml) {
-
+                    existing.forEach(function(xml) {
                         result.push({
                             id: Utils.getAttribute(xml, 'id'),
                             uri: Utils.getAttribute(xml, 'uri'),
@@ -135,18 +130,19 @@ export default function (JXT) {
                     });
                     return result;
                 },
-                set: function (values) {
-
+                set: function(values) {
                     const self = this;
                     const existing = Utils.find(this.xml, NS.JINGLE_RTP_HDREXT_0, 'rtp-hdrext');
-                    existing.forEach(function (item) {
-
+                    existing.forEach(function(item) {
                         self.xml.removeChild(item);
                     });
 
-                    values.forEach(function (value) {
-
-                        const hdr = Utils.createElement(NS.JINGLE_RTP_HDREXT_0, 'rtp-hdrext', NS.JINGLE_RTP_1);
+                    values.forEach(function(value) {
+                        const hdr = Utils.createElement(
+                            NS.JINGLE_RTP_HDREXT_0,
+                            'rtp-hdrext',
+                            NS.JINGLE_RTP_1
+                        );
                         Utils.setAttribute(hdr, 'id', value.id);
                         Utils.setAttribute(hdr, 'uri', value.uri);
                         Utils.setAttribute(hdr, 'senders', value.senders);
@@ -170,12 +166,10 @@ export default function (JXT) {
             ptime: Utils.attribute('ptime'),
             feedback: Feedback,
             parameters: {
-                get: function () {
-
+                get: function() {
                     const result = [];
                     const params = Utils.find(this.xml, NS.JINGLE_RTP_1, 'parameter');
-                    params.forEach(function (param) {
-
+                    params.forEach(function(param) {
                         result.push({
                             key: Utils.getAttribute(param, 'name'),
                             value: Utils.getAttribute(param, 'value')
@@ -183,11 +177,9 @@ export default function (JXT) {
                     });
                     return result;
                 },
-                set: function (values) {
-
+                set: function(values) {
                     const self = this;
-                    values.forEach(function (value) {
-
+                    values.forEach(function(value) {
                         const param = Utils.createElement(NS.JINGLE_RTP_1, 'parameter');
                         Utils.setAttribute(param, 'name', value.key);
                         Utils.setAttribute(param, 'value', value.value);
@@ -237,12 +229,10 @@ export default function (JXT) {
         fields: {
             ssrc: Utils.attribute('ssrc'),
             parameters: {
-                get: function () {
-
+                get: function() {
                     const result = [];
                     const params = Utils.find(this.xml, NS.JINGLE_RTP_SSMA_0, 'parameter');
-                    params.forEach(function (param) {
-
+                    params.forEach(function(param) {
                         result.push({
                             key: Utils.getAttribute(param, 'name'),
                             value: Utils.getAttribute(param, 'value')
@@ -250,11 +240,9 @@ export default function (JXT) {
                     });
                     return result;
                 },
-                set: function (values) {
-
+                set: function(values) {
                     const self = this;
-                    values.forEach(function (value) {
-
+                    values.forEach(function(value) {
                         const param = Utils.createElement(NS.JINGLE_RTP_SSMA_0, 'parameter');
                         Utils.setAttribute(param, 'name', value.key);
                         Utils.setAttribute(param, 'value', value.value);
@@ -295,20 +283,17 @@ export default function (JXT) {
         }
     });
 
-
     JXT.extend(RTP, Bandwidth);
     JXT.extend(RTP, PayloadType, 'payloads');
     JXT.extend(RTP, Source, 'sources');
     JXT.extend(RTP, SourceGroup, 'sourceGroups');
     JXT.extend(RTP, Stream, 'streams');
 
-    JXT.withDefinition('content', NS.JINGLE_1, function (Content) {
-
+    JXT.withDefinition('content', NS.JINGLE_1, function(Content) {
         JXT.extend(Content, RTP);
     });
 
-    JXT.withDefinition('jingle', NS.JINGLE_1, function (Jingle) {
-
+    JXT.withDefinition('jingle', NS.JINGLE_1, function(Jingle) {
         JXT.extend(Jingle, Mute);
         JXT.extend(Jingle, Unmute);
         JXT.extend(Jingle, ContentGroup, 'groups');

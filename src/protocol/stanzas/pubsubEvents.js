@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const Event = JXT.define({
@@ -40,8 +38,7 @@ export default function (JXT) {
             type: Utils.attribute('subscription'),
             subid: Utils.attribute('subid'),
             expiry: {
-                get: function () {
-
+                get: function() {
                     const text = Utils.getAttribute(this.xml, 'expiry');
                     if (text === 'presence') {
                         return text;
@@ -49,8 +46,7 @@ export default function (JXT) {
                         return new Date(text);
                     }
                 },
-                set: function (value) {
-
+                set: function(value) {
                     if (!value) {
                         return;
                     }
@@ -81,23 +77,23 @@ export default function (JXT) {
         fields: {
             node: Utils.attribute('node'),
             retracted: {
-                get: function () {
-
+                get: function() {
                     const results = [];
                     const retracted = Utils.find(this.xml, NS.PUBSUB_EVENT, 'retract');
 
-                    retracted.forEach(function (xml) {
-
+                    retracted.forEach(function(xml) {
                         results.push(xml.getAttribute('id'));
                     });
                     return results;
                 },
-                set: function (value) {
-
+                set: function(value) {
                     const self = this;
-                    value.forEach(function (id) {
-
-                        const retracted = Utils.createElement(NS.PUBSUB_EVENT, 'retract', NS.PUBSUB_EVENT);
+                    value.forEach(function(id) {
+                        const retracted = Utils.createElement(
+                            NS.PUBSUB_EVENT,
+                            'retract',
+                            NS.PUBSUB_EVENT
+                        );
                         retracted.setAttribute('id', id);
                         self.xml.appendChild(retracted);
                     });
@@ -117,7 +113,6 @@ export default function (JXT) {
         }
     });
 
-
     JXT.extend(EventItems, EventItem, 'published');
 
     JXT.extend(Event, EventItems);
@@ -128,8 +123,7 @@ export default function (JXT) {
 
     JXT.extendMessage(Event);
 
-    JXT.withDataForm(function (DataForm) {
-
+    JXT.withDataForm(function(DataForm) {
         JXT.extend(EventConfiguration, DataForm);
     });
 }

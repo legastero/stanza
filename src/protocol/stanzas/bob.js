@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const BOB = JXT.define({
@@ -16,7 +14,6 @@ export default function (JXT) {
             data: Utils.text()
         }
     });
-
 
     JXT.extendIQ(BOB);
     JXT.extendMessage(BOB);

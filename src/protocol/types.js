@@ -1,50 +1,40 @@
 import { JID } from 'xmpp-jid';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
-
-    Utils.jidAttribute = function (attr, prepped) {
-
+    Utils.jidAttribute = function(attr, prepped) {
         return {
-            get: function () {
-
+            get: function() {
                 const jid = new JID(Utils.getAttribute(this.xml, attr));
                 if (prepped) {
                     jid.prepped = true;
                 }
                 return jid;
             },
-            set: function (value) {
-
+            set: function(value) {
                 Utils.setAttribute(this.xml, attr, (value || '').toString());
             }
         };
     };
 
-    Utils.jidSub = function (NS, sub, prepped) {
-
+    Utils.jidSub = function(NS, sub, prepped) {
         return {
-            get: function () {
-
+            get: function() {
                 const jid = new JID(Utils.getSubText(this.xml, NS, sub));
                 if (prepped) {
                     jid.prepped = true;
                 }
                 return jid;
             },
-            set: function (value) {
-
+            set: function(value) {
                 Utils.setSubText(this.xml, NS, sub, (value || '').toString());
             }
         };
     };
 
     Utils.tzoSub = Utils.field(
-        function (xml, NS, sub, defaultVal) {
-
+        function(xml, NS, sub, defaultVal) {
             let sign = -1;
             let formatted = Utils.getSubText(xml, NS, sub);
 
@@ -62,8 +52,7 @@ export default function (JXT) {
             const min = parseInt(split[1], 10);
             return (hrs * 60 + min) * sign;
         },
-        function (xml, NS, sub, value) {
-
+        function(xml, NS, sub, value) {
             let hrs, min;
             let formatted = '-';
             if (typeof value === 'number') {

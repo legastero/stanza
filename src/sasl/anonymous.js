@@ -3,9 +3,8 @@ export default class Anonymous {
         return cred.trace || '';
     }
 
-    challenge() {
-    }
+    challenge() {}
 }
 
 Anonymous.prototype.name = 'ANONYMOUS';
-Anonymous.prototype.clientFirst = true; 
+Anonymous.prototype.clientFirst = true;

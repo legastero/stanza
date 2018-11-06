@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const Tune = JXT.define({
@@ -19,7 +17,6 @@ export default function (JXT) {
             uri: Utils.textSub(NS.TUNE, 'uri')
         }
     });
-
 
     JXT.extendPubsubItem(Tune);
     JXT.extendMessage(Tune);

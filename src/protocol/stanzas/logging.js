@@ -1,8 +1,6 @@
 import * as NS from '../namespaces';
 
-
-export default function (JXT) {
-
+export default function(JXT) {
     const Utils = JXT.utils;
 
     const Log = JXT.define({
@@ -33,7 +31,6 @@ export default function (JXT) {
             type: Utils.attribute('type')
         }
     });
-
 
     JXT.extend(Log, Tag, 'tags');
 
