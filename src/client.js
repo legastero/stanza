@@ -48,7 +48,6 @@ export default class Client extends WildEmitter {
     constructor(opts) {
         super();
 
-        const self = this;
         opts = opts || {};
         this._initConfig(opts);
 
@@ -67,7 +66,7 @@ export default class Client extends WildEmitter {
         this.sm = new StreamManagement(this);
         this.transports = {};
 
-        this.on('stream:data', function(data) {
+        this.on('stream:data', data => {
             const json = data ? data.toJSON() : null;
             if (!json) {
                 return;
@@ -80,36 +79,36 @@ export default class Client extends WildEmitter {
                     }
                 }
             }
-            self.emit(data._eventname || data._name, json);
+            this.emit(data._eventname || data._name, json);
             if (data._name === 'message' || data._name === 'presence' || data._name === 'iq') {
-                self.sm.handle(json);
-                self.emit('stanza', json);
+                this.sm.handle(json);
+                this.emit('stanza', json);
             } else if (data._name === 'smAck') {
-                return self.sm.process(json);
+                return this.sm.process(json);
             } else if (data._name === 'smRequest') {
-                return self.sm.ack();
+                return this.sm.ack();
             }
             if (json.id) {
-                self.emit('id:' + json.id, json);
-                self.emit(data._name + ':id:' + json.id, json);
+                this.emit('id:' + json.id, json);
+                this.emit(data._name + ':id:' + json.id, json);
             }
         });
 
-        this.on('disconnected', function() {
-            if (self.transport) {
-                self.transport.off('*');
-                delete self.transport;
+        this.on('disconnected', () => {
+            if (this.transport) {
+                this.transport.off('*');
+                delete this.transport;
             }
-            self.releaseGroup('connection');
+            this.releaseGroup('connection');
         });
 
-        this.on('auth:success', function() {
-            if (self.transport) {
-                self.transport.authenticated = true;
+        this.on('auth:success', () => {
+            if (this.transport) {
+                this.transport.authenticated = true;
             }
         });
 
-        this.on('iq', function(iq) {
+        this.on('iq', iq => {
             const iqType = iq.type;
             const xmlChildCount = iq._xmlChildCount;
             delete iq._xmlChildCount;
@@ -127,7 +126,7 @@ export default class Client extends WildEmitter {
             if (iq.type === 'get' || iq.type === 'set') {
                 // Invalid request
                 if (xmlChildCount !== 1) {
-                    return self.sendIq(
+                    return this.sendIq(
                         iq.errorReply({
                             error: {
                                 type: 'modify',
@@ -139,7 +138,7 @@ export default class Client extends WildEmitter {
                 // Valid request, but we don't have support for the
                 // payload data.
                 if (!exts.length) {
-                    return self.sendIq(
+                    return this.sendIq(
                         iq.errorReply({
                             error: {
                                 type: 'cancel',
@@ -149,12 +148,12 @@ export default class Client extends WildEmitter {
                     );
                 }
                 const iqEvent = 'iq:' + iqType + ':' + exts[0];
-                if (self.callbacks[iqEvent]) {
-                    self.emit(iqEvent, iq);
+                if (this.callbacks[iqEvent]) {
+                    this.emit(iqEvent, iq);
                 } else {
                     // We support the payload data, but there's
                     // nothing registered to handle it.
-                    self.sendIq(
+                    this.sendIq(
                         iq.errorReply({
                             error: {
                                 type: 'cancel',
@@ -166,25 +165,25 @@ export default class Client extends WildEmitter {
             }
         });
 
-        this.on('message', function(msg) {
+        this.on('message', msg => {
             if (Object.keys(msg.$body || {}).length) {
                 if (msg.type === 'chat' || msg.type === 'normal') {
-                    self.emit('chat', msg);
+                    this.emit('chat', msg);
                 } else if (msg.type === 'groupchat') {
-                    self.emit('groupchat', msg);
+                    this.emit('groupchat', msg);
                 }
             }
             if (msg.type === 'error') {
-                self.emit('message:error', msg);
+                this.emit('message:error', msg);
             }
         });
 
-        this.on('presence', function(pres) {
+        this.on('presence', pres => {
             let presType = pres.type || 'available';
             if (presType === 'error') {
                 presType = 'presence:error';
             }
-            self.emit(presType, pres);
+            this.emit(presType, pres);
         });
     }
 
@@ -270,11 +269,10 @@ export default class Client extends WildEmitter {
     }
 
     connect(opts, transInfo) {
-        const self = this;
         this._initConfig(opts);
-        if (!transInfo && self.config.transports.length === 1) {
+        if (!transInfo && this.config.transports.length === 1) {
             transInfo = {};
-            transInfo.name = self.config.transports[0];
+            transInfo.name = this.config.transports[0];
         }
         if (transInfo && transInfo.name) {
             if (transInfo.name === 'websocket' || transInfo.name === 'old-websocket') {
@@ -284,38 +282,38 @@ export default class Client extends WildEmitter {
             if (transInfo.name === 'bosh') {
                 this.use(require('./plugins/bosh').default);
             }
-            const trans = (self.transport = new self.transports[transInfo.name](
-                self.sm,
-                self.stanzas
+            const trans = (this.transport = new this.transports[transInfo.name](
+                this.sm,
+                this.stanzas
             ));
-            trans.on('*', function(event, data) {
-                self.emit(event, data);
+            trans.on('*', (event, data) => {
+                this.emit(event, data);
             });
-            return trans.connect(self.config);
+            return trans.connect(this.config);
         }
 
-        return self.discoverBindings(self.config.server, function(err, endpoints) {
+        return this.discoverBindings(this.config.server, (err, endpoints) => {
             if (err) {
                 console.error(
                     'Could not find https://' +
-                        self.config.server +
+                        this.config.server +
                         '/.well-known/host-meta file to discover connection endpoints for the requested transports.'
                 );
-                return self.disconnect();
+                return this.disconnect();
             }
-            for (let t = 0, tlen = self.config.transports.length; t < tlen; t++) {
-                const transport = self.config.transports[t];
+            for (let t = 0, tlen = this.config.transports.length; t < tlen; t++) {
+                const transport = this.config.transports[t];
                 console.log('Checking for %s endpoints', transport);
                 for (let i = 0, len = (endpoints[transport] || []).length; i < len; i++) {
                     const uri = endpoints[transport][i];
                     if (uri.indexOf('wss://') === 0 || uri.indexOf('https://') === 0) {
                         if (transport === 'websocket') {
-                            self.config.wsURL = uri;
+                            this.config.wsURL = uri;
                         } else {
-                            self.config.boshURL = uri;
+                            this.config.boshURL = uri;
                         }
                         console.log('Using %s endpoint: %s', transport, uri);
-                        return self.connect(
+                        return this.connect(
                             null,
                             {
                                 name: transport,
@@ -332,7 +330,7 @@ export default class Client extends WildEmitter {
                 }
             }
             console.error('No endpoints found for the requested transports.');
-            return self.disconnect();
+            return this.disconnect();
         });
     }
 
@@ -384,7 +382,6 @@ export default class Client extends WildEmitter {
     }
 
     sendIq(data, cb) {
-        const self = this;
         data = data || {};
         if (!data.id) {
             data.id = this.nextId();
@@ -401,11 +398,11 @@ export default class Client extends WildEmitter {
         allowed[dest.full] = true;
         allowed[dest.bare] = true;
         allowed[dest.domain] = true;
-        allowed[self.jid.bare] = true;
-        allowed[self.jid.domain] = true;
+        allowed[this.jid.bare] = true;
+        allowed[this.jid.domain] = true;
         const respEvent = 'iq:id:' + data.id;
-        const request = new Promise(function(resolve, reject) {
-            const handler = function(res) {
+        const request = new Promise((resolve, reject) => {
+            const handler = res => {
                 // Only process result from the correct responder
                 if (!allowed[res.from.full]) {
                     return;
@@ -416,17 +413,17 @@ export default class Client extends WildEmitter {
                 if (res.type !== 'result' && res.type !== 'error') {
                     return;
                 }
-                self.off(respEvent, handler);
+                this.off(respEvent, handler);
                 if (!res.error) {
                     resolve(res);
                 } else {
                     reject(res);
                 }
             };
-            self.on(respEvent, 'session', handler);
+            this.on(respEvent, 'session', handler);
         });
         this.send(iq);
-        return timeoutRequest(request, data.id, (self.config.timeout || 15) * 1000).then(
+        return timeoutRequest(request, data.id, (this.config.timeout || 15) * 1000).then(
             function(result) {
                 if (cb) {
                     cb(null, result);

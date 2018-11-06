@@ -2,9 +2,7 @@ import { JID } from 'xmpp-jid';
 
 export default function(client, stanzas, config) {
     client.registerFeature('bind', 300, function(features, cb) {
-        const self = this;
-
-        self.sendIq(
+        client.sendIq(
             {
                 type: 'set',
                 bind: {
@@ -13,17 +11,17 @@ export default function(client, stanzas, config) {
             },
             function(err, resp) {
                 if (err) {
-                    self.emit('session:error', err);
+                    client.emit('session:error', err);
                     return cb('disconnect', 'JID binding failed');
                 }
 
-                self.features.negotiated.bind = true;
-                self.emit('session:prebind', resp.bind.jid);
+                client.features.negotiated.bind = true;
+                client.emit('session:prebind', resp.bind.jid);
 
                 const canStartSession =
                     !features.session || (features.session && features.session.optional);
-                if (!self.sessionStarted && canStartSession) {
-                    self.emit('session:started', self.jid);
+                if (!client.sessionStarted && canStartSession) {
+                    client.emit('session:started', client.jid);
                 }
                 return cb();
             }

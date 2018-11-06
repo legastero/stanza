@@ -24,21 +24,19 @@ export default function(client) {
     });
 
     client.getRoster = function(cb) {
-        const self = this;
-
         return client
             .sendIq({
                 type: 'get',
                 roster: {
-                    ver: self.config.rosterVer
+                    ver: this.config.rosterVer
                 }
             })
-            .then(function(resp) {
+            .then(resp => {
                 if (resp.roster) {
                     const ver = resp.roster.ver;
                     if (ver) {
-                        self.config.rosterVer = ver;
-                        self.emit('roster:ver', ver);
+                        this.config.rosterVer = ver;
+                        this.emit('roster:ver', ver);
                     }
                 }
                 return resp;

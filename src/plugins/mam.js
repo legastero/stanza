@@ -38,7 +38,6 @@ export default function(client) {
     };
 
     client.searchHistory = function(opts, cb) {
-        const self = this;
         const queryid = this.nextId();
 
         opts = opts || {};
@@ -109,25 +108,24 @@ export default function(client) {
             mam: opts
         });
 
-        return timeoutPromise(mamQuery, queryid, self.config.timeout * 1000 || 15000).then(
-            function(mamRes) {
+        return timeoutPromise(mamQuery, queryid, this.config.timeout * 1000 || 15000)
+            .then(mamRes => {
                 mamRes.mamResult.items = results;
-                self.off('mam:item:' + queryid);
+                this.off('mam:item:' + queryid);
 
                 if (cb) {
                     cb(null, mamRes);
                 }
                 return mamRes;
-            },
-            function(err) {
-                self.off('mam:item:' + queryid);
+            })
+            .catch(err => {
+                this.off('mam:item:' + queryid);
                 if (cb) {
                     cb(err);
                 } else {
                     throw err;
                 }
-            }
-        );
+            });
     };
 
     client.getHistoryPreferences = function(cb) {
