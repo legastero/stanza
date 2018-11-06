@@ -20,6 +20,7 @@ import Framing from './stanzas/framing';
 import GeoLoc from './stanzas/geoloc';
 import Hash from './stanzas/hash';
 import Hats from './stanzas/hats';
+import Hints from './stanzas/hints';
 import UDP from './stanzas/iceUdp';
 import IBB from './stanzas/ibb';
 import IQ from './stanzas/iq';
@@ -99,6 +100,7 @@ export default function (JXT) {
     JXT.use(GeoLoc);
     JXT.use(Hash);
     JXT.use(Hats);
+    JXT.use(Hints);
     JXT.use(UDP);
     JXT.use(IBB);
     JXT.use(IQ);
