@@ -41,13 +41,13 @@ export default function(client, stanzas) {
                 }
 
                 if (mech.cache) {
-                    Object.keys(mech.cache).forEach(function(key) {
+                    for (const key of Object.keys(mech.cache)) {
                         if (!mech.cache[key]) {
                             return;
                         }
 
                         self.config.credentials[key] = Buffer.from(mech.cache[key]);
-                    });
+                    }
 
                     self.emit('credentials:update', self.config.credentials);
                 }

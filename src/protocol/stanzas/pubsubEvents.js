@@ -81,14 +81,14 @@ export default function(JXT) {
                     const results = [];
                     const retracted = Utils.find(this.xml, NS.PUBSUB_EVENT, 'retract');
 
-                    retracted.forEach(function(xml) {
+                    for (const xml of retracted) {
                         results.push(xml.getAttribute('id'));
-                    });
+                    }
                     return results;
                 },
                 set: function(value) {
                     const self = this;
-                    value.forEach(function(id) {
+                    for (const id of value) {
                         const retracted = Utils.createElement(
                             NS.PUBSUB_EVENT,
                             'retract',
@@ -96,7 +96,7 @@ export default function(JXT) {
                         );
                         retracted.setAttribute('id', id);
                         self.xml.appendChild(retracted);
-                    });
+                    }
                 }
             }
         }

@@ -75,14 +75,14 @@ export default function(client, stanzas) {
             };
             const links = data.links || [];
 
-            links.forEach(function(link) {
+            for (const link of links) {
                 if (link.href && link.rel === Namespaces.ALT_CONNECTIONS_WEBSOCKET) {
                     results.websocket.push(link.href);
                 }
                 if (link.href && link.rel === Namespaces.ALT_CONNECTIONS_XBOSH) {
                     results.bosh.push(link.href);
                 }
-            });
+            }
 
             cb(false, results);
         });

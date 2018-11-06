@@ -105,12 +105,12 @@ export default class BOSHConnection extends WildEmitter {
                 self.maxRequests = bosh.requests || self.maxRequests;
             }
             const payload = bosh.payload;
-            payload.forEach(function(stanzaObj) {
+            for (const stanzaObj of payload) {
                 if (!stanzaObj.lang) {
                     stanzaObj.lang = self.stream.lang;
                 }
                 self.emit('stream:data', stanzaObj);
-            });
+            }
             if (bosh.type === 'terminate') {
                 self.rid = undefined;
                 self.sid = undefined;

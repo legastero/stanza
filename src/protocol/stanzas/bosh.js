@@ -54,9 +54,9 @@ export default function(JXT) {
                     return results;
                 },
                 set: function(values) {
-                    values.forEach(types => {
+                    for (const types of values) {
                         this.xml.appendChild(types.xml);
-                    });
+                    }
                 }
             }
         }

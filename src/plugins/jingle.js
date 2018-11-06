@@ -31,9 +31,9 @@ export default function(client) {
             'urn:ietf:rfc:5576',
             'urn:ietf:rfc:5888'
         ];
-        caps.forEach(function(cap) {
+        for (const cap of caps) {
             client.disco.addFeature(cap);
-        });
+        }
     }
 
     const mappedEvents = [
@@ -47,11 +47,11 @@ export default function(client) {
         'hold',
         'resumed'
     ];
-    mappedEvents.forEach(function(event) {
+    for (const event of mappedEvents) {
         jingle.on(event, function(session, arg1) {
             client.emit('jingle:' + event, session, arg1);
         });
-    });
+    }
 
     jingle.on('createdSession', function(session) {
         client.emit('jingle:created', session);

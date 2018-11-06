@@ -7,33 +7,33 @@ export default function(JXT) {
         get: function() {
             let existing = Utils.find(this.xml, NS.JINGLE_RTP_RTCP_FB_0, 'rtcp-fb');
             const result = [];
-            existing.forEach(function(xml) {
+            for (const xml of existing) {
                 result.push({
                     type: Utils.getAttribute(xml, 'type'),
                     subtype: Utils.getAttribute(xml, 'subtype')
                 });
-            });
+            }
             existing = Utils.find(this.xml, NS.JINGLE_RTP_RTCP_FB_0, 'rtcp-fb-trr-int');
-            existing.forEach(function(xml) {
+            for (const xml of existing) {
                 result.push({
                     type: Utils.getAttribute(xml, 'type'),
                     value: Utils.getAttribute(xml, 'value')
                 });
-            });
+            }
             return result;
         },
         set: function(values) {
             const self = this;
             let existing = Utils.find(this.xml, NS.JINGLE_RTP_RTCP_FB_0, 'rtcp-fb');
-            existing.forEach(function(item) {
+            for (const item of existing) {
                 self.xml.removeChild(item);
-            });
+            }
             existing = Utils.find(this.xml, NS.JINGLE_RTP_RTCP_FB_0, 'rtcp-fb-trr-int');
-            existing.forEach(function(item) {
+            for (const item of existing) {
                 self.xml.removeChild(item);
-            });
+            }
 
-            values.forEach(function(value) {
+            for (const value of values) {
                 let fb;
                 if (value.type === 'trr-int') {
                     fb = Utils.createElement(
@@ -49,7 +49,7 @@ export default function(JXT) {
                     Utils.setAttribute(fb, 'subtype', value.subtype);
                 }
                 self.xml.appendChild(fb);
-            });
+            }
         }
     };
 
@@ -85,9 +85,9 @@ export default function(JXT) {
                     const data = Utils.find(enc, NS.JINGLE_RTP_1, 'crypto');
                     const results = [];
 
-                    data.forEach(function(xml) {
+                    for (const xml of data) {
                         results.push(new Crypto({}, xml, self).toJSON());
-                    });
+                    }
                     return results;
                 },
                 set: function(values) {
@@ -110,10 +110,10 @@ export default function(JXT) {
                     enc = Utils.find(this.xml, NS.JINGLE_RTP_1, 'encryption')[0];
 
                     const self = this;
-                    values.forEach(function(value) {
+                    for (const value of values) {
                         const content = new Crypto(value, null, self);
                         enc.appendChild(content.xml);
-                    });
+                    }
                 }
             },
             feedback: Feedback,
@@ -121,23 +121,23 @@ export default function(JXT) {
                 get: function() {
                     const existing = Utils.find(this.xml, NS.JINGLE_RTP_HDREXT_0, 'rtp-hdrext');
                     const result = [];
-                    existing.forEach(function(xml) {
+                    for (const xml of existing) {
                         result.push({
                             id: Utils.getAttribute(xml, 'id'),
                             uri: Utils.getAttribute(xml, 'uri'),
                             senders: Utils.getAttribute(xml, 'senders')
                         });
-                    });
+                    }
                     return result;
                 },
                 set: function(values) {
                     const self = this;
                     const existing = Utils.find(this.xml, NS.JINGLE_RTP_HDREXT_0, 'rtp-hdrext');
-                    existing.forEach(function(item) {
+                    for (const item of existing) {
                         self.xml.removeChild(item);
-                    });
+                    }
 
-                    values.forEach(function(value) {
+                    for (const value of values) {
                         const hdr = Utils.createElement(
                             NS.JINGLE_RTP_HDREXT_0,
                             'rtp-hdrext',
@@ -147,7 +147,7 @@ export default function(JXT) {
                         Utils.setAttribute(hdr, 'uri', value.uri);
                         Utils.setAttribute(hdr, 'senders', value.senders);
                         self.xml.appendChild(hdr);
-                    });
+                    }
                 }
             }
         }
@@ -169,22 +169,22 @@ export default function(JXT) {
                 get: function() {
                     const result = [];
                     const params = Utils.find(this.xml, NS.JINGLE_RTP_1, 'parameter');
-                    params.forEach(function(param) {
+                    for (const param of params) {
                         result.push({
                             key: Utils.getAttribute(param, 'name'),
                             value: Utils.getAttribute(param, 'value')
                         });
-                    });
+                    }
                     return result;
                 },
                 set: function(values) {
                     const self = this;
-                    values.forEach(function(value) {
+                    for (const value of values) {
                         const param = Utils.createElement(NS.JINGLE_RTP_1, 'parameter');
                         Utils.setAttribute(param, 'name', value.key);
                         Utils.setAttribute(param, 'value', value.value);
                         self.xml.appendChild(param);
-                    });
+                    }
                 }
             }
         }
@@ -232,22 +232,22 @@ export default function(JXT) {
                 get: function() {
                     const result = [];
                     const params = Utils.find(this.xml, NS.JINGLE_RTP_SSMA_0, 'parameter');
-                    params.forEach(function(param) {
+                    for (const param of params) {
                         result.push({
                             key: Utils.getAttribute(param, 'name'),
                             value: Utils.getAttribute(param, 'value')
                         });
-                    });
+                    }
                     return result;
                 },
                 set: function(values) {
                     const self = this;
-                    values.forEach(function(value) {
+                    for (const value of values) {
                         const param = Utils.createElement(NS.JINGLE_RTP_SSMA_0, 'parameter');
                         Utils.setAttribute(param, 'name', value.key);
                         Utils.setAttribute(param, 'value', value.value);
                         self.xml.appendChild(param);
-                    });
+                    }
                 }
             }
         }

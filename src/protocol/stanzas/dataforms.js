@@ -259,14 +259,14 @@ export default function(JXT) {
             }
 
             const fieldTypes = {};
-            this.reportedFields.forEach(function(reported) {
+            for (const reported of this.reportedFields) {
                 fieldTypes[reported.name] = reported.type;
-            });
-            this.items.forEach(function(item) {
-                item.fields.forEach(function(field) {
+            }
+            for (const item of this.items) {
+                for (const field of item.fields) {
                     field.type = field._type = fieldTypes[field.name];
-                });
-            });
+                }
+            }
         },
         fields: {
             title: Utils.textSub(NS.DATAFORM, 'title'),

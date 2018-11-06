@@ -29,7 +29,7 @@ export default function(client) {
         const negotiated = client.features.negotiated;
         const handlers = client.features.handlers;
 
-        client.features.order.forEach(function(feature) {
+        for (const feature of client.features.order) {
             const name = feature.name;
             if (features[name] && handlers[name] && !negotiated[name]) {
                 series.push(function(cb) {
@@ -40,7 +40,7 @@ export default function(client) {
                     }
                 });
             }
-        });
+        }
 
         async.series(series, function(cmd, msg) {
             if (cmd === 'restart') {

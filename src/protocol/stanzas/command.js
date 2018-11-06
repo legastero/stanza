@@ -31,12 +31,12 @@ export default function(JXT) {
                     if (!actionSet.length) {
                         return [];
                     }
-                    ACTIONS.forEach(function(action) {
+                    for (const action of ACTIONS) {
                         const existing = Utils.find(actionSet[0], NS.ADHOC_COMMANDS, action);
                         if (existing.length) {
                             result.push(action);
                         }
-                    });
+                    }
                     return result;
                 },
                 set: function(values) {
@@ -44,7 +44,7 @@ export default function(JXT) {
                     for (let i = 0, len = actionSet.childNodes.length; i < len; i++) {
                         actionSet.removeChild(actionSet.childNodes[i]);
                     }
-                    values.forEach(function(value) {
+                    for (const value of values) {
                         actionSet.appendChild(
                             Utils.createElement(
                                 NS.ADHOC_COMMANDS,
@@ -52,7 +52,7 @@ export default function(JXT) {
                                 NS.ADHOC_COMMANDS
                             )
                         );
-                    });
+                    }
                 }
             }
         }

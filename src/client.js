@@ -193,7 +193,6 @@ export default class Client extends WildEmitter {
     }
 
     _initConfig(opts) {
-        const self = this;
         const currConfig = this.config || {};
         this.config = {
             useStreamManagement: true,
@@ -209,16 +208,16 @@ export default class Client extends WildEmitter {
             this.config.sasl = [this.config.sasl];
         }
         this.SASLFactory = new SASL.Factory();
-        this.config.sasl.forEach(function(mech) {
+        for (const mech of this.config.sasl) {
             if (typeof mech === 'string') {
                 const existingMech = SASL_MECHS[mech.toLowerCase()];
                 if (existingMech && existingMech.prototype && existingMech.prototype.name) {
-                    self.SASLFactory.use(existingMech);
+                    this.SASLFactory.use(existingMech);
                 }
             } else {
-                self.SASLFactory.use(mech);
+                this.SASLFactory.use(mech);
             }
-        });
+        }
 
         this.config.jid = new JID(this.config.jid);
 

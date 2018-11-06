@@ -68,7 +68,7 @@ export default function(JXT) {
                         this.xml.removeChild(this.xml.childNodes[i]);
                     }
 
-                    actions.forEach(function(action) {
+                    for (const action of actions) {
                         if (!TYPE_MAP[action.type]) {
                             return;
                         }
@@ -92,7 +92,7 @@ export default function(JXT) {
                         }
 
                         self.xml.appendChild(child);
-                    });
+                    }
                 }
             }
         }

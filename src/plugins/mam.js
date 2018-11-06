@@ -55,7 +55,7 @@ export default function(client) {
         const fields = (opts.form.fields = opts.form.fields || []);
 
         const defaultFields = ['FORM_TYPE', 'with', 'start', 'end'];
-        defaultFields.forEach(function(name) {
+        for (const name of defaultFields) {
             if (opts[name] || name === 'FORM_TYPE') {
                 let val = opts[name];
                 const isDate = name === 'start' || name === 'end';
@@ -82,7 +82,7 @@ export default function(client) {
 
                 delete opts[name];
             }
-        });
+        }
 
         const dest = new JID(to || client.jid.bare);
         const allowed = {};

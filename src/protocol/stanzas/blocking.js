@@ -12,19 +12,19 @@ export default function(JXT) {
                 return result;
             }
 
-            items.forEach(function(item) {
+            for (const item of items) {
                 result.push(new JID(Utils.getAttribute(item, 'jid', '')));
-            });
+            }
 
             return result;
         },
         set: function(values) {
             const self = this;
-            values.forEach(function(value) {
+            for (const value of values) {
                 const item = Utils.createElement(NS.BLOCKING, 'item', NS.BLOCKING);
                 Utils.setAttribute(item, 'jid', value.toString());
                 self.xml.appendChild(item);
-            });
+            }
         }
     };
 

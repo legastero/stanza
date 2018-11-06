@@ -103,9 +103,9 @@ export default class StreamManagement {
         if (resend) {
             const resendUnacked = this.unacked;
             this.unacked = [];
-            resendUnacked.forEach(function(stanza) {
+            for (const stanza of resendUnacked) {
                 self.client.send(stanza);
-            });
+            }
         }
 
         if (this.needAck()) {

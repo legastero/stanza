@@ -49,9 +49,9 @@ export default function(JXT) {
                     }
                     container = container[0];
                     const jids = Utils.getMultiSubText(container, NS.MAM_2, 'jid');
-                    jids.forEach(function(jid) {
+                    for (const jid of jids) {
                         results.push(new JID(jid.textContent));
-                    });
+                    }
                     return results;
                 },
                 set: function(value) {
@@ -70,9 +70,9 @@ export default function(JXT) {
                     }
                     container = container[0];
                     const jids = Utils.getMultiSubText(container, NS.MAM_2, 'jid');
-                    jids.forEach(function(jid) {
+                    for (const jid of jids) {
                         results.push(new JID(jid.textContent));
-                    });
+                    }
                     return results;
                 },
                 set: function(value) {
