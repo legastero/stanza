@@ -1,9 +1,8 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
+export default function (client) {
 
-module.exports = function (client) {
-
-    client.disco.addFeature('urn:xmpp:bob');
+    client.disco.addFeature(Namespaces.BOB);
 
     client.getBits = function (jid, cid, cb) {
         return client.sendIq({
@@ -14,4 +13,4 @@ module.exports = function (client) {
             }
         }, cb);
     };
-};
+}

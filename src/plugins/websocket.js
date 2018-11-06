@@ -1,9 +1,9 @@
 'use strict';
 
-var WSConnection = require('../transports/websocket');
+import WSConnection from '../transports/websocket';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.transports.websocket = WSConnection;
-};
+}

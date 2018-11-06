@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.on('iq:set:roster', function (iq) {
         var allowed = {};
@@ -84,4 +84,4 @@ module.exports = function (client) {
     client.denySubscription = function (jid) {
         client.sendPresence({type: 'unsubscribed', to: jid});
     };
-};
+}

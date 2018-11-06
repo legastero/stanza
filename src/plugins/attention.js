@@ -1,10 +1,8 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
+export default function (client) {
 
-module.exports = function (client) {
-
-    client.disco.addFeature('urn:xmpp:attention:0');
-
+    client.disco.addFeature(Namespaces.ATTENTION_0);
 
     client.getAttention = function (jid, opts) {
         opts = opts || {};
@@ -19,4 +17,4 @@ module.exports = function (client) {
             client.emit('attention', msg);
         }
     });
-};
+}

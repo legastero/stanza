@@ -2,7 +2,7 @@
 
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.getAccountInfo = function (jid, cb) {
         return this.sendIq({
@@ -29,4 +29,4 @@ module.exports = function (client) {
             }
         }, cb);
     };
-};
+}

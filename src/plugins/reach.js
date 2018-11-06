@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('urn:xmpp:reach:0');
     client.disco.addFeature('urn:xmpp:reach:0+notify');
@@ -36,4 +36,4 @@ module.exports = function (client) {
             reach: data
         }, cb);
     };
-};
+}

@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (client) {
+export default function (client) {
 
     function enabled(msg) {
         return msg.markable && client.config.chatMarkers !== false;
@@ -47,4 +47,4 @@ module.exports = function (client) {
             });
         }
     };
-};
+}

@@ -2,7 +2,7 @@
 
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.goInvisible = function (cb) {
         return this.sendIq({
@@ -17,4 +17,4 @@ module.exports = function (client) {
             visible: true
         }, cb);
     };
-};
+}

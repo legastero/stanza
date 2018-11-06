@@ -1,12 +1,10 @@
-'use strict';
+import { JID } from 'xmpp-jid';
 
 var extend = require('lodash.assign');
 var filter = require('lodash.filter');
 
-var JID = require('xmpp-jid').JID;
 
-
-module.exports = function (client) {
+export default function (client) {
 
     client.getBookmarks = function (cb) {
         return this.getPrivateData({bookmarks: true}, cb);
@@ -66,4 +64,4 @@ module.exports = function (client) {
             }
         });
     };
-};
+}

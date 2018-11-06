@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.prepJID = function (jid, cb) {
         return client.sendIq({
@@ -10,4 +10,4 @@ module.exports = function (client) {
             jidPrep: jid
         }, cb);
     };
-};
+}

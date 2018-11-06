@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.getPrivateData = function (opts, cb) {
         return this.sendIq({
@@ -16,4 +16,4 @@ module.exports = function (client) {
             privateStorage: opts
         }, cb);
     };
-};
+}

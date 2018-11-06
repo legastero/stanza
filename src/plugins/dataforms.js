@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('jabber:x:data');
     client.disco.addFeature('urn:xmpp:media-element');
@@ -13,4 +13,4 @@ module.exports = function (client) {
             client.emit('dataform', msg);
         }
     });
-};
+}

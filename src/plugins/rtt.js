@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('urn:xmpp:rtt:0');
 
@@ -11,4 +11,4 @@ module.exports = function (client) {
             client.emit('rtt:' + msg.rtt.event, msg);
         }
     });
-};
+}

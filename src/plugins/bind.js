@@ -1,9 +1,6 @@
-'use strict';
+import { JID } from 'xmpp-jid';
 
-var JID = require('xmpp-jid').JID;
-
-
-module.exports = function (client, stanzas, config) {
+export default function (client, stanzas, config) {
 
     client.registerFeature('bind', 300, function (features, cb) {
         var self = this;
@@ -43,4 +40,4 @@ module.exports = function (client, stanzas, config) {
         client.sessionStarted = false;
         client.features.negotiated.bind = false;
     });
-};
+}

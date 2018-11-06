@@ -3,7 +3,7 @@
 var async = require('async');
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.features = {
         negotiated: {},
@@ -58,4 +58,4 @@ module.exports = function (client) {
             }
         });
     });
-};
+}

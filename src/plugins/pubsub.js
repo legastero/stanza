@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.on('message', function (msg) {
         if (msg.event) {
@@ -245,4 +245,4 @@ module.exports = function (client) {
             }
         }, cb);
     };
-};
+}

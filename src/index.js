@@ -1,14 +1,19 @@
-'use strict';
+import { JID } from 'xmpp-jid';
 
-exports.VERSION = '__STANZAIO_VERSION__';
-
-exports.JID = require('xmpp-jid').JID;
-exports.Client = require('./client');
+import Client from './client';
+import Plugins from './plugins';
 
 
-exports.createClient = function (opts) {
-    var client = new exports.Client(opts);
-    client.use(require('./plugins'));
+export const VERSION = '__STANZAIO_VERSION__';
+
+export {
+    Client,
+    JID
+};
+
+export function createClient (opts) {
+    var client = new Client(opts);
+    client.use(Plugins);
 
     return client;
-};
+}

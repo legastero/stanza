@@ -3,7 +3,7 @@
 var NS = 'http://jabber.org/protocol/nick';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature(NS);
     client.disco.addFeature(NS + '+notify');
@@ -27,4 +27,4 @@ module.exports = function (client) {
             nick: nick
         }, cb);
     };
-};
+}

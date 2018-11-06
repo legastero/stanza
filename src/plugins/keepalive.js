@@ -35,7 +35,7 @@ function checkConnection(client, timeout) {
 }
 
 
-module.exports = function (client) {
+export default function (client) {
     client.enableKeepAlive = function (opts) {
         opts = opts || {};
 
@@ -76,4 +76,4 @@ module.exports = function (client) {
     client.on('disconnected', function () {
         client.disableKeepAlive();
     });
-};
+}

@@ -1,0 +1,112 @@
+const randomBytes = require('randombytes');
+const createHash = require('create-hash');
+
+
+function parse(chal) {
+    var dtives = {};
+    var tokens = chal.split(/,(?=(?:[^"]|"[^"]*")*$)/);
+    for (var i = 0, len = tokens.length; i < len; i++) {
+        var dtiv = /(\w+)=["]?([^"]+)["]?$/.exec(tokens[i]);
+        if (dtiv) {
+            dtives[dtiv[1]] = dtiv[2];
+        }
+    }
+    return dtives;
+}
+
+function genNonce() {
+    return randomBytes(16).toString('hex');
+}
+
+
+export default class DigestMD5 {
+    constructor(options) {
+        options = options || {};
+        this._genNonce = options.genNonce || genNonce;
+    }
+
+    response(cred) {
+        if (this._completed) {
+            return undefined;
+        }
+        var uri = cred.serviceType + '/' + cred.host;
+        if (cred.serviceName && cred.host !== cred.serviceName) {
+            uri += '/' + cred.serviceName;
+        }
+        var realm = cred.realm || this._realm || '';
+        var cnonce = this._genNonce();
+        var nc = '00000001';
+        var qop = 'auth';
+        var str = '';
+        str += 'username="' + cred.username + '"';
+        if (realm) {
+            str += ',realm="' + realm + '"';
+        }
+        str += ',nonce="' + this._nonce + '"';
+        str += ',cnonce="' + cnonce + '"';
+        str += ',nc=' + nc;
+        str += ',qop=' + qop;
+        str += ',digest-uri="' + uri + '"';
+        var base = createHash('md5').update(cred.username)
+            .update(':')
+            .update(realm)
+            .update(':')
+            .update(cred.password)
+            .digest();
+        var ha1 = createHash('md5').update(base)
+            .update(':')
+            .update(this._nonce)
+            .update(':')
+            .update(cnonce);
+        if (cred.authzid) {
+            ha1.update(':').update(cred.authzid);
+        }
+        ha1 = ha1.digest('hex');
+        var ha2 = createHash('md5').update('AUTHENTICATE:')
+            .update(uri);
+        if (qop === 'auth-int' || qop === 'auth-conf') {
+            ha2.update(':00000000000000000000000000000000');
+        }
+        ha2 = ha2.digest('hex');
+        var digest = createHash('md5').update(ha1)
+            .update(':')
+            .update(this._nonce)
+            .update(':')
+            .update(nc)
+            .update(':')
+            .update(cnonce)
+            .update(':')
+            .update(qop)
+            .update(':')
+            .update(ha2)
+            .digest('hex');
+        str += ',response=' + digest;
+        if (this._charset === 'utf-8') {
+            str += ',charset=utf-8';
+        }
+        if (cred.authzid) {
+            str += 'authzid="' + cred.authzid + '"';
+        }
+        return str;
+    }
+
+    challenge(chal) {
+        var dtives = parse(chal);
+        this._completed = !!dtives.rspauth;
+        this._realm = dtives.realm;
+        this._nonce = dtives.nonce;
+        this._qop = (dtives.qop || 'auth').split(',');
+        this._stale = dtives.stale;
+        this._maxbuf = parseInt(dtives.maxbuf) || 65536;
+        this._charset = dtives.charset;
+        this._algo = dtives.algorithm;
+        this._cipher = dtives.cipher;
+        if (this._cipher) {
+            this._cipher.split(',');
+        }
+        return this;
+    }
+}
+
+DigestMD5.prototype.name = 'DIGEST-MD5';
+DigestMD5.prototype.clientFirst = false;

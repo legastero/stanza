@@ -26,7 +26,7 @@ function timeoutPromise(targetPromise, queryid, delay) {
 }
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('urn:xmpp:mam:2');
 
@@ -148,4 +148,4 @@ module.exports = function (client) {
             client.emit('mam:item:' + msg.mamItem.queryid, msg);
         }
     });
-};
+}

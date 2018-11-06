@@ -1,8 +1,4 @@
-'use strict';
-
-
-
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('urn:xmpp:carbons:2');
 
@@ -61,4 +57,4 @@ module.exports = function (client) {
             client.emit('message', msg);
         }
     });
-};
+}

@@ -2,7 +2,7 @@
 
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('http://jabber.org/protocol/geoloc');
     client.disco.addFeature('http://jabber.org/protocol/geoloc+notify');
@@ -26,4 +26,4 @@ module.exports = function (client) {
             geoloc: data
         }, cb);
     };
-};
+}

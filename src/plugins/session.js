@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.registerFeature('session', 1000, function (features, cb) {
         var self = this;
@@ -32,4 +32,4 @@ module.exports = function (client) {
         client.sessionStarted = false;
         client.features.negotiated.session = false;
     });
-};
+}

@@ -6,7 +6,7 @@ var request = require('request');
 var NS = 'http://docs.oasis-open.org/ns/xri/xrd-1.0';
 
 
-function XRD(registry) {
+export function XRD(registry) {
     var jxt = registry.utils;
 
     var Properties = {
@@ -57,7 +57,7 @@ function XRD(registry) {
 }
 
 
-function getHostMeta(JXT, opts, cb) {
+export function getHostMeta(JXT, opts, cb) {
     if (typeof opts === 'string') {
         opts = {host: opts};
     }
@@ -110,7 +110,7 @@ function getHostMeta(JXT, opts, cb) {
 }
 
 
-module.exports = function (client, stanzas) {
+export default function (client, stanzas) {
 
     if (!client && !stanzas) {
         return;
@@ -148,7 +148,4 @@ module.exports = function (client, stanzas) {
             cb(false, results);
         });
     };
-};
-
-module.exports.getHostMeta = getHostMeta;
-module.exports.XRD = XRD;
+}

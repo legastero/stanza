@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client, stanzas, config) {
+export default function (client, stanzas, config) {
 
     var smacks = function (features, cb) {
         var self = this;
@@ -55,4 +55,4 @@ module.exports = function (client, stanzas, config) {
 
     client.registerFeature('streamManagement', 200, smacks);
     client.registerFeature('streamManagement', 500, smacks);
-};
+}

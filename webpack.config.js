@@ -1,6 +1,5 @@
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
 const Pkg = require('./package.json');
 
 
@@ -23,6 +22,12 @@ module.exports = {
                     search: '__STANZAIO_VERSION__',
                     replace: Pkg.version
                 }
+            },
+            {
+                test: /\.m?js$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+                options: Pkg.babel
             }
         ]
     },

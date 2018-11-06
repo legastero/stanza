@@ -3,7 +3,7 @@
 var hashes = require('iana-hashes');
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('urn:xmpp:hashes:1');
 
@@ -11,4 +11,4 @@ module.exports = function (client) {
     names.forEach(function (name) {
         client.disco.addFeature('urn:xmpp:hash-function-text-names:' + name);
     });
-};
+}

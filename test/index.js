@@ -5,4 +5,4 @@ require('./connection');
 require('./stanza-dataforms');
 
 // Host-meta Tests
-require('./hostmeta')
+require('./hostmeta');

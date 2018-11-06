@@ -4,7 +4,7 @@ var Jingle = require('jingle');
 var window = window || global;
 
 
-module.exports = function (client) {
+export default function (client) {
 
     var jingle = client.jingle = new Jingle();
     client.supportedICEServiceTypes = {
@@ -135,4 +135,4 @@ module.exports = function (client) {
             }
         });
     };
-};
+}

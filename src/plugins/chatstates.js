@@ -1,7 +1,4 @@
-'use strict';
-
-
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('http://jabber.org/protocol/chatstates');
 
@@ -25,4 +22,4 @@ module.exports = function (client) {
             });
         }
     });
-};
+}

@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('urn:xmpp:extdisco:1');
 
@@ -26,4 +26,4 @@ module.exports = function (client) {
             }
         }, cb);
     };
-};
+}

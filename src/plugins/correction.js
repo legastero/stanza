@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('urn:xmpp:message-correct:0');
 
@@ -11,4 +11,4 @@ module.exports = function (client) {
             client.emit('replace:' + msg.id, msg);
         }
     });
-};
+}

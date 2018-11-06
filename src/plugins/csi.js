@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client, stanzas) {
+export default function (client, stanzas) {
 
     var Active = stanzas.getDefinition('active', 'urn:xmpp:csi:0');
     var Inactive = stanzas.getDefinition('inactive', 'urn:xmpp:csi:0');
@@ -23,4 +23,4 @@ module.exports = function (client, stanzas) {
             this.send(new Inactive());
         }
     };
-};
+}

@@ -4,7 +4,7 @@
 var NS = 'urn:ietf:params:xml:ns:xmpp-sasl';
 
 
-module.exports = function (client, stanzas) {
+export default function (client, stanzas) {
 
     var Auth = stanzas.getDefinition('auth', NS);
     var Response = stanzas.getDefinition('response', NS);
@@ -91,4 +91,4 @@ module.exports = function (client, stanzas) {
         client.features.negotiated.sasl = false;
         client.releaseGroup('sasl');
     });
-};
+}

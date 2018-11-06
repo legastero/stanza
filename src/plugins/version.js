@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('jabber:iq:version');
 
@@ -20,4 +20,4 @@ module.exports = function (client) {
             version: true
         }, cb);
     };
-};
+}

@@ -1,9 +1,9 @@
 'use strict';
 
-var BOSHConnection = require('../transports/bosh');
+import BOSHConnection from '../transports/bosh';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.transports.bosh = BOSHConnection;
-};
+}

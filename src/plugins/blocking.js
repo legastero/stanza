@@ -1,9 +1,9 @@
-'use strict';
+import { Namespaces } from '../protocol';
 
 
-module.exports = function (client) {
+export default function (client) {
 
-    client.disco.addFeature('urn:xmpp:blocking');
+    client.disco.addFeature(Namespaces.BLOCKING);
 
     client.block = function (jid, cb) {
         return client.sendIq({
@@ -43,4 +43,4 @@ module.exports = function (client) {
         });
         client.sendIq(iq.resultReply());
     });
-};
+}

@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (client, stanzas, config) {
+export default function (client, stanzas, config) {
 
     var sendReceipts =  config.sendReceipts !== false;
 
@@ -25,4 +25,4 @@ module.exports = function (client, stanzas, config) {
             client.emit('receipt:' + msg.receipt);
         }
     });
-};
+}

@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('urn:xmpp:ping');
 
@@ -16,4 +16,4 @@ module.exports = function (client) {
             ping: true
         }, cb);
     };
-};
+}

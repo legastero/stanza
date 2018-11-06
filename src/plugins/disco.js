@@ -151,7 +151,7 @@ Disco.prototype = {
     }
 };
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco = new Disco(client);
 
@@ -272,4 +272,4 @@ module.exports = function (client) {
 
     // Ensure we always have some caps data
     client.updateCaps();
-};
+}

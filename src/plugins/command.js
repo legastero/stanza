@@ -1,10 +1,7 @@
-'use strict';
-
-
 var NS = 'http://jabber.org/protocol/commands';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature(NS);
     client.disco.addItem({
@@ -16,4 +13,4 @@ module.exports = function (client) {
     client.getCommands = function (jid, cb) {
         return client.getDiscoItems(jid, NS, cb);
     };
-};
+}

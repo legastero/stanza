@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('urn:xmpp:push:0');
 
@@ -36,4 +36,4 @@ module.exports = function (client) {
         }
         return this.sendIq(iq, cb);
     };
-};
+}

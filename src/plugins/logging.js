@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('', 'urn:xmpp:eventlog');
 
@@ -12,4 +12,4 @@ module.exports = function (client) {
             log: logData
         });
     };
-};
+}

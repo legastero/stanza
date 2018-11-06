@@ -4,7 +4,7 @@ var each = require('lodash.foreach');
 var JID = require('xmpp-jid').JID;
 
 
-module.exports = function (client) {
+export default function (client) {
 
     client.disco.addFeature('http://jabber.org/protocol/muc');
     client.disco.addFeature('jabber:x:conference');
@@ -263,4 +263,4 @@ module.exports = function (client) {
             mucUnique: true
         }, cb);
     };
-};
+}
