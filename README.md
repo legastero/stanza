@@ -6,23 +6,6 @@
 Stanza.io is a library for using modern XMPP in the browser, and it does that by exposing everything as JSON. Unless you insist, you
 have no need to ever see or touch any XML when using stanza.io.
 
-## Important Protocol Changes
-
-Starting with `v4.0.0`, stanza.io is using the protocol specified in [RFC 7395](http://tools.ietf.org/html/rfc7395) by default, which contains backwards incompatible changes.
-
-Servers have started switching to using the RFC version of the WebSocket binding; notably, Prosody's WebSocket module for `prosody-0.10`. If your server has not yet been upgraded, you can set `transports` to `['old-websocket']` in the config:
-
-```javascript
-var oldws = XMPP.createClient({
-    ...
-    transports: ['old-websocket']
-});
-```
-
-## Stanza Definitions Moved
-
-As of `v7.3.0`, the XML/JSON mapping definitions have been split out into the [jxt-xmpp module](https://github.com/otalk/jxt-xmpp) to allow their use outside of stanza.io itself.
-
 ## Installing
 
 ```sh
@@ -31,11 +14,11 @@ $ npm install stanza.io
 ```
 ## Building bundled/minified version (for AMD, etc)
 
-First run `npm install` to get all of the dependencies, and then run `make`:
+First run `npm install` to get all of the dependencies, and then run `npm run build`:
 
 ```sh
 $ npm install
-$ make
+$ npm run build
 ```
 
 The bundled and minified files will be in the generated `build` directory.
@@ -43,8 +26,9 @@ The bundled and minified files will be in the generated `build` directory.
 ## Getting Started
 
 1. Find or install a server which supports XMPP over WebSocket (Prosody recommended).
-2. Run `npm install` in the `node_modules/stanza.io` directory.
-3. Run `make` to build `build/stanzaio.bundle.js`.
+2. Clone this repo with `git clone https://github.com/legastero/stanza.io.git`
+2. Run `npm install` in the new `stanza.io` directory.
+3. Run `npm run build` to create `build/stanzaio.bundle.js`.
 4. Open `demo.html` in your browser.
 5. Enter your connection info, click connect.
 6. Use the JS console to play with the XMPP client (`var client`).
@@ -52,7 +36,7 @@ The bundled and minified files will be in the generated `build` directory.
 ## Echo Client Demo
 
 ```javascript
-var XMPP = require('stanza.io'); // if using browserify
+var XMPP = require('stanza.io');
 
 var client = XMPP.createClient({
     jid: 'echobot@example.com',
@@ -90,7 +74,7 @@ client.connect();
 
 ## License
 
-MIT
+[MIT](./LICENSE)
 
 ## Created By
 
