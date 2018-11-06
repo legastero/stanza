@@ -1,4 +1,7 @@
 # Stanza.io
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/legastero/stanza.io.svg)](https://greenkeeper.io/)
+
 **Modern XMPP in the browser, with a JSON API.**
 
 ## What is this?
