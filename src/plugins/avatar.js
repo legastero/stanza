@@ -1,7 +1,7 @@
 import { Namespaces } from '../protocol';
 
 export default function(client) {
-    client.disco.addFeature(`${Namespaces.AVATAR_METADATA}+notify`);
+    client.disco.addFeature(Namespaces.PEP_NOTIFY(Namespaces.AVATAR_METADATA));
 
     client.on('pubsub:event', function(msg) {
         if (!msg.event.updated) {

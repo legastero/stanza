@@ -2,7 +2,7 @@ import { Namespaces } from '../protocol';
 
 export default function(client) {
     client.disco.addFeature(Namespaces.REACH_0);
-    client.disco.addFeature(`${Namespaces.REACH_0}+notify`);
+    client.disco.addFeature(Namespaces.PEP_NOTIFY(Namespaces.REACH_0));
 
     client.on('pubsub:event', function(msg) {
         if (!msg.event.updated) {

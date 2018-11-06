@@ -2,7 +2,7 @@ import { Namespaces } from '../protocol';
 
 export default function(client) {
     client.disco.addFeature(Namespaces.GEOLOC);
-    client.disco.addFeature(`${Namespaces.GEOLOC}+notify`);
+    client.disco.addFeature(Namespaces.PEP_NOTIFY(Namespaces.GEOLOC));
 
     client.on('pubsub:event', function(msg) {
         if (!msg.event.updated) {
