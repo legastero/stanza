@@ -120,7 +120,7 @@
         "compile": "rimraf lib && babel --optional runtime -sd lib/ src/",
         "lint": "eslint .",
         "prepare": "npm run compile",
-        "test": "npm run compile && node test/index.js | tap-spec",
+        "test": "babel-node test/index.js | tap-spec",
         "validate": "npm ls"
     }
 }

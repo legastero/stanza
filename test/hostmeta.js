@@ -1,10 +1,10 @@
-'use strict';
+import test from 'tape';
+import jxt from 'jxt';
 
-const test = require('tape');
-const JXT = require('jxt').createRegistry();
+import { getHostMeta } from '../src/plugins/hostmeta';
+import XRD from '../src/protocol/stanzas/xrd';
 
-const HostMeta = require('../lib/plugins/hostmeta');
-const XRD = require('../lib/protocol/stanzas/xrd');
+const JXT = jxt.createRegistry();
 
 const xml =
     '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -63,7 +63,7 @@ const json = {
 test('XRD', function(t) {
     t.plan(4);
 
-    JXT.use(XRD.default);
+    JXT.use(XRD);
 
     const xrd = JXT.parse(xml).toJSON();
 
@@ -77,7 +77,7 @@ test('XRD', function(t) {
 test('retrieve JSON only', function(t) {
     t.plan(2);
 
-    HostMeta.getHostMeta(
+    getHostMeta(
         JXT,
         {
             host: 'lance.im',
@@ -95,7 +95,7 @@ test('retrieve JSON only', function(t) {
 test('retrieve XRD only', function(t) {
     t.plan(2);
 
-    HostMeta.getHostMeta(
+    getHostMeta(
         JXT,
         {
             host: 'lance.im',
@@ -111,14 +111,14 @@ test('retrieve XRD only', function(t) {
 });
 
 test('retrieve either', function(t) {
-    HostMeta.getHostMeta(JXT, 'lance.im', function(err, hostmeta) {
+    getHostMeta(JXT, 'lance.im', function(err, hostmeta) {
         t.ok(hostmeta.links.length > 0);
         t.end();
     });
 });
 
 test('missing host-meta', function(t) {
-    HostMeta.getHostMeta(
+    getHostMeta(
         JXT,
         {
             host: 'dne.lance.im',

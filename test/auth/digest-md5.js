@@ -1,5 +1,5 @@
-const test = require('tape');
-const Mech = require('../../lib/sasl/digest-md5').default;
+import test from 'tape';
+import Mech from '../../src/sasl/digest-md5';
 
 test('DIGEST-MD5', function(t) {
     const mech = new Mech({

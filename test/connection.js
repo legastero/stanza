@@ -1,7 +1,5 @@
-'use strict';
-
-const test = require('tape');
-const stanza = require('../lib');
+import test from 'tape';
+import * as stanza from '../src';
 
 test('Connect using WebSocket', function(t) {
     t.plan(1);

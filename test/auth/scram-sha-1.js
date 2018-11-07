@@ -1,5 +1,5 @@
-const test = require('tape');
-const SCRAM = require('../../lib/sasl/scram-sha-1').default;
+import test from 'tape';
+import SCRAM from '../../src/sasl/scram-sha-1';
 
 test('SCRAM', function(t) {
     const mech = new SCRAM({

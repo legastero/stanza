@@ -1,12 +1,12 @@
 // Generic Connection Tests
-require('./connection');
+import './connection';
 
 // Stanza Support Tests
-require('./stanza-dataforms');
+import './stanza-dataforms';
 
 // Host-meta Tests
-require('./hostmeta');
+import './hostmeta';
 
 // Auth Mechanism Tests
-require('./auth/digest-md5');
-require('./auth/scram-sha-1');
+import './auth/digest-md5';
+import './auth/scram-sha-1';
