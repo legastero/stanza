@@ -103,7 +103,9 @@ export default function(client) {
                 pubsub: {
                     retrieve: {
                         node: node,
-                        item: id
+                        item: {
+                            id: id
+                        }
                     }
                 }
             },
