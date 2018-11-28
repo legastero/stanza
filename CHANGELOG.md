@@ -5,6 +5,8 @@
 -   Converted to ES modules, using Typescript compiler for downleveling.
 -   Moved stanza definitions back from `jxt-xmpp`, obsoleting both `jxt-xmpp` and `jxt-xmpp-types`.
 -   Replaced use of `request` and `xhr` with `cross-fetch`.
+-   SASL mech implementations now live inside `stanza.io`.
+-   Moved host-meta fetching logic into `stanza.io`.
 
 ## 9.1.0 -> 9.2.0
 
