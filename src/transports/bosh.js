@@ -1,63 +1,32 @@
-import request from 'request';
+import fetch from 'cross-fetch';
 import WildEmitter from 'wildemitter';
 
 import { Namespaces } from '../protocol';
 
 function timeoutPromise(targetPromise, delay) {
-    let timeoutRef;
-    return Promise.race([
-        targetPromise,
-        new Promise(function(resolve, reject) {
-            timeoutRef = setTimeout(function() {
-                reject();
-            }, delay);
-        })
-    ]).then(function(result) {
-        clearTimeout(timeoutRef);
-        return result;
+    return new Promise((resolve, reject) => {
+        const t = setTimeout(reject, delay, new Error('Request timed out'));
+        targetPromise.then(result => {
+            clearTimeout(t);
+            resolve(result);
+        }, reject);
     });
 }
 
-function delayPromise(delay) {
-    return new Promise(function(resolve) {
-        setTimeout(function() {
-            resolve();
-        }, delay);
-    });
-}
-
-function makeRequest(opts) {
-    return new Promise(function(resolve, reject) {
-        request(opts, function(err, result, body) {
-            if (err) {
-                return reject(err);
-            } else {
-                return resolve([result, body]);
-            }
-        });
-    });
-}
-
-function retryRequest(opts, timeout, allowedRetries) {
-    return timeoutPromise(makeRequest(opts), (timeout || 20) * 1000)
-        .then(function(result) {
-            const req = result[0];
-            const body = result[1];
-
-            if (req.statusCode < 200 || req.statusCode >= 400) {
-                throw new Error('HTTP Status Error' + req.statusCode);
-            }
-            return body;
-        })
-        .catch(function() {
-            if (allowedRetries > 0) {
-                return delayPromise(1000).then(function() {
-                    return retryRequest(opts, timeout, allowedRetries - 1);
-                });
-            } else {
-                throw new Error('Dead Connection, exceeded retry limit');
-            }
-        });
+async function retryRequest(url, opts, timeout, allowedRetries) {
+    try {
+        const resp = await timeoutPromise(fetch(url, opts), timeout * 1000);
+        if (!resp.ok) {
+            throw new Error('HTTP Status Error: ' + resp.status);
+        }
+        return resp.text();
+    } catch (err) {
+        if (allowedRetries > 0) {
+            return retryRequest(url, opts, timeout, allowedRetries - 1);
+        } else {
+            throw err;
+        }
+    }
 }
 
 export default class BOSHConnection extends WildEmitter {
@@ -221,19 +190,19 @@ export default class BOSHConnection extends WildEmitter {
         self.emit('raw:outgoing:' + ticket.id, body);
         self.requests.push(ticket);
         const req = retryRequest(
+            self.url,
             {
                 body: body,
                 headers: {
                     'Content-Type': 'text/xml'
                 },
-                method: 'POST',
-                strictSSL: true,
-                uri: self.url
+                method: 'POST'
             },
             self.config.wait * 1.5,
             this.config.maxRetries
         )
             .catch(function(err) {
+                console.log(err);
                 self.hasStream = false;
                 const serr = new self.stanzas.StreamError({
                     condition: 'connection-timeout'
@@ -257,11 +226,9 @@ export default class BOSHConnection extends WildEmitter {
                     !self.requests.length &&
                     self.authenticated
                 ) {
-                    // Delay next auto-request by two ticks since we're likely
-                    // to send data anyway next tick.
-                    process.nextTick(function() {
-                        process.nextTick(self.longPoll.bind(self));
-                    });
+                    setTimeout(() => {
+                        self.longPoll();
+                    }, 30);
                 }
             });
         ticket.request = req;
