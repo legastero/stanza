@@ -30,34 +30,34 @@ const xml =
     '</XRD>';
 
 const json = {
-    subject: 'http://blog.example.com/article/id/314',
-    expires: '2010-01-30T09:30:00.000Z',
     aliases: ['http://blog.example.com/cool_new_thing', 'http://blog.example.com/steve/article/7'],
-    properties: {
-        'http://blgx.example.net/ns/version': '1.3',
-        'http://blgx.example.net/ns/ext': ''
-    },
+    expires: '2010-01-30T09:30:00.000Z',
     links: [
         {
-            rel: 'author',
-            type: 'text/html',
             href: 'http://blog.example.com/author/steve',
+            properties: {
+                'http://example.com/role': 'editor'
+            },
+            rel: 'author',
             titles: {
                 default: 'About the Author',
                 'en-us': 'Author Information'
             },
-            properties: {
-                'http://example.com/role': 'editor'
-            }
+            type: 'text/html'
         },
         {
-            rel: 'author',
             href: 'http://example.com/author/john',
+            rel: 'author',
             titles: {
                 default: 'The other author'
             }
         }
-    ]
+    ],
+    properties: {
+        'http://blgx.example.net/ns/ext': '',
+        'http://blgx.example.net/ns/version': '1.3'
+    },
+    subject: 'http://blog.example.com/article/id/314'
 };
 
 test('XRD', function(t) {

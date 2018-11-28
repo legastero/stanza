@@ -13,10 +13,10 @@ test('DIGEST-MD5', function(t) {
     );
 
     const res = mech.response({
-        username: 'chris',
-        password: 'secret',
         host: 'elwood.innosoft.com',
-        serviceType: 'imap'
+        password: 'secret',
+        serviceType: 'imap',
+        username: 'chris'
     });
 
     t.equal(

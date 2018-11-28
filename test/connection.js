@@ -22,9 +22,9 @@ test('Connect using BOSH', function(t) {
     t.plan(1);
 
     const client = stanza.createClient({
+        boshURL: 'https://anon.lance.im/http-bind',
         jid: 'anon@anon.lance.im',
-        transport: 'bosh',
-        boshURL: 'https://anon.lance.im/http-bind'
+        transport: 'bosh'
     });
 
     client.on('session:started', function() {

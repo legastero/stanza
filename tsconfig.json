@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "importHelpers": true,
         "target": "es2015",
         "allowJs": true,
         "esModuleInterop": true,

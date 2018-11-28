@@ -9,8 +9,8 @@ test('SCRAM', function(t) {
     });
 
     const creds = {
-        username: 'chris',
-        password: 'secret'
+        password: 'secret',
+        username: 'chris'
     };
 
     const initial = mech.response(creds);

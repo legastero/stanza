@@ -15,17 +15,17 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /index\.[jt]s/,
                 loader: 'string-replace-loader',
                 options: {
-                    search: '__STANZAIO_VERSION__',
-                    replace: Pkg.version
-                }
+                    replace: Pkg.version,
+                    search: '__STANZAIO_VERSION__'
+                },
+                test: /index\.[jt]s/
             },
             {
-                test: /\.m?[jt]s$/,
                 exclude: /node_modules/,
-                loader: 'ts-loader'
+                loader: 'ts-loader',
+                test: /\.m?[jt]s$/
             }
         ]
     },
@@ -33,8 +33,8 @@ module.exports = {
     plugins: [
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',
-            reportFilename: 'bundle-stats.html',
-            defaultSizes: 'gzip'
+            defaultSizes: 'gzip',
+            reportFilename: 'bundle-stats.html'
         })
     ]
 };
