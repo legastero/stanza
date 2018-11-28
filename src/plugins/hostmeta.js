@@ -1,9 +1,21 @@
-import * as async from 'async';
-import request from 'request';
+import fetch from 'cross-fetch';
 
 import { Namespaces } from '../protocol';
 
-export function getHostMeta(JXT, opts, cb) {
+async function promiseAny(promises) {
+    try {
+        const errors = await Promise.all(
+            promises.map(p => {
+                return p.then(val => Promise.reject(val), err => Promise.resolve(err));
+            })
+        );
+        return Promise.reject(errors);
+    } catch (val) {
+        return Promise.resolve(val);
+    }
+}
+
+export async function getHostMeta(JXT, opts) {
     if (typeof opts === 'string') {
         opts = { host: opts };
     }
@@ -17,71 +29,48 @@ export function getHostMeta(JXT, opts, cb) {
 
     const scheme = config.ssl ? 'https://' : 'http://';
 
-    async.parallel(
-        [
-            function(done) {
-                request(scheme + config.host + '/.well-known/host-meta.json', function(
-                    err,
-                    req,
-                    body
-                ) {
-                    if (err) {
-                        return done(null);
-                    }
-
-                    let data;
-                    try {
-                        data = JSON.parse(body);
-                    } catch (e) {
-                        data = null;
-                    }
-                    return done(data);
-                });
-            },
-            function(done) {
-                request(scheme + config.host + '/.well-known/host-meta', function(err, req, body) {
-                    if (err) {
-                        return done(null);
-                    }
-
-                    const xrd = JXT.parse(body);
-                    return done(xrd.toJSON());
-                });
+    return promiseAny([
+        fetch(`${scheme}${config.host}/.well-known/host-meta.json`).then(async res => {
+            if (!res.ok) {
+                throw new Error('could-not-fetch-json');
             }
-        ],
-        function(result) {
-            if (result) {
-                cb(null, result);
-            } else {
-                cb('no-host-meta');
+
+            return res.json();
+        }),
+        fetch(`${scheme}${config.host}/.well-known/host-meta`).then(async res => {
+            if (!res.ok) {
+                throw new Error('could-not-fetch-xml');
             }
-        }
-    );
+
+            const data = await res.text();
+            return JXT.parse(data);
+        })
+    ]);
 }
 
 export default function(client, stanzas) {
     client.discoverBindings = function(server, cb) {
-        getHostMeta(stanzas, server, function(err, data) {
-            if (err) {
-                return cb(err, []);
-            }
+        getHostMeta(stanzas, server)
+            .then(data => {
+                const results = {
+                    bosh: [],
+                    websocket: []
+                };
+                const links = data.links || [];
 
-            const results = {
-                bosh: [],
-                websocket: []
-            };
-            const links = data.links || [];
-
-            for (const link of links) {
-                if (link.href && link.rel === Namespaces.ALT_CONNECTIONS_WEBSOCKET) {
-                    results.websocket.push(link.href);
+                for (const link of links) {
+                    if (link.href && link.rel === Namespaces.ALT_CONNECTIONS_WEBSOCKET) {
+                        results.websocket.push(link.href);
+                    }
+                    if (link.href && link.rel === Namespaces.ALT_CONNECTIONS_XBOSH) {
+                        results.bosh.push(link.href);
+                    }
                 }
-                if (link.href && link.rel === Namespaces.ALT_CONNECTIONS_XBOSH) {
-                    results.bosh.push(link.href);
-                }
-            }
 
-            cb(false, results);
-        });
+                cb(null, results);
+            })
+            .catch(err => {
+                cb(err, []);
+            });
     };
 }

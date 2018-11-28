@@ -75,59 +75,47 @@ test('XRD', function(t) {
 });
 
 test('retrieve JSON only', function(t) {
-    t.plan(2);
+    t.plan(1);
 
-    getHostMeta(
-        JXT,
-        {
-            host: 'lance.im',
-            json: true,
-            xrd: false
-        },
-        function(err, hostmeta) {
-            t.notOk(err);
-            t.ok(hostmeta.links.length > 0);
-            t.end();
-        }
-    );
+    getHostMeta(JXT, {
+        host: 'lance.im',
+        json: true,
+        xrd: false
+    }).then(hostmeta => {
+        t.ok(hostmeta.links.length > 0);
+        t.end();
+    });
 });
 
 test('retrieve XRD only', function(t) {
-    t.plan(2);
+    t.plan(1);
 
-    getHostMeta(
-        JXT,
-        {
-            host: 'lance.im',
-            json: false,
-            xrd: true
-        },
-        function(err, hostmeta) {
-            t.notOk(err);
-            t.ok(hostmeta.links.length > 0);
-            t.end();
-        }
-    );
+    getHostMeta(JXT, {
+        host: 'lance.im',
+        json: false,
+        xrd: true
+    }).then(hostmeta => {
+        t.ok(hostmeta.links.length > 0);
+        t.end();
+    });
 });
 
 test('retrieve either', function(t) {
-    getHostMeta(JXT, 'lance.im', function(err, hostmeta) {
+    t.plan(1);
+    getHostMeta(JXT, 'lance.im').then(hostmeta => {
         t.ok(hostmeta.links.length > 0);
         t.end();
     });
 });
 
 test('missing host-meta', function(t) {
-    getHostMeta(
-        JXT,
-        {
-            host: 'dne.lance.im',
-            json: true,
-            xrd: true
-        },
-        function(err) {
-            t.equal(err, 'no-host-meta');
-            t.end();
-        }
-    );
+    t.plan(1);
+    getHostMeta(JXT, {
+        host: 'dne.lance.im',
+        json: true,
+        xrd: true
+    }).catch(err => {
+        t.ok(err);
+        t.end();
+    });
 });
