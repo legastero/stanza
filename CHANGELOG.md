@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.0.0
+* Converted to ES modules, using Typescript compiler for downleveling.
+* Moved stanza definitions back from `jxt-xmpp`, obsoleting both `jxt-xmpp` and `jxt-xmpp-types`.
+
 ## 9.1.0 -> 9.2.0
 * Fixed CSI namespace to use `urn:xmpp:csi:0`
 * Added support for XEP-0333 Chat Markers
