@@ -1,16 +1,16 @@
 import * as NS from '../namespaces';
 
 const EXPORT_MAP = {
+    noCopy: 'no-copy',
     noPermanentStore: 'no-permanent-store',
     noStore: 'no-store',
-    noCopy: 'no-copy',
     store: 'store'
 };
 
 const IMPORT_MAP = {
+    'no-copy': 'noCopy',
     'no-permanent-store': 'noPermanentStore',
     'no-store': 'noStore',
-    'no-copy': 'noCopy',
     store: 'store'
 };
 

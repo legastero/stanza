@@ -12,14 +12,14 @@ export default function(client) {
 
         if (msg.chatState) {
             client.emit('chat:state', {
-                to: msg.to,
+                chatState: msg.chatState,
                 from: msg.from,
-                chatState: msg.chatState
+                to: msg.to
             });
             client.emit('chatState', {
-                to: msg.to,
+                chatState: msg.chatState,
                 from: msg.from,
-                chatState: msg.chatState
+                to: msg.to
             });
         }
     });

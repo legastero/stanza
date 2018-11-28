@@ -2,23 +2,23 @@ import * as NS from '../namespaces';
 
 export default function(JXT) {
     const OOB = JXT.define({
-        name: 'oob',
         element: 'x',
-        namespace: NS.OOB,
         fields: {
-            url: JXT.utils.textSub(NS.OOB, 'url'),
-            desc: JXT.utils.textSub(NS.OOB, 'desc')
-        }
+            desc: JXT.utils.textSub(NS.OOB, 'desc'),
+            url: JXT.utils.textSub(NS.OOB, 'url')
+        },
+        name: 'oob',
+        namespace: NS.OOB
     });
 
     const OOB_IQ = JXT.define({
-        name: 'oob',
         element: 'query',
-        namespace: NS.OOB_IQ,
         fields: {
-            url: JXT.utils.textSub(NS.OOB, 'url'),
-            desc: JXT.utils.textSub(NS.OOB, 'desc')
-        }
+            desc: JXT.utils.textSub(NS.OOB, 'desc'),
+            url: JXT.utils.textSub(NS.OOB, 'url')
+        },
+        name: 'oob',
+        namespace: NS.OOB_IQ
     });
 
     JXT.extendMessage(OOB, 'oobURIs');

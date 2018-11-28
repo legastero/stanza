@@ -4,57 +4,57 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const DiscoCaps = JXT.define({
-        name: 'caps',
-        namespace: NS.CAPS,
         element: 'c',
         fields: {
-            ver: Utils.attribute('ver'),
-            node: Utils.attribute('node'),
+            ext: Utils.attribute('ext'),
             hash: Utils.attribute('hash'),
-            ext: Utils.attribute('ext')
-        }
+            node: Utils.attribute('node'),
+            ver: Utils.attribute('ver')
+        },
+        name: 'caps',
+        namespace: NS.CAPS
     });
 
     const DiscoInfo = JXT.define({
-        name: 'discoInfo',
-        namespace: NS.DISCO_INFO,
         element: 'query',
         fields: {
-            node: Utils.attribute('node'),
-            features: Utils.multiSubAttribute(NS.DISCO_INFO, 'feature', 'var')
-        }
+            features: Utils.multiSubAttribute(NS.DISCO_INFO, 'feature', 'var'),
+            node: Utils.attribute('node')
+        },
+        name: 'discoInfo',
+        namespace: NS.DISCO_INFO
     });
 
     const DiscoIdentity = JXT.define({
-        name: '_discoIdentity',
-        namespace: NS.DISCO_INFO,
         element: 'identity',
         fields: {
             category: Utils.attribute('category'),
-            type: Utils.attribute('type'),
+            lang: Utils.langAttribute(),
             name: Utils.attribute('name'),
-            lang: Utils.langAttribute()
-        }
+            type: Utils.attribute('type')
+        },
+        name: '_discoIdentity',
+        namespace: NS.DISCO_INFO
     });
 
     const DiscoItems = JXT.define({
-        name: 'discoItems',
-        namespace: NS.DISCO_ITEMS,
         element: 'query',
         fields: {
             node: Utils.attribute('node')
-        }
+        },
+        name: 'discoItems',
+        namespace: NS.DISCO_ITEMS
     });
 
     const DiscoItem = JXT.define({
-        name: '_discoItem',
-        namespace: NS.DISCO_ITEMS,
         element: 'item',
         fields: {
             jid: Utils.jidAttribute('jid'),
-            node: Utils.attribute('node'),
-            name: Utils.attribute('name')
-        }
+            name: Utils.attribute('name'),
+            node: Utils.attribute('node')
+        },
+        name: '_discoItem',
+        namespace: NS.DISCO_ITEMS
     });
 
     JXT.extend(DiscoItems, DiscoItem, 'items');

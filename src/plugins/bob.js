@@ -6,11 +6,11 @@ export default function(client) {
     client.getBits = function(jid, cid, cb) {
         return client.sendIq(
             {
-                to: jid,
-                type: 'get',
                 bob: {
                     cid: cid
-                }
+                },
+                to: jid,
+                type: 'get'
             },
             cb
         );

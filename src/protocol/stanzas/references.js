@@ -4,16 +4,16 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const Reference = JXT.define({
-        name: 'reference',
         element: 'reference',
-        namespace: NS.REFERENCE_0,
         fields: {
-            type: Utils.attribute('type'),
+            anchor: Utils.attribute('anchor'),
             begin: Utils.numberAttribute('begin'),
             end: Utils.numberAttribute('end'),
-            uri: Utils.attribute('uri'),
-            anchor: Utils.attribute('anchor')
-        }
+            type: Utils.attribute('type'),
+            uri: Utils.attribute('uri')
+        },
+        name: 'reference',
+        namespace: NS.REFERENCE_0
     });
 
     const References = Utils.multiExtension(Reference);

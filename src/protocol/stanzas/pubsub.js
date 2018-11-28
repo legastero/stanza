@@ -4,8 +4,6 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const Pubsub = JXT.define({
-        name: 'pubsub',
-        namespace: NS.PUBSUB,
         element: 'pubsub',
         fields: {
             create: {
@@ -41,136 +39,140 @@ export default function(JXT) {
                     }
                 }
             }
-        }
+        },
+        name: 'pubsub',
+        namespace: NS.PUBSUB
     });
 
     const Configure = JXT.define({
+        element: 'configure',
         name: 'config',
-        namespace: NS.PUBSUB,
-        element: 'configure'
+        namespace: NS.PUBSUB
     });
 
     const Subscribe = JXT.define({
-        name: 'subscribe',
-        namespace: NS.PUBSUB,
         element: 'subscribe',
         fields: {
-            node: Utils.attribute('node'),
-            jid: Utils.jidAttribute('jid')
-        }
+            jid: Utils.jidAttribute('jid'),
+            node: Utils.attribute('node')
+        },
+        name: 'subscribe',
+        namespace: NS.PUBSUB
     });
 
     const Subscription = JXT.define({
-        name: 'subscription',
-        namespace: NS.PUBSUB,
         element: 'subscription',
         fields: {
-            node: Utils.attribute('node'),
-            jid: Utils.jidAttribute('jid'),
-            subid: Utils.attribute('subid'),
-            type: Utils.attribute('subscription'),
             configurable: Utils.boolSub('subscribe-options'),
             configurationRequired: {
                 get: function() {
                     const options = Utils.find(this.xml, NS.PUBSUB, 'subscribe-options');
+
                     if (options.length) {
                         return Utils.getBoolSub(options[0], NS.PUBSUB, 'required');
                     }
+
                     return false;
                 }
-            }
-        }
+            },
+            jid: Utils.jidAttribute('jid'),
+            node: Utils.attribute('node'),
+            subid: Utils.attribute('subid'),
+            type: Utils.attribute('subscription')
+        },
+        name: 'subscription',
+        namespace: NS.PUBSUB
     });
 
     const Subscriptions = JXT.define({
-        name: 'subscriptions',
-        namespace: NS.PUBSUB,
         element: 'subscriptions',
         fields: {
-            node: Utils.attribute('node'),
-            jid: Utils.jidAttribute('jid')
-        }
+            jid: Utils.jidAttribute('jid'),
+            node: Utils.attribute('node')
+        },
+        name: 'subscriptions',
+        namespace: NS.PUBSUB
     });
 
     const Affiliation = JXT.define({
-        name: 'affiliation',
-        namespace: NS.PUBSUB,
         element: 'affiliation',
         fields: {
             node: Utils.attribute('node'),
             type: Utils.attribute('affiliation')
-        }
+        },
+        name: 'affiliation',
+        namespace: NS.PUBSUB
     });
 
     const Affiliations = JXT.define({
-        name: 'affiliations',
-        namespace: NS.PUBSUB,
         element: 'affiliations',
         fields: {
             node: Utils.attribute('node')
-        }
+        },
+        name: 'affiliations',
+        namespace: NS.PUBSUB
     });
 
     const SubscriptionOptions = JXT.define({
-        name: 'subscriptionOptions',
-        namespace: NS.PUBSUB,
         element: 'options',
         fields: {
-            node: Utils.attribute('node'),
             jid: Utils.jidAttribute('jid'),
+            node: Utils.attribute('node'),
             subid: Utils.attribute('subid')
-        }
+        },
+        name: 'subscriptionOptions',
+        namespace: NS.PUBSUB
     });
 
     const Unsubscribe = JXT.define({
-        name: 'unsubscribe',
-        namespace: NS.PUBSUB,
         element: 'unsubscribe',
         fields: {
+            jid: Utils.jidAttribute('jid'),
             node: Utils.attribute('node'),
-            subid: Utils.attribute('subid'),
-            jid: Utils.jidAttribute('jid')
-        }
+            subid: Utils.attribute('subid')
+        },
+        name: 'unsubscribe',
+        namespace: NS.PUBSUB
     });
 
     const Publish = JXT.define({
-        name: 'publish',
-        namespace: NS.PUBSUB,
         element: 'publish',
         fields: {
             node: Utils.attribute('node')
-        }
+        },
+        name: 'publish',
+        namespace: NS.PUBSUB
     });
 
     const Retract = JXT.define({
-        name: 'retract',
-        namespace: NS.PUBSUB,
         element: 'retract',
         fields: {
+            id: Utils.subAttribute(NS.PUBSUB, 'item', 'id'),
             node: Utils.attribute('node'),
-            notify: Utils.boolAttribute('notify'),
-            id: Utils.subAttribute(NS.PUBSUB, 'item', 'id')
-        }
+            notify: Utils.boolAttribute('notify')
+        },
+        name: 'retract',
+        namespace: NS.PUBSUB
     });
 
     const Retrieve = JXT.define({
-        name: 'retrieve',
-        namespace: NS.PUBSUB,
         element: 'items',
         fields: {
-            node: Utils.attribute('node'),
-            max: Utils.attribute('max_items')
-        }
+            max: Utils.attribute('max_items'),
+            node: Utils.attribute('node')
+        },
+        name: 'retrieve',
+        namespace: NS.PUBSUB
     });
 
     const Item = JXT.define({
-        name: 'item',
-        namespace: NS.PUBSUB,
         element: 'item',
         fields: {
             id: Utils.attribute('id'),
             publisher: Utils.jidAttribute('publisher')
-        }
+        },
+        name: 'item',
+        namespace: NS.PUBSUB
     });
 
     JXT.extend(Pubsub, Configure);

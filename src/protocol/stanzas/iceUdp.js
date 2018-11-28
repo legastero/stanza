@@ -4,32 +4,33 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const ICE = JXT.define({
+        element: 'transport',
+        fields: {
+            gatheringComplete: Utils.boolSub(NS.JINGLE_ICE_UDP_1, 'gathering-complete'),
+            pwd: Utils.attribute('pwd'),
+            transportType: {
+                value: 'iceUdp',
+                writable: true
+            },
+            ufrag: Utils.attribute('ufrag')
+        },
         name: '_iceUdp',
         namespace: NS.JINGLE_ICE_UDP_1,
-        element: 'transport',
-        tags: ['jingle-transport'],
-        fields: {
-            transportType: { value: 'iceUdp', writable: true },
-            pwd: Utils.attribute('pwd'),
-            ufrag: Utils.attribute('ufrag'),
-            gatheringComplete: Utils.boolSub(NS.JINGLE_ICE_UDP_1, 'gathering-complete')
-        }
+        tags: ['jingle-transport']
     });
 
     const RemoteCandidate = JXT.define({
-        name: 'remoteCandidate',
-        namespace: NS.JINGLE_ICE_UDP_1,
         element: 'remote-candidate',
         fields: {
             component: Utils.attribute('component'),
             ip: Utils.attribute('ip'),
             port: Utils.attribute('port')
-        }
+        },
+        name: 'remoteCandidate',
+        namespace: NS.JINGLE_ICE_UDP_1
     });
 
     const Candidate = JXT.define({
-        name: '_iceUdpCandidate',
-        namespace: NS.JINGLE_ICE_UDP_1,
         element: 'candidate',
         fields: {
             component: Utils.attribute('component'),
@@ -45,30 +46,32 @@ export default function(JXT) {
             relPort: Utils.attribute('rel-port'),
             tcpType: Utils.attribute('tcptype'),
             type: Utils.attribute('type')
-        }
+        },
+        name: '_iceUdpCandidate',
+        namespace: NS.JINGLE_ICE_UDP_1
     });
 
     const Fingerprint = JXT.define({
-        name: '_iceFingerprint',
-        namespace: NS.JINGLE_DTLS_0,
         element: 'fingerprint',
         fields: {
             hash: Utils.attribute('hash'),
+            required: Utils.boolAttribute('required'),
             setup: Utils.attribute('setup'),
-            value: Utils.text(),
-            required: Utils.boolAttribute('required')
-        }
+            value: Utils.text()
+        },
+        name: '_iceFingerprint',
+        namespace: NS.JINGLE_DTLS_0
     });
 
     const SctpMap = JXT.define({
-        name: '_sctpMap',
-        namespace: NS.DTLS_SCTP_1,
         element: 'sctpmap',
         fields: {
             number: Utils.attribute('number'),
             protocol: Utils.attribute('protocol'),
             streams: Utils.attribute('streams')
-        }
+        },
+        name: '_sctpMap',
+        namespace: NS.DTLS_SCTP_1
     });
 
     JXT.extend(ICE, Candidate, 'candidates');

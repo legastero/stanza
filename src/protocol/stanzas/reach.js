@@ -4,11 +4,8 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const ReachURI = JXT.define({
-        name: '_reachAddr',
-        namespace: NS.REACH_0,
         element: 'addr',
         fields: {
-            uri: Utils.attribute('uri'),
             $desc: {
                 get: function() {
                     return Utils.getSubLangText(this.xml, NS.REACH_0, 'desc', this.lang);
@@ -22,8 +19,11 @@ export default function(JXT) {
                 set: function(value) {
                     Utils.setSubLangText(this.xml, NS.REACH_0, 'desc', value, this.lang);
                 }
-            }
-        }
+            },
+            uri: Utils.attribute('uri')
+        },
+        name: '_reachAddr',
+        namespace: NS.REACH_0
     });
 
     const reachability = {

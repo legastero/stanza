@@ -10,9 +10,9 @@ export default function(JXT) {
                 data = data[0];
                 return {
                     action: 'data',
-                    sid: Utils.getAttribute(data, 'sid'),
+                    data: Buffer.from(Utils.getText(data), 'base64'),
                     seq: parseInt(Utils.getAttribute(data, 'seq') || '0', 10),
-                    data: Buffer.from(Utils.getText(data), 'base64')
+                    sid: Utils.getAttribute(data, 'sid')
                 };
             }
 
@@ -27,10 +27,10 @@ export default function(JXT) {
                 }
 
                 return {
+                    ack: ack,
                     action: 'open',
-                    sid: Utils.getAttribute(open, 'sid'),
                     blockSize: Utils.getAttribute(open, 'block-size'),
-                    ack: ack
+                    sid: Utils.getAttribute(open, 'sid')
                 };
             }
 
@@ -72,23 +72,16 @@ export default function(JXT) {
     };
 
     const JingleIBB = JXT.define({
-        name: '_' + NS.JINGLE_IBB_1,
-        namespace: NS.JINGLE_IBB_1,
         element: 'transport',
-        tags: ['jingle-transport'],
         fields: {
-            transportType: {
-                value: NS.JINGLE_IBB_1,
-                writable: true
-            },
-            sid: Utils.attribute('sid'),
-            blockSize: Utils.numberAttribute('block-size'),
             ack: {
                 get: function() {
                     const value = Utils.getAttribute(this.xml, 'stanza');
+
                     if (value === 'message') {
                         return false;
                     }
+
                     return true;
                 },
                 set: function(value) {
@@ -98,8 +91,17 @@ export default function(JXT) {
                         Utils.setAttribute(this.xml, 'stanza', 'iq');
                     }
                 }
+            },
+            blockSize: Utils.numberAttribute('block-size'),
+            sid: Utils.attribute('sid'),
+            transportType: {
+                value: NS.JINGLE_IBB_1,
+                writable: true
             }
-        }
+        },
+        name: '_' + NS.JINGLE_IBB_1,
+        namespace: NS.JINGLE_IBB_1,
+        tags: ['jingle-transport']
     });
 
     JXT.withDefinition('content', NS.JINGLE_1, function(Content) {

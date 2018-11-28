@@ -1,0 +1,42 @@
+{
+    "extends": "tslint:recommended",
+    "linterOptions": {
+        "exclude": ["build", "lib"]
+    },
+    "rules": {
+        "quotemark": [true, "single", "jsx-double"],
+        "trailing-comma": [true, "never"],
+        "no-consecutive-blank-lines": [true, 2],
+        "max-classes-per-file": [false],
+        "interface-name": [false],
+        "arrow-parens": [true, "ban-single-arg-parens"],
+        "max-line-length": [false],
+        "no-console": [false],
+        "variable-name": [
+            true,
+            "ban-keywords",
+            "check-format",
+            "allow-leading-underscore",
+            "allow-pascal-case"
+        ],
+        "semicolon": [true, "always"]
+    },
+    "jsRules": {
+        "quotemark": [true, "single", "jsx-double"],
+        "trailing-comma": [true, "never"],
+        "no-consecutive-blank-lines": [true, 2],
+        "max-classes-per-file": [false],
+        "interface-name": [false],
+        "arrow-parens": [true, "ban-single-arg-parens"],
+        "max-line-length": [false],
+        "no-console": [false],
+        "variable-name": [
+            true,
+            "ban-keywords",
+            "check-format",
+            "allow-leading-underscore",
+            "allow-pascal-case"
+        ],
+        "semicolon": [true, "always"]
+    }
+}

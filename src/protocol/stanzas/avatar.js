@@ -4,17 +4,17 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const Avatar = JXT.define({
-        name: 'avatar',
-        namespace: NS.AVATAR_METADATA,
         element: 'info',
         fields: {
-            id: Utils.attribute('id'),
             bytes: Utils.attribute('bytes'),
             height: Utils.attribute('height'),
-            width: Utils.attribute('width'),
+            id: Utils.attribute('id'),
             type: Utils.attribute('type', 'image/png'),
-            url: Utils.attribute('url')
-        }
+            url: Utils.attribute('url'),
+            width: Utils.attribute('width')
+        },
+        name: 'avatar',
+        namespace: NS.AVATAR_METADATA
     });
 
     const avatars = {
@@ -22,8 +22,8 @@ export default function(JXT) {
             const metadata = Utils.find(this.xml, NS.AVATAR_METADATA, 'metadata');
             const results = [];
             if (metadata.length) {
-                const avatars = Utils.find(metadata[0], NS.AVATAR_METADATA, 'info');
-                for (const info of avatars) {
+                const avatarInfo = Utils.find(metadata[0], NS.AVATAR_METADATA, 'info');
+                for (const info of avatarInfo) {
                     results.push(new Avatar({}, info));
                 }
             }

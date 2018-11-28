@@ -19,29 +19,29 @@ export default function(JXT) {
     };
 
     const XRD = JXT.define({
-        name: 'xrd',
-        namespace: NS.XRD,
         element: 'XRD',
         fields: {
-            subject: Utils.subText(NS.XRD, 'Subject'),
-            expires: Utils.dateSub(NS.XRD, 'Expires'),
             aliases: Utils.multiSubText(NS.XRD, 'Alias'),
-            properties: Properties
-        }
+            expires: Utils.dateSub(NS.XRD, 'Expires'),
+            properties: Properties,
+            subject: Utils.subText(NS.XRD, 'Subject')
+        },
+        name: 'xrd',
+        namespace: NS.XRD
     });
 
     const Link = JXT.define({
-        name: '_xrdlink',
-        namespace: NS.XRD,
         element: 'Link',
         fields: {
-            rel: Utils.attribute('rel'),
             href: Utils.attribute('href'),
-            type: Utils.attribute('type'),
+            properties: Properties,
+            rel: Utils.attribute('rel'),
             template: Utils.attribute('template'),
             titles: Utils.subLangText(NS.XRD, 'Title', 'default'),
-            properties: Properties
-        }
+            type: Utils.attribute('type')
+        },
+        name: '_xrdlink',
+        namespace: NS.XRD
     });
 
     JXT.extend(XRD, Link, 'links');

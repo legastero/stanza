@@ -6,60 +6,67 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const File = JXT.define({
-        name: 'file',
-        namespace: FT_NS,
         element: 'file',
         fields: {
-            name: Utils.textSub(FT_NS, 'name'),
+            date: Utils.dateSub(FT_NS, 'date'),
             description: Utils.textSub(FT_NS, 'desc'),
             mediaType: Utils.textSub(FT_NS, 'media-type'),
-            size: Utils.numberSub(FT_NS, 'size'),
-            date: Utils.dateSub(FT_NS, 'date')
-        }
+            name: Utils.textSub(FT_NS, 'name'),
+            size: Utils.numberSub(FT_NS, 'size')
+        },
+        name: 'file',
+        namespace: FT_NS
     });
 
     const Range = JXT.define({
-        name: 'range',
-        namespace: FT_NS,
         element: 'range',
         fields: {
-            offset: Utils.numberAttribute('offset'),
-            length: Utils.numberAttribute('length')
-        }
+            length: Utils.numberAttribute('length'),
+            offset: Utils.numberAttribute('offset')
+        },
+        name: 'range',
+        namespace: FT_NS
     });
 
     const FileTransfer = JXT.define({
+        element: 'description',
+        fields: {
+            applicationType: {
+                value: FT_NS,
+                writable: true
+            }
+        },
         name: '_' + FT_NS,
         namespace: FT_NS,
-        element: 'description',
-        tags: ['jingle-application'],
-        fields: {
-            applicationType: { value: FT_NS, writable: true }
-        }
+        tags: ['jingle-application']
     });
 
     const Received = JXT.define({
+        element: 'received',
+        fields: {
+            creator: Utils.attribute('creator'),
+            infoType: {
+                value: '{' + FT_NS + '}received'
+            },
+            name: Utils.attribute('name')
+        },
         name: '_{' + FT_NS + '}received',
         namespace: FT_NS,
-        element: 'received',
-        tags: ['jingle-info'],
-        fields: {
-            infoType: { value: '{' + FT_NS + '}received' },
-            creator: Utils.attribute('creator'),
-            name: Utils.attribute('name')
-        }
+        tags: ['jingle-info']
     });
 
     const Checksum = JXT.define({
+        element: 'checksum',
+        fields: {
+            creator: Utils.attribute('creator'),
+            infoType: {
+                value: '{' + FT_NS + '}checksum'
+            },
+            name: Utils.attribute('name')
+        },
         name: '_{' + FT_NS + '}checksum',
         namespace: FT_NS,
-        element: 'checksum',
-        tags: ['jingle-info'],
-        fields: {
-            infoType: { value: '{' + FT_NS + '}checksum' },
-            creator: Utils.attribute('creator'),
-            name: Utils.attribute('name')
-        }
+        tags: ['jingle-info']
     });
 
     JXT.extend(File, Range);

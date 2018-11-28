@@ -11,11 +11,11 @@ export default function(client) {
             }
         ];
         const iq = {
-            type: 'set',
             enablePush: {
                 jid: jid,
                 node: node
-            }
+            },
+            type: 'set'
         };
         if (fieldList && fieldList.length) {
             iq.enablePush.form = {
@@ -27,10 +27,10 @@ export default function(client) {
 
     client.disableNotifications = function(jid, node, cb) {
         const iq = {
-            type: 'set',
             disablePush: {
                 jid: jid
-            }
+            },
+            type: 'set'
         };
         if (node) {
             iq.disablePush.node = node;

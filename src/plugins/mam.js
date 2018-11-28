@@ -9,11 +9,11 @@ function timeoutPromise(targetPromise, queryid, delay) {
         new Promise(function(resolve, reject) {
             timeoutRef = setTimeout(function() {
                 reject({
-                    id: queryid,
-                    type: 'error',
                     error: {
                         condition: 'timeout'
-                    }
+                    },
+                    id: queryid,
+                    type: 'error'
                 });
             }, delay);
         })
@@ -29,9 +29,9 @@ export default function(client) {
     client.getHistorySearchForm = function(jid, cb) {
         return client.sendIq(
             {
+                mam: true,
                 to: jid,
-                type: 'get',
-                mam: true
+                type: 'get'
             },
             cb
         );
@@ -102,10 +102,10 @@ export default function(client) {
         });
 
         const mamQuery = this.sendIq({
-            type: 'set',
-            to: to,
             id: queryid,
-            mam: opts
+            mam: opts,
+            to: to,
+            type: 'set'
         });
 
         return timeoutPromise(mamQuery, queryid, this.config.timeout * 1000 || 15000)
@@ -131,8 +131,8 @@ export default function(client) {
     client.getHistoryPreferences = function(cb) {
         return this.sendIq(
             {
-                type: 'get',
-                mamPrefs: true
+                mamPrefs: true,
+                type: 'get'
             },
             cb
         );
@@ -141,8 +141,8 @@ export default function(client) {
     client.setHistoryPreferences = function(opts, cb) {
         return this.sendIq(
             {
-                type: 'set',
-                mamPrefs: opts
+                mamPrefs: opts,
+                type: 'set'
             },
             cb
         );

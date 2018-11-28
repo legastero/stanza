@@ -4,32 +4,32 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const Services = JXT.define({
-        name: 'services',
-        namespace: NS.DISCO_EXTERNAL_1,
         element: 'services',
         fields: {
             type: Utils.attribute('type')
-        }
+        },
+        name: 'services',
+        namespace: NS.DISCO_EXTERNAL_1
     });
 
     const Credentials = JXT.define({
+        element: 'credentials',
         name: 'credentials',
-        namespace: NS.DISCO_EXTERNAL_1,
-        element: 'credentials'
+        namespace: NS.DISCO_EXTERNAL_1
     });
 
     const Service = JXT.define({
-        name: 'service',
-        namespace: NS.DISCO_EXTERNAL_1,
         element: 'service',
         fields: {
             host: Utils.attribute('host'),
+            password: Utils.attribute('password'),
             port: Utils.attribute('port'),
             transport: Utils.attribute('transport'),
             type: Utils.attribute('type'),
-            username: Utils.attribute('username'),
-            password: Utils.attribute('password')
-        }
+            username: Utils.attribute('username')
+        },
+        name: 'service',
+        namespace: NS.DISCO_EXTERNAL_1
     });
 
     JXT.extend(Services, Service, 'services');

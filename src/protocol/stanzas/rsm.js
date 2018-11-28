@@ -4,8 +4,6 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     JXT.define({
-        name: 'rsm',
-        namespace: NS.RSM,
         element: 'set',
         fields: {
             after: Utils.textSub(NS.RSM, 'after'),
@@ -27,6 +25,8 @@ export default function(JXT) {
             index: Utils.numberSub(NS.RSM, 'index', false),
             last: Utils.textSub(NS.RSM, 'last'),
             max: Utils.numberSub(NS.RSM, 'max', false)
-        }
+        },
+        name: 'rsm',
+        namespace: NS.RSM
     });
 }

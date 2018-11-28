@@ -6,11 +6,11 @@ export default function(client) {
     client.getServices = function(jid, type, cb) {
         return this.sendIq(
             {
-                type: 'get',
-                to: jid,
                 services: {
                     type: type
-                }
+                },
+                to: jid,
+                type: 'get'
             },
             cb
         );
@@ -19,13 +19,13 @@ export default function(client) {
     client.getServiceCredentials = function(jid, host, cb) {
         return this.sendIq(
             {
-                type: 'get',
-                to: jid,
                 credentials: {
                     service: {
                         host: host
                     }
-                }
+                },
+                to: jid,
+                type: 'get'
             },
             cb
         );

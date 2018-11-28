@@ -53,7 +53,8 @@ export default function(JXT) {
             return (hrs * 60 + min) * sign;
         },
         function(xml, NS, sub, value) {
-            let hrs, min;
+            let hrs;
+            let min;
             let formatted = '-';
             if (typeof value === 'number') {
                 if (value < 0) {

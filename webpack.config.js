@@ -15,7 +15,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /index\.js/,
+                test: /index\.[jt]s/,
                 loader: 'string-replace-loader',
                 options: {
                     search: '__STANZAIO_VERSION__',
@@ -23,10 +23,9 @@ module.exports = {
                 }
             },
             {
-                test: /\.m?js$/,
+                test: /\.m?[jt]s$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader',
-                options: Pkg.babel
+                loader: 'ts-loader'
             }
         ]
     },

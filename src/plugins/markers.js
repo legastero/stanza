@@ -10,8 +10,8 @@ export default function(client) {
     client.on('message', function(msg) {
         if (enabled(msg)) {
             client.sendMessage({
-                to: msg.from,
-                received: msg.id
+                received: msg.id,
+                to: msg.from
             });
             return;
         }
@@ -32,8 +32,8 @@ export default function(client) {
     client.markDisplayed = function(msg) {
         if (enabled(msg)) {
             client.sendMessage({
-                to: msg.from,
-                displayed: msg.id
+                displayed: msg.id,
+                to: msg.from
             });
         }
     };
@@ -41,8 +41,8 @@ export default function(client) {
     client.markAcknowledged = function(msg) {
         if (enabled(msg)) {
             client.sendMessage({
-                to: msg.from,
-                acknowledged: msg.id
+                acknowledged: msg.id,
+                to: msg.from
             });
         }
     };

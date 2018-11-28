@@ -4,8 +4,6 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const Tune = JXT.define({
-        name: 'tune',
-        namespace: NS.TUNE,
         element: 'tune',
         fields: {
             artist: Utils.textSub(NS.TUNE, 'artist'),
@@ -15,7 +13,9 @@ export default function(JXT) {
             title: Utils.textSub(NS.TUNE, 'title'),
             track: Utils.textSub(NS.TUNE, 'track'),
             uri: Utils.textSub(NS.TUNE, 'uri')
-        }
+        },
+        name: 'tune',
+        namespace: NS.TUNE
     });
 
     JXT.extendPubsubItem(Tune);

@@ -6,48 +6,50 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const File = JXT.define({
-        name: '_file',
-        namespace: FT_NS,
         element: 'file',
         fields: {
-            name: Utils.textSub(FT_NS, 'name'),
+            date: Utils.dateSub(FT_NS, 'date'),
             desc: Utils.textSub(FT_NS, 'desc'),
-            size: Utils.numberSub(FT_NS, 'size'),
-            date: Utils.dateSub(FT_NS, 'date')
-        }
+            name: Utils.textSub(FT_NS, 'name'),
+            size: Utils.numberSub(FT_NS, 'size')
+        },
+        name: '_file',
+        namespace: FT_NS
     });
 
     const Range = JXT.define({
-        name: 'range',
-        namespace: FT_NS,
         element: 'range',
         fields: {
             offset: Utils.numberAttribute('offset')
-        }
+        },
+        name: 'range',
+        namespace: FT_NS
     });
 
     const Thumbnail = JXT.define({
-        name: 'thumbnail',
-        namespace: NS.THUMBS_0,
         element: 'thumbnail',
         fields: {
             cid: Utils.attribute('cid'),
+            height: Utils.numberAttribute('height'),
             mimeType: Utils.attribute('mime-type'),
-            width: Utils.numberAttribute('width'),
-            height: Utils.numberAttribute('height')
-        }
+            width: Utils.numberAttribute('width')
+        },
+        name: 'thumbnail',
+        namespace: NS.THUMBS_0
     });
 
     const FileTransfer = JXT.define({
-        name: '_filetransfer',
-        namespace: FT_NS,
         element: 'description',
-        tags: ['jingle-application'],
         fields: {
-            applicationType: { value: 'filetransfer' },
+            applicationType: {
+                value: 'filetransfer'
+            },
             offer: Utils.subExtension('offer', FT_NS, 'offer', File),
             request: Utils.subExtension('request', FT_NS, 'request', File)
-        }
+        },
+        name: '_filetransfer',
+        namespace: FT_NS,
+        tags: ['jingle-application']
     });
 
     JXT.extend(File, Range);

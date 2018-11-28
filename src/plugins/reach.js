@@ -13,8 +13,8 @@ export default function(client) {
         }
 
         client.emit('reachability', {
-            jid: msg.from,
-            addresses: msg.event.updated.published[0].reach
+            addresses: msg.event.updated.published[0].reach,
+            jid: msg.from
         });
     });
 
@@ -24,8 +24,8 @@ export default function(client) {
         }
 
         client.emit('reachability', {
-            jid: pres.from,
-            addresses: pres.reach
+            addresses: pres.reach,
+            jid: pres.from
         });
     });
 

@@ -18,10 +18,10 @@ export default class StreamManagement {
         this.pendingAck = false;
 
         this.stanzas = {
-            Enable: client.stanzas.getDefinition('enable', NS.SMACKS_3),
-            Resume: client.stanzas.getDefinition('resume', NS.SMACKS_3),
             Ack: client.stanzas.getDefinition('a', NS.SMACKS_3),
-            Request: client.stanzas.getDefinition('r', NS.SMACKS_3)
+            Enable: client.stanzas.getDefinition('enable', NS.SMACKS_3),
+            Request: client.stanzas.getDefinition('r', NS.SMACKS_3),
+            Resume: client.stanzas.getDefinition('resume', NS.SMACKS_3)
         };
     }
 
@@ -116,9 +116,9 @@ export default class StreamManagement {
     track(stanza) {
         const name = stanza._name;
         const acceptable = {
+            iq: true,
             message: true,
-            presence: true,
-            iq: true
+            presence: true
         };
 
         if (this.outboundStarted && acceptable[name]) {

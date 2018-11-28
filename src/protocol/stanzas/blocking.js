@@ -29,30 +29,30 @@ export default function(JXT) {
     };
 
     const Block = JXT.define({
-        name: 'block',
-        namespace: NS.BLOCKING,
         element: 'block',
         fields: {
             jids: jidList
-        }
+        },
+        name: 'block',
+        namespace: NS.BLOCKING
     });
 
     const Unblock = JXT.define({
-        name: 'unblock',
-        namespace: NS.BLOCKING,
         element: 'unblock',
         fields: {
             jids: jidList
-        }
+        },
+        name: 'unblock',
+        namespace: NS.BLOCKING
     });
 
     const BlockList = JXT.define({
-        name: 'blockList',
-        namespace: NS.BLOCKING,
         element: 'blocklist',
         fields: {
             jids: jidList
-        }
+        },
+        name: 'blockList',
+        namespace: NS.BLOCKING
     });
 
     JXT.extendIQ(Block);

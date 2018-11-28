@@ -49,11 +49,11 @@ export default function(client) {
 
         return this.sendIq(
             {
-                type: 'set',
-                to: jid,
                 pubsub: {
                     subscribe: opts
-                }
+                },
+                to: jid,
+                type: 'set'
             },
             cb
         );
@@ -69,11 +69,11 @@ export default function(client) {
 
         return this.sendIq(
             {
-                type: 'set',
-                to: jid,
                 pubsub: {
                     unsubscribe: opts
-                }
+                },
+                to: jid,
+                type: 'set'
             },
             cb
         );
@@ -82,14 +82,14 @@ export default function(client) {
     client.publish = function(jid, node, item, cb) {
         return this.sendIq(
             {
-                type: 'set',
-                to: jid,
                 pubsub: {
                     publish: {
-                        node: node,
-                        item: item
+                        item: item,
+                        node: node
                     }
-                }
+                },
+                to: jid,
+                type: 'set'
             },
             cb
         );
@@ -98,16 +98,16 @@ export default function(client) {
     client.getItem = function(jid, node, id, cb) {
         return this.sendIq(
             {
-                type: 'get',
-                to: jid,
                 pubsub: {
                     retrieve: {
-                        node: node,
                         item: {
                             id: id
-                        }
+                        },
+                        node: node
                     }
-                }
+                },
+                to: jid,
+                type: 'get'
             },
             cb
         );
@@ -118,15 +118,15 @@ export default function(client) {
         opts.node = node;
         return this.sendIq(
             {
-                type: 'get',
-                to: jid,
                 pubsub: {
                     retrieve: {
-                        node: node,
-                        max: opts.max
+                        max: opts.max,
+                        node: node
                     },
                     rsm: opts.rsm
-                }
+                },
+                to: jid,
+                type: 'get'
             },
             cb
         );
@@ -135,15 +135,15 @@ export default function(client) {
     client.retract = function(jid, node, id, notify, cb) {
         return this.sendIq(
             {
-                type: 'set',
-                to: jid,
                 pubsub: {
                     retract: {
+                        id: id,
                         node: node,
-                        notify: notify,
-                        id: id
+                        notify: notify
                     }
-                }
+                },
+                to: jid,
+                type: 'set'
             },
             cb
         );
@@ -152,11 +152,11 @@ export default function(client) {
     client.purgeNode = function(jid, node, cb) {
         return this.sendIq(
             {
-                type: 'set',
-                to: jid,
                 pubsubOwner: {
                     purge: node
-                }
+                },
+                to: jid,
+                type: 'set'
             },
             cb
         );
@@ -165,11 +165,11 @@ export default function(client) {
     client.deleteNode = function(jid, node, cb) {
         return this.sendIq(
             {
-                type: 'set',
-                to: jid,
                 pubsubOwner: {
                     del: node
-                }
+                },
+                to: jid,
+                type: 'set'
             },
             cb
         );
@@ -177,11 +177,11 @@ export default function(client) {
 
     client.createNode = function(jid, node, config, cb) {
         const cmd = {
-            type: 'set',
-            to: jid,
             pubsub: {
                 create: node
-            }
+            },
+            to: jid,
+            type: 'set'
         };
 
         if (config) {
@@ -196,11 +196,11 @@ export default function(client) {
 
         return this.sendIq(
             {
-                type: 'get',
-                to: jid,
                 pubsub: {
                     subscriptions: opts
-                }
+                },
+                to: jid,
+                type: 'get'
             },
             cb
         );
@@ -211,11 +211,11 @@ export default function(client) {
 
         return this.sendIq(
             {
-                type: 'get',
-                to: jid,
                 pubsub: {
                     affiliations: opts
-                }
+                },
+                to: jid,
+                type: 'get'
             },
             cb
         );
@@ -227,11 +227,11 @@ export default function(client) {
 
         return this.sendIq(
             {
-                type: 'get',
-                to: jid,
                 pubsubOwner: {
                     subscriptions: opts
-                }
+                },
+                to: jid,
+                type: 'get'
             },
             cb
         );
@@ -240,14 +240,14 @@ export default function(client) {
     client.updateNodeSubscriptions = function(jid, node, delta, cb) {
         return this.sendIq(
             {
-                type: 'set',
-                to: jid,
                 pubsubOwner: {
                     subscriptions: {
-                        node: node,
-                        list: delta
+                        list: delta,
+                        node: node
                     }
-                }
+                },
+                to: jid,
+                type: 'set'
             },
             cb
         );
@@ -259,11 +259,11 @@ export default function(client) {
 
         return this.sendIq(
             {
-                type: 'get',
-                to: jid,
                 pubsubOwner: {
                     affiliations: opts
-                }
+                },
+                to: jid,
+                type: 'get'
             },
             cb
         );
@@ -272,14 +272,14 @@ export default function(client) {
     client.updateNodeAffiliations = function(jid, node, delta, cb) {
         return this.sendIq(
             {
-                type: 'set',
-                to: jid,
                 pubsubOwner: {
                     affiliations: {
-                        node: node,
-                        list: delta
+                        list: delta,
+                        node: node
                     }
-                }
+                },
+                to: jid,
+                type: 'set'
             },
             cb
         );

@@ -12,22 +12,22 @@ export default function(client) {
         }
 
         client.emit('avatar', {
+            avatars: msg.event.updated.published[0].avatars,
             jid: msg.from,
-            source: 'pubsub',
-            avatars: msg.event.updated.published[0].avatars
+            source: 'pubsub'
         });
     });
 
     client.on('presence', function(pres) {
         if (pres.avatarId) {
             client.emit('avatar', {
-                jid: pres.from,
-                source: 'vcard',
                 avatars: [
                     {
                         id: pres.avatarId
                     }
-                ]
+                ],
+                jid: pres.from,
+                source: 'vcard'
             });
         }
     });
@@ -37,8 +37,8 @@ export default function(client) {
             '',
             Namespaces.AVATAR_DATA,
             {
-                id: id,
-                avatarData: data
+                avatarData: data,
+                id: id
             },
             cb
         );
@@ -49,8 +49,8 @@ export default function(client) {
             '',
             Namespaces.AVATAR_METADATA,
             {
-                id: 'current',
-                avatars: info
+                avatars: info,
+                id: 'current'
             },
             cb
         );

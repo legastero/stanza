@@ -6,8 +6,8 @@ export default function(client) {
     client.enableCarbons = function(cb) {
         return this.sendIq(
             {
-                type: 'set',
-                enableCarbons: true
+                enableCarbons: true,
+                type: 'set'
             },
             cb
         );
@@ -16,8 +16,8 @@ export default function(client) {
     client.disableCarbons = function(cb) {
         return this.sendIq(
             {
-                type: 'set',
-                disableCarbons: true
+                disableCarbons: true,
+                type: 'set'
             },
             cb
         );
@@ -39,7 +39,8 @@ export default function(client) {
             return;
         }
 
-        let msg, delay;
+        let msg;
+        let delay;
         if (dir === 'received') {
             msg = carbon.carbonReceived.forwarded.message;
             delay = carbon.carbonReceived.forwarded.delay;

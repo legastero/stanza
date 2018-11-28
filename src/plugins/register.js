@@ -2,9 +2,9 @@ export default function(client) {
     client.getAccountInfo = function(jid, cb) {
         return this.sendIq(
             {
-                type: 'get',
+                register: true,
                 to: jid,
-                register: true
+                type: 'get'
             },
             cb
         );
@@ -13,9 +13,9 @@ export default function(client) {
     client.updateAccount = function(jid, data, cb) {
         return this.sendIq(
             {
-                type: 'set',
+                register: data,
                 to: jid,
-                register: data
+                type: 'set'
             },
             cb
         );
@@ -24,11 +24,11 @@ export default function(client) {
     client.deleteAccount = function(jid, cb) {
         return this.sendIq(
             {
-                type: 'set',
-                to: jid,
                 register: {
                     remove: true
-                }
+                },
+                to: jid,
+                type: 'set'
             },
             cb
         );

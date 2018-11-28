@@ -6,17 +6,17 @@ internals.defineIQ = function(JXT, name, namespace) {
     const Utils = JXT.utils;
 
     const IQ = JXT.define({
+        element: 'iq',
+        fields: {
+            from: Utils.jidAttribute('from', true),
+            id: Utils.attribute('id'),
+            lang: Utils.langAttribute(),
+            to: Utils.jidAttribute('to', true),
+            type: Utils.attribute('type')
+        },
         name: name,
         namespace: namespace,
-        element: 'iq',
-        topLevel: true,
-        fields: {
-            lang: Utils.langAttribute(),
-            id: Utils.attribute('id'),
-            to: Utils.jidAttribute('to', true),
-            from: Utils.jidAttribute('from', true),
-            type: Utils.attribute('type')
-        }
+        topLevel: true
     });
 
     const toJSON = IQ.prototype.toJSON;

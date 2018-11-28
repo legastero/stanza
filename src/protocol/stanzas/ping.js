@@ -2,9 +2,9 @@ import * as NS from '../namespaces';
 
 export default function(JXT) {
     const Ping = JXT.define({
+        element: 'ping',
         name: 'ping',
-        namespace: NS.PING,
-        element: 'ping'
+        namespace: NS.PING
     });
 
     JXT.extendIQ(Ping);

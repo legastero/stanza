@@ -17,108 +17,101 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const UserItem = JXT.define({
-        name: '_mucUserItem',
-        namespace: NS.MUC_USER,
         element: 'item',
         fields: {
             affiliation: Utils.attribute('affiliation'),
-            nick: Utils.attribute('nick'),
             jid: Utils.jidAttribute('jid'),
-            role: Utils.attribute('role'),
-            reason: Utils.textSub(NS.MUC_USER, 'reason')
-        }
+            nick: Utils.attribute('nick'),
+            reason: Utils.textSub(NS.MUC_USER, 'reason'),
+            role: Utils.attribute('role')
+        },
+        name: '_mucUserItem',
+        namespace: NS.MUC_USER
     });
 
     const UserActor = JXT.define({
-        name: '_mucUserActor',
-        namespace: NS.MUC_USER,
         element: 'actor',
         fields: {
-            nick: Utils.attribute('nick'),
-            jid: Utils.jidAttribute('jid')
-        }
+            jid: Utils.jidAttribute('jid'),
+            nick: Utils.attribute('nick')
+        },
+        name: '_mucUserActor',
+        namespace: NS.MUC_USER
     });
 
     const Destroyed = JXT.define({
-        name: 'destroyed',
-        namespace: NS.MUC_USER,
         element: 'destroy',
         fields: {
             jid: Utils.jidAttribute('jid'),
             reason: Utils.textSub(NS.MUC_USER, 'reason')
-        }
+        },
+        name: 'destroyed',
+        namespace: NS.MUC_USER
     });
 
     const Invite = JXT.define({
-        name: 'invite',
-        namespace: NS.MUC_USER,
         element: 'invite',
         fields: {
-            to: Utils.jidAttribute('to'),
+            continue: Utils.boolSub(NS.MUC_USER, 'continue'),
             from: Utils.jidAttribute('from'),
             reason: Utils.textSub(NS.MUC_USER, 'reason'),
             thread: Utils.subAttribute(NS.MUC_USER, 'continue', 'thread'),
-            continue: Utils.boolSub(NS.MUC_USER, 'continue')
-        }
+            to: Utils.jidAttribute('to')
+        },
+        name: 'invite',
+        namespace: NS.MUC_USER
     });
 
     const Decline = JXT.define({
-        name: 'decline',
-        namespace: NS.MUC_USER,
         element: 'decline',
         fields: {
-            to: Utils.jidAttribute('to'),
             from: Utils.jidAttribute('from'),
-            reason: Utils.textSub(NS.MUC_USER, 'reason')
-        }
+            reason: Utils.textSub(NS.MUC_USER, 'reason'),
+            to: Utils.jidAttribute('to')
+        },
+        name: 'decline',
+        namespace: NS.MUC_USER
     });
 
     const AdminItem = JXT.define({
-        name: '_mucAdminItem',
-        namespace: NS.MUC_ADMIN,
         element: 'item',
         fields: {
             affiliation: Utils.attribute('affiliation'),
-            nick: Utils.attribute('nick'),
             jid: Utils.jidAttribute('jid'),
-            role: Utils.attribute('role'),
-            reason: Utils.textSub(NS.MUC_ADMIN, 'reason')
-        }
+            nick: Utils.attribute('nick'),
+            reason: Utils.textSub(NS.MUC_ADMIN, 'reason'),
+            role: Utils.attribute('role')
+        },
+        name: '_mucAdminItem',
+        namespace: NS.MUC_ADMIN
     });
 
     const AdminActor = JXT.define({
-        name: 'actor',
-        namespace: NS.MUC_USER,
         element: 'actor',
         fields: {
-            nick: Utils.attribute('nick'),
-            jid: Utils.jidAttribute('jid')
-        }
+            jid: Utils.jidAttribute('jid'),
+            nick: Utils.attribute('nick')
+        },
+        name: 'actor',
+        namespace: NS.MUC_USER
     });
 
     const Destroy = JXT.define({
-        name: 'destroy',
-        namespace: NS.MUC_OWNER,
         element: 'destroy',
         fields: {
             jid: Utils.jidAttribute('jid'),
             password: Utils.textSub(NS.MUC_OWNER, 'password'),
             reason: Utils.textSub(NS.MUC_OWNER, 'reason')
-        }
+        },
+        name: 'destroy',
+        namespace: NS.MUC_OWNER
     });
 
     const MUC = JXT.define({
-        name: 'muc',
-        namespace: NS.MUC_USER,
         element: 'x',
         fields: {
-            affiliation: proxy('_mucUserItem', 'affiliation'),
-            nick: proxy('_mucUserItem', 'nick'),
-            jid: proxy('_mucUserItem', 'jid'),
-            role: proxy('_mucUserItem', 'role'),
             actor: proxy('_mucUserItem', '_mucUserActor'),
-            reason: proxy('_mucUserItem', 'reason'),
-            password: Utils.textSub(NS.MUC_USER, 'password'),
+            affiliation: proxy('_mucUserItem', 'affiliation'),
             codes: {
                 get: function() {
                     return Utils.getMultiSubText(this.xml, NS.MUC_USER, 'status', function(sub) {
@@ -133,36 +126,40 @@ export default function(JXT) {
                         self.xml.appendChild(child);
                     });
                 }
-            }
-        }
+            },
+            jid: proxy('_mucUserItem', 'jid'),
+            nick: proxy('_mucUserItem', 'nick'),
+            password: Utils.textSub(NS.MUC_USER, 'password'),
+            reason: proxy('_mucUserItem', 'reason'),
+            role: proxy('_mucUserItem', 'role')
+        },
+        name: 'muc',
+        namespace: NS.MUC_USER
     });
 
     const MUCAdmin = JXT.define({
-        name: 'mucAdmin',
-        namespace: NS.MUC_ADMIN,
         element: 'query',
         fields: {
-            affiliation: proxy('_mucAdminItem', 'affiliation'),
-            nick: proxy('_mucAdminItem', 'nick'),
-            jid: proxy('_mucAdminItem', 'jid'),
-            role: proxy('_mucAdminItem', 'role'),
             actor: proxy('_mucAdminItem', '_mucAdminActor'),
-            reason: proxy('_mucAdminItem', 'reason')
-        }
+            affiliation: proxy('_mucAdminItem', 'affiliation'),
+            jid: proxy('_mucAdminItem', 'jid'),
+            nick: proxy('_mucAdminItem', 'nick'),
+            reason: proxy('_mucAdminItem', 'reason'),
+            role: proxy('_mucAdminItem', 'role')
+        },
+        name: 'mucAdmin',
+        namespace: NS.MUC_ADMIN
     });
 
     const MUCOwner = JXT.define({
+        element: 'query',
         name: 'mucOwner',
-        namespace: NS.MUC_OWNER,
-        element: 'query'
+        namespace: NS.MUC_OWNER
     });
 
     const MUCJoin = JXT.define({
-        name: 'joinMuc',
-        namespace: NS.MUC,
         element: 'x',
         fields: {
-            password: Utils.textSub(NS.MUC, 'password'),
             history: {
                 get: function() {
                     const result = {};
@@ -171,8 +168,8 @@ export default function(JXT) {
                     if (!hist.length) {
                         return {};
                     }
-                    hist = hist[0];
 
+                    hist = hist[0];
                     const maxchars = hist.getAttribute('maxchars') || '';
                     const maxstanzas = hist.getAttribute('maxstanzas') || '';
                     const seconds = hist.getAttribute('seconds') || '';
@@ -181,18 +178,22 @@ export default function(JXT) {
                     if (maxchars) {
                         result.maxchars = parseInt(maxchars, 10);
                     }
+
                     if (maxstanzas) {
                         result.maxstanzas = parseInt(maxstanzas, 10);
                     }
+
                     if (seconds) {
                         result.seconds = parseInt(seconds, 10);
                     }
+
                     if (since) {
                         result.since = new Date(since);
                     }
                 },
                 set: function(opts) {
                     const existing = Utils.find(this.xml, NS.MUC, 'history');
+
                     if (existing.length) {
                         for (let i = 0; i < existing.length; i++) {
                             this.xml.removeChild(existing[i]);
@@ -205,31 +206,37 @@ export default function(JXT) {
                     if (opts.maxchars !== undefined) {
                         hist.setAttribute('maxchars', '' + opts.maxchars);
                     }
+
                     if (opts.maxstanzas !== undefined) {
                         hist.setAttribute('maxstanzas', '' + opts.maxstanzas);
                     }
+
                     if (opts.seconds !== undefined) {
                         hist.setAttribute('seconds', '' + opts.seconds);
                     }
+
                     if (opts.since) {
                         hist.setAttribute('since', opts.since.toISOString());
                     }
                 }
-            }
-        }
+            },
+            password: Utils.textSub(NS.MUC, 'password')
+        },
+        name: 'joinMuc',
+        namespace: NS.MUC
     });
 
     const DirectInvite = JXT.define({
-        name: 'mucInvite',
-        namespace: NS.MUC_DIRECT_INVITE,
         element: 'x',
         fields: {
+            continue: Utils.boolAttribute('continue'),
             jid: Utils.jidAttribute('jid'),
             password: Utils.attribute('password'),
             reason: Utils.attribute('reason'),
-            thread: Utils.attribute('thread'),
-            continue: Utils.boolAttribute('continue')
-        }
+            thread: Utils.attribute('thread')
+        },
+        name: 'mucInvite',
+        namespace: NS.MUC_DIRECT_INVITE
     });
 
     JXT.extend(UserItem, UserActor);

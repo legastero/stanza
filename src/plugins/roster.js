@@ -9,8 +9,8 @@ export default function(client) {
             return client.sendIq(
                 iq.errorReply({
                     error: {
-                        type: 'cancel',
-                        condition: 'service-unavailable'
+                        condition: 'service-unavailable',
+                        type: 'cancel'
                     }
                 })
             );
@@ -26,10 +26,10 @@ export default function(client) {
     client.getRoster = function(cb) {
         return client
             .sendIq({
-                type: 'get',
                 roster: {
                     ver: this.config.rosterVer
-                }
+                },
+                type: 'get'
             })
             .then(resp => {
                 if (resp.roster) {
@@ -61,10 +61,10 @@ export default function(client) {
     client.updateRosterItem = function(item, cb) {
         return client.sendIq(
             {
-                type: 'set',
                 roster: {
                     items: [item]
-                }
+                },
+                type: 'set'
             },
             cb
         );

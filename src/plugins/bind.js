@@ -4,10 +4,10 @@ export default function(client, stanzas, config) {
     client.registerFeature('bind', 300, function(features, cb) {
         client.sendIq(
             {
-                type: 'set',
                 bind: {
                     resource: config.resource
-                }
+                },
+                type: 'set'
             },
             function(err, resp) {
                 if (err) {

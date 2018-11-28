@@ -2,9 +2,9 @@ import * as NS from '../namespaces';
 
 export default function(JXT) {
     const Forwarded = JXT.define({
+        element: 'forwarded',
         name: 'forwarded',
-        namespace: NS.FORWARD_0,
-        element: 'forwarded'
+        namespace: NS.FORWARD_0
     });
 
     JXT.withMessage(function(Message) {

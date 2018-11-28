@@ -9,14 +9,11 @@ export function getHostMeta(JXT, opts, cb) {
     }
 
     const config = {
-        ssl: true,
         json: true,
-        xrd: true
+        ssl: true,
+        xrd: true,
+        ...opts
     };
-
-    for (const prop in opts) {
-        config[prop] = opts[prop];
-    }
 
     const scheme = config.ssl ? 'https://' : 'http://';
 
@@ -70,8 +67,8 @@ export default function(client, stanzas) {
             }
 
             const results = {
-                websocket: [],
-                bosh: []
+                bosh: [],
+                websocket: []
             };
             const links = data.links || [];
 

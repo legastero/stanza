@@ -9,8 +9,8 @@ export default function(client) {
 
         self.sendIq(
             {
-                type: 'set',
-                session: {}
+                session: {},
+                type: 'set'
             },
             function(err) {
                 if (err) {

@@ -9,8 +9,8 @@ export default function(JXT) {
             const result = [];
             for (const xml of existing) {
                 result.push({
-                    type: Utils.getAttribute(xml, 'type'),
-                    subtype: Utils.getAttribute(xml, 'subtype')
+                    subtype: Utils.getAttribute(xml, 'subtype'),
+                    type: Utils.getAttribute(xml, 'type')
                 });
             }
             existing = Utils.find(this.xml, NS.JINGLE_RTP_RTCP_FB_0, 'rtcp-fb-trr-int');
@@ -54,33 +54,31 @@ export default function(JXT) {
     };
 
     const Bandwidth = JXT.define({
-        name: 'bandwidth',
-        namespace: NS.JINGLE_RTP_1,
         element: 'bandwidth',
         fields: {
-            type: Utils.attribute('type'),
-            bandwidth: Utils.text()
-        }
+            bandwidth: Utils.text(),
+            type: Utils.attribute('type')
+        },
+        name: 'bandwidth',
+        namespace: NS.JINGLE_RTP_1
     });
 
     const RTP = JXT.define({
-        name: '_rtp',
-        namespace: NS.JINGLE_RTP_1,
         element: 'description',
-        tags: ['jingle-application'],
         fields: {
-            applicationType: { value: 'rtp', writable: true },
-            media: Utils.attribute('media'),
-            ssrc: Utils.attribute('ssrc'),
-            mux: Utils.boolSub(NS.JINGLE_RTP_1, 'rtcp-mux'),
+            applicationType: {
+                value: 'rtp',
+                writable: true
+            },
             encryption: {
                 get: function() {
                     let enc = Utils.find(this.xml, NS.JINGLE_RTP_1, 'encryption');
+
                     if (!enc.length) {
                         return [];
                     }
-                    enc = enc[0];
 
+                    enc = enc[0];
                     const self = this;
                     const data = Utils.find(enc, NS.JINGLE_RTP_1, 'crypto');
                     const results = [];
@@ -88,10 +86,12 @@ export default function(JXT) {
                     for (const xml of data) {
                         results.push(new Crypto({}, xml, self).toJSON());
                     }
+
                     return results;
                 },
                 set: function(values) {
                     let enc = Utils.find(this.xml, NS.JINGLE_RTP_1, 'encryption');
+
                     if (enc.length) {
                         this.xml.removeChild(enc);
                     }
@@ -108,8 +108,8 @@ export default function(JXT) {
                         true
                     );
                     enc = Utils.find(this.xml, NS.JINGLE_RTP_1, 'encryption')[0];
-
                     const self = this;
+
                     for (const value of values) {
                         const content = new Crypto(value, null, self);
                         enc.appendChild(content.xml);
@@ -121,18 +121,21 @@ export default function(JXT) {
                 get: function() {
                     const existing = Utils.find(this.xml, NS.JINGLE_RTP_HDREXT_0, 'rtp-hdrext');
                     const result = [];
+
                     for (const xml of existing) {
                         result.push({
                             id: Utils.getAttribute(xml, 'id'),
-                            uri: Utils.getAttribute(xml, 'uri'),
-                            senders: Utils.getAttribute(xml, 'senders')
+                            senders: Utils.getAttribute(xml, 'senders'),
+                            uri: Utils.getAttribute(xml, 'uri')
                         });
                     }
+
                     return result;
                 },
                 set: function(values) {
                     const self = this;
                     const existing = Utils.find(this.xml, NS.JINGLE_RTP_HDREXT_0, 'rtp-hdrext');
+
                     for (const item of existing) {
                         self.xml.removeChild(item);
                     }
@@ -149,22 +152,25 @@ export default function(JXT) {
                         self.xml.appendChild(hdr);
                     }
                 }
-            }
-        }
+            },
+            media: Utils.attribute('media'),
+            mux: Utils.boolSub(NS.JINGLE_RTP_1, 'rtcp-mux'),
+            ssrc: Utils.attribute('ssrc')
+        },
+        name: '_rtp',
+        namespace: NS.JINGLE_RTP_1,
+        tags: ['jingle-application']
     });
 
     const PayloadType = JXT.define({
-        name: '_payloadType',
-        namespace: NS.JINGLE_RTP_1,
         element: 'payload-type',
         fields: {
             channels: Utils.attribute('channels'),
             clockrate: Utils.attribute('clockrate'),
+            feedback: Feedback,
             id: Utils.attribute('id'),
             maxptime: Utils.attribute('maxptime'),
             name: Utils.attribute('name'),
-            ptime: Utils.attribute('ptime'),
-            feedback: Feedback,
             parameters: {
                 get: function() {
                     const result = [];
@@ -186,62 +192,65 @@ export default function(JXT) {
                         self.xml.appendChild(param);
                     }
                 }
-            }
-        }
+            },
+            ptime: Utils.attribute('ptime')
+        },
+        name: '_payloadType',
+        namespace: NS.JINGLE_RTP_1
     });
 
     const Crypto = JXT.define({
-        name: 'crypto',
-        namespace: NS.JINGLE_RTP_1,
         element: 'crypto',
         fields: {
             cipherSuite: Utils.attribute('crypto-suite'),
             keyParams: Utils.attribute('key-params'),
             sessionParams: Utils.attribute('session-params'),
             tag: Utils.attribute('tag')
-        }
+        },
+        name: 'crypto',
+        namespace: NS.JINGLE_RTP_1
     });
 
     const ContentGroup = JXT.define({
-        name: '_group',
-        namespace: NS.JINGLE_GROUPING_0,
         element: 'group',
         fields: {
-            semantics: Utils.attribute('semantics'),
-            contents: Utils.multiSubAttribute(NS.JINGLE_GROUPING_0, 'content', 'name')
-        }
+            contents: Utils.multiSubAttribute(NS.JINGLE_GROUPING_0, 'content', 'name'),
+            semantics: Utils.attribute('semantics')
+        },
+        name: '_group',
+        namespace: NS.JINGLE_GROUPING_0
     });
 
     const SourceGroup = JXT.define({
-        name: '_sourceGroup',
-        namespace: NS.JINGLE_RTP_SSMA_0,
         element: 'ssrc-group',
         fields: {
             semantics: Utils.attribute('semantics'),
             sources: Utils.multiSubAttribute(NS.JINGLE_RTP_SSMA_0, 'source', 'ssrc')
-        }
+        },
+        name: '_sourceGroup',
+        namespace: NS.JINGLE_RTP_SSMA_0
     });
 
     const Source = JXT.define({
-        name: '_source',
-        namespace: NS.JINGLE_RTP_SSMA_0,
         element: 'source',
         fields: {
-            ssrc: Utils.attribute('ssrc'),
             parameters: {
                 get: function() {
                     const result = [];
                     const params = Utils.find(this.xml, NS.JINGLE_RTP_SSMA_0, 'parameter');
+
                     for (const param of params) {
                         result.push({
                             key: Utils.getAttribute(param, 'name'),
                             value: Utils.getAttribute(param, 'value')
                         });
                     }
+
                     return result;
                 },
                 set: function(values) {
                     const self = this;
+
                     for (const value of values) {
                         const param = Utils.createElement(NS.JINGLE_RTP_SSMA_0, 'parameter');
                         Utils.setAttribute(param, 'name', value.key);
@@ -249,38 +258,41 @@ export default function(JXT) {
                         self.xml.appendChild(param);
                     }
                 }
-            }
-        }
+            },
+            ssrc: Utils.attribute('ssrc')
+        },
+        name: '_source',
+        namespace: NS.JINGLE_RTP_SSMA_0
     });
 
     const Stream = JXT.define({
-        name: '_stream',
-        namespace: 'urn:xmpp:jingle:apps:rtp:msid:0',
         element: 'stream',
         fields: {
             id: Utils.attribute('id'),
             track: Utils.attribute('track')
-        }
+        },
+        name: '_stream',
+        namespace: 'urn:xmpp:jingle:apps:rtp:msid:0'
     });
 
     const Mute = JXT.define({
-        name: 'mute',
-        namespace: NS.JINGLE_RTP_INFO_1,
         element: 'mute',
         fields: {
             creator: Utils.attribute('creator'),
             name: Utils.attribute('name')
-        }
+        },
+        name: 'mute',
+        namespace: NS.JINGLE_RTP_INFO_1
     });
 
     const Unmute = JXT.define({
-        name: 'unmute',
-        namespace: NS.JINGLE_RTP_INFO_1,
         element: 'unmute',
         fields: {
             creator: Utils.attribute('creator'),
             name: Utils.attribute('name')
-        }
+        },
+        name: 'unmute',
+        namespace: NS.JINGLE_RTP_INFO_1
     });
 
     JXT.extend(RTP, Bandwidth);

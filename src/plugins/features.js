@@ -2,15 +2,15 @@ import * as async from 'async';
 
 export default function(client) {
     client.features = {
+        handlers: {},
         negotiated: {},
-        order: [],
-        handlers: {}
+        order: []
     };
 
     client.registerFeature = function(name, priority, handler) {
         this.features.order.push({
-            priority: priority,
-            name: name
+            name,
+            priority
         });
         this.features.order.sort(function(a, b) {
             if (a.priority < b.priority) {

@@ -4,21 +4,21 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const Conference = JXT.define({
-        name: '_conference',
-        namespace: NS.BOOKMARKS,
         element: 'conference',
         fields: {
-            name: Utils.attribute('name'),
             autoJoin: Utils.boolAttribute('autojoin'),
             jid: Utils.jidAttribute('jid'),
+            name: Utils.attribute('name'),
             nick: Utils.textSub(NS.BOOKMARKS, 'nick')
-        }
+        },
+        name: '_conference',
+        namespace: NS.BOOKMARKS
     });
 
     const Bookmarks = JXT.define({
+        element: 'storage',
         name: 'bookmarks',
-        namespace: NS.BOOKMARKS,
-        element: 'storage'
+        namespace: NS.BOOKMARKS
     });
 
     JXT.extend(Bookmarks, Conference, 'conferences');

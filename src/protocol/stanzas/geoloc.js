@@ -4,14 +4,11 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const GeoLoc = JXT.define({
-        name: 'geoloc',
-        namespace: NS.GEOLOC,
         element: 'geoloc',
         fields: {
             accuracy: Utils.numberSub(NS.GEOLOC, 'accuracy', true),
             altitude: Utils.numberSub(NS.GEOLOC, 'alt', true),
             area: Utils.textSub(NS.GEOLOC, 'area'),
-            heading: Utils.numberSub(NS.GEOLOC, 'bearing', true),
             bearing: Utils.numberSub(NS.GEOLOC, 'bearing', true),
             building: Utils.textSub(NS.GEOLOC, 'building'),
             country: Utils.textSub(NS.GEOLOC, 'country'),
@@ -20,6 +17,7 @@ export default function(JXT) {
             description: Utils.textSub(NS.GEOLOC, 'description'),
             error: Utils.numberSub(NS.GEOLOC, 'error', true),
             floor: Utils.textSub(NS.GEOLOC, 'floor'),
+            heading: Utils.numberSub(NS.GEOLOC, 'bearing', true),
             latitude: Utils.numberSub(NS.GEOLOC, 'lat', true),
             locality: Utils.textSub(NS.GEOLOC, 'locality'),
             longitude: Utils.numberSub(NS.GEOLOC, 'lon', true),
@@ -32,7 +30,9 @@ export default function(JXT) {
             timestamp: Utils.dateSub(NS.GEOLOC, 'timestamp'),
             tzo: Utils.tzoSub(NS.GEOLOC, 'tzo'),
             uri: Utils.textSub(NS.GEOLOC, 'uri')
-        }
+        },
+        name: 'geoloc',
+        namespace: NS.GEOLOC
     });
 
     JXT.extendPubsubItem(GeoLoc);

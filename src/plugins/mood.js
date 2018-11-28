@@ -25,8 +25,8 @@ export default function(client) {
             Namespaces.MOOD,
             {
                 mood: {
-                    value: mood,
-                    text: text
+                    text: text,
+                    value: mood
                 }
             },
             cb

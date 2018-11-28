@@ -4,17 +4,17 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const Address = JXT.define({
-        name: '_address',
-        namespace: NS.ADDRESS,
         element: 'address',
         fields: {
-            jid: Utils.jidAttribute('jid'),
-            uri: Utils.attribute('uri'),
-            node: Utils.attribute('node'),
-            description: Utils.attribute('desc'),
             delivered: Utils.boolAttribute('delivered'),
-            type: Utils.attribute('type')
-        }
+            description: Utils.attribute('desc'),
+            jid: Utils.jidAttribute('jid'),
+            node: Utils.attribute('node'),
+            type: Utils.attribute('type'),
+            uri: Utils.attribute('uri')
+        },
+        name: '_address',
+        namespace: NS.ADDRESS
     });
 
     const Addresses = Utils.subMultiExtension(NS.ADDRESS, 'addresses', Address);

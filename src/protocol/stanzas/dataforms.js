@@ -7,13 +7,12 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const Field = JXT.define({
-        name: '_field',
-        namespace: NS.DATAFORM,
         element: 'field',
-        init: function(data) {
-            this._type = (data || {}).type || this.type;
-        },
         fields: {
+            desc: Utils.textSub(NS.DATAFORM, 'desc'),
+            label: Utils.attribute('label'),
+            name: Utils.attribute('var'),
+            required: Utils.boolSub(NS.DATAFORM, 'required'),
             type: {
                 get: function() {
                     return Utils.getAttribute(this.xml, 'type', 'text-single');
@@ -23,16 +22,14 @@ export default function(JXT) {
                     Utils.setAttribute(this.xml, 'type', value);
                 }
             },
-            name: Utils.attribute('var'),
-            desc: Utils.textSub(NS.DATAFORM, 'desc'),
-            required: Utils.boolSub(NS.DATAFORM, 'required'),
-            label: Utils.attribute('label'),
             value: {
                 get: function() {
                     const vals = Utils.getMultiSubText(this.xml, NS.DATAFORM, 'value');
+
                     if (this._type === 'boolean') {
                         return vals[0] === '1' || vals[0] === 'true';
                     }
+
                     if (vals.length > 1) {
                         if (this._type === 'text-multi') {
                             return vals.join('\n');
@@ -46,10 +43,12 @@ export default function(JXT) {
 
                         return vals;
                     }
+
                     if (SINGLE_FIELDS.indexOf(this._type) >= 0) {
                         if (this._type === 'jid-single') {
                             return new JID(vals[0]);
                         }
+
                         return vals[0];
                     }
 
@@ -65,6 +64,7 @@ export default function(JXT) {
                         if (this._type === 'text-multi' && typeof value === 'string') {
                             value = value.split('\n');
                         }
+
                         Utils.setMultiSubText(
                             this.xml,
                             NS.DATAFORM,
@@ -79,75 +79,80 @@ export default function(JXT) {
                     }
                 }
             }
-        }
+        },
+        init: function(data) {
+            this._type = (data || {}).type || this.type;
+        },
+        name: '_field',
+        namespace: NS.DATAFORM
     });
 
     const Option = JXT.define({
-        name: '_formoption',
-        namespace: NS.DATAFORM,
         element: 'option',
         fields: {
             label: Utils.attribute('label'),
             value: Utils.textSub(NS.DATAFORM, 'value')
-        }
+        },
+        name: '_formoption',
+        namespace: NS.DATAFORM
     });
 
     const Item = JXT.define({
+        element: 'item',
         name: '_formitem',
-        namespace: NS.DATAFORM,
-        element: 'item'
+        namespace: NS.DATAFORM
     });
 
     const Media = JXT.define({
-        name: 'media',
         element: 'media',
-        namespace: NS.DATAFORM_MEDIA,
         fields: {
             height: Utils.numberAttribute('height'),
             width: Utils.numberAttribute('width')
-        }
+        },
+        name: 'media',
+        namespace: NS.DATAFORM_MEDIA
     });
 
     const MediaURI = JXT.define({
-        name: '_mediaURI',
         element: 'uri',
-        namespace: NS.DATAFORM_MEDIA,
         fields: {
-            uri: Utils.text(),
-            type: Utils.attribute('type')
-        }
+            type: Utils.attribute('type'),
+            uri: Utils.text()
+        },
+        name: '_mediaURI',
+        namespace: NS.DATAFORM_MEDIA
     });
 
     const Validation = JXT.define({
-        name: 'validation',
         element: 'validate',
-        namespace: NS.DATAFORM_VALIDATION,
         fields: {
-            dataType: Utils.attribute('datatype'),
             basic: Utils.boolSub(NS.DATAFORM_VALIDATION, 'basic'),
+            dataType: Utils.attribute('datatype'),
             open: Utils.boolSub(NS.DATAFORM_VALIDATION, 'open'),
             regex: Utils.textSub(NS.DATAFORM_VALIDATION, 'regex')
-        }
+        },
+        name: 'validation',
+        namespace: NS.DATAFORM_VALIDATION
     });
 
     const Range = JXT.define({
-        name: 'range',
         element: 'range',
-        namespace: NS.DATAFORM_VALIDATION,
         fields: {
-            min: Utils.attribute('min'),
-            max: Utils.attribute('max')
-        }
+            max: Utils.attribute('max'),
+            min: Utils.attribute('min')
+        },
+        name: 'range',
+        namespace: NS.DATAFORM_VALIDATION
     });
 
     const ListRange = JXT.define({
-        name: 'select',
         element: 'list-range',
-        namespace: NS.DATAFORM_VALIDATION,
         fields: {
-            min: Utils.numberAttribute('min'),
-            max: Utils.numberAttribute('max')
-        }
+            max: Utils.numberAttribute('max'),
+            min: Utils.numberAttribute('min')
+        },
+        name: 'select',
+        namespace: NS.DATAFORM_VALIDATION
     });
 
     const layoutContents = {
@@ -228,52 +233,53 @@ export default function(JXT) {
     };
 
     const Section = JXT.define({
-        name: '_section',
         element: 'section',
-        namespace: NS.DATAFORM_LAYOUT,
         fields: {
-            label: Utils.attribute('label'),
-            contents: layoutContents
-        }
+            contents: layoutContents,
+            label: Utils.attribute('label')
+        },
+        name: '_section',
+        namespace: NS.DATAFORM_LAYOUT
     });
 
     const Page = JXT.define({
-        name: '_page',
         element: 'page',
-        namespace: NS.DATAFORM_LAYOUT,
         fields: {
-            label: Utils.attribute('label'),
-            contents: layoutContents
-        }
+            contents: layoutContents,
+            label: Utils.attribute('label')
+        },
+        name: '_page',
+        namespace: NS.DATAFORM_LAYOUT
     });
 
     const DataForm = JXT.define({
-        name: 'form',
-        namespace: NS.DATAFORM,
         element: 'x',
+        fields: {
+            instructions: Utils.multiTextSub(NS.DATAFORM, 'instructions'),
+            reportedFields: Utils.subMultiExtension(NS.DATAFORM, 'reported', Field),
+            title: Utils.textSub(NS.DATAFORM, 'title'),
+            type: Utils.attribute('type', 'form')
+        },
         init: function() {
             // Propagate reported field types to items
-
             if (!this.reportedFields.length) {
                 return;
             }
 
             const fieldTypes = {};
+
             for (const reported of this.reportedFields) {
                 fieldTypes[reported.name] = reported.type;
             }
+
             for (const item of this.items) {
                 for (const field of item.fields) {
                     field.type = field._type = fieldTypes[field.name];
                 }
             }
         },
-        fields: {
-            title: Utils.textSub(NS.DATAFORM, 'title'),
-            instructions: Utils.multiTextSub(NS.DATAFORM, 'instructions'),
-            type: Utils.attribute('type', 'form'),
-            reportedFields: Utils.subMultiExtension(NS.DATAFORM, 'reported', Field)
-        }
+        name: 'form',
+        namespace: NS.DATAFORM
     });
 
     JXT.extend(DataForm, Field, 'fields');

@@ -43,6 +43,7 @@ function XOR(a, b) {
     const buffer = Buffer.alloc(Math.max(a.length, b.length));
 
     for (let i = 0; i < length; ++i) {
+        // tslint:disable-next-line no-bitwise
         buffer[i] = a[i] ^ b[i];
     }
 
@@ -122,7 +123,9 @@ RESP.challenge = function(mech, cred) {
 
     mech._clientFinalMessageWithoutProof = 'c=' + gs2Header + ',r=' + mech._nonce;
 
-    let saltedPassword, clientKey, serverKey;
+    let saltedPassword;
+    let clientKey;
+    let serverKey;
 
     // If our cached salt is the same, we can reuse cached credentials to speed
     // up the hashing process.
@@ -159,9 +162,9 @@ RESP.challenge = function(mech, cred) {
     mech._stage = 'final';
 
     mech.cache = {
+        clientKey: clientKey,
         salt: mech._salt,
         saltedPassword: saltedPassword,
-        clientKey: clientKey,
         serverKey: serverKey
     };
 

@@ -16,8 +16,8 @@ export default class WSConnection extends WildEmitter {
         self.sm = sm;
         self.closing = false;
         self.stanzas = {
-            Open: stanzas.getDefinition('open', 'urn:ietf:params:xml:ns:xmpp-framing', true),
             Close: stanzas.getDefinition('close', 'urn:ietf:params:xml:ns:xmpp-framing', true),
+            Open: stanzas.getDefinition('open', 'urn:ietf:params:xml:ns:xmpp-framing', true),
             StreamError: stanzas.getStreamError()
         };
 
@@ -40,7 +40,8 @@ export default class WSConnection extends WildEmitter {
         });
 
         self.on('raw:incoming', function(data) {
-            let stanzaObj, err;
+            let stanzaObj;
+            let err;
             data = data.trim();
             if (data === '') {
                 return;
@@ -98,9 +99,9 @@ export default class WSConnection extends WildEmitter {
 
     startHeader() {
         return new this.stanzas.Open({
-            version: this.config.version || '1.0',
             lang: this.config.lang || 'en',
-            to: this.config.server
+            to: this.config.server,
+            version: this.config.version || '1.0'
         });
     }
 

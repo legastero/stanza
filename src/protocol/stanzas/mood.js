@@ -87,13 +87,13 @@ const MOODS = [
 
 export default function(JXT) {
     const Mood = JXT.define({
-        name: 'mood',
-        namespace: NS.MOOD,
         element: 'mood',
         fields: {
             text: JXT.utils.textSub(NS.MOOD, 'text'),
             value: JXT.utils.enumSub(NS.MOOD, MOODS)
-        }
+        },
+        name: 'mood',
+        namespace: NS.MOOD
     });
 
     JXT.extendMessage(Mood);

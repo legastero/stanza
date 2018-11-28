@@ -2,8 +2,8 @@ export default function(client) {
     client.getPrivateData = function(opts, cb) {
         return this.sendIq(
             {
-                type: 'get',
-                privateStorage: opts
+                privateStorage: opts,
+                type: 'get'
             },
             cb
         );
@@ -12,8 +12,8 @@ export default function(client) {
     client.setPrivateData = function(opts, cb) {
         return this.sendIq(
             {
-                type: 'set',
-                privateStorage: opts
+                privateStorage: opts,
+                type: 'set'
             },
             cb
         );

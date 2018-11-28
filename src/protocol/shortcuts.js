@@ -2,8 +2,8 @@ import * as NS from './namespaces';
 
 const VERSION = {
     client: NS.CLIENT,
-    server: NS.SERVER,
-    component: NS.COMPONENT
+    component: NS.COMPONENT,
+    server: NS.SERVER
 };
 
 export default function(JXT) {

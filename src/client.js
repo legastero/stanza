@@ -15,12 +15,12 @@ import Bind from './plugins/bind';
 import Session from './plugins/session';
 
 const SASL_MECHS = {
-    external: SASL.External,
-    'scram-sha-1': SASL.ScramSha1,
+    anonymous: SASL.Anonymous,
     'digest-md5': SASL.DigestMD5,
-    'x-oauth2': SASL.XOauth2,
+    external: SASL.External,
     plain: SASL.Plain,
-    anonymous: SASL.Anonymous
+    'scram-sha-1': SASL.ScramSha1,
+    'x-oauth2': SASL.XOauth2
 };
 
 function timeoutRequest(targetPromise, id, delay) {
@@ -30,11 +30,11 @@ function timeoutRequest(targetPromise, id, delay) {
         new Promise(function(resolve, reject) {
             timeoutRef = setTimeout(function() {
                 reject({
-                    id: id,
-                    type: 'error',
                     error: {
                         condition: 'timeout'
-                    }
+                    },
+                    id: id,
+                    type: 'error'
                 });
             }, delay);
         })
@@ -129,8 +129,8 @@ export default class Client extends WildEmitter {
                     return this.sendIq(
                         iq.errorReply({
                             error: {
-                                type: 'modify',
-                                condition: 'bad-request'
+                                condition: 'bad-request',
+                                type: 'modify'
                             }
                         })
                     );
@@ -141,8 +141,8 @@ export default class Client extends WildEmitter {
                     return this.sendIq(
                         iq.errorReply({
                             error: {
-                                type: 'cancel',
-                                condition: 'service-unavailable'
+                                condition: 'service-unavailable',
+                                type: 'cancel'
                             }
                         })
                     );
@@ -156,8 +156,8 @@ export default class Client extends WildEmitter {
                     this.sendIq(
                         iq.errorReply({
                             error: {
-                                type: 'cancel',
-                                condition: 'service-unavailable'
+                                condition: 'service-unavailable',
+                                type: 'cancel'
                             }
                         })
                     );
@@ -194,9 +194,9 @@ export default class Client extends WildEmitter {
     _initConfig(opts) {
         const currConfig = this.config || {};
         this.config = {
-            useStreamManagement: true,
-            transports: ['websocket', 'bosh'],
             sasl: ['external', 'scram-sha-1', 'digest-md5', 'plain', 'anonymous'],
+            transports: ['websocket', 'bosh'],
+            useStreamManagement: true,
             ...currConfig,
             ...opts
         };
@@ -253,13 +253,13 @@ export default class Client extends WildEmitter {
         const username = creds.username || requestedJID.local;
         const server = creds.server || requestedJID.domain;
         return {
-            username: username,
-            password: this.config.password,
-            server: server,
             host: server,
+            password: this.config.password,
             realm: server,
-            serviceType: 'xmpp',
+            server: server,
             serviceName: server,
+            serviceType: 'xmpp',
+            username: username,
             ...creds
         };
     }

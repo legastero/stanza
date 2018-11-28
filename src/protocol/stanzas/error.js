@@ -29,15 +29,15 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const StanzaError = JXT.define({
-        name: 'error',
-        namespace: NS.CLIENT,
         element: 'error',
         fields: {
-            lang: {
+            $text: {
                 get: function() {
-                    return (this.parent || {}).lang || '';
+                    return Utils.getSubLangText(this.xml, NS.STANZA_ERROR, 'text', this.lang);
                 }
             },
+            by: Utils.jidAttribute('by'),
+            code: Utils.attribute('code'),
             condition: Utils.enumSub(NS.STANZA_ERROR, CONDITIONS),
             gone: {
                 get: function() {
@@ -46,6 +46,11 @@ export default function(JXT) {
                 set: function(value) {
                     this.condition = 'gone';
                     Utils.setSubText(this.xml, NS.STANZA_ERROR, 'gone', value);
+                }
+            },
+            lang: {
+                get: function() {
+                    return (this.parent || {}).lang || '';
                 }
             },
             redirect: {
@@ -57,14 +62,6 @@ export default function(JXT) {
                     Utils.setSubText(this.xml, NS.STANZA_ERROR, 'redirect', value);
                 }
             },
-            code: Utils.attribute('code'),
-            type: Utils.attribute('type'),
-            by: Utils.jidAttribute('by'),
-            $text: {
-                get: function() {
-                    return Utils.getSubLangText(this.xml, NS.STANZA_ERROR, 'text', this.lang);
-                }
-            },
             text: {
                 get: function() {
                     const text = this.$text;
@@ -73,8 +70,11 @@ export default function(JXT) {
                 set: function(value) {
                     Utils.setSubLangText(this.xml, NS.STANZA_ERROR, 'text', value, this.lang);
                 }
-            }
-        }
+            },
+            type: Utils.attribute('type')
+        },
+        name: 'error',
+        namespace: NS.CLIENT
     });
 
     JXT.extendMessage(StanzaError);

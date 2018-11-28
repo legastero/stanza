@@ -4,26 +4,26 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     JXT.define({
+        element: 'open',
+        fields: {
+            from: Utils.jidAttribute('from', true),
+            id: Utils.attribute('id'),
+            lang: Utils.langAttribute(),
+            to: Utils.jidAttribute('to', true),
+            version: Utils.attribute('version', '1.0')
+        },
         name: 'openStream',
         namespace: NS.FRAMING,
-        element: 'open',
-        topLevel: true,
-        fields: {
-            lang: Utils.langAttribute(),
-            id: Utils.attribute('id'),
-            version: Utils.attribute('version', '1.0'),
-            to: Utils.jidAttribute('to', true),
-            from: Utils.jidAttribute('from', true)
-        }
+        topLevel: true
     });
 
     JXT.define({
-        name: 'closeStream',
-        namespace: NS.FRAMING,
         element: 'close',
-        topLevel: true,
         fields: {
             seeOtherURI: Utils.attribute('see-other-uri')
-        }
+        },
+        name: 'closeStream',
+        namespace: NS.FRAMING,
+        topLevel: true
     });
 }

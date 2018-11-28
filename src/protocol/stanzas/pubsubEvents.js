@@ -4,42 +4,37 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const Event = JXT.define({
+        element: 'event',
         name: 'event',
-        namespace: NS.PUBSUB_EVENT,
-        element: 'event'
+        namespace: NS.PUBSUB_EVENT
     });
 
     const EventPurge = JXT.define({
-        name: 'purged',
-        namespace: NS.PUBSUB_EVENT,
         element: 'purge',
         fields: {
             node: Utils.attribute('node')
-        }
+        },
+        name: 'purged',
+        namespace: NS.PUBSUB_EVENT
     });
 
     const EventDelete = JXT.define({
-        name: 'deleted',
-        namespace: NS.PUBSUB_EVENT,
         element: 'delete',
         fields: {
             node: Utils.attribute('node'),
             redirect: Utils.subAttribute(NS.PUBSUB_EVENT, 'redirect', 'uri')
-        }
+        },
+        name: 'deleted',
+        namespace: NS.PUBSUB_EVENT
     });
 
     const EventSubscription = JXT.define({
-        name: 'subscriptionChanged',
-        namespace: NS.PUBSUB_EVENT,
         element: 'subscription',
         fields: {
-            node: Utils.attribute('node'),
-            jid: Utils.jidAttribute('jid'),
-            type: Utils.attribute('subscription'),
-            subid: Utils.attribute('subid'),
             expiry: {
                 get: function() {
                     const text = Utils.getAttribute(this.xml, 'expiry');
+
                     if (text === 'presence') {
                         return text;
                     } else if (text) {
@@ -57,22 +52,26 @@ export default function(JXT) {
 
                     Utils.setAttribute(this.xml, 'expiry', value);
                 }
-            }
-        }
+            },
+            jid: Utils.jidAttribute('jid'),
+            node: Utils.attribute('node'),
+            subid: Utils.attribute('subid'),
+            type: Utils.attribute('subscription')
+        },
+        name: 'subscriptionChanged',
+        namespace: NS.PUBSUB_EVENT
     });
 
     const EventConfiguration = JXT.define({
-        name: 'configurationChanged',
-        namespace: NS.PUBSUB_EVENT,
         element: 'configuration',
         fields: {
             node: Utils.attribute('node')
-        }
+        },
+        name: 'configurationChanged',
+        namespace: NS.PUBSUB_EVENT
     });
 
     const EventItems = JXT.define({
-        name: 'updated',
-        namespace: NS.PUBSUB_EVENT,
         element: 'items',
         fields: {
             node: Utils.attribute('node'),
@@ -84,10 +83,12 @@ export default function(JXT) {
                     for (const xml of retracted) {
                         results.push(xml.getAttribute('id'));
                     }
+
                     return results;
                 },
                 set: function(value) {
                     const self = this;
+
                     for (const id of value) {
                         const retracted = Utils.createElement(
                             NS.PUBSUB_EVENT,
@@ -99,18 +100,20 @@ export default function(JXT) {
                     }
                 }
             }
-        }
+        },
+        name: 'updated',
+        namespace: NS.PUBSUB_EVENT
     });
 
     const EventItem = JXT.define({
-        name: '_eventItem',
-        namespace: NS.PUBSUB_EVENT,
         element: 'item',
         fields: {
             id: Utils.attribute('id'),
             node: Utils.attribute('node'),
             publisher: Utils.jidAttribute('publisher')
-        }
+        },
+        name: '_eventItem',
+        namespace: NS.PUBSUB_EVENT
     });
 
     JXT.extend(EventItems, EventItem, 'published');

@@ -8,7 +8,9 @@ export default class XOAuth2 {
         return str;
     }
 
-    challenge() {}
+    challenge() {
+        return undefined;
+    }
 }
 
 XOAuth2.prototype.name = 'X-OAUTH2';

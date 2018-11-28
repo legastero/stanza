@@ -108,47 +108,47 @@ function verifyVerString(info, hash, check) {
     return computed && computed === check;
 }
 
-function Disco() {
-    this.features = {};
-    this.identities = {};
-    this.extensions = {};
-    this.items = {};
-    this.caps = {};
-}
+class Disco {
+    constructor() {
+        this.features = {};
+        this.identities = {};
+        this.extensions = {};
+        this.items = {};
+        this.caps = {};
+    }
 
-Disco.prototype = {
-    constructor: {
-        value: Disco
-    },
-    addFeature: function(feature, node) {
+    addFeature(feature, node) {
         node = node || '';
         if (!this.features[node]) {
             this.features[node] = [];
         }
         this.features[node].push(feature);
-    },
-    addIdentity: function(identity, node) {
+    }
+
+    addIdentity(identity, node) {
         node = node || '';
         if (!this.identities[node]) {
             this.identities[node] = [];
         }
         this.identities[node].push(identity);
-    },
-    addItem: function(item, node) {
+    }
+
+    addItem(item, node) {
         node = node || '';
         if (!this.items[node]) {
             this.items[node] = [];
         }
         this.items[node].push(item);
-    },
-    addExtension: function(form, node) {
+    }
+
+    addExtension(form, node) {
         node = node || '';
         if (!this.extensions[node]) {
             this.extensions[node] = [];
         }
         this.extensions[node].push(form);
     }
-};
+}
 
 export default function(client) {
     client.disco = new Disco(client);
@@ -162,8 +162,8 @@ export default function(client) {
 
     client.registerFeature('caps', 100, function(features, cb) {
         this.emit('disco:caps', {
-            from: new JID(client.jid.domain || client.config.server),
-            caps: features.caps
+            caps: features.caps,
+            from: new JID(client.jid.domain || client.config.server)
         });
         this.features.negotiated.caps = true;
         cb();
@@ -172,11 +172,11 @@ export default function(client) {
     client.getDiscoInfo = function(jid, node, cb) {
         return this.sendIq(
             {
-                to: jid,
-                type: 'get',
                 discoInfo: {
                     node: node
-                }
+                },
+                to: jid,
+                type: 'get'
             },
             cb
         );
@@ -185,11 +185,11 @@ export default function(client) {
     client.getDiscoItems = function(jid, node, cb) {
         return this.sendIq(
             {
-                to: jid,
-                type: 'get',
                 discoItems: {
                     node: node
-                }
+                },
+                to: jid,
+                type: 'get'
             },
             cb
         );
@@ -199,17 +199,17 @@ export default function(client) {
         let node = this.config.capsNode || 'https://stanza.io';
         const data = JSON.parse(
             JSON.stringify({
-                identities: this.disco.identities[''],
+                extensions: this.disco.extensions[''],
                 features: this.disco.features[''],
-                extensions: this.disco.extensions['']
+                identities: this.disco.identities['']
             })
         );
 
         const ver = generateVerString(data, 'sha-1');
 
         this.disco.caps = {
-            node: node,
             hash: 'sha-1',
+            node: node,
             ver: ver
         };
 
@@ -229,12 +229,12 @@ export default function(client) {
 
         const node = caps.node + '#' + caps.ver;
         return {
-            ver: caps.ver,
             discoInfo: {
-                identities: client.disco.identities[node],
+                extensions: client.disco.extensions[node],
                 features: client.disco.features[node],
-                extensions: client.disco.extensions[node]
-            }
+                identities: client.disco.identities[node]
+            },
+            ver: caps.ver
         };
     };
 
@@ -256,10 +256,10 @@ export default function(client) {
         client.sendIq(
             iq.resultReply({
                 discoInfo: {
-                    node: reportedNode,
-                    identities: client.disco.identities[node] || [],
+                    extensions: client.disco.extensions[node] || [],
                     features: client.disco.features[node] || [],
-                    extensions: client.disco.extensions[node] || []
+                    identities: client.disco.identities[node] || [],
+                    node: reportedNode
                 }
             })
         );
@@ -270,8 +270,8 @@ export default function(client) {
         client.sendIq(
             iq.resultReply({
                 discoItems: {
-                    node: node,
-                    items: client.disco.items[node] || []
+                    items: client.disco.items[node] || [],
+                    node: node
                 }
             })
         );

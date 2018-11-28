@@ -6,24 +6,14 @@ internals.defineMessage = function(JXT, name, namespace) {
     const Utils = JXT.utils;
 
     JXT.define({
-        name: name,
-        namespace: namespace,
         element: 'message',
-        topLevel: true,
         fields: {
-            lang: Utils.langAttribute(),
-            id: Utils.attribute('id'),
-            to: Utils.jidAttribute('to', true),
-            from: Utils.jidAttribute('from', true),
-            type: Utils.attribute('type', 'normal'),
-            thread: Utils.textSub(namespace, 'thread'),
-            parentThread: Utils.subAttribute(namespace, 'thread', 'parent'),
-            subject: Utils.textSub(namespace, 'subject'),
             $body: {
                 get: function getBody$() {
                     return Utils.getSubLangText(this.xml, namespace, 'body', this.lang);
                 }
             },
+            attention: Utils.boolSub(NS.ATTENTION_0, 'attention'),
             body: {
                 get: function getBody() {
                     const bodies = this.$body;
@@ -33,7 +23,6 @@ internals.defineMessage = function(JXT, name, namespace) {
                     Utils.setSubLangText(this.xml, namespace, 'body', value, this.lang);
                 }
             },
-            attention: Utils.boolSub(NS.ATTENTION_0, 'attention'),
             chatState: Utils.enumSub(NS.CHAT_STATES, [
                 'active',
                 'composing',
@@ -41,10 +30,21 @@ internals.defineMessage = function(JXT, name, namespace) {
                 'inactive',
                 'gone'
             ]),
+            from: Utils.jidAttribute('from', true),
+            id: Utils.attribute('id'),
+            lang: Utils.langAttribute(),
+            parentThread: Utils.subAttribute(namespace, 'thread', 'parent'),
+            receipt: Utils.subAttribute(NS.RECEIPTS, 'received', 'id'),
             replace: Utils.subAttribute(NS.CORRECTION_0, 'replace', 'id'),
             requestReceipt: Utils.boolSub(NS.RECEIPTS, 'request'),
-            receipt: Utils.subAttribute(NS.RECEIPTS, 'received', 'id')
-        }
+            subject: Utils.textSub(namespace, 'subject'),
+            thread: Utils.textSub(namespace, 'thread'),
+            to: Utils.jidAttribute('to', true),
+            type: Utils.attribute('type', 'normal')
+        },
+        name: name,
+        namespace: namespace,
+        topLevel: true
     });
 };
 

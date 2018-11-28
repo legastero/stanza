@@ -10,9 +10,9 @@ export default function(client) {
     client.ping = function(jid, cb) {
         return this.sendIq(
             {
+                ping: true,
                 to: jid,
-                type: 'get',
-                ping: true
+                type: 'get'
             },
             cb
         );

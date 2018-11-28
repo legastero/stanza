@@ -2,36 +2,36 @@ import * as NS from '../namespaces';
 
 export default function(JXT) {
     const Sent = JXT.define({
-        name: 'carbonSent',
+        element: 'sent',
         eventName: 'carbon:sent',
-        namespace: NS.CARBONS_2,
-        element: 'sent'
+        name: 'carbonSent',
+        namespace: NS.CARBONS_2
     });
 
     const Received = JXT.define({
-        name: 'carbonReceived',
+        element: 'received',
         eventName: 'carbon:received',
-        namespace: NS.CARBONS_2,
-        element: 'received'
+        name: 'carbonReceived',
+        namespace: NS.CARBONS_2
     });
 
     const Private = JXT.define({
-        name: 'carbonPrivate',
+        element: 'private',
         eventName: 'carbon:private',
-        namespace: NS.CARBONS_2,
-        element: 'private'
+        name: 'carbonPrivate',
+        namespace: NS.CARBONS_2
     });
 
     const Enable = JXT.define({
+        element: 'enable',
         name: 'enableCarbons',
-        namespace: NS.CARBONS_2,
-        element: 'enable'
+        namespace: NS.CARBONS_2
     });
 
     const Disable = JXT.define({
+        element: 'disable',
         name: 'disableCarbons',
-        namespace: NS.CARBONS_2,
-        element: 'disable'
+        namespace: NS.CARBONS_2
     });
 
     JXT.withDefinition('forwarded', NS.FORWARD_0, function(Forwarded) {

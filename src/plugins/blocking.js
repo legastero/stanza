@@ -6,10 +6,10 @@ export default function(client) {
     client.block = function(jid, cb) {
         return client.sendIq(
             {
-                type: 'set',
                 block: {
                     jids: [jid]
-                }
+                },
+                type: 'set'
             },
             cb
         );
@@ -30,8 +30,8 @@ export default function(client) {
     client.getBlocked = function(cb) {
         return client.sendIq(
             {
-                type: 'get',
-                blockList: true
+                blockList: true,
+                type: 'get'
             },
             cb
         );

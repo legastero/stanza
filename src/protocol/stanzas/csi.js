@@ -2,24 +2,24 @@ import * as NS from '../namespaces';
 
 export default function(JXT) {
     const CSIFeature = JXT.define({
+        element: 'csi',
         name: 'clientStateIndication',
-        namespace: NS.CSI,
-        element: 'csi'
+        namespace: NS.CSI
     });
 
     JXT.define({
-        name: 'csiActive',
-        eventName: 'csi:active',
-        namespace: NS.CSI,
         element: 'active',
+        eventName: 'csi:active',
+        name: 'csiActive',
+        namespace: NS.CSI,
         topLevel: true
     });
 
     JXT.define({
-        name: 'csiInactive',
-        eventName: 'csi:inactive',
-        namespace: NS.CSI,
         element: 'inactive',
+        eventName: 'csi:inactive',
+        name: 'csiInactive',
+        namespace: NS.CSI,
         topLevel: true
     });
 

@@ -5,9 +5,9 @@ export default function(client) {
 
     client.sendLog = function(jid, logData) {
         client.sendMessage({
+            log: logData,
             to: jid,
-            type: 'normal',
-            log: logData
+            type: 'normal'
         });
     };
 }

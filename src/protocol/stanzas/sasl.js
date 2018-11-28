@@ -19,86 +19,83 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const Mechanisms = JXT.define({
-        name: 'sasl',
-        namespace: NS.SASL,
         element: 'mechanisms',
         fields: {
             mechanisms: Utils.multiTextSub(NS.SASL, 'mechanism')
-        }
+        },
+        name: 'sasl',
+        namespace: NS.SASL
     });
 
     JXT.define({
-        name: 'saslAuth',
-        eventName: 'sasl:auth',
-        namespace: NS.SASL,
         element: 'auth',
-        topLevel: true,
+        eventName: 'sasl:auth',
         fields: {
-            value: Utils.text(),
-            mechanism: Utils.attribute('mechanism')
-        }
-    });
-
-    JXT.define({
-        name: 'saslChallenge',
-        eventName: 'sasl:challenge',
-        namespace: NS.SASL,
-        element: 'challenge',
-        topLevel: true,
-        fields: {
+            mechanism: Utils.attribute('mechanism'),
             value: Utils.text()
-        }
-    });
-
-    JXT.define({
-        name: 'saslResponse',
-        eventName: 'sasl:response',
+        },
+        name: 'saslAuth',
         namespace: NS.SASL,
-        element: 'response',
-        topLevel: true,
-        fields: {
-            value: Utils.text()
-        }
-    });
-
-    JXT.define({
-        name: 'saslAbort',
-        eventName: 'sasl:abort',
-        namespace: NS.SASL,
-        element: 'abort',
         topLevel: true
     });
 
     JXT.define({
-        name: 'saslSuccess',
-        eventName: 'sasl:success',
-        namespace: NS.SASL,
-        element: 'success',
-        topLevel: true,
+        element: 'challenge',
+        eventName: 'sasl:challenge',
         fields: {
             value: Utils.text()
-        }
+        },
+        name: 'saslChallenge',
+        namespace: NS.SASL,
+        topLevel: true
     });
 
     JXT.define({
-        name: 'saslFailure',
-        eventName: 'sasl:failure',
-        namespace: NS.SASL,
-        element: 'failure',
-        topLevel: true,
+        element: 'response',
+        eventName: 'sasl:response',
         fields: {
+            value: Utils.text()
+        },
+        name: 'saslResponse',
+        namespace: NS.SASL,
+        topLevel: true
+    });
+
+    JXT.define({
+        element: 'abort',
+        eventName: 'sasl:abort',
+        name: 'saslAbort',
+        namespace: NS.SASL,
+        topLevel: true
+    });
+
+    JXT.define({
+        element: 'success',
+        eventName: 'sasl:success',
+        fields: {
+            value: Utils.text()
+        },
+        name: 'saslSuccess',
+        namespace: NS.SASL,
+        topLevel: true
+    });
+
+    JXT.define({
+        element: 'failure',
+        eventName: 'sasl:failure',
+        fields: {
+            $text: {
+                get: function() {
+                    return Utils.getSubLangText(this.xml, NS.SASL, 'text', this.lang);
+                }
+            },
+            condition: Utils.enumSub(NS.SASL, CONDITIONS),
             lang: {
                 get: function() {
                     return this._lang || '';
                 },
                 set: function(value) {
                     this._lang = value;
-                }
-            },
-            condition: Utils.enumSub(NS.SASL, CONDITIONS),
-            $text: {
-                get: function() {
-                    return Utils.getSubLangText(this.xml, NS.SASL, 'text', this.lang);
                 }
             },
             text: {
@@ -110,7 +107,10 @@ export default function(JXT) {
                     Utils.setSubLangText(this.xml, NS.SASL, 'text', value, this.lang);
                 }
             }
-        }
+        },
+        name: 'saslFailure',
+        namespace: NS.SASL,
+        topLevel: true
     });
 
     JXT.extendStreamFeatures(Mechanisms);

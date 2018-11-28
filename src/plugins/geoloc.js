@@ -13,8 +13,8 @@ export default function(client) {
         }
 
         client.emit('geoloc', {
-            jid: msg.from,
-            geoloc: msg.event.updated.published[0].geoloc
+            geoloc: msg.event.updated.published[0].geoloc,
+            jid: msg.from
         });
     });
 

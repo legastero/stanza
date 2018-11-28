@@ -4,15 +4,15 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     JXT.define({
-        name: 'stream',
-        namespace: NS.STREAM,
         element: 'stream',
         fields: {
-            lang: Utils.langAttribute(),
+            from: Utils.jidAttribute('from', true),
             id: Utils.attribute('id'),
-            version: Utils.attribute('version', '1.0'),
+            lang: Utils.langAttribute(),
             to: Utils.jidAttribute('to', true),
-            from: Utils.jidAttribute('from', true)
-        }
+            version: Utils.attribute('version', '1.0')
+        },
+        name: 'stream',
+        namespace: NS.STREAM
     });
 }

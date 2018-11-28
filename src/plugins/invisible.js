@@ -2,8 +2,8 @@ export default function(client) {
     client.goInvisible = function(cb) {
         return this.sendIq(
             {
-                type: 'set',
-                invisible: true
+                invisible: true,
+                type: 'set'
             },
             cb
         );

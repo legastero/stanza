@@ -9,7 +9,9 @@ export default class Plain {
         return str;
     }
 
-    challenge() {}
+    challenge() {
+        return undefined;
+    }
 }
 
 Plain.prototype.name = 'PLAIN';

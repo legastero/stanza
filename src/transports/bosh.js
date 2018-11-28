@@ -41,8 +41,8 @@ function makeRequest(opts) {
 function retryRequest(opts, timeout, allowedRetries) {
     return timeoutPromise(makeRequest(opts), (timeout || 20) * 1000)
         .then(function(result) {
-            const req = result[0],
-                body = result[1];
+            const req = result[0];
+            const body = result[1];
 
             if (req.statusCode < 200 || req.statusCode >= 400) {
                 throw new Error('HTTP Status Error' + req.statusCode);
@@ -81,7 +81,8 @@ export default class BOSHConnection extends WildEmitter {
             if (data === '') {
                 return;
             }
-            let bosh, err;
+            let bosh;
+            let err;
             try {
                 bosh = stanzas.parse(data, self.stanzas.BOSH);
             } catch (e) {
@@ -95,11 +96,11 @@ export default class BOSHConnection extends WildEmitter {
             if (!self.hasStream) {
                 self.hasStream = true;
                 self.stream = {
+                    from: bosh.from,
                     id: bosh.sid || self.sid,
                     lang: bosh.lang || 'en',
-                    version: bosh.version || '1.0',
                     to: bosh.to,
-                    from: bosh.from
+                    version: bosh.version || '1.0'
                 };
                 self.sid = bosh.sid || self.sid;
                 self.maxRequests = bosh.requests || self.maxRequests;
@@ -124,9 +125,9 @@ export default class BOSHConnection extends WildEmitter {
     connect(opts) {
         const self = this;
         self.config = {
+            maxRetries: 5,
             rid: Math.ceil(Math.random() * 9999999999),
             wait: 30,
-            maxRetries: 5,
             ...opts
         };
         self.hasStream = false;
@@ -146,12 +147,12 @@ export default class BOSHConnection extends WildEmitter {
         self.rid++;
         self.request(
             new self.stanzas.BOSH({
-                version: self.config.version || '1.0',
-                to: self.config.server,
+                hold: 1,
                 lang: self.config.lang || 'en',
-                wait: self.config.wait,
+                to: self.config.server,
                 ver: '1.6',
-                hold: 1
+                version: self.config.version || '1.0',
+                wait: self.config.wait
             })
         );
     }
@@ -177,9 +178,9 @@ export default class BOSHConnection extends WildEmitter {
         self.rid++;
         self.request(
             new self.stanzas.BOSH({
-                to: self.config.server,
                 lang: self.config.lang || 'en',
-                restart: 'true'
+                restart: 'true',
+                to: self.config.server
             })
         );
     }
@@ -221,13 +222,13 @@ export default class BOSHConnection extends WildEmitter {
         self.requests.push(ticket);
         const req = retryRequest(
             {
-                uri: self.url,
                 body: body,
-                method: 'POST',
-                strictSSL: true,
                 headers: {
                     'Content-Type': 'text/xml'
-                }
+                },
+                method: 'POST',
+                strictSSL: true,
+                uri: self.url
             },
             self.config.wait * 1.5,
             this.config.maxRetries
@@ -240,14 +241,14 @@ export default class BOSHConnection extends WildEmitter {
                 self.emit('stream:error', serr, err);
                 self.disconnect();
             })
-            .then(function(body) {
+            .then(function(respBody) {
                 self.requests = self.requests.filter(item => {
                     return item.id !== ticket.id;
                 });
-                if (body) {
-                    body = Buffer.from(body, 'utf8').toString();
-                    self.emit('raw:incoming', body);
-                    self.emit('raw:incoming:' + ticket.id, body);
+                if (respBody) {
+                    respBody = Buffer.from(respBody, 'utf8').toString();
+                    self.emit('raw:incoming', respBody);
+                    self.emit('raw:incoming:' + ticket.id, respBody);
                 }
                 // do not (re)start long polling if terminating, or request is pending, or before authentication
                 if (

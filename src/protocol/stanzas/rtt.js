@@ -1,14 +1,14 @@
 import * as NS from '../namespaces';
 
 const TYPE_MAP = {
-    insert: 't',
     erase: 'e',
+    insert: 't',
     wait: 'w'
 };
 
 const ACTION_MAP = {
-    t: 'insert',
     e: 'erase',
+    t: 'insert',
     w: 'wait'
 };
 
@@ -16,13 +16,8 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const RTT = JXT.define({
-        name: 'rtt',
-        namespace: NS.RTT_0,
         element: 'rtt',
         fields: {
-            id: Utils.attribute('id'),
-            event: Utils.attribute('event', 'edit'),
-            seq: Utils.numberAttribute('seq'),
             actions: {
                 get: function() {
                     const results = [];
@@ -94,8 +89,13 @@ export default function(JXT) {
                         self.xml.appendChild(child);
                     }
                 }
-            }
-        }
+            },
+            event: Utils.attribute('event', 'edit'),
+            id: Utils.attribute('id'),
+            seq: Utils.numberAttribute('seq')
+        },
+        name: 'rtt',
+        namespace: NS.RTT_0
     });
 
     JXT.extendMessage(RTT);

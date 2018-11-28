@@ -6,9 +6,9 @@ export default function(client) {
     client.getTime = function(jid, cb) {
         return this.sendIq(
             {
+                time: true,
                 to: jid,
-                type: 'get',
-                time: true
+                type: 'get'
             },
             cb
         );
@@ -19,8 +19,8 @@ export default function(client) {
         client.sendIq(
             iq.resultReply({
                 time: {
-                    utc: time,
-                    tzo: time.getTimezoneOffset()
+                    tzo: time.getTimezoneOffset(),
+                    utc: time
                 }
             })
         );

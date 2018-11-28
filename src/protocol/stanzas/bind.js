@@ -4,13 +4,13 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const Bind = JXT.define({
-        name: 'bind',
-        namespace: NS.BIND,
         element: 'bind',
         fields: {
-            resource: Utils.textSub(NS.BIND, 'resource'),
-            jid: Utils.jidSub(NS.BIND, 'jid')
-        }
+            jid: Utils.jidSub(NS.BIND, 'jid'),
+            resource: Utils.textSub(NS.BIND, 'resource')
+        },
+        name: 'bind',
+        namespace: NS.BIND
     });
 
     JXT.extendIQ(Bind);

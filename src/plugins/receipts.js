@@ -7,16 +7,16 @@ export default function(client, stanzas, config) {
 
     client.on('message', function(msg) {
         const ackTypes = {
-            normal: true,
             chat: true,
-            headline: true
+            headline: true,
+            normal: true
         };
         if (sendReceipts && ackTypes[msg.type] && msg.requestReceipt && !msg.receipt) {
             client.sendMessage({
-                to: msg.from,
-                type: msg.type,
+                id: msg.id,
                 receipt: msg.id,
-                id: msg.id
+                to: msg.from,
+                type: msg.type
             });
         }
         if (msg.receipt) {

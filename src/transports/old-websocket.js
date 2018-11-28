@@ -17,7 +17,9 @@ export default class OldWSConnection extends WSConnection {
 
         self.off('raw:incoming');
         self.on('raw:incoming', function(data) {
-            let streamData, ended, err;
+            let streamData;
+            let ended;
+            let err;
             data = data.trim();
             data = data.replace(/^(\s*<\?.*\?>\s*)*/, '');
             if (data === '') {

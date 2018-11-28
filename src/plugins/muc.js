@@ -33,26 +33,26 @@ export default function(client) {
             if (msg.muc.invite) {
                 client.emit('muc:invite', {
                     from: msg.muc.invite.from,
-                    room: msg.from,
-                    reason: msg.muc.invite.reason,
                     password: msg.muc.password,
+                    reason: msg.muc.invite.reason,
+                    room: msg.from,
                     thread: msg.muc.invite.thread,
                     type: 'mediated'
                 });
             }
             if (msg.muc.decline) {
                 client.emit('muc:declined', {
-                    room: msg.from,
                     from: msg.muc.decline.from,
-                    reason: msg.muc.decline.reason
+                    reason: msg.muc.decline.reason,
+                    room: msg.from
                 });
             }
         } else if (msg.mucInvite) {
             client.emit('muc:invite', {
                 from: msg.from,
-                room: msg.mucInvite.jid,
-                reason: msg.mucInvite.reason,
                 password: msg.mucInvite.password,
+                reason: msg.mucInvite.reason,
+                room: msg.mucInvite.jid,
                 thread: msg.mucInvite.thread,
                 type: 'direct'
             });
@@ -80,10 +80,10 @@ export default function(client) {
                 }
                 if (pres.muc.destroyed) {
                     client.emit('muc:destroyed', {
-                        room: pres.from,
                         newRoom: pres.muc.destroyed.jid,
+                        password: pres.muc.destroyed.password,
                         reason: pres.muc.destroyed.reason,
-                        password: pres.muc.destroyed.password
+                        room: pres.from
                     });
                 }
             } else {
@@ -125,30 +125,30 @@ export default function(client) {
 
     client.invite = function(room, opts) {
         client.sendMessage({
-            to: room,
             muc: {
                 invites: opts
-            }
+            },
+            to: room
         });
     };
 
     client.directInvite = function(room, opts) {
         opts.jid = room;
         client.sendMessage({
-            to: opts.to,
-            mucInvite: opts
+            mucInvite: opts,
+            to: opts.to
         });
     };
 
     client.declineInvite = function(room, sender, reason) {
         client.sendMessage({
-            to: room,
             muc: {
                 decline: {
-                    to: sender,
-                    reason: reason
+                    reason: reason,
+                    to: sender
                 }
-            }
+            },
+            to: room
         });
     };
 
@@ -160,9 +160,9 @@ export default function(client) {
 
     client.setSubject = function(room, subject) {
         client.sendMessage({
+            subject: subject,
             to: room,
-            type: 'groupchat',
-            subject: subject
+            type: 'groupchat'
         });
     };
 
@@ -178,7 +178,6 @@ export default function(client) {
 
     client.requestRoomVoice = function(room) {
         client.sendMessage({
-            to: room,
             form: {
                 fields: [
                     {
@@ -191,20 +190,21 @@ export default function(client) {
                         value: 'participant'
                     }
                 ]
-            }
+            },
+            to: room
         });
     };
 
     client.setRoomAffiliation = function(room, jid, affiliation, reason, cb) {
         return this.sendIq(
             {
-                type: 'set',
-                to: room,
                 mucAdmin: {
-                    jid: jid,
                     affiliation: affiliation,
+                    jid: jid,
                     reason: reason
-                }
+                },
+                to: room,
+                type: 'set'
             },
             cb
         );
@@ -213,13 +213,13 @@ export default function(client) {
     client.setRoomRole = function(room, nick, role, reason, cb) {
         return this.sendIq(
             {
-                type: 'set',
-                to: room,
                 mucAdmin: {
                     nick: nick,
-                    role: role,
-                    reason: reason
-                }
+                    reason: reason,
+                    role: role
+                },
+                to: room,
+                type: 'set'
             },
             cb
         );
@@ -228,9 +228,9 @@ export default function(client) {
     client.getRoomMembers = function(room, opts, cb) {
         return this.sendIq(
             {
-                type: 'get',
+                mucAdmin: opts,
                 to: room,
-                mucAdmin: opts
+                type: 'get'
             },
             cb
         );
@@ -239,9 +239,9 @@ export default function(client) {
     client.getRoomConfig = function(jid, cb) {
         return this.sendIq(
             {
+                mucOwner: true,
                 to: jid,
-                type: 'get',
-                mucOwner: true
+                type: 'get'
             },
             cb
         );
@@ -253,11 +253,11 @@ export default function(client) {
         }
         return this.sendIq(
             {
-                to: jid,
-                type: 'set',
                 mucOwner: {
                     form: form
-                }
+                },
+                to: jid,
+                type: 'set'
             },
             cb
         );
@@ -266,11 +266,11 @@ export default function(client) {
     client.destroyRoom = function(jid, opts, cb) {
         return this.sendIq(
             {
-                to: jid,
-                type: 'set',
                 mucOwner: {
                     destroy: opts
-                }
+                },
+                to: jid,
+                type: 'set'
             },
             cb
         );
@@ -279,9 +279,9 @@ export default function(client) {
     client.getUniqueRoomName = function(jid, cb) {
         return this.sendIq(
             {
-                type: 'get',
+                mucUnique: true,
                 to: jid,
-                mucUnique: true
+                type: 'get'
             },
             cb
         );

@@ -4,8 +4,6 @@ export default function(JXT) {
     const Utils = JXT.utils;
 
     const Roster = JXT.define({
-        name: 'roster',
-        namespace: NS.ROSTER,
         element: 'query',
         fields: {
             ver: {
@@ -17,26 +15,28 @@ export default function(JXT) {
                     Utils.setAttribute(this.xml, 'ver', value, force);
                 }
             }
-        }
+        },
+        name: 'roster',
+        namespace: NS.ROSTER
     });
 
     const RosterItem = JXT.define({
-        name: '_rosterItem',
-        namespace: NS.ROSTER,
         element: 'item',
         fields: {
+            groups: Utils.multiTextSub(NS.ROSTER, 'group'),
             jid: Utils.jidAttribute('jid', true),
             name: Utils.attribute('name'),
+            preApproved: Utils.boolAttribute(NS.ROSTER, 'approved'),
             subscription: Utils.attribute('subscription', 'none'),
             subscriptionRequested: {
                 get: function() {
                     const ask = Utils.getAttribute(this.xml, 'ask');
                     return ask === 'subscribe';
                 }
-            },
-            preApproved: Utils.boolAttribute(NS.ROSTER, 'approved'),
-            groups: Utils.multiTextSub(NS.ROSTER, 'group')
-        }
+            }
+        },
+        name: '_rosterItem',
+        namespace: NS.ROSTER
     });
 
     JXT.extend(Roster, RosterItem, 'items');

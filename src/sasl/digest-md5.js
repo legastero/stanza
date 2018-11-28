@@ -99,7 +99,7 @@ export default class DigestMD5 {
         this._nonce = dtives.nonce;
         this._qop = (dtives.qop || 'auth').split(',');
         this._stale = dtives.stale;
-        this._maxbuf = parseInt(dtives.maxbuf) || 65536;
+        this._maxbuf = parseInt(dtives.maxbuf, 10) || 65536;
         this._charset = dtives.charset;
         this._algo = dtives.algorithm;
         this._cipher = dtives.cipher;
