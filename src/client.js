@@ -51,7 +51,6 @@ export default class Client extends WildEmitter {
         opts = opts || {};
         this._initConfig(opts);
 
-        this.stanzas = jxt.getGlobalJXT();
         this.jid = new JID();
         this.stanzas = jxt.createRegistry();
         this.stanzas.use(Protocol);
