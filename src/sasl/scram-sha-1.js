@@ -1,5 +1,5 @@
-const createHash = require('create-hash');
-const createHmac = require('create-hmac');
+import { createHash, createHmac } from 'iana-hashes';
+
 const randomBytes = require('randombytes');
 
 const RESP = {};
