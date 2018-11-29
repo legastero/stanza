@@ -47,7 +47,7 @@ export default function(JXT) {
 
                 for (const key of Object.keys(hints)) {
                     if (!hints[key] || !EXPORT_MAP[key]) {
-                        return;
+                        continue;
                     }
 
                     const child = Utils.createElement(NS.HINTS, EXPORT_MAP[key]);
