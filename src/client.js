@@ -274,9 +274,8 @@ export default class Client extends WildEmitter {
             transInfo.name = this.config.transports[0];
         }
         if (transInfo && transInfo.name) {
-            if (transInfo.name === 'websocket' || transInfo.name === 'old-websocket') {
+            if (transInfo.name === 'websocket') {
                 this.use(require('./plugins/websocket').default);
-                this.use(require('./plugins/oldwebsocket').default);
             }
             if (transInfo.name === 'bosh') {
                 this.use(require('./plugins/bosh').default);

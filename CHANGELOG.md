@@ -8,6 +8,7 @@
 -   SASL mech implementations now live inside `stanza.io`.
 -   Moved host-meta fetching logic into `stanza.io`.
 -   Use `ws` module instead of `faye-websocket`.
+-   Dropped support of old, pre-RFC XMPP-over-WebSocket.
 
 ## 9.1.0 -> 9.2.0
 
