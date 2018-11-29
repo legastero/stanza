@@ -1,11 +1,7 @@
 import WildEmitter from 'wildemitter';
 import * as async from 'async';
 
-const WS =
-    require('faye-websocket') && require('faye-websocket').Client
-        ? require('faye-websocket').Client
-        : window.WebSocket;
-
+const WS = require('ws') || window.WebSocket;
 const WS_OPEN = 1;
 
 export default class WSConnection extends WildEmitter {

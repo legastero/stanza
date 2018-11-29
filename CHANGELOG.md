@@ -7,6 +7,7 @@
 -   Replaced use of `request` and `xhr` with `cross-fetch`.
 -   SASL mech implementations now live inside `stanza.io`.
 -   Moved host-meta fetching logic into `stanza.io`.
+-   Use `ws` module instead of `faye-websocket`.
 
 ## 9.1.0 -> 9.2.0
 
