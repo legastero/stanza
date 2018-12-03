@@ -1,170 +1,173 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Stanza.io Demo</title>
-    <style>
-      html {
-        margin: 0px;
-        padding: 0px;
-      }
-      body {
-        font-family: 'Helvetica', 'Arial', sans-serif;
-        margin: 0px;
-        padding: 0px;
-        color: #224;
-        background-color: #fefefe;
-      }
-      #logTitle {
-        position: fixed;
-        font-size: 20px;
-        padding: 10px;
-        padding-left: 30px;
-        width: 100%;
-        background-color: #fafaff;
-        border-bottom: 1px solid #dedeee;
-        top: 0px;
-        margin: 0px;
-        height: 20px;
-        z-index: 10;
-      }
-      #log {
-        padding: 25px;
-        padding-top: 50px;
-        padding-bottom: 75px;
-      }
-      #log div {
-        padding: 10px;
-        padding-left: 25px;
-        padding-right: 25px;
-        z-index: 0;
-      }
-      #log h2 {
-        font-size: 16px;
-        position: relative;
-        left: -10px;
-        z-index: 0;
-      }
-      #log div:nth-child(2n+1) {
-        background-color: #efefff;
-        border-radius: 5px;
-        border: 1px solid #cfcfff;
-      }
-      #settings {
-        font-size: 14px;
-        position: fixed;
-        bottom: 0px;
-        width: 100%;
-        margin: 0px;
-        padding: 10px;
-        padding-left: 30px;
-        background-color: #efefef;
-        border-top: 1px solid #dedede;
-      }
-      #settings h1 {
-        font-size: 20px;
-        margin: 0px;
-      }
-      #settings label {
-        margin-right: 20px;
-      }
-    </style>
-    <script src="build/stanzaio.bundle.js"></script>
-  </head>
-  <body>
-    <h1 id="logTitle">Events &amp; Data</h1>
-    <div id="log"></div>
-    <div id="settings">
-      <h1>Connection Settings</h1>
-      <form id="loginInfo">
-        <label>JID: <input id="jid" type="text" name="jid" value="stanzaio@lance.im"/></label>
-        <label>Password: <input id="password" type="password" name="password" /></label>
-        <label>WebSocket/BOSH URL: <input id="url" type="text" name="url" value="" /></label>
-        <input id="connect" type="submit" value="Connect" />
-      </form>
-    </div>
+    <head>
+        <meta charset="utf-8" />
+        <title>Stanza.io Demo</title>
+        <style>
+            html {
+                margin: 0px;
+                padding: 0px;
+            }
+            body {
+                font-family: 'Helvetica', 'Arial', sans-serif;
+                margin: 0px;
+                padding: 0px;
+                color: #224;
+                background-color: #fefefe;
+            }
+            #logTitle {
+                position: fixed;
+                font-size: 20px;
+                padding: 10px;
+                padding-left: 30px;
+                width: 100%;
+                background-color: #fafaff;
+                border-bottom: 1px solid #dedeee;
+                top: 0px;
+                margin: 0px;
+                height: 20px;
+                z-index: 10;
+            }
+            #log {
+                padding: 25px;
+                padding-top: 50px;
+                padding-bottom: 75px;
+            }
+            #log div {
+                padding: 10px;
+                padding-left: 25px;
+                padding-right: 25px;
+                z-index: 0;
+            }
+            #log h2 {
+                font-size: 16px;
+                position: relative;
+                left: -10px;
+                z-index: 0;
+            }
+            #log div:nth-child(2n + 1) {
+                background-color: #efefff;
+                border-radius: 5px;
+                border: 1px solid #cfcfff;
+            }
+            #settings {
+                font-size: 14px;
+                position: fixed;
+                bottom: 0px;
+                width: 100%;
+                margin: 0px;
+                padding: 10px;
+                padding-left: 30px;
+                background-color: #efefef;
+                border-top: 1px solid #dedede;
+            }
+            #settings h1 {
+                font-size: 20px;
+                margin: 0px;
+            }
+            #settings label {
+                margin-right: 20px;
+            }
+        </style>
+        <script src="dist/stanzaio.browser.js"></script>
+    </head>
+    <body>
+        <h1 id="logTitle">Events &amp; Data</h1>
+        <div id="log"></div>
+        <div id="settings">
+            <h1>Connection Settings</h1>
+            <form id="loginInfo">
+                <label
+                    >JID: <input id="jid" type="text" name="jid" value="stanzaio@lance.im"
+                /></label>
+                <label>Password: <input id="password" type="password" name="password"/></label>
+                <label>WebSocket/BOSH URL: <input id="url" type="text" name="url" value=""/></label>
+                <input id="connect" type="submit" value="Connect" />
+            </form>
+        </div>
 
-    <script>
-      function log(name, data) {
-          var container = document.getElementById('log');
-          var logEntry = document.createElement('div'),
-              header = document.createElement('h2'),
-              entry = document.createElement('p'),
-              altEntry = document.createElement('p');
+        <script>
+            function log(name, data) {
+                var container = document.getElementById('log');
+                var logEntry = document.createElement('div'),
+                    header = document.createElement('h2'),
+                    entry = document.createElement('p'),
+                    altEntry = document.createElement('p');
 
-          header.textContent = name;
-          logEntry.appendChild(header);
+                header.textContent = name;
+                logEntry.appendChild(header);
 
-          var code = document.createElement('code');
-          var codeData = document.createElement('pre');
+                var code = document.createElement('code');
+                var codeData = document.createElement('pre');
 
-          if (typeof data === 'string') {
-              codeData.textContent = data;
-          } else {
-              if (name === 'connected' || name === 'disconnected') {
-                  codeData.textContent = 'Client instance: ' + JSON.stringify(data.config, null, '  ');
-              } else {
-                  codeData.textContent = JSON.stringify(data, null, '  ');
-              }
-          }
+                if (typeof data === 'string') {
+                    codeData.textContent = data;
+                } else {
+                    if (name === 'connected' || name === 'disconnected') {
+                        codeData.textContent =
+                            'Client instance: ' + JSON.stringify(data.config, null, '  ');
+                    } else {
+                        codeData.textContent = JSON.stringify(data, null, '  ');
+                    }
+                }
 
-          code.appendChild(codeData);
-          entry.appendChild(code);
-          logEntry.appendChild(entry);
+                code.appendChild(codeData);
+                entry.appendChild(code);
+                logEntry.appendChild(entry);
 
-          container.appendChild(logEntry);
-          window.scrollTo(0, document.body.scrollHeight);
-      }
+                container.appendChild(logEntry);
+                window.scrollTo(0, document.body.scrollHeight);
+            }
 
+            var client;
+            var loginInfo = document.getElementById('loginInfo');
+            loginInfo.onsubmit = function(e) {
+                if (e.preventDefault) e.preventDefault();
 
+                var jid = document.getElementById('jid').value;
 
-      var client;
-      var loginInfo = document.getElementById('loginInfo');
-      loginInfo.onsubmit = function (e) {
-        if (e.preventDefault) e.preventDefault();
+                var url = document.getElementById('url').value;
+                var wsURL,
+                    boshURL,
+                    transports = ['websocket', 'bosh'];
 
-        var jid = document.getElementById('jid').value;
+                if (url.indexOf('http') === 0) {
+                    boshURL = url;
+                    transports = ['bosh'];
+                } else if (url.indexOf('ws') === 0) {
+                    wsURL = url;
+                    transports = ['websocket'];
+                }
 
-        var url = document.getElementById('url').value;
-        var wsURL, boshURL, transports = ['websocket', 'bosh'];
+                client = XMPP.createClient({
+                    jid: jid,
+                    password: document.getElementById('password').value,
+                    wsURL: wsURL,
+                    boshURL: boshURL,
+                    transports: transports
+                });
 
-        if (url.indexOf('http') === 0) {
-            boshURL = url;
-            transports = ['bosh'];
-        } else if (url.indexOf('ws') === 0) {
-            wsURL = url;
-            transports = ['websocket'];
-        }
+                client.on('*', log);
 
-        client = XMPP.createClient({
-          jid: jid,
-          password: document.getElementById('password').value,
-          wsURL: wsURL,
-          boshURL: boshURL,
-          transports: transports
-        });
+                client.on('session:started', function() {
+                    client.enableCarbons(function(err) {
+                        if (err) {
+                            console.log('Server does not support carbons');
+                        }
+                    });
 
-        client.on('*', log);
+                    client.getRoster(function(err, resp) {
+                        client.updateCaps();
+                        client.sendPresence({
+                            caps: client.disco.caps
+                        });
+                    });
+                });
 
-        client.on('session:started', function () {
-          client.enableCarbons(function (err) {
-              if (err) {
-                  console.log('Server does not support carbons');
-              }
-          });
+                client.connect();
 
-          client.getRoster(function (err, resp) {
-            client.updateCaps();
-            client.sendPresence({
-                caps: client.disco.caps
-            });
-          });
-        });
-
-        client.connect();
-
-        return false;
-      };
-    </script>
-  </body>
+                return false;
+            };
+        </script>
+    </body>
 </html>

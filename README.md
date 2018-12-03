@@ -1,4 +1,5 @@
 # Stanza.io
+
 **Modern XMPP in the browser, with a JSON API.**
 
 ## What is this?
@@ -12,6 +13,7 @@ have no need to ever see or touch any XML when using stanza.io.
 $ npm install stanza.io
 
 ```
+
 ## Building bundled/minified version (for AMD, etc)
 
 First run `npm install` to get all of the dependencies, and then run `npm run build`:
@@ -21,17 +23,17 @@ $ npm install
 $ npm run build
 ```
 
-The bundled and minified files will be in the generated `build` directory.
+The bundled and minified files will be in the generated `dist` directory.
 
 ## Getting Started
 
 1. Find or install a server which supports XMPP over WebSocket (Prosody recommended).
 2. Clone this repo with `git clone https://github.com/legastero/stanza.io.git`
-2. Run `npm install` in the new `stanza.io` directory.
-3. Run `npm run build` to create `build/stanzaio.bundle.js`.
-4. Open `demo.html` in your browser.
-5. Enter your connection info, click connect.
-6. Use the JS console to play with the XMPP client (`var client`).
+3. Run `npm install` in the new `stanza.io` directory.
+4. Run `npm run build` to create `dist/stanzaio.browser.js`.
+5. Open `demo.html` in your browser.
+6. Enter your connection info, click connect.
+7. Use the JS console to play with the XMPP client (`var client`).
 
 ## Echo Client Demo
 
@@ -50,15 +52,15 @@ var client = XMPP.createClient({
     // (or `boshURL` if using 'bosh' as the transport)
 });
 
-client.on('session:started', function () {
+client.on('session:started', function() {
     client.getRoster();
     client.sendPresence();
 });
 
-client.on('chat', function (msg) {
+client.on('chat', function(msg) {
     client.sendMessage({
-      to: msg.from,
-      body: 'You sent: ' + msg.body
+        to: msg.from,
+        body: 'You sent: ' + msg.body
     });
 });
 
@@ -67,10 +69,10 @@ client.connect();
 
 ## Documentation
 
-- [API Reference](docs/Reference.md)
-- [Supported XEPs](docs/Supported_XEPs.md)
-- [Creating Plugins](docs/Create_Plugin.md)
-- [Using PubSub](docs/Using_Pubsub.md)
+-   [API Reference](docs/Reference.md)
+-   [Supported XEPs](docs/Supported_XEPs.md)
+-   [Creating Plugins](docs/Create_Plugin.md)
+-   [Using PubSub](docs/Using_Pubsub.md)
 
 ## License
 

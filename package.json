@@ -30,6 +30,7 @@
         "pretty-quick": "^1.8.0",
         "rimraf": "^2.6.2",
         "rollup": "^0.67.0",
+        "rollup-plugin-node-resolve": "^3.4.0",
         "string-replace-loader": "^2.1.1",
         "tap-spec": "^5.0.0",
         "tape": "^4.8.0",
@@ -57,22 +58,26 @@
         "xmpp"
     ],
     "license": "MIT",
-    "main": "./lib/index.js",
+    "main": "./dist/cjs/index.js",
     "prettier": {
         "tabWidth": 4,
         "printWidth": 100,
         "semi": true,
         "singleQuote": true
     },
+    "private": true,
     "repository": {
         "type": "git",
         "url": "https://github.com/legastero/stanza.io.git"
     },
     "scripts": {
-        "build": "webpack --mode production",
-        "compile": "rimraf lib && tsc -p .",
+        "build": "node scripts/build",
+        "clean": "rimraf dist",
+        "compile": "tsc -p .",
+        "compile:module": "tsc -p . --outDir ./dist/es --target es2015 --module es2015",
+        "compile:rollup": "rollup -c rollup.config.js",
+        "compile:webpack": "webpack --mode production",
         "lint": "tslint -p .",
-        "prepare": "npm run compile",
         "test": "ts-node test/index.js | tap-spec",
         "validate": "npm ls"
     }

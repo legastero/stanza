@@ -9,7 +9,7 @@
         "forceConsistentCasingInFileNames": true,
         "module": "commonjs",
         "moduleResolution": "node",
-        "outDir": "./lib",
+        "outDir": "./dist/cjs",
         "lib": ["dom", "es2015"]
     },
     "include": ["src"]

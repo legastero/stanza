@@ -14,6 +14,9 @@ import Smacks from './plugins/smacks';
 import Bind from './plugins/bind';
 import Session from './plugins/session';
 
+import WebSocket from './transports/websocket';
+import BOSH from './transports/bosh';
+
 const SASL_MECHS = {
     anonymous: SASL.Anonymous,
     'digest-md5': SASL.DigestMD5,
@@ -63,7 +66,10 @@ export default class Client extends WildEmitter {
         this.use(Session);
 
         this.sm = new StreamManagement(this);
-        this.transports = {};
+        this.transports = {
+            bosh: BOSH,
+            websocket: WebSocket
+        };
 
         this.on('stream:data', data => {
             const json = data ? data.toJSON() : null;
@@ -274,12 +280,6 @@ export default class Client extends WildEmitter {
             transInfo.name = this.config.transports[0];
         }
         if (transInfo && transInfo.name) {
-            if (transInfo.name === 'websocket') {
-                this.transports.websocket = require('./transports/websocket').default;
-            }
-            if (transInfo.name === 'bosh') {
-                this.transports.bosh = require('./transports/bosh').default;
-            }
             const trans = (this.transport = new this.transports[transInfo.name](
                 this.sm,
                 this.stanzas

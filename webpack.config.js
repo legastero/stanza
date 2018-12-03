@@ -1,15 +1,15 @@
-const path = require('path');
+const Path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const Pkg = require('./package.json');
 
 module.exports = {
-    entry: './src/index.js',
+    entry: './dist/npm/module.js',
 
     output: {
-        filename: 'stanzaio.bundle.js',
+        filename: 'stanzaio.browser.js',
         library: 'XMPP',
         libraryTarget: 'window',
-        path: path.resolve('build')
+        path: Path.resolve('dist')
     },
 
     module: {
