@@ -13,7 +13,7 @@
     ],
     "dependencies": {
         "async": "^2.5.0",
-        "cross-fetch": "^2.2.3",
+        "cross-fetch": "^3.0.0",
         "iana-hashes": "^1.0.2",
         "jingle": "^3.0.0",
         "jxt": "^4.0.0",
