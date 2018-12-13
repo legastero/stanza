@@ -39,12 +39,16 @@ export default function(client) {
                     thread: msg.muc.invite.thread,
                     type: 'mediated'
                 });
-            }
-            if (msg.muc.decline) {
+            } else if (msg.muc.decline) {
                 client.emit('muc:declined', {
                     from: msg.muc.decline.from,
                     reason: msg.muc.decline.reason,
                     room: msg.from
+                });
+            } else {
+                client.emit('muc:affiliation', {
+                    room: msg.from,
+                    muc: msg.muc
                 });
             }
         } else if (msg.mucInvite) {
