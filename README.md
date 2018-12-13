@@ -14,17 +14,6 @@ $ npm install stanza.io
 
 ```
 
-## Building bundled/minified version (for AMD, etc)
-
-First run `npm install` to get all of the dependencies, and then run `npm run build`:
-
-```sh
-$ npm install
-$ npm run build
-```
-
-The bundled and minified files will be in the generated `dist` directory.
-
 ## Getting Started
 
 1. Find or install a server which supports XMPP over WebSocket (Prosody recommended).
