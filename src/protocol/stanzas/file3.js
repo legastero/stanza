@@ -42,7 +42,8 @@ export default function(JXT) {
         element: 'description',
         fields: {
             applicationType: {
-                value: 'filetransfer'
+                value: 'filetransfer',
+                writable: true
             },
             offer: Utils.subExtension('offer', FT_NS, 'offer', File),
             request: Utils.subExtension('request', FT_NS, 'request', File)
