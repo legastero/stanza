@@ -29,7 +29,7 @@
         "prettier": "^1.14.3",
         "pretty-quick": "^1.8.0",
         "rimraf": "^2.6.2",
-        "rollup": "^0.67.0",
+        "rollup": "^0.68.0",
         "rollup-plugin-node-resolve": "^4.0.0",
         "string-replace-loader": "^2.1.1",
         "tap-spec": "^5.0.0",
