@@ -150,6 +150,7 @@
     - [`message:error`](#messageerror)
     - [`message:sent`](#messagesent)
     - [`message`](#message)
+    - [`muc:affiliation`](#mucaffiliation)
     - [`muc:available`](#mucavailable)
     - [`muc:declined`](#mucdeclined)
     - [`muc:destroyed`](#mucdestroyed)
@@ -598,6 +599,7 @@ client.on('message', (message) => {
 ### message:error
 ### message:sent
 ### muc:available
+### muc:affiliation
 ### muc:declined
 ### muc:error
 ### muc:invite
@@ -657,7 +659,7 @@ client.on('raw:outgoing', (xml) => {
 
  <message xmlns="jabber:client" to="jid@example.com" type="chat" id="id" from="jid2@example.com">
     <body>Hi!</body>
- </message>  
+ </message>
 
 */
 });

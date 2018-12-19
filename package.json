@@ -14,7 +14,7 @@
     ],
     "dependencies": {
         "async": "^2.5.0",
-        "cross-fetch": "^2.2.3",
+        "cross-fetch": "^3.0.0",
         "iana-hashes": "^1.0.2",
         "jingle": "^3.0.0",
         "jxt": "^4.0.0",
@@ -30,7 +30,7 @@
         "pretty-quick": "^1.8.0",
         "rimraf": "^2.6.2",
         "rollup": "^0.67.0",
-        "rollup-plugin-node-resolve": "^3.4.0",
+        "rollup-plugin-node-resolve": "^4.0.0",
         "string-replace-loader": "^2.1.1",
         "tap-spec": "^5.0.0",
         "tape": "^4.8.0",
