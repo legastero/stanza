@@ -192,7 +192,7 @@ test('Convert Form Submission Results XML to Data Form object', function(t) {
         value:
             'This bot enables you to send requests to\n' +
             'Google and receive the search results right\n' +
-            "in your Jabber client. It's really cool!\n" +
+            `in your Jabber client. It's really cool!\n` +
             'It even supports Google News!'
     });
 
@@ -316,7 +316,7 @@ test('Convert Form with Validation XML to Data Form object', function(t) {
     });
 
     t.same(form.fields[3], {
-        desc: "This field should be your SSN, including '-' (e.g. 123-12-1234)",
+        desc: `This field should be your SSN, including '-' (e.g. 123-12-1234)`,
         label: 'Social Security Number',
         name: 'ssn',
         type: 'text-single',
@@ -424,11 +424,10 @@ test('Form layout', function(t) {
                     text: 'This is page two of three.'
                 },
                 {
-                    text:
-                        "We use this page to gather information about any XEPs you've worked on, as well as your mailing list activity."
+                    text: `We use this page to gather information about any XEPs you've worked on, as well as your mailing list activity.`
                 },
                 {
-                    text: "You do post to the mailing lists, don't you?"
+                    text: `You do post to the mailing lists, don't you?`
                 },
                 {
                     field: 'activity.mailing-lists'
@@ -445,7 +444,7 @@ test('Form layout', function(t) {
                     text: 'This is page three of three.'
                 },
                 {
-                    text: "You're almost done!"
+                    text: `You're almost done!`
                 },
                 {
                     text:
@@ -521,11 +520,10 @@ test('Form layout with nested sections', function(t) {
                     section: {
                         contents: [
                             {
-                                text:
-                                    "We use this page to gather information about any XEPs you've worked on, as well as your mailing list activity."
+                                text: `We use this page to gather information about any XEPs you've worked on, as well as your mailing list activity.`
                             },
                             {
-                                text: "You do post to the mailing lists, don't you?"
+                                text: `You do post to the mailing lists, don't you?`
                             },
                             {
                                 field: 'activity.mailing-lists'
