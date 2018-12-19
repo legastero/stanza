@@ -1,5 +1,5 @@
 import * as NS from '../namespaces';
-import { JID } from 'xmpp-jid';
+import { JID } from '../jid';
 
 export default function(JXT) {
     const Utils = JXT.utils;

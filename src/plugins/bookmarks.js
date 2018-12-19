@@ -1,4 +1,4 @@
-import { JID } from 'xmpp-jid';
+import { JID } from '../protocol/jid';
 
 export default function(client) {
     client.getBookmarks = function(cb) {

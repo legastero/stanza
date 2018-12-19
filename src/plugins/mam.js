@@ -1,6 +1,5 @@
-import { JID } from 'xmpp-jid';
-
 import { Namespaces } from '../protocol';
+import { JID } from '../protocol/jid';
 
 function timeoutPromise(targetPromise, queryid, delay) {
     let timeoutRef;

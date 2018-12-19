@@ -1,11 +1,13 @@
 import jxt from 'jxt';
-import { JID } from 'xmpp-jid';
 import * as fs from 'fs';
 import test from 'tape';
 
+import Stanzas from '../src/protocol';
+import { JID } from '../src/protocol/jid';
+
 const JXT = jxt.createRegistry();
 
-JXT.use(require('../src/protocol').default);
+JXT.use(Stanzas);
 
 const DataForm = JXT.getDefinition('x', 'jabber:x:data');
 

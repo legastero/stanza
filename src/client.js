@@ -1,4 +1,3 @@
-import { JID } from 'xmpp-jid';
 import * as uuid from 'uuid';
 import jxt from 'jxt';
 import WildEmitter from 'wildemitter';
@@ -13,6 +12,8 @@ import SASLPlugin from './plugins/sasl';
 import Smacks from './plugins/smacks';
 import Bind from './plugins/bind';
 import Session from './plugins/session';
+
+import { JID } from './protocol/jid';
 
 import WebSocket from './transports/websocket';
 import BOSH from './transports/bosh';

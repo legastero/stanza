@@ -7,6 +7,7 @@
 -   Replaced use of `request` and `xhr` with `cross-fetch`.
 -   SASL mech implementations now live inside `stanza.io`.
 -   Moved host-meta fetching logic into `stanza.io`.
+-   Moved `xmpp-jid` implementation back into `stanza.io`, obsoleting `xmpp-jid`.
 -   Use `ws` module instead of `faye-websocket`.
 -   Dropped support of old, pre-RFC XMPP-over-WebSocket.
 

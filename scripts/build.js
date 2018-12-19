@@ -19,8 +19,8 @@ FS.writeFileSync(
     JSON.stringify(
         {
             ...Pkg,
-            'jsnext:main': './module.js',
             devDependencies: undefined,
+            'jsnext:main': './module.js',
             main: './index.js',
             module: './module.js',
             private: false,

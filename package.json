@@ -4,6 +4,7 @@
     "version": "9.3.0",
     "author": "Lance Stout <lancestout@gmail.com>",
     "browser": {
+        "node-stringprep": false,
         "ws": false
     },
     "bugs": "https://github.com/legastero/stanza.io/issues",
@@ -21,8 +22,7 @@
         "tslib": "^1.9.3",
         "uuid": "^3.0.1",
         "wildemitter": "^1.0.1",
-        "ws": "^6.1.2",
-        "xmpp-jid": "^1.0.0"
+        "ws": "^6.1.2"
     },
     "devDependencies": {
         "husky": "^1.1.3",

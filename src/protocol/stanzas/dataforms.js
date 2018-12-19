@@ -1,5 +1,5 @@
 import * as NS from '../namespaces';
-import { JID } from 'xmpp-jid';
+import { JID } from '../jid';
 
 const SINGLE_FIELDS = ['text-single', 'text-private', 'list-single', 'jid-single'];
 

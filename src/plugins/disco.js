@@ -1,7 +1,7 @@
-import { JID } from 'xmpp-jid';
 import * as hashes from 'iana-hashes';
 
 import { Namespaces } from '../protocol';
+import { JID } from '../protocol/jid';
 
 function generateVerString(info, hash) {
     let S = '';

@@ -10,3 +10,6 @@ import './hostmeta';
 // Auth Mechanism Tests
 import './auth/digest-md5';
 import './auth/scram-sha-1';
+
+// JID Tests
+import './jid';

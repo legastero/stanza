@@ -72,7 +72,9 @@ import * as Namespaces from './namespaces';
 import XMPPShortcuts from './shortcuts';
 import XMPPTypes from './types';
 
-export { Namespaces };
+import * as JID from './jid';
+
+export { JID, Namespaces };
 
 export default function(JXT) {
     JXT.use(XMPPTypes);
