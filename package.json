@@ -16,9 +16,9 @@
         "async": "^2.5.0",
         "cross-fetch": "^3.0.0",
         "iana-hashes": "^1.0.2",
-        "jingle": "^3.0.0",
         "jxt": "^4.0.0",
         "randombytes": "^2.0.6",
+        "sdp": "^2.9.0",
         "tslib": "^1.9.3",
         "uuid": "^3.0.1",
         "wildemitter": "^1.0.1",
@@ -78,7 +78,7 @@
         "compile:rollup": "rollup -c rollup.config.js",
         "compile:webpack": "webpack --mode production",
         "lint": "tslint -p .",
-        "test": "ts-node test/index.js | tap-spec",
+        "test": "ts-node --files test/index.js | tap-spec",
         "validate": "npm ls"
     }
 }

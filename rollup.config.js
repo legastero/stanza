@@ -10,10 +10,11 @@ export default {
     external: [
         'async',
         'cross-fetch',
+        'events',
         'iana-hashes',
-        'jingle',
         'jxt',
         'randombytes',
+        'sdp',
         'tslib',
         'uuid',
         'wildemitter',

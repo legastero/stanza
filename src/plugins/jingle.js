@@ -1,5 +1,4 @@
-import Jingle from 'jingle';
-
+import * as Jingle from '../jingle';
 import { Namespaces } from '../protocol';
 
 let root;
@@ -10,7 +9,7 @@ try {
 }
 
 export default function(client) {
-    const jingle = (client.jingle = new Jingle());
+    const jingle = (client.jingle = new Jingle.SessionManager());
     client.supportedICEServiceTypes = {
         stun: true,
         stuns: true,
@@ -71,15 +70,20 @@ export default function(client) {
     });
 
     jingle.on('send', function(data) {
-        client.sendIq(data, function(err) {
+        client.sendIq(data, function(err, result) {
             if (err) {
                 client.emit('jingle:error', err);
             }
+            const resp = err || result;
+            if (!resp.jingle) {
+                resp.jingle = {};
+            }
+            resp.jingle.sid = data.jingle.sid;
+            jingle.process(resp);
         });
     });
 
     client.on('session:bound', 'jingle', function(jid) {
-        jingle.jid = jid;
         jingle.selfID = jid.full;
     });
 
