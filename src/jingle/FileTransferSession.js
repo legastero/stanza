@@ -241,7 +241,7 @@ export default class FileTransferSession extends ICESession {
         this.role = 'responder';
         this.state = 'pending';
 
-        const json = convertRequestToIntermediate(changes, this.role);
+        const json = convertRequestToIntermediate(changes, this.peerRole);
         const sdp = exportToSDP(json);
         const desc = changes.contents[0].application;
 

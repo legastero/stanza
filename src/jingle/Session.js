@@ -27,7 +27,7 @@ export default class JingleSession extends WildEmitter {
 
         this.sid = opts.sid || uuid.v4();
         this.peerID = opts.peerID;
-        this.isInitiator = opts.initiator || false;
+        this.role = opts.initiator ? 'initiator' : 'responder';
         this.parent = opts.parent;
         this.state = 'starting';
         this.connectionState = 'starting';
@@ -56,6 +56,14 @@ export default class JingleSession extends WildEmitter {
                 return next();
             });
         });
+    }
+
+    get isInitiator() {
+        return this.role === 'initiator';
+    }
+
+    get peerRole() {
+        return this.isInitiator ? 'responder' : 'initiator';
     }
 
     get state() {

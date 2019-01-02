@@ -45,7 +45,6 @@ export default class MediaSession extends ICESession {
         }
 
         this._ringing = false;
-        this.role = 'responder';
     }
 
     // ----------------------------------------------------------------
@@ -93,6 +92,8 @@ export default class MediaSession extends ICESession {
         this._log('info', 'Accepted incoming session');
 
         this.state = 'active';
+
+        this.role = 'resonder';
 
         this.pc
             .createAnswer(opts)
@@ -202,9 +203,9 @@ export default class MediaSession extends ICESession {
         this._log('info', 'Initiating incoming session');
 
         this.state = 'pending';
-
         this.role = 'responder';
-        const json = convertRequestToIntermediate(changes, this.role);
+
+        const json = convertRequestToIntermediate(changes, this.peerRole);
         json.media.forEach(media => {
             if (!media.streams) {
                 media.streams = [{ stream: 'legacy', track: media.kind }];

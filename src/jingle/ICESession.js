@@ -130,7 +130,7 @@ export default class ICESession extends BaseSession {
     onSessionAccept(changes, cb) {
         this.state = 'active';
 
-        const json = convertRequestToIntermediate(changes, this.role);
+        const json = convertRequestToIntermediate(changes, this.peerRole);
         const sdp = exportToSDP(json);
         this.pc.setRemoteDescription({ type: 'answer', sdp }).then(
             () => {
@@ -299,7 +299,7 @@ export default class ICESession extends BaseSession {
      */
     maybeRestartIce() {
         // only initiators do an ice-restart to avoid conflicts.
-        if (this.role !== 'initiator') {
+        if (!this.isInitiator) {
             return;
         }
         if (this._maybeRestartingIce !== undefined) {
@@ -316,7 +316,7 @@ export default class ICESession extends BaseSession {
     /* actually do an ice restart */
     restartIce() {
         // only initiators do an ice-restart to avoid conflicts.
-        if (this.role !== 'initiator') {
+        if (!this.isInitiator) {
             return;
         }
         if (this._maybeRestartingIce !== undefined) {
