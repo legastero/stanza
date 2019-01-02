@@ -315,6 +315,12 @@ Note the `session:started`. You'll need to send your presence immediately to get
 #### `client.sendStreamError(opts)`
 #### Keepalive
 ##### `client.enableKeepAlive(opts)`
+
+Options:
+
+- `interval` - Client pings server every a interval time. Default 300 seconds.
+- `timeout` - Client will be disconnected if no response in a timeout time. Default 15 seconds.
+
 ##### `client.disableKeepAlive()`
 ##### `client.ping(jid, [cb])`
 #### Roster Management
