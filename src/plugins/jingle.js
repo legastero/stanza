@@ -61,14 +61,6 @@ export default function(client) {
         client.emit('jingle:created', session);
     });
 
-    jingle.on('peerStreamAdded', function(session, stream) {
-        client.emit('jingle:remotestream:added', session, stream);
-    });
-
-    jingle.on('peerStreamRemoved', function(session, stream) {
-        client.emit('jingle:remotestream:removed', session, stream);
-    });
-
     jingle.on('send', function(data) {
         client.sendIq(data, function(err, result) {
             if (err) {
