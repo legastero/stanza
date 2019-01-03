@@ -15,7 +15,7 @@
     "dependencies": {
         "async": "^2.5.0",
         "cross-fetch": "^3.0.0",
-        "iana-hashes": "^1.0.2",
+        "iana-hashes": "^1.1.0",
         "jxt": "^4.0.0",
         "sdp": "^2.9.0",
         "tslib": "^1.9.3",
@@ -28,7 +28,7 @@
         "prettier": "^1.14.3",
         "pretty-quick": "^1.8.0",
         "rimraf": "^2.6.2",
-        "rollup": "^0.68.0",
+        "rollup": "^1.0.0",
         "rollup-plugin-node-resolve": "^4.0.0",
         "string-replace-loader": "^2.1.1",
         "tap-spec": "^5.0.0",
