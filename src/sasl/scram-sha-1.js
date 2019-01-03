@@ -1,6 +1,4 @@
-import { createHash, createHmac } from 'iana-hashes';
-
-const randomBytes = require('randombytes');
+import { createHash, createHmac, randomBytes } from 'iana-hashes';
 
 const RESP = {};
 const CLIENT_KEY = 'Client Key';
