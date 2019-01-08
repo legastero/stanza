@@ -364,9 +364,15 @@ export default class ICESession extends BaseSession {
             return;
         }
 
-        const adapter = {}; // FIXME
+        let browser = '';
+        if (window.navigator && window.navigator.mozGetUserMedia) {
+            browser = 'firefox';
+        } else if (window.navigator && window.navigator.webkitGetUserMedia) {
+            browser = 'chrome';
+        }
+
         const parameters = sender.getParameters();
-        if (adapter.browserDetails.browser === 'firefox' && !parameters.encodings) {
+        if (browser === 'firefox' && !parameters.encodings) {
             parameters.encodings = [{}];
         }
         if (maximumBitrate === 0) {
@@ -374,11 +380,12 @@ export default class ICESession extends BaseSession {
         } else {
             parameters.encodings[0].maxBitrate = maximumBitrate;
         }
-        if (adapter.browserDetails.browser === 'chrome') {
+
+        if (browser === 'chrome') {
             sender.setParameters(parameters).catch(err => {
                 this._log('error', 'setParameters failed', err);
             });
-        } else if (adapter.browserDetails.browser === 'firefox') {
+        } else if (browser === 'firefox') {
             // Firefox needs renegotiation:
             // https://bugzilla.mozilla.org/show_bug.cgi?id=1253499
             // but we do not want to intefere with our queue so we
