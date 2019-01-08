@@ -378,6 +378,9 @@ export default class ICESession extends BaseSession {
         if (maximumBitrate === 0) {
             delete parameters.encodings[0].maximumBitrate;
         } else {
+            if (!parameters.encodings.length) {
+                parameters.encodings[0] = {};
+            }
             parameters.encodings[0].maxBitrate = maximumBitrate;
         }
 

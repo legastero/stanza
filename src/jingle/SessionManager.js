@@ -115,7 +115,7 @@ export default class SessionManager extends WildEmitter {
             constraints: this.config.peerConnectionConstraints,
             iceServers: this.iceServers,
             initiator: true,
-            maxRelayBandwith: MAX_RELAY_BANDWIDTH,
+            maxRelayBandwidth: MAX_RELAY_BANDWIDTH,
             parent: this,
             peerID: peer,
             sid,
@@ -131,7 +131,7 @@ export default class SessionManager extends WildEmitter {
             constraints: this.config.peerConnectionConstraints,
             iceServers: this.iceServers,
             initiator: true,
-            maxRelayBandwith: MAX_RELAY_BANDWIDTH,
+            maxRelayBandwidth: MAX_RELAY_BANDWIDTH,
             parent: this,
             peerID: peer,
             sid
