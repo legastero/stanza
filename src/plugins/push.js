@@ -19,7 +19,8 @@ export default function(client) {
         };
         if (fieldList && fieldList.length) {
             iq.enablePush.form = {
-                fields: fields.concat(fieldList)
+                fields: fields.concat(fieldList),
+                type: 'submit'
             };
         }
         return this.sendIq(iq, cb);
