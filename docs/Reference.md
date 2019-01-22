@@ -327,6 +327,11 @@ Note the `session:started`. You'll need to send your presence immediately to get
 
 ##### `client.enableKeepAlive(opts)`
 
+Options:
+
+- `interval` - Client pings server every interval time. Default is every 300 seconds.
+- `timeout` - Client will be disconnected if no response is received before the timeout time. Default is 15 seconds.
+
 ##### `client.disableKeepAlive()`
 
 ##### `client.ping(jid, [cb])`
