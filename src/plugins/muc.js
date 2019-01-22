@@ -45,9 +45,10 @@ export default function(client) {
                     room: msg.from
                 });
             } else {
-                client.emit('muc:affiliation', {
+                client.emit('muc:other', {
                     muc: msg.muc,
-                    room: msg.from
+                    room: msg.from,
+                    to: msg.to
                 });
             }
         } else if (msg.mucInvite) {

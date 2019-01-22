@@ -147,7 +147,6 @@
     -   [`message:error`](#messageerror)
     -   [`message:sent`](#messagesent)
     -   [`message`](#message)
-    -   [`muc:affiliation`](#mucaffiliation)
     -   [`muc:available`](#mucavailable)
     -   [`muc:declined`](#mucdeclined)
     -   [`muc:destroyed`](#mucdestroyed)
@@ -155,6 +154,7 @@
     -   [`muc:invite`](#mucinvite)
     -   [`muc:join`](#mucjoin)
     -   [`muc:leave`](#mucleave)
+    -   [`muc:other`](#mucother)
     -   [`muc:subject`](#mucsubject)
     -   [`muc:unavailable`](#mucunavailable)
     -   [`nick`](#nick)
@@ -749,8 +749,6 @@ client.on('message', message => {
 
 ### muc:available
 
-### muc:affiliation
-
 ### muc:declined
 
 ### muc:error
@@ -762,6 +760,8 @@ client.on('message', message => {
 ### muc:leave
 
 ### muc:subject
+
+### muc:other
 
 ### muc:unavailable
 
