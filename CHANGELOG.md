@@ -10,6 +10,7 @@
 -   Moved `xmpp-jid` implementation back into `stanza.io`, obsoleting `xmpp-jid`.
 -   Use `ws` module instead of `faye-websocket`.
 -   Dropped support of old, pre-RFC XMPP-over-WebSocket.
+-   Moved `jingle` implementation back into `stanza.io`.
 
 ## 9.1.0 -> 9.2.0
 

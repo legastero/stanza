@@ -1,7 +1,7 @@
 {
     "name": "stanza.io",
     "description": "Modern XMPP in the browser, with a JSON API",
-    "version": "9.3.0",
+    "version": "10.0.3",
     "author": "Lance Stout <lancestout@gmail.com>",
     "browser": {
         "node-stringprep": false,
@@ -15,10 +15,9 @@
     "dependencies": {
         "async": "^2.5.0",
         "cross-fetch": "^3.0.0",
-        "iana-hashes": "^1.0.2",
-        "jingle": "^3.0.0",
+        "iana-hashes": "^1.1.0",
         "jxt": "^4.0.0",
-        "randombytes": "^2.0.6",
+        "sdp": "^2.9.0",
         "tslib": "^1.9.3",
         "uuid": "^3.0.1",
         "wildemitter": "^1.0.1",
@@ -29,7 +28,7 @@
         "prettier": "^1.14.3",
         "pretty-quick": "^1.8.0",
         "rimraf": "^2.6.2",
-        "rollup": "^0.68.0",
+        "rollup": "^1.0.0",
         "rollup-plugin-node-resolve": "^4.0.0",
         "string-replace-loader": "^2.1.1",
         "tap-spec": "^5.0.0",
@@ -78,7 +77,7 @@
         "compile:rollup": "rollup -c rollup.config.js",
         "compile:webpack": "webpack --mode production",
         "lint": "tslint -p .",
-        "test": "ts-node test/index.js | tap-spec",
+        "test": "ts-node --files test/index.js | tap-spec",
         "validate": "npm ls"
     }
 }

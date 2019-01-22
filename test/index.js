@@ -13,3 +13,6 @@ import './auth/scram-sha-1';
 
 // JID Tests
 import './jid';
+
+// Jingle Tests
+import './jingle';

@@ -1,5 +1,4 @@
-import { createHash } from 'iana-hashes';
-const randomBytes = require('randombytes');
+import { createHash, randomBytes } from 'iana-hashes';
 
 function parse(chal) {
     const dtives = {};
