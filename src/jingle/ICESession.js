@@ -134,7 +134,7 @@ export default class ICESession extends BaseSession {
         const sdp = exportToSDP(json);
         this.pc.setRemoteDescription({ type: 'answer', sdp }).then(
             () => {
-                this.emit('accepted', undefined);
+                this.emit('accepted', this, undefined);
                 cb();
             },
             err => {
