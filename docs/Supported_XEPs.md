@@ -94,5 +94,6 @@
 - [XEP-0339: Source-Specific Media Attributes in Jingle](http://xmpp.org/extensions/xep-0339.html)
 - [XEP-0343: Use of DTLS/SCTP in Jingle ICE-UDP](http://xmpp.org/extensions/xep-0343.html)
 - [XEP-0352: Client State Indication](http://xmpp.org/extensions/xep-0352.html)
+- [XEP-0357: Push Notifications](https://xmpp.org/extensions/xep-0357.html)
 - [XEP-0372: References](http://xmpp.org/extensions/xep-0372.html)
 
