@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.0.0 -> 10.1.0
+
+-   Renamed `muc:affiliation` event to `muc:other`
+
 ## 10.0.0
 
 -   Converted to ES modules, using Typescript compiler for downleveling.
