@@ -93,7 +93,7 @@ export default class MediaSession extends ICESession {
 
         this.state = 'active';
 
-        this.role = 'resonder';
+        this.role = 'responder';
 
         this.pc
             .createAnswer(opts)
