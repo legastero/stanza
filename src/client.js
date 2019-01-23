@@ -172,7 +172,7 @@ export default class Client extends WildEmitter {
         });
 
         this.on('message', msg => {
-            if (Object.keys(msg.$body || {}).length) {
+            if (Object.keys(msg.$body || {}).length && !msg.received && !msg.displayed) {
                 if (msg.type === 'chat' || msg.type === 'normal') {
                     this.emit('chat', msg);
                 } else if (msg.type === 'groupchat') {

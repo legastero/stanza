@@ -1,3 +1,4 @@
+import { JID } from '../protocol/jid';
 import { Namespaces } from '../protocol';
 
 export default function(client) {
@@ -9,10 +10,7 @@ export default function(client) {
 
     client.on('message', function(msg) {
         if (enabled(msg)) {
-            client.sendMessage({
-                received: msg.id,
-                to: msg.from
-            });
+            client.markReceived(msg);
             return;
         }
 
@@ -29,20 +27,38 @@ export default function(client) {
         }
     });
 
+    client.markReceived = function(msg) {
+        if (enabled(msg)) {
+            const to = msg.type === 'groupchat' ? new JID(msg.from.bare) : msg.from;
+            client.sendMessage({
+                body: '',
+                received: msg.id,
+                to,
+                type: msg.type
+            });
+        }
+    };
+
     client.markDisplayed = function(msg) {
         if (enabled(msg)) {
+            const to = msg.type === 'groupchat' ? new JID(msg.from.bare) : msg.from;
             client.sendMessage({
+                body: '',
                 displayed: msg.id,
-                to: msg.from
+                to,
+                type: msg.type
             });
         }
     };
 
     client.markAcknowledged = function(msg) {
         if (enabled(msg)) {
+            const to = msg.type === 'groupchat' ? new JID(msg.from.bare) : msg.from;
             client.sendMessage({
                 acknowledged: msg.id,
-                to: msg.from
+                body: '',
+                to,
+                type: msg.type
             });
         }
     };
