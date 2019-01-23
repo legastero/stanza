@@ -1,7 +1,7 @@
 {
     "name": "stanza.io",
     "description": "Modern XMPP in the browser, with a JSON API",
-    "version": "10.1.0",
+    "version": "10.2.0",
     "author": "Lance Stout <lancestout@gmail.com>",
     "browser": {
         "node-stringprep": false,
