@@ -314,6 +314,7 @@ export default class SessionManager extends WildEmitter {
             session = this._createIncomingSession(
                 {
                     applicationTypes,
+                    config: this.config.peerConnectionConfig,
                     constraints: this.config.peerConnectionConstraints,
                     iceServers: this.iceServers,
                     initiator: false,
