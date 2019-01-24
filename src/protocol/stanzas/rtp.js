@@ -155,6 +155,7 @@ export default function(JXT) {
             },
             media: Utils.attribute('media'),
             mux: Utils.boolSub(NS.JINGLE_RTP_1, 'rtcp-mux'),
+            reducedSize: Utils.boolSub(NS.JINGLE_RTP_1, 'rtcp-rsize'),
             ssrc: Utils.attribute('ssrc')
         },
         name: '_rtp',

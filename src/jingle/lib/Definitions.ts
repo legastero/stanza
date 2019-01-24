@@ -8,6 +8,7 @@ export interface RTPApplicationDescription extends ApplicationDescription {
     media?: string;
     ssrc?: string;
     mux?: boolean;
+    reducedSize?: boolean;
     headerExtensions?: RTPApplicationHeaderExtension[];
     sources?: RTPApplicationSource[];
     sourceGroups?: RTPApplicationSourceGroup[];

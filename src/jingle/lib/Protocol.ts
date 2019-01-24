@@ -26,6 +26,7 @@ export function convertIntermediateToApplication(
     role: SessionRole
 ): RTPApplicationDescription {
     const rtp = media.rtpParameters!;
+    const rtcp = media.rtcpParameters || {};
     const encodingParameters = media.rtpEncodingParameters || [];
 
     let hasSSRC = false;
@@ -37,9 +38,9 @@ export function convertIntermediateToApplication(
         applicationType: 'rtp',
         headerExtensions: [],
         media: media.kind,
-        mux: media.rtcpParameters!.mux,
+        mux: rtcp.mux,
         payloads: [],
-        // reducedSize: media.rtcpParameters.reducedSize, // TODO: define mapping to jingle
+        reducedSize: rtcp.reducedSize,
         sourceGroups: [],
         sources: [],
         ssrc: hasSSRC ? encodingParameters[0].ssrc.toString() : undefined,
@@ -57,16 +58,16 @@ export function convertIntermediateToApplication(
         });
     }
 
-    if (media.rtcpParameters && media.rtcpParameters.ssrc && media.rtcpParameters.cname) {
+    if (rtcp.ssrc && rtcp.cname) {
         application.sources = [
             {
                 parameters: [
                     {
                         key: 'cname',
-                        value: media.rtcpParameters.cname
+                        value: rtcp.cname
                     }
                 ],
-                ssrc: media.rtcpParameters.ssrc.toString()
+                ssrc: rtcp.ssrc.toString()
             }
         ];
     }
@@ -226,8 +227,8 @@ export function convertContentToIntermediate(
 
     if (isRTP) {
         media.rtcpParameters = {
-            mux: application.mux
-            // TODO: reducedSize: application.reducedSize
+            mux: application.mux,
+            reducedSize: application.reducedSize
         };
 
         if (application.sources && application.sources.length) {
