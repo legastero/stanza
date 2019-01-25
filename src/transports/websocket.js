@@ -81,7 +81,9 @@ export default class WSConnection extends WildEmitter {
         self.closing = false;
         self.conn = new WS(opts.wsURL, 'xmpp', opts.wsOptions);
         self.conn.onerror = function(e) {
-            e.preventDefault();
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
             self.emit('disconnected', self);
         };
         self.conn.onclose = function() {
