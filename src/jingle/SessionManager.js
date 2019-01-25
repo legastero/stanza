@@ -191,7 +191,7 @@ export default class SessionManager extends WildEmitter {
         const sid = !!req.jingle ? req.jingle.sid : null;
         let session = this.sessions[sid] || null;
         const rid = req.id;
-        const sender = req.from.full || req.from;
+        const sender = req.from ? req.from.full || req.from : undefined;
         if (req.type === 'error') {
             const isTieBreak = req.error && req.error.jingleCondition === 'tie-break';
             if (session && session.state === 'pending' && isTieBreak) {
