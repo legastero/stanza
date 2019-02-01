@@ -119,7 +119,7 @@ export default class MediaSession extends ICESession {
             this.onRemoveTrack(receiver.track);
         });
         this.pc.close();
-        super.end(reason, reason, silent);
+        super.end(reason, silent);
     }
 
     ring() {
