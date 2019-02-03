@@ -42,11 +42,13 @@ export default class ICESession extends BaseSession {
 
     onTransportInfo(changes, cb) {
         if (changes.contents[0].transport.gatheringComplete) {
-            this.pc
+            return this.pc
                 .addIceCandidate(null)
-                .then(cb)
-                .catch(e => this._log('error', 'Could not add null ICE candidate', e.name));
-            return Promise.resolve();
+                .then(() => cb())
+                .catch(e => {
+                    this._log('error', 'Could not add null ICE candidate', e.name);
+                    cb();
+                });
         }
         // detect an ice restart.
         if (this.pc.remoteDescription) {
