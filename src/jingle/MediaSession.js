@@ -118,7 +118,6 @@ export default class MediaSession extends ICESession {
         this.pc.getReceivers().forEach(receiver => {
             this.onRemoveTrack(receiver.track);
         });
-        this.pc.close();
         super.end(reason, silent);
     }
 
