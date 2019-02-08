@@ -4,7 +4,7 @@
 
 <hr />
 
-![](https://img.shields.io/npm/v/stanza.io.svg?style=flat) [![](https://img.shields.io/badge/endpoint.svg?url=https://stanza.io/discuss/badge.json&style=flat)](xmpp:discuss@stanza.io?join)
+![](https://img.shields.io/npm/v/stanza.io.svg?style=flat) [![](https://img.shields.io/badge/endpoint.svg?url=https://stanza.io/discuss/badge.json&style=flat)](https://stanza.io/discuss/logs/)
 
 ## What is this?
 
@@ -70,7 +70,7 @@ client.connect();
 
 ## Discussion
 
-MUC Room: xmpp:discuss@stanza.io?join / [Logs](https://stanza.io/discuss/logs)
+MUC Room: [discuss@stanza.io](https://stanza.io/discuss/logs) / [Logs](https://stanza.io/discuss/logs)
 
 ## License
 
