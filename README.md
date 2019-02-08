@@ -2,6 +2,9 @@
 
 **Modern XMPP in the browser, with a JSON API.**
 
+<hr />
+<img src="https://img.shields.io/npm/v/stanza.io.svg?style=flat" /> <a href="xmpp:discuss@stanza.io?join"><img src="https://img.shields.io/badge/endpoint.svg?url=https://stanza.io/discuss/badge.json&style=flat" /></a>
+
 ## What is this?
 
 Stanza.io is a library for using modern XMPP in the browser, and it does that by exposing everything as JSON. Unless you insist, you
@@ -63,6 +66,10 @@ client.connect();
 -   [Supported XEPs](docs/Supported_XEPs.md)
 -   [Creating Plugins](docs/Create_Plugin.md)
 -   [Using PubSub](docs/Using_Pubsub.md)
+
+## Discussion
+
+[MUC Room: discuss@stanza.io](xmpp:discuss@stanza.io?join) / [Logs](https://stanza.io/discuss/logs)
 
 ## License
 
