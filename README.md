@@ -3,6 +3,7 @@
 **Modern XMPP in the browser, with a JSON API.**
 
 <hr />
+
 ![](https://img.shields.io/npm/v/stanza.io.svg?style=flat) [![](https://img.shields.io/badge/endpoint.svg?url=https://stanza.io/discuss/badge.json&style=flat)](xmpp:discuss@stanza.io?join)
 
 ## What is this?
