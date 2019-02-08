@@ -1,0 +1,158 @@
+[
+    "dataform",
+    {
+        "instructions": ["Please fill out this form"],
+        "title": "XSF Application",
+        "type": "form",
+        "layout": [
+            {
+                "label": "Personal Information",
+                "contents": [
+                    {
+                        "type": "text",
+                        "value": "This is page one of three."
+                    },
+                    {
+                        "type": "text",
+                        "value": "Note: In accordance with the XSF privacy policy, your personal information will never be shared outside the organization in any way for any purpose; however, your name and JID may be published in the XSF membership directory."
+                    },
+                    {
+                        "type": "fieldref",
+                        "field": "name.first"
+                    },
+                    {
+                        "type": "fieldref",
+                        "field": "name.last"
+                    },
+                    {
+                        "type": "fieldref",
+                        "field": "email"
+                    },
+                    {
+                        "type": "fieldref",
+                        "field": "jid"
+                    },
+                    {
+                        "type": "fieldref",
+                        "field": "background"
+                    }
+                ]
+            },
+            {
+                "label": "Community Activity",
+                "contents": [
+                    {
+                        "type": "text",
+                        "value": "This is page two of three."
+                    },
+                    {
+                        "type": "text",
+                        "value": "We use this page to gather information about any XEPs you've worked on, as well as your mailing list activity."
+                    },
+                    {
+                        "type": "text",
+                        "value": "You do post to the mailing lists, don't you?"
+                    },
+                    {
+                        "type": "fieldref",
+                        "field": "activity.mailing-lists"
+                    },
+                    {
+                        "type": "fieldref",
+                        "field": "activity.xeps"
+                    }
+                ]
+            },
+            {
+                "label": "Plans and Reasonings",
+                "contents": [
+                    {
+                        "type": "text",
+                        "value": "This is page three of three."
+                    },
+                    {
+                        "type": "text",
+                        "value": "You're almost done!"
+                    },
+                    {
+                        "type": "text",
+                        "value": "This is where you describe your future plans and why you think you deserve to be a member of the XMPP Standards Foundation."
+                    },
+                    {
+                        "type": "fieldref",
+                        "field": "future"
+                    },
+                    {
+                        "type": "fieldref",
+                        "field": "reasoning"
+                    }
+                ]
+            }
+        ],
+        "fields": [
+            {
+                "label": "First Name",
+                "name": "name.first",
+                "rawValues": [],
+                "required": true,
+                "type": "text-single"
+            },
+            {
+                "label": "Last Name",
+                "name": "name.last",
+                "rawValues": [],
+                "required": true,
+                "type": "text-single"
+            },
+            {
+                "label": "E-mail Address",
+                "name": "email",
+                "rawValues": [],
+                "required": true,
+                "type": "text-single"
+            },
+            {
+                "label": "Jabber JID",
+                "name": "jid",
+                "rawValues": [],
+                "required": true,
+                "type": "jid-single"
+            },
+            {
+                "label": "Background Information",
+                "name": "background",
+                "rawValues": [],
+                "type": "text-multi",
+                "value": []
+            },
+            {
+                "label": "Jabber Plans for the Next Six Months",
+                "name": "future",
+                "rawValues": [],
+                "type": "text-multi",
+                "value": []
+            },
+            {
+                "label": "Reasons for Joining",
+                "name": "reasoning",
+                "rawValues": [],
+                "type": "text-multi",
+                "value": []
+            },
+            {
+                "label": "Recent Mailing List Activity",
+                "name": "activity.mailing-lists",
+                "rawValues": [],
+                "type": "text-multi",
+                "value": []
+            },
+            {
+                "label": "XEPs Authored or Co-Authored",
+                "name": "activity.xeps",
+                "rawValues": [],
+                "type": "text-multi",
+                "value": []
+            }
+        ]
+    }
+]

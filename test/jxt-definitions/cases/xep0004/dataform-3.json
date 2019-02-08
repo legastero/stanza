@@ -1,0 +1,120 @@
+[
+    "dataform",
+    {
+        "instructions": [],
+        "reported": [
+            {
+                "name": "name",
+                "rawValues": []
+            },
+            {
+                "name": "url",
+                "rawValues": []
+            },
+            {
+                "name": "recommended",
+                "rawValues": [],
+                "type": "boolean"
+            }
+        ],
+        "title": "Joogle Search: verona",
+        "type": "result",
+        "items": [
+            {
+                "fields": [
+                    {
+                        "name": "name",
+                        "rawValues": ["Comune di Verona - Benvenuti nel sito ufficiale"],
+                        "value": "Comune di Verona - Benvenuti nel sito ufficiale"
+                    },
+                    {
+                        "name": "url",
+                        "rawValues": ["http://www.comune.verona.it/"],
+                        "value": "http://www.comune.verona.it/"
+                    },
+                    {
+                        "name": "recommended",
+                        "rawValues": ["1"],
+                        "value": "1"
+                    }
+                ]
+            },
+            {
+                "fields": [
+                    {
+                        "name": "name",
+                        "rawValues": ["benvenuto!"],
+                        "value": "benvenuto!"
+                    },
+                    {
+                        "name": "url",
+                        "rawValues": ["http://www.hellasverona.it/"],
+                        "value": "http://www.hellasverona.it/"
+                    },
+                    {
+                        "name": "recommended",
+                        "rawValues": ["1"],
+                        "value": "1"
+                    }
+                ]
+            },
+            {
+                "fields": [
+                    {
+                        "name": "name",
+                        "rawValues": ["Universita degli Studi di Verona - Home Page"],
+                        "value": "Universita degli Studi di Verona - Home Page"
+                    },
+                    {
+                        "name": "url",
+                        "rawValues": ["http://www.univr.it/"],
+                        "value": "http://www.univr.it/"
+                    },
+                    {
+                        "name": "recommended",
+                        "rawValues": ["1"],
+                        "value": "1"
+                    }
+                ]
+            },
+            {
+                "fields": [
+                    {
+                        "name": "name",
+                        "rawValues": ["Aeroporti del Garda"],
+                        "value": "Aeroporti del Garda"
+                    },
+                    {
+                        "name": "url",
+                        "rawValues": ["http://www.aeroportoverona.it/"],
+                        "value": "http://www.aeroportoverona.it/"
+                    },
+                    {
+                        "name": "recommended",
+                        "rawValues": ["1"],
+                        "value": "1"
+                    }
+                ]
+            },
+            {
+                "fields": [
+                    {
+                        "name": "name",
+                        "rawValues": ["Veronafiere - fiera di Verona"],
+                        "value": "Veronafiere - fiera di Verona"
+                    },
+                    {
+                        "name": "url",
+                        "rawValues": ["http://www.veronafiere.it/"],
+                        "value": "http://www.veronafiere.it/"
+                    },
+                    {
+                        "name": "recommended",
+                        "rawValues": ["1"],
+                        "value": "1"
+                    }
+                ]
+            }
+        ]
+    }
+]

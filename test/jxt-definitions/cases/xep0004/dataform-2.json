@@ -1,0 +1,65 @@
+[
+    "dataform",
+    {
+        "type": "submit",
+        "instructions": [],
+        "fields": [
+            {
+                "name": "FORM_TYPE",
+                "value": "jabber:bot",
+                "type": "hidden",
+                "rawValues": ["jabber:bot"]
+            },
+            {
+                "name": "botname",
+                "value": "The Jabber Google Bot",
+                "rawValues": ["The Jabber Google Bot"]
+            },
+            {
+                "name": "description",
+                "value": [
+                    "This bot enables you to send requests to",
+                    "Google and receive the search results right",
+                    "in your Jabber client. It's really cool!",
+                    "It even supports Google News!"
+                ],
+                "type": "text-multi",
+                "rawValues": [
+                    "This bot enables you to send requests to",
+                    "Google and receive the search results right",
+                    "in your Jabber client. It's really cool!",
+                    "It even supports Google News!"
+                ]
+            },
+            {
+                "name": "public",
+                "value": false,
+                "type": "boolean",
+                "rawValues": ["0"]
+            },
+            {
+                "name": "password",
+                "value": "v3r0na",
+                "type": "password",
+                "rawValues": ["v3r0na"]
+            },
+            {
+                "name": "features",
+                "value": ["news", "search"],
+                "type": "list-multi",
+                "rawValues": ["news", "search"]
+            },
+            {
+                "name": "maxsubs",
+                "value": "50",
+                "rawValues": ["50"]
+            },
+            {
+                "name": "invitelist",
+                "value": ["juliet@capulet.com", "benvolio@montague.net"],
+                "type": "jid-multi",
+                "rawValues": ["juliet@capulet.com", "benvolio@montague.net"]
+            }
+        ]
+    }
+]

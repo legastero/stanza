@@ -1,0 +1,40 @@
+  <vCard xmlns='vcard-temp'>
+    <FN>Peter Saint-Andre</FN>
+    <N>
+      <FAMILY>Saint-Andre</FAMILY>
+      <GIVEN>Peter</GIVEN>
+    </N>
+    <NICKNAME>stpeter</NICKNAME>
+    <URL>http://www.xmpp.org/xsf/people/stpeter.shtml</URL>
+    <BDAY>1966-08-06</BDAY>
+    <ORG>
+      <ORGNAME>XMPP Standards Foundation</ORGNAME>
+    </ORG>
+    <TITLE>Executive Director</TITLE>
+    <ROLE>Patron Saint</ROLE>
+    <TEL><WORK/><VOICE/><NUMBER>303-308-3282</NUMBER></TEL>
+    <TEL><WORK/><FAX/><NUMBER/></TEL>
+    <TEL><WORK/><MSG/><NUMBER/></TEL>
+    <ADR>
+      <WORK/>
+      <STREET>1899 Wynkoop Street</STREET>
+      <EXTADD>Suite 600</EXTADD>
+      <LOCALITY>Denver</LOCALITY>
+      <REGION>CO</REGION>
+      <PCODE>80202</PCODE>
+      <CTRY>USA</CTRY>
+    </ADR>
+    <TEL><HOME/><VOICE/><NUMBER>303-555-1212</NUMBER></TEL>
+    <TEL><HOME/><FAX/><NUMBER/></TEL>
+    <TEL><HOME/><MSG/><NUMBER/></TEL>
+    <ADR>
+      <HOME/>
+      <LOCALITY>Denver</LOCALITY>
+      <REGION>CO</REGION>
+      <PCODE>80209</PCODE>
+      <CTRY>USA</CTRY>
+    </ADR>
+    <EMAIL><INTERNET/><PREF/><USERID>stpeter@jabber.org</USERID></EMAIL>
+    <JABBERID>stpeter@jabber.org</JABBERID>
+    <DESC>More information about me is located on my personal website: http://www.saint-andre.com/</DESC>
+  </vCard>

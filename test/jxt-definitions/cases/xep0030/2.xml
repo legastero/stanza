@@ -1,0 +1,24 @@
+<iq type='result'
+    from='shakespeare.lit'
+    to='romeo@montague.net/orchard'
+    id='items1'
+    xmlns='jabber:client'>
+  <query xmlns='http://jabber.org/protocol/disco#items'>
+    <item jid='people.shakespeare.lit'
+          name='Directory of Characters'/>
+    <item jid='plays.shakespeare.lit'
+          name='Play-Specific Chatrooms'/>
+    <item jid='mim.shakespeare.lit'
+          name='Gateway to Marlowe IM'/>
+    <item jid='words.shakespeare.lit'
+          name='Shakespearean Lexicon'/>
+    <item jid='globe.shakespeare.lit'
+          name='Calendar of Performances'/>
+    <item jid='headlines.shakespeare.lit'
+          name='Latest Shakespearean News'/>
+    <item jid='catalog.shakespeare.lit'
+          name='Buy Shakespeare Stuff!'/>
+    <item jid='en2fr.shakespeare.lit'
+          name='French Translation Service'/>
+  </query>
+</iq>

@@ -1,0 +1,36 @@
+[
+    "iq",
+    {
+        "type": "result",
+        "from": "plays.shakespeare.lit",
+        "to": "romeo@montague.net/orchard",
+        "id": "info1",
+        "lang": "",
+        "disco": {
+            "type": "info",
+            "identities": [
+                {
+                    "category": "conference",
+                    "type": "text",
+                    "lang": "",
+                    "name": "Play-Specific Chatrooms"
+                },
+                {
+                    "category": "directory",
+                    "type": "chatroom",
+                    "lang": "",
+                    "name": "Play-Specific Chatrooms"
+                }
+            ],
+            "features": [
+                "http://jabber.org/protocol/disco#info",
+                "http://jabber.org/protocol/disco#items",
+                "http://jabber.org/protocol/muc",
+                "jabber:iq:register",
+                "jabber:iq:search",
+                "jabber:iq:time",
+                "jabber:iq:version"
+            ]
+        }
+    }
+]

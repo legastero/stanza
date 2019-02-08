@@ -1,0 +1,17 @@
+[
+    "xrd",
+    {
+        "subject": "http://blog.example.com/article/id/314",
+        "links": [
+            {
+                "href": "http://blog.example.com/author/steve",
+                "rel": "author",
+                "type": "text/html"
+            },
+            {
+                "href": "http://example.com/author/john",
+                "rel": "author"
+            }
+        ]
+    }
+]

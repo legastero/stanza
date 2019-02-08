@@ -1,0 +1,87 @@
+[
+    "vcardTemp",
+    {
+        "fullName": "Peter Saint-Andre",
+        "name": {
+            "given": "Peter",
+            "family": "Saint-Andre"
+        },
+        "records": [
+            { "type": "nickname", "value": "stpeter" },
+            {
+                "type": "url",
+                "value": "http://www.xmpp.org/xsf/people/stpeter.shtml"
+            },
+            { "type": "birthday", "value": "1966-08-06" },
+            {
+                "type": "organization",
+                "value": "XMPP Standards Foundation",
+                "units": []
+            },
+            { "type": "title", "value": "Executive Director" },
+            { "type": "role", "value": "Patron Saint" },
+            {
+                "type": "tel",
+                "types": ["work", "voice"],
+                "value": "303-308-3282"
+            },
+            {
+                "type": "tel",
+                "types": ["work", "fax"],
+                "value": ""
+            },
+            {
+                "type": "tel",
+                "types": ["work", "msg"],
+                "value": ""
+            },
+            {
+                "type": "address",
+                "types": ["work"],
+                "street": "1899 Wynkoop Street",
+                "street2": "Suite 600",
+                "city": "Denver",
+                "region": "CO",
+                "code": "80202",
+                "country": "USA"
+            },
+            {
+                "type": "tel",
+                "types": ["home", "voice"],
+                "value": "303-555-1212"
+            },
+            {
+                "type": "tel",
+                "types": ["home", "fax"],
+                "value": ""
+            },
+            {
+                "type": "tel",
+                "types": ["home", "msg"],
+                "value": ""
+            },
+            {
+                "type": "address",
+                "types": ["home"],
+                "city": "Denver",
+                "region": "CO",
+                "code": "80209",
+                "country": "USA"
+            },
+            {
+                "type": "email",
+                "types": ["internet"],
+                "preferred": true,
+                "value": "stpeter@jabber.org"
+            },
+            {
+                "type": "jid",
+                "value": "stpeter@jabber.org"
+            },
+            {
+                "type": "description",
+                "value": "More information about me is located on my personal website: http://www.saint-andre.com/"
+            }
+        ]
+    }
+]

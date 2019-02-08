@@ -1,0 +1,3 @@
+<iq xmlns="jabber:client" xml:lang="en">
+  <pubsub xmlns="http://jabber.org/protocol/pubsub" />
+</iq>

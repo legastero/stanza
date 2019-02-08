@@ -1,0 +1,24 @@
+[
+    "vcardTemp",
+    {
+        "name": {
+            "given": "Juliet",
+            "family": "Capulet"
+        },
+        "records": [
+            { "type": "birthday", "value": "1476-06-09" },
+            {
+                "type": "address",
+                "types": ["home"],
+                "country": "Italy",
+                "city": "Verona"
+            },
+            { "type": "email", "types": [], "value": "jcapulet@shakespeare.lit" },
+            {
+                "type": "photo",
+                "data": "Base64-encoded-avatar-file-here!",
+                "mediaType": "image/jpeg"
+            }
+        ]
+    }
+]

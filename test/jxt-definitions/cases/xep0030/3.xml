@@ -1,0 +1,15 @@
+<iq type='result'
+    from='catalog.shakespeare.lit'
+    to='romeo@montague.net/orchard'
+    id='items4'
+    xmlns='jabber:client'>
+  <query xmlns='http://jabber.org/protocol/disco#items'
+         node='music/D'>
+    <item jid='catalog.shakespeare.lit'
+          node='music/D/dowland-firstbooke'
+          name='John Dowland - First Booke of Songes or Ayres'/>
+    <item jid='catalog.shakespeare.lit'
+          node='music/D/dowland-solace'
+          name='John Dowland - A Pilgrimes Solace'/>
+  </query>
+</iq>

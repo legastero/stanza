@@ -1,0 +1,99 @@
+[
+    "dataform",
+    {
+        "type": "form",
+        "title": "Bot Configuration",
+        "instructions": ["Fill out this form to configure your new bot!"],
+        "fields": [
+            {
+                "type": "hidden",
+                "name": "FORM_TYPE",
+                "value": "jabber:bot",
+                "rawValues": ["jabber:bot"]
+            },
+            {
+                "type": "fixed",
+                "value": "Section 1: Bot Info",
+                "rawValues": ["Section 1: Bot Info"]
+            },
+            {
+                "type": "text-single",
+                "name": "botname",
+                "label": "The name of your bot",
+                "rawValues": []
+            },
+            {
+                "type": "text-multi",
+                "name": "description",
+                "label": "Helpful description of your bot",
+                "rawValues": [],
+                "value": []
+            },
+            {
+                "type": "boolean",
+                "name": "public",
+                "label": "Public bot?",
+                "required": true,
+                "rawValues": []
+            },
+            {
+                "type": "text-private",
+                "name": "password",
+                "label": "Password for special access",
+                "rawValues": []
+            },
+            {
+                "type": "fixed",
+                "value": "Section 2: Features",
+                "rawValues": ["Section 2: Features"]
+            },
+            {
+                "type": "list-multi",
+                "name": "features",
+                "label": "What features will the bot support?",
+                "options": [
+                    { "label": "Contests", "value": "contests" },
+                    { "label": "News", "value": "news" },
+                    { "label": "Polls", "value": "polls" },
+                    { "label": "Reminders", "value": "reminders" },
+                    { "label": "Search", "value": "search" }
+                ],
+                "value": ["news", "search"],
+                "rawValues": ["news", "search"]
+            },
+            {
+                "type": "fixed",
+                "value": "Section 3: Subscriber List",
+                "rawValues": ["Section 3: Subscriber List"]
+            },
+            {
+                "type": "list-single",
+                "name": "maxsubs",
+                "label": "Maximum number of subscribers",
+                "options": [
+                    { "label": "10", "value": "10" },
+                    { "label": "20", "value": "20" },
+                    { "label": "30", "value": "30" },
+                    { "label": "50", "value": "50" },
+                    { "label": "100", "value": "100" },
+                    { "label": "None", "value": "none" }
+                ],
+                "value": "20",
+                "rawValues": ["20"]
+            },
+            {
+                "type": "fixed",
+                "value": "Section 4: Invitations",
+                "rawValues": ["Section 4: Invitations"]
+            },
+            {
+                "type": "jid-multi",
+                "name": "invitelist",
+                "label": "People to invite",
+                "description": "Tell all your friends about your new bot!",
+                "value": [],
+                "rawValues": []
+            }
+        ]
+    }
+]

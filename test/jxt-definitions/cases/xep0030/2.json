@@ -1,0 +1,47 @@
+[
+    "iq",
+    {
+        "type": "result",
+        "from": "shakespeare.lit",
+        "to": "romeo@montague.net/orchard",
+        "id": "items1",
+        "lang": "",
+        "disco": {
+            "type": "items",
+            "items": [
+                {
+                    "jid": "people.shakespeare.lit",
+                    "name": "Directory of Characters"
+                },
+                {
+                    "jid": "plays.shakespeare.lit",
+                    "name": "Play-Specific Chatrooms"
+                },
+                {
+                    "jid": "mim.shakespeare.lit",
+                    "name": "Gateway to Marlowe IM"
+                },
+                {
+                    "jid": "words.shakespeare.lit",
+                    "name": "Shakespearean Lexicon"
+                },
+                {
+                    "jid": "globe.shakespeare.lit",
+                    "name": "Calendar of Performances"
+                },
+                {
+                    "jid": "headlines.shakespeare.lit",
+                    "name": "Latest Shakespearean News"
+                },
+                {
+                    "jid": "catalog.shakespeare.lit",
+                    "name": "Buy Shakespeare Stuff!"
+                },
+                {
+                    "jid": "en2fr.shakespeare.lit",
+                    "name": "French Translation Service"
+                }
+            ]
+        }
+    }
+]

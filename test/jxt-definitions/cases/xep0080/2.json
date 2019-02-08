@@ -1,0 +1,22 @@
+[
+    "iq",
+    {
+        "from": "portia@merchantofvenice.lit/pda",
+        "id": "publish2",
+        "lang": "",
+        "type": "set",
+        "pubsub": {
+            "publish": {
+                "node": "http://jabber.org/protocol/geoloc",
+                "item": {
+                    "content": {
+                        "itemType": "http://jabber.org/protocol/geoloc",
+                        "lang": "",
+                        "tzo": 0
+                    }
+                }
+            }
+        },
+        "payloadType": "pubsub"
+    }
+]

@@ -1,0 +1,14 @@
+  <vCard xmlns='vcard-temp'>
+    <N><FAMILY>Capulet</FAMILY><GIVEN>Juliet</GIVEN></N>
+    <BDAY>1476-06-09</BDAY>
+    <ADR>
+      <HOME/>
+      <CTRY>Italy</CTRY>
+      <LOCALITY>Verona</LOCALITY>
+    </ADR>
+    <EMAIL><USERID>jcapulet@shakespeare.lit</USERID></EMAIL>
+    <PHOTO>
+      <BINVAL>Base64-encoded-avatar-file-here!</BINVAL>
+      <TYPE>image/jpeg</TYPE>
+    </PHOTO>
+  </vCard>

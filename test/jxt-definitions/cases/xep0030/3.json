@@ -1,0 +1,26 @@
+[
+    "iq",
+    {
+        "type": "result",
+        "from": "catalog.shakespeare.lit",
+        "to": "romeo@montague.net/orchard",
+        "id": "items4",
+        "lang": "",
+        "disco": {
+            "type": "items",
+            "node": "music/D",
+            "items": [
+                {
+                    "jid": "catalog.shakespeare.lit",
+                    "name": "John Dowland - First Booke of Songes or Ayres",
+                    "node": "music/D/dowland-firstbooke"
+                },
+                {
+                    "jid": "catalog.shakespeare.lit",
+                    "name": "John Dowland - A Pilgrimes Solace",
+                    "node": "music/D/dowland-solace"
+                }
+            ]
+        }
+    }
+]

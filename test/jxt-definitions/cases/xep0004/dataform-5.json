@@ -1,0 +1,27 @@
+[
+    "dataform",
+    {
+        "instructions": [],
+        "type": "form",
+        "fields": [
+            {
+                "name": "ocr",
+                "rawValues": [],
+                "media": {
+                    "height": 80,
+                    "width": 290,
+                    "sources": [
+                        {
+                            "uri": "http://www.victim.example/challenges/ocr.jpeg?F3A6292C",
+                            "mediaType": "image/jpeg"
+                        },
+                        {
+                            "uri": "cid:sha1+f24030b8d91d233bac14777be5ab531ca3b9f102@bob.xmpp.org",
+                            "mediaType": "image/jpeg"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

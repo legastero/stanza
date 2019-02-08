@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">
+  <Subject>http://blog.example.com/article/id/314</Subject>
+  <Link rel="author" type="text/html" href="http://blog.example.com/author/steve" />
+  <Link rel="author" href="http://example.com/author/john" />
+</XRD>
