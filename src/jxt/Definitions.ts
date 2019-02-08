@@ -188,8 +188,8 @@ export function basicLanguageResolver(
     accept: string[] = [],
     current: string = ''
 ): string {
-    const avail = new Set(available);
-    for (let acceptLang of accept) {
+    const avail = new Set(available.map(a => a.toLowerCase()));
+    for (let acceptLang of accept.map(a => a.toLowerCase())) {
         if (acceptLang === '*') {
             continue;
         }
@@ -198,7 +198,7 @@ export function basicLanguageResolver(
                 return acceptLang;
             }
             // Remove ending tag
-            acceptLang = acceptLang.substring(0, acceptLang.lastIndexOf('-'));
+            acceptLang = acceptLang.substring(0, acceptLang.lastIndexOf('-')).toLowerCase();
             // Remove leftover single character tag
             if (acceptLang.lastIndexOf('-') === acceptLang.length - 2) {
                 acceptLang = acceptLang.substring(0, acceptLang.lastIndexOf('-'));

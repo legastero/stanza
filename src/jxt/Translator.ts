@@ -377,7 +377,7 @@ export default class Translator {
             ...parentContext,
             data,
             exporter,
-            lang: data[this.languageField] || parentContext.lang,
+            lang: (data[this.languageField] || parentContext.lang || '').toLowerCase(),
             namespace: exporter.namespace,
             pathSelector: exportType,
             translator: this
