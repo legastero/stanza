@@ -16,3 +16,6 @@ import './jid';
 
 // Jingle Tests
 import './jingle';
+
+// JXT Tests
+import './jxt';

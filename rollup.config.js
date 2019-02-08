@@ -15,6 +15,7 @@ export default {
         'jxt',
         'randombytes',
         'sdp',
+        'stream',
         'tslib',
         'uuid',
         'wildemitter',
