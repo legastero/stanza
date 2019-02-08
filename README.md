@@ -70,7 +70,7 @@ client.connect();
 
 ## Discussion
 
-[MUC Room: discuss@stanza.io](xmpp:discuss@stanza.io?join) / [Logs](https://stanza.io/discuss/logs)
+<a href="xmpp:discuss@stanza.io?join">MUC Room: discuss@stanza.io</a> / [Logs](https://stanza.io/discuss/logs)
 
 ## License
 
