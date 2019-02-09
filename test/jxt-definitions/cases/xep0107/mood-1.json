@@ -1,8 +1,17 @@
 [
-    "mood",
+    "message",
     {
-        "itemType": "http://jabber.org/protocol/mood",
-        "text": "I am particularly peeved.",
-        "value": "annoyed"
+        "mood": {
+            "text": "I am particularly peeved.",
+            "value": "annoyed"
+        }
+    },
+    {
+        "lang": "",
+        "mood": {
+            "text": "I am particularly peeved.",
+            "alternateLanguageText": [{ "lang": "", "value": "I am particularly peeved." }],
+            "value": "annoyed"
+        }
     }
 ]
