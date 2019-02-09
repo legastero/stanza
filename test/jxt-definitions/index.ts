@@ -52,11 +52,14 @@ for (const [testSuite, testCases] of testSuites) {
             FS.readFileSync(__dirname + '/cases/' + testSuite + '/' + testCase + '.json').toString()
         );
 
+        const jsonOut = json[1];
+        const jsonIn = json.length === 2 ? json[1] : json[2];
+
         test(`${testSuite}/${testCase}`, t => {
             const imported = registry.import(xml);
-            t.deepEqual(imported, json[1], 'Import XML to JSON');
+            t.deepEqual(imported, jsonIn, 'Import XML to JSON');
 
-            const exported = registry.export(json[0], json[1])!;
+            const exported = registry.export(json[0], jsonOut)!;
             t.same(exported.toJSON(), xml.toJSON(), 'Export JSON to XML');
             t.end();
         });
