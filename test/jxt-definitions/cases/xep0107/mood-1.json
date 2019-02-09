@@ -1,0 +1,8 @@
+[
+    "mood",
+    {
+        "itemType": "http://jabber.org/protocol/mood",
+        "text": "I am particularly peeved.",
+        "value": "annoyed"
+    }
+]

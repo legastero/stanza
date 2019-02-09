@@ -1,0 +1,5 @@
+<mood xmlns='http://jabber.org/protocol/mood'>
+  <annoyed />
+  <text>I am particularly peeved.</text>
+</mood>
+
