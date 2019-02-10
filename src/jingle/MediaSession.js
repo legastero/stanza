@@ -231,7 +231,7 @@ export default class MediaSession extends ICESession {
         for (const receiver of this.pc.getReceivers()) {
             this.onRemoveTrack(receiver.track);
         }
-        super.end(changes, cb);
+        super.onSessionTerminate(changes, cb);
     }
 
     onSessionInfo(info, cb) {
