@@ -417,7 +417,7 @@ export default class Translator {
 
             const { translator, multiple, selector } = childTranslator;
             if (!selector || selector === exportType) {
-                let items: any[];
+                let items: JSONData[];
 
                 if (multiple) {
                     items = value;

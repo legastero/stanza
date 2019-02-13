@@ -14,7 +14,7 @@ import {
     integerAttribute
 } from '../../jxt';
 
-import { NS_FILE_TRANSFER_5, NS_HASHES_2, NS_THUMBS_1 } from './namespaces';
+import { NS_FILE_TRANSFER_5, NS_HASHES_2, NS_THUMBS_1 } from '../Namespaces';
 import { addAlias } from './util';
 import { JingleApplication } from './xep0166';
 import { Thumbnail } from './xep0264';

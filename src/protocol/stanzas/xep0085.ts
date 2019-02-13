@@ -7,7 +7,7 @@
 
 import { childEnum, DefinitionOptions } from '../../jxt';
 
-import { NS_CHAT_STATES } from './namespaces';
+import { NS_CHAT_STATES } from '../Namespaces';
 import './rfc6120';
 import { extendMessage } from './util';
 

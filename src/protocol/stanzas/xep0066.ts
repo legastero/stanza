@@ -7,7 +7,7 @@
 
 import { childText, DefinitionOptions } from '../../jxt';
 
-import { NS_OOB, NS_OOB_TRANSFER } from './namespaces';
+import { NS_OOB, NS_OOB_TRANSFER } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

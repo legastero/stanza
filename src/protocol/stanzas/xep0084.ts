@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, integerAttribute, textBuffer } from '../../jxt';
 
-import { NS_AVATAR_DATA, NS_AVATAR_METADATA } from './namespaces';
+import { NS_AVATAR_DATA, NS_AVATAR_METADATA } from '../Namespaces';
 import './rfc6120';
 import { pubsubItemContentAliases } from './util';
 import { PubsubItemContent } from './xep0060';

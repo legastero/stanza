@@ -1,4 +1,4 @@
-import { Namespaces as NS } from './protocol';
+import { NS_SMACKS_3 } from './protocol';
 
 const MAX_SEQ = Math.pow(2, 32);
 const mod = (v, n) => ((v % n) + n) % n;
@@ -18,10 +18,10 @@ export default class StreamManagement {
         this.pendingAck = false;
 
         this.stanzas = {
-            Ack: client.stanzas.getDefinition('a', NS.SMACKS_3),
-            Enable: client.stanzas.getDefinition('enable', NS.SMACKS_3),
-            Request: client.stanzas.getDefinition('r', NS.SMACKS_3),
-            Resume: client.stanzas.getDefinition('resume', NS.SMACKS_3)
+            Ack: client.stanzas.getDefinition('a', NS_SMACKS_3),
+            Enable: client.stanzas.getDefinition('enable', NS_SMACKS_3),
+            Request: client.stanzas.getDefinition('r', NS_SMACKS_3),
+            Resume: client.stanzas.getDefinition('resume', NS_SMACKS_3)
         };
     }
 

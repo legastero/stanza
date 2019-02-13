@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, languageAttribute } from '../../jxt';
 
-import { NS_FRAMING } from './namespaces';
+import { NS_FRAMING } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

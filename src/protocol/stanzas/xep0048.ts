@@ -7,7 +7,7 @@
 
 import { attribute, childText, DefinitionOptions } from '../../jxt';
 
-import { NS_BOOKMARKS } from './namespaces';
+import { NS_BOOKMARKS } from '../Namespaces';
 import './rfc6120';
 import { JID, JIDAttribute, pubsubItemContentAliases } from './util';
 import './xep0049';

@@ -40,7 +40,7 @@ import {
     NS_MUC_OWNER,
     NS_MUC_UNIQUE,
     NS_MUC_USER
-} from './namespaces';
+} from '../Namespaces';
 import './rfc6120';
 import { addAlias, JID, JIDAttribute } from './util';
 import { DataForm } from './xep0004';
@@ -76,9 +76,12 @@ export interface MUCInfo {
     decline?: MUCDecline;
 }
 
+export type MUCAffiliation = 'owner' | 'admin' | 'member' | 'outcast' | 'none';
+export type MUCRole = 'moderator' | 'participant' | 'visitor' | 'none';
+
 export interface MUCUserItem {
-    affiliation?: 'owner' | 'admin' | 'member' | 'outcast' | 'none';
-    role?: 'moderator' | 'participant' | 'none';
+    affiliation?: MUCAffiliation;
+    role?: MUCRole;
     jid?: JID;
     nick?: string;
     reason?: string;
@@ -134,6 +137,7 @@ export interface MUCConfigure {
 
 export interface MUCDestroy {
     jid?: JID;
+    password?: string;
     reason?: string;
 }
 

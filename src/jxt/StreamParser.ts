@@ -1,8 +1,9 @@
 import { Transform } from 'stream';
 
+import { JSONData } from './Definitions';
 import XMLElement from './Element';
 import JXTError from './Error';
-import Parser from './Parser';
+import Parser, { Attributes } from './Parser';
 import Registry from './Registry';
 
 export interface StreamParserOptions {
@@ -16,7 +17,7 @@ export interface StreamParserOptions {
 export interface ParsedData {
     event?: string;
     kind: string;
-    stanza: any;
+    stanza: JSONData;
     xml: XMLElement;
 }
 
@@ -45,7 +46,7 @@ export default class StreamParser extends Transform {
             allowComments: opts.allowComments
         });
 
-        this.parser.on('startElement', (name: string, attributes: any) => {
+        this.parser.on('startElement', (name: string, attributes: Attributes) => {
             if (this.closedStream) {
                 return this.emit('error', JXTError.alreadyClosed());
             }

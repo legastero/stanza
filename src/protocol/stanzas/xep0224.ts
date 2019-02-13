@@ -7,7 +7,7 @@
 
 import { childBoolean, DefinitionOptions } from '../../jxt';
 
-import { NS_ATTENTION_0 } from './namespaces';
+import { NS_ATTENTION_0 } from '../Namespaces';
 import './rfc6120';
 import { extendMessage } from './util';
 

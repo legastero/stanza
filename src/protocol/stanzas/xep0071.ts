@@ -14,7 +14,7 @@ import {
     XMLElement
 } from '../../jxt';
 
-import { NS_XHTML, NS_XHTML_IM } from './namespaces';
+import { NS_XHTML, NS_XHTML_IM } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

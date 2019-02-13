@@ -13,7 +13,7 @@ import {
     LanguageSet
 } from '../../jxt';
 
-import { NS_ACTIVITY } from './namespaces';
+import { NS_ACTIVITY } from '../Namespaces';
 import './rfc6120';
 import { pubsubItemContentAliases } from './util';
 import { PubsubItemContent } from './xep0060';

@@ -18,7 +18,7 @@ import {
     multipleChildText
 } from '../../jxt';
 
-import { NS_ROSTER, NS_ROSTER_VERSIONING, NS_SUBSCRIPTION_PREAPPROVAL } from './namespaces';
+import { NS_ROSTER, NS_ROSTER_VERSIONING, NS_SUBSCRIPTION_PREAPPROVAL } from '../Namespaces';
 import './rfc6120';
 import { extendMessage, extendPresence, extendStreamFeatures, JIDAttribute } from './util';
 
@@ -50,22 +50,26 @@ declare module './rfc6120' {
             | 'unsubscribed';
         show?: 'away' | 'chat' | 'dnd' | 'xa';
         status?: string;
-        alternateLanguageStatuses: LanguageSet<string>;
+        alternateLanguageStatuses?: LanguageSet<string>;
         priority?: number;
+    }
+
+    export interface IQ {
+        roster?: Roster;
     }
 }
 
 export interface Roster {
-    ver?: string;
+    version?: string;
     items?: RosterItem[];
 }
 export interface RosterItem {
     jid: string;
-    name: string;
+    name?: string;
     subscription: 'to' | 'from' | 'both' | 'none' | 'remove';
-    approved: boolean;
-    ask: boolean;
-    groups: string[];
+    approved?: boolean;
+    ask?: boolean;
+    groups?: string[];
 }
 
 export default [

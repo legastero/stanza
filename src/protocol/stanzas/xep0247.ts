@@ -7,7 +7,7 @@
 
 import { DefinitionOptions } from '../../jxt';
 
-import { NS_JINGLE_XML_0 } from './namespaces';
+import { NS_JINGLE_XML_0 } from '../Namespaces';
 import { JingleApplication } from './xep0166';
 
 export interface JingleXMLStreamDescription extends JingleApplication {

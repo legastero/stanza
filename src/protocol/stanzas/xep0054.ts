@@ -14,7 +14,7 @@ import {
     text
 } from '../../jxt';
 
-import { NS_VCARD_TEMP } from './namespaces';
+import { NS_VCARD_TEMP } from '../Namespaces';
 import './rfc6120';
 import { JID } from './util';
 

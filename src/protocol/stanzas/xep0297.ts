@@ -7,9 +7,10 @@
 
 import { define, DefinitionOptions } from '../../jxt';
 
-import { NS_DELAY, NS_FORWARD_0 } from './namespaces';
+import { NS_DELAY, NS_FORWARD_0 } from '../Namespaces';
 import { IQ, Message, Presence } from './rfc6120';
 import { addAlias, STREAM_TYPES } from './util';
+import { Delay } from './xep0203';
 
 declare module './rfc6120' {
     export interface Message {
@@ -18,6 +19,7 @@ declare module './rfc6120' {
 }
 
 export interface Forward {
+    delay?: Delay;
     message?: Message;
     presence?: Presence;
     iq?: IQ;

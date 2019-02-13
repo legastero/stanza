@@ -13,7 +13,7 @@ import {
     integerAttribute
 } from '../../jxt';
 
-import { NS_JINGLE_SOCKS5_1 } from './namespaces';
+import { NS_JINGLE_SOCKS5_1 } from '../Namespaces';
 import { JIDAttribute } from './util';
 import { JingleTransport } from './xep0166';
 

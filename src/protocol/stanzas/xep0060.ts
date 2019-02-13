@@ -26,7 +26,7 @@ import {
     NS_PUBSUB_EVENT,
     NS_PUBSUB_OWNER,
     NS_RSM
-} from './namespaces';
+} from '../Namespaces';
 import './rfc6120';
 import { addAlias, extendStanzaError, JID, JIDAttribute } from './util';
 import { DataForm } from './xep0004';
@@ -71,9 +71,11 @@ declare module './rfc6120' {
 
 export interface Pubsub {
     context?: 'owner' | 'user';
+    affiliations?: PubsubAffiliations;
     subscribe?: PubsubSubscribe;
     unsubscribe?: PubsubUnsubscribe;
     subscription?: PubsubSubscription;
+    subscriptions?: PubsubSubscriptions;
     publishOptions?: DataForm;
     publish?: PubsubPublish;
     retract?: PubsubRetract;
@@ -83,6 +85,7 @@ export interface Pubsub {
     destroy?: PubsubDestroy;
     configure?: PubsubConfigure;
     subscriptionOptions?: PubsubSubscriptionOptions;
+    paging?: Paging;
 }
 
 export interface PubsubCreate {
@@ -118,6 +121,23 @@ export interface PubsubSubscription {
     configurationRequired?: boolean;
 }
 
+export interface PubsubSubscriptions {
+    node?: string;
+    jid?: JID;
+    items?: PubsubSubscription[];
+}
+
+export interface PubsubAffiliation {
+    node?: string;
+    affiliation?: 'member' | 'none' | 'outcast' | 'owner' | 'publisher' | 'publish-only';
+    jid?: JID;
+}
+
+export interface PubsubAffiliations {
+    node?: string;
+    items?: PubsubAffiliation[];
+}
+
 export interface PubsubPublish {
     node?: string;
     item?: PubsubItem;
@@ -143,7 +163,6 @@ export interface PubsubFetch {
     node: string;
     max?: number;
     items?: PubsubItem[];
-    paging?: Paging;
 }
 
 export interface PubsubSubscriptionOptions {
@@ -213,19 +232,18 @@ const dateOrPresenceAttribute = (name: string): FieldDefinition<Date | 'presence
 
 export default [
     {
-        aliases: ['pubsub'],
+        aliases: ['pubsub', 'iq.pubsub', 'message.pubsub'],
         defaultType: 'user',
         element: 'pubsub',
         fields: {
             publishOptions: splicePath(null, 'publish-options', 'dataform')
         },
         namespace: NS_PUBSUB,
-        path: 'iq.pubsub',
         type: 'user',
         typeField: 'context'
     },
     {
-        aliases: ['pubsub'],
+        aliases: ['pubsub', 'iq.pubsub', 'message.pubsub'],
         defaultType: 'user',
         element: 'pubsub',
         fields: {
@@ -289,6 +307,19 @@ export default [
         path: 'iq.pubsub.unsubscribe'
     },
     {
+        element: 'subscriptions',
+        fields: {
+            jid: JIDAttribute('jid'),
+            node: attribute('node')
+        },
+        namespace: NS_PUBSUB,
+        path: 'iq.pubsub.subscriptions'
+    },
+    {
+        aliases: [
+            'iq.pubsub.subscription',
+            { path: 'iq.pubsub.subscriptions.items', multiple: true }
+        ],
         element: 'subscription',
         fields: {
             configurable: childBoolean(null, 'subscribe-options'),
@@ -301,8 +332,45 @@ export default [
             state: attribute('subscription'),
             subid: attribute('subid')
         },
-        namespace: NS_PUBSUB,
-        path: 'iq.pubsub.subscription'
+        namespace: NS_PUBSUB
+    },
+    {
+        aliases: [{ path: 'iq.pubsub.affiliations', selector: NS_PUBSUB }],
+        element: 'affiliations',
+        fields: {
+            node: attribute('node')
+        },
+        namespace: NS_PUBSUB
+    },
+    {
+        aliases: [{ path: 'iq.pubsub.affiliations', selector: NS_PUBSUB_OWNER }],
+        element: 'affiliations',
+        fields: {
+            node: attribute('node')
+        },
+        namespace: NS_PUBSUB_OWNER
+    },
+    {
+        aliases: [{ path: 'iq.pubsub.affiliations.items', selector: NS_PUBSUB, multiple: true }],
+        element: 'affiliation',
+        fields: {
+            affiliation: attribute('affiliation'),
+            jid: JIDAttribute('jid'),
+            node: attribute('node')
+        },
+        namespace: NS_PUBSUB
+    },
+    {
+        aliases: [
+            { path: 'iq.pubsub.affiliations.items', selector: NS_PUBSUB_OWNER, multiple: true }
+        ],
+        element: 'affiliation',
+        fields: {
+            affiliation: attribute('affiliation'),
+            jid: JIDAttribute('jid'),
+            node: attribute('node')
+        },
+        namespace: NS_PUBSUB_OWNER
     },
     {
         element: 'create',
@@ -390,7 +458,9 @@ export default [
             ])
         },
         namespace: NS_PUBSUB_EVENT,
-        path: 'message.pubsub'
+        path: 'message.pubsub',
+        type: 'event',
+        typeField: 'context'
     },
     {
         aliases: [{ path: 'message.pubsub.items.published', multiple: true }],

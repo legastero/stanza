@@ -13,7 +13,7 @@ import {
     integerAttribute
 } from '../../jxt';
 
-import { NS_PRIVACY } from './namespaces';
+import { NS_PRIVACY } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

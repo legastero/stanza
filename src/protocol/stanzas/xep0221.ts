@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, integerAttribute, text } from '../../jxt';
 
-import { NS_DATAFORM_MEDIA } from './namespaces';
+import { NS_DATAFORM_MEDIA } from '../Namespaces';
 import './xep0004';
 
 declare module './xep0004' {

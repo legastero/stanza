@@ -7,7 +7,7 @@
 
 import { childBoolean, childDate, childText, DefinitionOptions } from '../../jxt';
 
-import { NS_DATAFORM, NS_INBAND_REGISTRATION, NS_OOB, NS_REGISTER } from './namespaces';
+import { NS_DATAFORM, NS_INBAND_REGISTRATION, NS_OOB, NS_REGISTER } from '../Namespaces';
 import './rfc6120';
 import { addAlias, extendStreamFeatures } from './util';
 import { DataForm } from './xep0004';

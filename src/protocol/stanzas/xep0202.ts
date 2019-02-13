@@ -7,7 +7,7 @@
 
 import { childDate, childTimezoneOffset, DefinitionOptions } from '../../jxt';
 
-import { NS_TIME } from './namespaces';
+import { NS_TIME } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

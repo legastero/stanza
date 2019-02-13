@@ -11,7 +11,7 @@ import {
     XMLElement
 } from '../../jxt';
 
-import { NS_BOSH, NS_CLIENT, NS_COMPONENT, NS_SERVER, NS_STANZAS, NS_STREAM } from './namespaces';
+import { NS_BOSH, NS_CLIENT, NS_COMPONENT, NS_SERVER, NS_STANZAS, NS_STREAM } from '../Namespaces';
 
 export const STREAM_TYPES = [
     [NS_CLIENT, NS_CLIENT], // RFC6120
@@ -32,7 +32,10 @@ export function parameterMap(
     valueName: string
 ): FieldDefinition {
     return {
-        importer(xml: XMLElement, context: TranslationContext): any {
+        importer(
+            xml: XMLElement,
+            context: TranslationContext
+        ): Array<{ key: string; value?: string }> {
             const result: Array<{ key: string; value?: string }> = [];
             const params = findAll(xml, namespace, element);
             const keyImporter = attribute(keyName).importer;

@@ -22,7 +22,7 @@ import {
     namespacedBooleanAttribute
 } from '../../jxt';
 
-import { NS_BOSH, NS_BOSH_XMPP } from './namespaces';
+import { NS_BOSH, NS_BOSH_XMPP } from '../Namespaces';
 import './rfc6120';
 import { JID, JIDAttribute } from './util';
 

@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions } from '../../jxt';
 
-import { NS_DATAFORM, NS_PUSH_0 } from './namespaces';
+import { NS_DATAFORM, NS_PUSH_0 } from '../Namespaces';
 import './rfc6120';
 import { addAlias, JID, JIDAttribute, pubsubItemContentAliases } from './util';
 import { DataForm } from './xep0004';
@@ -22,6 +22,7 @@ export interface PushNotificationControl {
     type: 'enable' | 'disable';
     node?: string;
     jid?: JID;
+    form?: DataForm;
 }
 
 export interface PushNotification {

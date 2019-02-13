@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, staticValue, textBuffer } from '../../jxt';
 
-import { NS_HASHES_1, NS_HASHES_2 } from './namespaces';
+import { NS_HASHES_1, NS_HASHES_2 } from '../Namespaces';
 
 export interface Hash {
     version?: '2' | '1';

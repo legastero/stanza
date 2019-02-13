@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, integerAttribute } from '../../jxt';
 
-import { NS_BOB, NS_THUMBS_1 } from './namespaces';
+import { NS_BOB, NS_THUMBS_1 } from '../Namespaces';
 import './rfc6120';
 import { addAlias } from './util';
 import './xep0166';

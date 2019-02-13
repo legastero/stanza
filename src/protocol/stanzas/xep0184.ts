@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions } from '../../jxt';
 
-import { NS_RECEIPTS } from './namespaces';
+import { NS_RECEIPTS } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

@@ -7,7 +7,7 @@
 
 import { DefinitionOptions } from '../../jxt';
 
-import { NS_CSI_0 } from './namespaces';
+import { NS_CSI_0 } from '../Namespaces';
 
 export interface CSI {
     type: 'active' | 'inactive';

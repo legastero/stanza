@@ -1,5 +1,17 @@
 import * as Jingle from '../jingle';
-import { Namespaces } from '../protocol';
+import {
+    NS_FILE_TRANSFER_3,
+    NS_JINGLE_1,
+    NS_JINGLE_DTLS_0,
+    NS_JINGLE_GROUPING_0,
+    NS_JINGLE_ICE_UDP_1,
+    NS_JINGLE_RTP_1,
+    NS_JINGLE_RTP_AUDIO,
+    NS_JINGLE_RTP_HDREXT_0,
+    NS_JINGLE_RTP_RTCP_FB_0,
+    NS_JINGLE_RTP_SSMA_0,
+    NS_JINGLE_RTP_VIDEO
+} from '../protocol';
 
 let root;
 try {
@@ -17,19 +29,19 @@ export default function(client) {
         turns: true
     };
 
-    client.disco.addFeature(Namespaces.JINGLE_1);
+    client.disco.addFeature(NS_JINGLE_1);
     if (root.RTCPeerConnection) {
         const caps = [
-            Namespaces.JINGLE_RTP_1,
-            Namespaces.JINGLE_RTP_RTCP_FB_0,
-            Namespaces.JINGLE_RTP_HDREXT_0,
-            Namespaces.JINGLE_RTP_SSMA_0,
-            Namespaces.JINGLE_DTLS_0,
-            Namespaces.JINGLE_GROUPING_0,
-            Namespaces.FILE_TRANSFER_3,
-            Namespaces.JINGLE_ICE_UDP_1,
-            Namespaces.JINGLE_RTP_AUDIO,
-            Namespaces.JINGLE_RTP_VIDEO,
+            NS_JINGLE_RTP_1,
+            NS_JINGLE_RTP_RTCP_FB_0,
+            NS_JINGLE_RTP_HDREXT_0,
+            NS_JINGLE_RTP_SSMA_0,
+            NS_JINGLE_DTLS_0,
+            NS_JINGLE_GROUPING_0,
+            NS_FILE_TRANSFER_3,
+            NS_JINGLE_ICE_UDP_1,
+            NS_JINGLE_RTP_AUDIO,
+            NS_JINGLE_RTP_VIDEO,
             'urn:xmpp:jingle:transports:dtls-sctp:1',
             'urn:ietf:rfc:3264',
             'urn:ietf:rfc:5576',

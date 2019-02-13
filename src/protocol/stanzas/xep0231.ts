@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, integerAttribute, textBuffer } from '../../jxt';
 
-import { NS_BOB } from './namespaces';
+import { NS_BOB } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

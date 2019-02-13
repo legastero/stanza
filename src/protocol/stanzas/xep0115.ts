@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, staticValue } from '../../jxt';
 
-import { NS_DISCO_LEGACY_CAPS } from './namespaces';
+import { NS_DISCO_LEGACY_CAPS } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

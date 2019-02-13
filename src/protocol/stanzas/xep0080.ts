@@ -21,7 +21,7 @@ import {
     languageAttribute
 } from '../../jxt';
 
-import { NS_GEOLOC } from './namespaces';
+import { NS_GEOLOC } from '../Namespaces';
 import './rfc6120';
 import { pubsubItemContentAliases } from './util';
 import { PubsubItemContent } from './xep0060';

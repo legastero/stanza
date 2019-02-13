@@ -7,7 +7,7 @@
 
 import { booleanAttribute, DefinitionOptions } from '../../jxt';
 
-import { NS_INVISIBLE_0 } from './namespaces';
+import { NS_INVISIBLE_0 } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

@@ -16,7 +16,7 @@ import {
     XMLElement
 } from '../../jxt';
 
-import { NS_DATAFORM } from './namespaces';
+import { NS_DATAFORM } from '../Namespaces';
 import './rfc6120';
 import { JID } from './util';
 
@@ -139,7 +139,10 @@ export default [
             required: childBoolean(null, 'required'),
             type: attribute('type'),
             value: {
-                importer(xml: XMLElement, context: TranslationContext): any {
+                importer(
+                    xml: XMLElement,
+                    context: TranslationContext
+                ): boolean | string | string[] | JID | JID[] | undefined {
                     const fieldType = xml.getAttribute('type');
                     const converter = multipleChildText(NS_DATAFORM, 'value');
                     const rawValues: string[] = converter.importer(xml, context) || [];

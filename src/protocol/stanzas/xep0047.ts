@@ -14,7 +14,7 @@ import {
     XMLElement
 } from '../../jxt';
 
-import { NS_IBB } from './namespaces';
+import { NS_IBB } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {
@@ -49,7 +49,7 @@ export default [
         element: 'open',
         fields: {
             ack: {
-                importer(xml: XMLElement, context: TranslationContext): any {
+                importer(xml: XMLElement, context: TranslationContext): boolean {
                     const stanza = attribute('stanza', 'iq').importer(xml, context);
                     return stanza !== 'message';
                 },

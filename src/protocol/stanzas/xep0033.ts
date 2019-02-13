@@ -15,7 +15,7 @@ import {
     splicePath
 } from '../../jxt';
 
-import { NS_ADDRESS } from './namespaces';
+import { NS_ADDRESS } from '../Namespaces';
 import './rfc6120';
 import { extendMessage, extendPresence, JID, JIDAttribute } from './util';
 

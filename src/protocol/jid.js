@@ -38,8 +38,8 @@ export function nodeprep(str) {
 
 export function resourceprep(str) {
     if (HAS_STRINGPREP) {
-        const resource = new StringPrep.StringPrep('resourceprep');
-        return resource.prepare(str);
+        const res = new StringPrep.StringPrep('resourceprep');
+        return res.prepare(str);
     } else {
         return str;
     }
@@ -50,24 +50,24 @@ export function resourceprep(str) {
 // ASCII-only JIDs as prepped.
 const ASCII = /^[\x00-\x7F]*$/;
 
-function bareJID(local, domain) {
+function createBareJID(local, domain) {
     if (local) {
         return local + '@' + domain;
     }
     return domain;
 }
 
-function fullJID(local, domain, resource) {
-    if (resource) {
-        return bareJID(local, domain) + '/' + resource;
+function createFullJID(local, domain, res) {
+    if (res) {
+        return createBareJID(local, domain) + '/' + res;
     }
-    return bareJID(local, domain);
+    return createBareJID(local, domain);
 }
 
 export function prep(data) {
     let local = data.local;
     let domain = data.domain;
-    let resource = data.resource;
+    let res = data.resource;
     let unescapedLocal = local;
 
     if (local) {
@@ -75,8 +75,8 @@ export function prep(data) {
         unescapedLocal = unescape(local);
     }
 
-    if (resource) {
-        resource = resourceprep(resource);
+    if (res) {
+        res = resourceprep(res);
     }
 
     if (domain[domain.length - 1] === '.') {
@@ -91,14 +91,14 @@ export function prep(data) {
     );
 
     return {
-        bare: bareJID(local, domain),
+        bare: createBareJID(local, domain),
         domain,
-        full: fullJID(local, domain, resource),
+        full: createFullJID(local, domain, res),
         local,
         prepped: data.prepped || NATIVE_STRINGPREP,
-        resource,
-        unescapedBare: bareJID(unescapedLocal, domain),
-        unescapedFull: fullJID(unescapedLocal, domain, resource),
+        resource: res,
+        unescapedBare: createBareJID(unescapedLocal, domain),
+        unescapedFull: createFullJID(unescapedLocal, domain, res),
         unescapedLocal
     };
 }
@@ -106,13 +106,13 @@ export function prep(data) {
 export function parse(jid, trusted) {
     let local = '';
     let domain = '';
-    let resource = '';
+    let res = '';
 
     trusted = trusted || ASCII.test(jid);
 
     const resourceStart = jid.indexOf('/');
     if (resourceStart > 0) {
-        resource = jid.slice(resourceStart + 1);
+        res = jid.slice(resourceStart + 1);
         jid = jid.slice(0, resourceStart);
     }
 
@@ -127,12 +127,32 @@ export function parse(jid, trusted) {
     const preppedJID = prep({
         domain,
         local,
-        resource
+        resource: res
     });
 
     preppedJID.prepped = preppedJID.prepped || trusted;
 
     return preppedJID;
+}
+
+export function allowedResponders(jid1, jid2) {
+    const allowed = new Set();
+    allowed.add(undefined);
+    allowed.add('');
+
+    const split1 = prep(jid1);
+    allowed.add(split1.full);
+    allowed.add(split1.bare);
+    allowed.add(split1.domain);
+
+    if (jid2) {
+        const split2 = prep(jid2);
+        allowed.add(split2.domain);
+        allowed.add(split2.bare);
+        allowed.add(split2.full);
+    }
+
+    return allowed;
 }
 
 export function equal(jid1, jid2, requirePrep) {
@@ -178,6 +198,16 @@ export function isFull(jid) {
     return hasResource;
 }
 
+export function bare(jid) {
+    jid = new JID(jid);
+    return jid.bare;
+}
+
+export function resource(jid) {
+    jid = new JID(jid);
+    return jid.resource;
+}
+
 export function escape(val) {
     return val
         .replace(/^\s+|\s+$/g, '')
@@ -216,14 +246,14 @@ export function unescape(val) {
         .replace(/\\5c/g, '\\');
 }
 
-export function create(local, domain, resource) {
-    return new JID(local, domain, resource);
+export function create(local, domain, res) {
+    return new JID(local, domain, res);
 }
 
 export class JID {
-    constructor(localOrJID, domain, resource) {
+    constructor(localOrJID, domain, res) {
         let parsed = {};
-        if (localOrJID && !domain && !resource) {
+        if (localOrJID && !domain && !res) {
             if (typeof localOrJID === 'string') {
                 parsed = parse(localOrJID);
             } else if (localOrJID._isJID || localOrJID instanceof JID) {
@@ -233,15 +263,15 @@ export class JID {
             }
         } else if (domain) {
             let trusted = ASCII.test(localOrJID) && ASCII.test(domain);
-            if (resource) {
-                trusted = trusted && ASCII.test(resource);
+            if (res) {
+                trusted = trusted && ASCII.test(res);
             }
 
             parsed = prep({
                 domain,
                 local: escape(localOrJID),
                 prepped: trusted,
-                resource
+                resource: res
             });
         } else {
             parsed = {};

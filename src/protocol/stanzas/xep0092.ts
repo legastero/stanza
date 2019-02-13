@@ -7,7 +7,7 @@
 
 import { childText, DefinitionOptions } from '../../jxt';
 
-import { NS_VERSION } from './namespaces';
+import { NS_VERSION } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

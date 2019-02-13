@@ -7,7 +7,7 @@
 
 import { childInteger, childText, DefinitionOptions } from '../../jxt';
 
-import { NS_TUNE } from './namespaces';
+import { NS_TUNE } from '../Namespaces';
 import './rfc6120';
 import { pubsubItemContentAliases } from './util';
 import { PubsubItemContent } from './xep0060';

@@ -14,7 +14,7 @@
 
 import { attribute, DefinitionOptions, languageAttribute, multipleChildAttribute } from '../../jxt';
 
-import { NS_DATAFORM, NS_DISCO_INFO, NS_DISCO_ITEMS, NS_RSM } from './namespaces';
+import { NS_DATAFORM, NS_DISCO_INFO, NS_DISCO_ITEMS, NS_RSM } from '../Namespaces';
 import './rfc6120';
 import { addAlias, JID, JIDAttribute } from './util';
 import { DataForm } from './xep0004';

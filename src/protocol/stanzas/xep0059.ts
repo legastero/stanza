@@ -14,7 +14,7 @@ import {
     integerAttribute
 } from '../../jxt';
 
-import { NS_RSM } from './namespaces';
+import { NS_RSM } from '../Namespaces';
 
 export interface Paging {
     max?: number;
@@ -28,6 +28,7 @@ export interface Paging {
 }
 
 export default {
+    aliases: ['iq.pubsub.paging'],
     element: 'set',
     fields: {
         after: attribute('after'),

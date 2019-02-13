@@ -7,7 +7,7 @@
 
 import { dateAttribute, DefinitionOptions, text } from '../../jxt';
 
-import { NS_DELAY } from './namespaces';
+import { NS_DELAY } from '../Namespaces';
 import './rfc6120';
 import { JIDAttribute } from './util';
 

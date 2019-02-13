@@ -7,7 +7,7 @@
 
 import { childBoolean, DefinitionOptions } from '../../jxt';
 
-import { NS_PING } from './namespaces';
+import { NS_PING } from '../Namespaces';
 import './rfc6120';
 import { extendIQ } from './util';
 

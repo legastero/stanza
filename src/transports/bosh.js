@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch';
 import WildEmitter from 'wildemitter';
 
-import { Namespaces } from '../protocol';
+import { NS_BOSH } from '../protocol';
 
 function timeoutPromise(targetPromise, delay) {
     return new Promise((resolve, reject) => {
@@ -36,7 +36,7 @@ export default class BOSHConnection extends WildEmitter {
         const self = this;
         self.sm = sm;
         self.stanzas = {
-            BOSH: stanzas.getDefinition('body', Namespaces.BOSH),
+            BOSH: stanzas.getDefinition('body', NS_BOSH),
             StreamError: stanzas.getStreamError()
         };
         self.sendQueue = [];

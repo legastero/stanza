@@ -13,7 +13,7 @@
 
 import { childBoolean, DefinitionOptions } from '../../jxt';
 
-import { NS_SESSION } from './namespaces';
+import { NS_SESSION } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

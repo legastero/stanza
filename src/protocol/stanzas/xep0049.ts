@@ -7,7 +7,7 @@
 
 import { DefinitionOptions } from '../../jxt';
 
-import { NS_PRIVATE } from './namespaces';
+import { NS_PRIVATE } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

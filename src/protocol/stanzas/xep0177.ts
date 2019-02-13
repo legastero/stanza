@@ -7,7 +7,7 @@
 
 import { attribute, childBoolean, DefinitionOptions, integerAttribute } from '../../jxt';
 
-import { NS_JINGLE_RAW_UDP_1 } from './namespaces';
+import { NS_JINGLE_RAW_UDP_1 } from '../Namespaces';
 import { JingleTransport } from './xep0166';
 
 export interface JingleRawUdp extends JingleTransport {

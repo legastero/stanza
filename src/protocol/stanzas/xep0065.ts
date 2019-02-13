@@ -13,7 +13,7 @@ import {
     integerAttribute
 } from '../../jxt';
 
-import { NS_SOCKS5 } from './namespaces';
+import { NS_SOCKS5 } from '../Namespaces';
 import './rfc6120';
 import { childJIDAttribute, JID, JIDAttribute } from './util';
 

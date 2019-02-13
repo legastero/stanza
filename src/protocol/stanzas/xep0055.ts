@@ -7,7 +7,7 @@
 
 import { childText, DefinitionOptions } from '../../jxt';
 
-import { NS_DATAFORM, NS_SEARCH } from './namespaces';
+import { NS_DATAFORM, NS_SEARCH } from '../Namespaces';
 import './rfc6120';
 import { addAlias, JID, JIDAttribute } from './util';
 import { DataForm } from './xep0004';

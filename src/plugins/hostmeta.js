@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch';
 
-import { Namespaces } from '../protocol';
+import { NS_ALT_CONNECTIONS_WEBSOCKET, NS_ALT_CONNECTIONS_XBOSH } from '../protocol';
 
 async function promiseAny(promises) {
     try {
@@ -59,10 +59,10 @@ export default function(client, stanzas) {
                 const links = data.links || [];
 
                 for (const link of links) {
-                    if (link.href && link.rel === Namespaces.ALT_CONNECTIONS_WEBSOCKET) {
+                    if (link.href && link.rel === NS_ALT_CONNECTIONS_WEBSOCKET) {
                         results.websocket.push(link.href);
                     }
-                    if (link.href && link.rel === Namespaces.ALT_CONNECTIONS_XBOSH) {
+                    if (link.href && link.rel === NS_ALT_CONNECTIONS_XBOSH) {
                         results.bosh.push(link.href);
                     }
                 }

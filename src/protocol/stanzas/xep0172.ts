@@ -7,7 +7,7 @@
 
 import { childText, DefinitionOptions, text } from '../../jxt';
 
-import { NS_NICK } from './namespaces';
+import { NS_NICK } from '../Namespaces';
 import './rfc6120';
 import { extendMessage, extendPresence, pubsubItemContentAliases } from './util';
 import { PubsubItemContent } from './xep0060';
@@ -23,7 +23,7 @@ declare module './rfc6120' {
 }
 
 export interface UserNick extends PubsubItemContent {
-    itemType: typeof NS_NICK;
+    itemType?: typeof NS_NICK;
     nick?: string;
 }
 

@@ -18,7 +18,7 @@ import {
     textBuffer
 } from '../../jxt';
 
-import { NS_BIND, NS_CLIENT, NS_SASL, NS_STANZAS, NS_STARTTLS, NS_STREAM } from './namespaces';
+import { NS_BIND, NS_CLIENT, NS_SASL, NS_STANZAS, NS_STARTTLS, NS_STREAM } from '../Namespaces';
 import { JIDAttribute, STREAM_TYPES } from './util';
 
 export interface Stream {
@@ -269,7 +269,7 @@ export interface SASLAbort {
 }
 export interface SASLChallengeResponse {
     type: 'challenge' | 'response';
-    value: Buffer;
+    value?: Buffer;
 }
 export interface SASLSuccess {
     type: 'success';

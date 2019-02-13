@@ -7,7 +7,7 @@
 
 import { DefinitionOptions, textBuffer } from '../../jxt';
 
-import { NS_COMPONENT } from './namespaces';
+import { NS_COMPONENT } from '../Namespaces';
 
 export interface ComponentHandshake {
     value: string;

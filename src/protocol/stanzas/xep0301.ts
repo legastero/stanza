@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, integerAttribute, text } from '../../jxt';
 
-import { NS_RTT_0 } from './namespaces';
+import { NS_RTT_0 } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

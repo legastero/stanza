@@ -13,7 +13,7 @@ import {
     integerAttribute
 } from '../../jxt';
 
-import { NS_SMACKS_3 } from './namespaces';
+import { NS_SMACKS_3 } from '../Namespaces';
 import './rfc6120';
 import { extendStreamFeatures } from './util';
 

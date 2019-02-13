@@ -14,7 +14,7 @@ import {
     DefinitionOptions
 } from '../../jxt';
 
-import { NS_DATAFORM_VALIDATION } from './namespaces';
+import { NS_DATAFORM_VALIDATION } from '../Namespaces';
 import './xep0004';
 
 declare module './xep0004' {

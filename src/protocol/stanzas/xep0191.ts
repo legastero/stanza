@@ -7,7 +7,7 @@
 
 import { childBoolean, DefinitionOptions, multipleChildAttribute } from '../../jxt';
 
-import { NS_BLOCKING, NS_BLOCKING_ERRORS } from './namespaces';
+import { NS_BLOCKING, NS_BLOCKING_ERRORS } from '../Namespaces';
 import './rfc6120';
 import { extendStanzaError, JID } from './util';
 

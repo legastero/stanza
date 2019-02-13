@@ -13,7 +13,7 @@ import {
     XMLElement
 } from '../../jxt';
 
-import { NS_JINGLE_IBB_1 } from './namespaces';
+import { NS_JINGLE_IBB_1 } from '../Namespaces';
 import './rfc6120';
 import { JingleTransport } from './xep0166';
 
@@ -28,7 +28,7 @@ export default {
     element: 'transport',
     fields: {
         ack: {
-            importer(xml: XMLElement, context: TranslationContext): any {
+            importer(xml: XMLElement, context: TranslationContext): boolean {
                 const stanza = attribute('stanza', 'iq').importer(xml, context);
                 return stanza !== 'message';
             },

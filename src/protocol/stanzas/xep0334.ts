@@ -7,7 +7,7 @@
 
 import { createElement, DefinitionOptions, FieldDefinition } from '../../jxt';
 
-import { NS_HINTS } from './namespaces';
+import { NS_HINTS } from '../Namespaces';
 import './rfc6120';
 import { extendMessage } from './util';
 

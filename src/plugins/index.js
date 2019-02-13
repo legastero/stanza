@@ -18,7 +18,6 @@ import Invisible from './invisible';
 import JIDPrep from './jidprep';
 import Jingle from './jingle';
 import KeepAlive from './keepalive';
-import Logging from './logging';
 import MAM from './mam';
 import Markers from './markers';
 import MUC from './muc';
@@ -59,7 +58,6 @@ export default function(client) {
     client.use(JIDPrep);
     client.use(Jingle);
     client.use(KeepAlive);
-    client.use(Logging);
     client.use(MAM);
     client.use(Markers);
     client.use(MUC);

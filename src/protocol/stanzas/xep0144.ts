@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, multipleChildText, splicePath } from '../../jxt';
 
-import { NS_ROSTER_EXCHANGE } from './namespaces';
+import { NS_ROSTER_EXCHANGE } from '../Namespaces';
 import './rfc6120';
 import { extendIQ, extendMessage, JID, JIDAttribute } from './util';
 

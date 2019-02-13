@@ -14,13 +14,24 @@ import {
     splicePath
 } from '../../jxt';
 
-import { NS_REACH_0 } from './namespaces';
-import { extendPresence } from './util';
+import { NS_REACH_0 } from '../Namespaces';
+import { extendPresence, pubsubItemContentAliases } from './util';
 
 declare module './rfc6120' {
     export interface Presence {
-        reachbilityAddresses?: ReachabilityAddress[];
+        reachabilityAddresses?: ReachabilityAddress[];
     }
+}
+
+declare module './xep0060' {
+    export interface PubsubItemContent {
+        reachabilityAddresses?: ReachabilityAddress[];
+    }
+}
+
+export interface UserReachability {
+    itemType?: typeof NS_REACH_0;
+    reachabilityAddresses?: ReachabilityAddress[];
 }
 
 export interface ReachabilityAddress {
@@ -34,6 +45,15 @@ export default [
         reachabilityAddresses: splicePath(NS_REACH_0, 'reach', 'reachabilityAddress', true)
     }),
     {
+        aliases: ['reachability', ...pubsubItemContentAliases(NS_REACH_0)],
+        element: 'reach',
+        namespace: NS_REACH_0
+    },
+    {
+        aliases: [
+            'reachabilityAddress',
+            { path: 'reachability.reachabilityAddresses', multiple: true }
+        ],
         element: 'addr',
         fields: {
             alternateLanguageDescriptions: childAlternateLanguageText(null, 'desc'),

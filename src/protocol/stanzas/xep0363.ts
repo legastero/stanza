@@ -16,7 +16,7 @@ import {
     text
 } from '../../jxt';
 
-import { NS_HTTP_UPLOAD_0 } from './namespaces';
+import { NS_HTTP_UPLOAD_0 } from '../Namespaces';
 import './rfc6120';
 import { extendStanzaError } from './util';
 

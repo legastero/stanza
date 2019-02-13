@@ -55,7 +55,7 @@ import {
     NS_JINGLE_RTP_MSID_0,
     NS_JINGLE_RTP_RTCP_FB_0,
     NS_JINGLE_RTP_SSMA_0
-} from './namespaces';
+} from '../Namespaces';
 import { parameterMap } from './util';
 import { JingleApplication } from './xep0166';
 import { Thumbnail } from './xep0264';
@@ -141,7 +141,10 @@ export interface JingleRtpZrtp {
 
 function rtcpFeedback(): FieldDefinition {
     return {
-        importer(xml: XMLElement, context: TranslationContext): any {
+        importer(
+            xml: XMLElement,
+            context: TranslationContext
+        ): Array<{ type: string; parameter?: string }> {
             let existing = findAll(xml, NS_JINGLE_RTP_RTCP_FB_0, 'rtcp-fb');
             const typeImporter = attribute('type').importer;
             const subtypeImporter = attribute('subtype').importer;

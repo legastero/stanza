@@ -7,7 +7,7 @@
 
 import { childEnum, childText, DefinitionOptions, multipleChildText } from '../../jxt';
 
-import { NS_COMPRESSION, NS_COMPRESSION_FEATURE } from './namespaces';
+import { NS_COMPRESSION, NS_COMPRESSION_FEATURE } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

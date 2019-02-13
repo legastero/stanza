@@ -7,7 +7,7 @@
 
 import { attribute, childBoolean, childEnum, DefinitionOptions, text } from '../../jxt';
 
-import { NS_ADHOC_COMMANDS, NS_DATAFORM } from './namespaces';
+import { NS_ADHOC_COMMANDS, NS_DATAFORM } from '../Namespaces';
 import './rfc6120';
 import { addAlias, extendStanzaError } from './util';
 import { DataForm } from './xep0004';

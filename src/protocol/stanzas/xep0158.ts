@@ -7,7 +7,7 @@
 
 import { DefinitionOptions, splicePath } from '../../jxt';
 
-import { NS_CAPTCHA } from './namespaces';
+import { NS_CAPTCHA } from '../Namespaces';
 import { extendIQ, extendMessage } from './util';
 import { DataForm } from './xep0004';
 

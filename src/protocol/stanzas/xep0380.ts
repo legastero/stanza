@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions } from '../../jxt';
 
-import { NS_EME_0 } from './namespaces';
+import { NS_EME_0 } from '../Namespaces';
 import './rfc6120';
 
 declare module './rfc6120' {

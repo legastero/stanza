@@ -7,7 +7,7 @@
 
 import { attribute, booleanAttribute, DefinitionOptions } from '../../jxt';
 
-import { NS_DATAFORM, NS_FORWARD_0, NS_MAM_2, NS_RSM } from './namespaces';
+import { NS_DATAFORM, NS_FORWARD_0, NS_MAM_2, NS_RSM } from '../Namespaces';
 import './rfc6120';
 import { addAlias, JID } from './util';
 import { DataForm } from './xep0004';

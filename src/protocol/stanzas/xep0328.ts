@@ -7,7 +7,7 @@
 
 import { DefinitionOptions } from '../../jxt';
 
-import { NS_JID_PREP_0 } from './namespaces';
+import { NS_JID_PREP_0 } from '../Namespaces';
 import './rfc6120';
 import { childJID, extendIQ, JID } from './util';
 
