@@ -1,0 +1,239 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>stanza.io — Jingle Interop Testing</title>
+        <!-- Using webrtc-adapter is 1000% recommended -->
+        <script src="https://github.com/webrtcHacks/adapter/blob/master/release/adapter.js"></script>
+        <script src="dist/stanzaio.browser.js"></script>
+        <style>
+            video {
+                width: 320px;
+            }
+            #received {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="settings">
+            <h1>Connection Settings</h1>
+            <form id="loginInfo">
+                <label
+                    >JID: <input id="jid" type="text" name="jid" placeholder="me@example.com"
+                /></label>
+                <label>Password: <input id="password" type="password" name="password"/></label>
+                <label
+                    >WebSocket URL:
+                    <input
+                        id="url"
+                        type="text"
+                        name="url"
+                        value=""
+                        placeholder="ws://localhost:5280/xmpp-websocket/"
+                /></label>
+                <input id="connect" type="submit" value="Connect" />
+            </form>
+            <h2>My full JID:</h2>
+            <p id="myJID"></p>
+            <h2>Start Video Session</h2>
+            <form id="callInfo">
+                <label
+                    >Peer JID:
+                    <input id="peer" type="text" name="peer" placeholder="otherperson@example.com"
+                /></label>
+                <input id="call" type="submit" value="Call" />
+            </form>
+            <h2>Send a file</h2>
+            <form id="fileInfo">
+                <label
+                    >Peer JID:
+                    <input
+                        id="filepeer"
+                        type="text"
+                        name="peer"
+                        placeholder="otherperson@example.com"
+                /></label>
+                <input type="file" id="files" name="files" />
+            </form>
+            <form id="snapshot">
+                <label
+                    >Peer JID:
+                    <input
+                        id="snappeer"
+                        type="text"
+                        name="peer"
+                        placeholder="otherperson@example.com"
+                /></label>
+                <input id="snapshot" type="submit" value="Send snapshot" />
+            </form>
+            <a id="received"></a>
+        </div>
+
+        <h2>Local Video</h2>
+        <video id="localVideo"></video>
+
+        <h2>Remote Video</h2>
+        <video id="remoteVideo"></video>
+
+        <script>
+            var client;
+
+            var localMedia = [];
+
+            var loginInfo = document.getElementById('loginInfo');
+
+            var inlog = console.log.bind(console, '<<in');
+            var outlog = console.log.bind(console, 'out>>');
+
+            loginInfo.onsubmit = function(e) {
+                if (e.preventDefault) e.preventDefault();
+
+                var jid = document.getElementById('jid').value;
+                var username = jid.slice(0, jid.indexOf('@'));
+                var server = jid.slice(jid.indexOf('@') + 1);
+
+                var url = document.getElementById('url').value;
+                var wsURL, boshURL, transport;
+
+                if (url.indexOf('http') === 0) {
+                    boshURL = url;
+                    transport = 'bosh';
+                } else if (url.indexOf('ws') === 0) {
+                    wsURL = url;
+                    transport = 'websocket';
+                }
+
+                client = XMPP.createClient({
+                    jid: jid,
+                    password: document.getElementById('password').value,
+                    wsURL: wsURL,
+                    boshURL: boshURL,
+                    transport: transport
+                });
+
+                client.jingle.config.debug = true;
+
+                client.on('raw:incoming', function(data) {
+                    inlog(data);
+                });
+                client.on('raw:outgoing', function(data) {
+                    outlog(data.toString());
+                });
+
+                client.on('session:started', function() {
+                    client.getRoster(function(err, resp) {
+                        client.sendPresence();
+                    });
+                    document.getElementById('myJID').textContent = client.jid.full;
+                });
+
+                client.jingle.on('peerTrackAdded', function(session, track, stream) {
+                    if (track.kind === 'video') {
+                        const vid = document.getElementById('remoteVideo');
+                        vid.srcObject = stream;
+                        vid.muted = true;
+                        vid.play();
+                    }
+                });
+
+                client.on('jingle:incoming', function(session) {
+                    if (session.addTrack) {
+                        for (const stream of localMedia) {
+                            for (const track of stream.getTracks()) {
+                                session.addTrack(track, stream);
+                            }
+                        }
+                    }
+                    session.accept();
+                });
+
+                client.jingle.on('log', console.log);
+                client.jingle.on('sentFile', function(session, metadata) {
+                    console.log('sent', metadata);
+                });
+                client.jingle.on('receivedFile', function(session, file, metadata) {
+                    //saveAs(file, metadata.name); // -- https://github.com/eligrey/FileSaver.js
+                    var href = document.getElementById('received');
+                    href.href = URL.createObjectURL(file);
+                    href.download = metadata.name;
+                    var text =
+                        'Click to download ' + metadata.name + ' (' + metadata.size + ' bytes)';
+                    href.appendChild(document.createTextNode(text));
+                    href.style.display = 'block';
+                });
+
+                navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(stream => {
+                    const vid = document.getElementById('localVideo');
+                    vid.srcObject = stream;
+                    vid.muted = true;
+                    vid.play();
+
+                    localMedia.push(stream);
+                });
+                client.connect();
+
+                var callInfo = document.getElementById('callInfo');
+                callInfo.onsubmit = function(e) {
+                    e.preventDefault();
+                    var jid = document.getElementById('peer').value;
+                    var session = client.jingle.createMediaSession(jid);
+                    for (const stream of localMedia) {
+                        for (const track of stream.getTracks()) {
+                            session.addTrack(track, stream);
+                        }
+                    }
+                    session.start();
+                    return false;
+                };
+
+                return false;
+            };
+            // file select
+            function handleFileSelect(evt) {
+                var file = evt.target.files[0]; // FileList object
+                console.log('file', file.name, file.size, file.type, file.lastModifiedDate);
+                var jid = document.getElementById('filepeer').value;
+                var sess = client.jingle.createFileTransferSession(jid);
+                sess.start(file);
+            }
+            document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+            function takeSnapshot() {
+                var canvasEl = document.createElement('canvas');
+                var localVideoEl = document.getElementById('localVideo');
+                var w = 320; //localVideoEl.videoWidth;
+                var h = 240; //localVideoEl.videoHeight;
+                canvasEl.width = w;
+                canvasEl.height = h;
+                var context = canvasEl.getContext('2d');
+
+                context.fillRect(0, 0, w, h);
+                context.translate(w / 2, h / 2);
+                context.scale(-1, 1);
+                context.translate(w / -2, h / -2);
+                context.drawImage(localVideoEl, 0, 0, w, h);
+                // toBlob would be nice...
+                var url = canvasEl.toDataURL('image/jpg');
+                var data = url.match(/data:([^;]*);(base64)?,([0-9A-Za-z+/]+)/);
+                var raw = atob(data[3]);
+                var arr = new Uint8Array(raw.length);
+                for (var i = 0; i < raw.length; i++) {
+                    arr[i] = raw.charCodeAt(i);
+                }
+                return new Blob([arr], { type: data[1] });
+            }
+            var snapshot = document.getElementById('snapshot');
+            snapshot.onsubmit = function(e) {
+                e.preventDefault();
+                var file = takeSnapshot();
+                file.name = 'snapshot-' + new Date().getTime() + '.png';
+                file.lastModifiedDate = new Date();
+                console.log('file', file.name, file.size, file.type, file.lastModifiedDate);
+                var jid = document.getElementById('snappeer').value;
+                var sess = client.jingle.createFileTransferSession(jid);
+                sess.start(file);
+                return false;
+            };
+        </script>
+    </body>
+</html>
