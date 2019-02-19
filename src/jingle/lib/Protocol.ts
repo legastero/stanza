@@ -213,7 +213,7 @@ export function convertContentToIntermediate(
     content: ContentDescription,
     role: SessionRole
 ): IntermediateMediaDescription {
-    const application = content.application! as RTPApplicationDescription;
+    const application = (content.application! as RTPApplicationDescription) || {};
     const transport = content.transport as ICETransportDescription;
 
     const isRTP = application && application.applicationType === 'rtp';

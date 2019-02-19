@@ -41,6 +41,6 @@ export function writeSctpDescription(media: SDP.SDPMLine, sctp: SDPSctpParameter
     return [
         `m=${media.kind} 9 ${media.protocol} ${sctp.protocol}\r\n`,
         'c=IN IP4 0.0.0.0\r\n',
-        `a=sctp-port:${sctp.number}`
+        `a=sctp-port:${sctp.number}\r\n`
     ].join('');
 }
