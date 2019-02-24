@@ -6,7 +6,7 @@ declare module '../Definitions' {
     export interface Agent {
         getServices(
             jid: string,
-            type: string
+            type?: string
         ): Promise<IQ & { externalServices: ExternalServiceList }>;
         getServiceCredentials(
             jid: string,
