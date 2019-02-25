@@ -19,7 +19,7 @@ declare module './rfc6120' {
 }
 
 export interface PushNotificationControl {
-    type: 'enable' | 'disable';
+    action: 'enable' | 'disable';
     node?: string;
     jid?: JID;
     form?: DataForm;

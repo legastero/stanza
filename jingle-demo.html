@@ -124,7 +124,7 @@
                     client.getRoster(function(err, resp) {
                         client.sendPresence();
                     });
-                    document.getElementById('myJID').textContent = client.jid.full;
+                    document.getElementById('myJID').textContent = client.jid;
                 });
 
                 client.jingle.on('peerTrackAdded', function(session, track, stream) {

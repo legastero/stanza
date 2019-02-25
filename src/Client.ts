@@ -313,7 +313,7 @@ export default class Client extends WildEmitter {
         }));
     }
 
-    public sendIQReply(original: IQ, reply: Partial<IQ>): void {
+    public sendIQResult(original: IQ, reply: Partial<IQ>): void {
         this.send('iq', {
             ...reply,
             id: original.id,

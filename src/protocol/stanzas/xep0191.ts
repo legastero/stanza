@@ -22,7 +22,7 @@ declare module './rfc6120' {
 }
 
 export interface Blocking {
-    type: 'list' | 'block' | 'unblock';
+    action: 'list' | 'block' | 'unblock';
     jids?: JID[];
 }
 

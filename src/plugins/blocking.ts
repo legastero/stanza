@@ -13,8 +13,8 @@ export default function(client: Agent) {
     client.block = (jid: string) => {
         return client.sendIQ({
             blockList: {
-                jids: [jid],
-                type: 'block'
+                action: 'block',
+                jids: [jid]
             },
             type: 'set'
         });
@@ -23,8 +23,8 @@ export default function(client: Agent) {
     client.unblock = (jid: string) => {
         return client.sendIQ({
             blockList: {
-                jids: [jid],
-                type: 'unblock'
+                action: 'unblock',
+                jids: [jid]
             },
             type: 'set'
         });
@@ -33,7 +33,7 @@ export default function(client: Agent) {
     client.getBlocked = () => {
         return client.sendIQ({
             blockList: {
-                type: 'list'
+                action: 'list'
             },
             type: 'get'
         });
@@ -41,7 +41,7 @@ export default function(client: Agent) {
 
     client.on('iq:set:blockList', (iq: IQ) => {
         const blockList = iq.blockList!;
-        client.emit(blockList.type, {
+        client.emit(blockList.action, {
             jids: blockList.jids || []
         });
         client.sendIQResult(iq);

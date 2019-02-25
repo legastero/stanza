@@ -12,6 +12,7 @@ export default function(client: Agent) {
     client.enableNotifications = (jid: string, node: string, fieldList: DataFormField[] = []) => {
         return client.sendIQ({
             push: {
+                action: 'enable',
                 form: {
                     fields: [
                         {
@@ -24,8 +25,7 @@ export default function(client: Agent) {
                     type: 'submit'
                 },
                 jid,
-                node,
-                type: 'enable'
+                node
             },
             type: 'set'
         });
@@ -34,9 +34,9 @@ export default function(client: Agent) {
     client.disableNotifications = (jid: string, node?: string) => {
         return client.sendIQ({
             push: {
+                action: 'disable',
                 jid,
-                node,
-                type: 'disable'
+                node
             },
             type: 'set'
         });

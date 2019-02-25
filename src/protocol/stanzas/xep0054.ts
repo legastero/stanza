@@ -25,7 +25,7 @@ declare module './rfc6120' {
 }
 
 export interface VCardTemp {
-    format?: 'vcard-temp';
+    format?: typeof NS_VCARD_TEMP;
     fullName?: string;
     name?: VCardTempName;
     records?: VCardTempRecord[];
@@ -132,7 +132,7 @@ function vcardField(element: string, type: string): DefinitionOptions {
 
 export default [
     {
-        aliases: [{ path: 'iq.vcard', selector: 'vcard-temp' }],
+        aliases: [{ path: 'iq.vcard' }],
         defaultType: NS_VCARD_TEMP,
         element: 'vCard',
         fields: {

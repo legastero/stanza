@@ -137,7 +137,7 @@ export default function(client: Agent) {
             return;
         }
 
-        if (!pres.muc || pres.muc.type !== 'info') {
+        if (!pres.muc || pres.muc.type === 'join') {
             return;
         }
 
