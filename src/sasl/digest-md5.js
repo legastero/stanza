@@ -105,7 +105,6 @@ export default class DigestMD5 {
         if (this._cipher) {
             this._cipher.split(',');
         }
-        return this;
     }
 }
 
