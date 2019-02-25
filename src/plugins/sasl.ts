@@ -22,7 +22,7 @@ export default function(client: Agent) {
         switch (sasl.type) {
             case 'success': {
                 client.features.negotiated.sasl = true;
-                client.releaseGroup('sasl');
+                client.off('sasl', saslHandler);
                 client.emit('auth:success', client.config.credentials);
                 done('restart');
                 return;
@@ -66,14 +66,14 @@ export default function(client: Agent) {
             }
 
             case 'failure': {
-                client.releaseGroup('sasl');
+                client.off('sasl', saslHandler);
                 client.emit('auth:failed');
                 done('disconnect', 'authentication failed');
                 return;
             }
 
             case 'abort': {
-                client.releaseGroup('sasl');
+                client.off('sasl', saslHandler);
                 client.emit('auth:failed');
                 done('disconnect', 'authentication failed');
                 return;
