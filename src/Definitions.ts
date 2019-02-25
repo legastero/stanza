@@ -1,6 +1,6 @@
 import WildEmitter from 'wildemitter';
 
-import { JID } from './protocol/jid';
+import * as JXT from './jxt';
 import {
     CSI,
     IQ,
@@ -34,8 +34,11 @@ export interface Agent extends WildEmitter<AgentEvents> {
     transport?: any;
     sm: SM;
     SASLFactory: any;
+    stanzas: JXT.Registry;
 
     sessionStarted: boolean;
+
+    use(plugin: (agent: Agent, registry: JXT.Registry, config: AgentConfig) => void): void;
 
     nextId(): string;
 
@@ -51,7 +54,7 @@ export interface Agent extends WildEmitter<AgentEvents> {
 }
 
 export interface AgentConfig {
-    jid: JID | string;
+    jid: string;
     server?: string;
     resource?: string;
     timeout?: number;

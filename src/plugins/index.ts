@@ -1,3 +1,5 @@
+import { Agent } from '../Definitions';
+
 import Disco from './disco';
 import DiscoOnly from './discoonly';
 
@@ -20,13 +22,13 @@ import Jingle from './jingle';
 import KeepAlive from './keepalive';
 import MAM from './mam';
 import Markers from './markers';
-import MUC from './muc';
 import Mood from './mood';
+import MUC from './muc';
 import Nick from './nick';
 import Ping from './ping';
 import Private from './private';
-import Push from './push';
 import PubSub from './pubsub';
+import Push from './push';
 import Reach from './reach';
 import Receipts from './receipts';
 import Register from './register';
@@ -36,7 +38,7 @@ import Time from './time';
 import VCard from './vcard';
 import Version from './version';
 
-export default function(client) {
+export default function(client: Agent) {
     // We always need this one first
     client.use(Disco);
     client.use(DiscoOnly);

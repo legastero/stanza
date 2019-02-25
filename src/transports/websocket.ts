@@ -5,7 +5,12 @@ import WSNode from 'ws';
 import { parse, Registry, XMLElement } from '../jxt';
 import StreamManagement from '../StreamManagement';
 
-const WS = WebSocket;
+let WS: typeof WSNode | typeof WebSocket;
+if (typeof WSNode !== 'function') {
+    WS = WebSocket;
+} else {
+    WS = WSNode;
+}
 const WS_OPEN = 1;
 
 export default class WSConnection extends WildEmitter {
@@ -42,7 +47,6 @@ export default class WSConnection extends WildEmitter {
         });
 
         this.on('raw:incoming', (data: string) => {
-            let err;
             data = data.trim();
             if (data === '') {
                 return;
@@ -54,7 +58,7 @@ export default class WSConnection extends WildEmitter {
                     allowComments: false
                 });
             } catch (e) {
-                err = {
+                const err = {
                     error: {
                         condition: 'invalid-xml'
                     }
@@ -148,7 +152,6 @@ export default class WSConnection extends WildEmitter {
             to: this.config.server,
             version: this.config.version || '1.0'
         })!;
-        console.log(header);
         return header.toString();
     }
 

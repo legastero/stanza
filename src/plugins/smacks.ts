@@ -1,12 +1,5 @@
 import { Agent } from '../Definitions';
-import {
-    StreamFeatures,
-    StreamManagement,
-    StreamManagementEnable,
-    StreamManagementEnabled,
-    StreamManagementFailed,
-    StreamManagementResume
-} from '../protocol/stanzas';
+import { StreamFeatures, StreamManagement } from '../protocol/stanzas';
 
 declare module '../Definitions' {
     export interface AgentConfig {
@@ -15,46 +8,47 @@ declare module '../Definitions' {
 }
 
 export default function(client: Agent) {
+    const smHandler = (sm: StreamManagement, done: (cmd?: string) => void) => {
+        switch (sm.type) {
+            case 'enabled':
+                client.sm.enabled(sm);
+                client.features.negotiated.streamManagement = true;
+                client.off('sm', smHandler);
+                return done();
+            case 'resumed':
+                client.sm.resumed(sm);
+                client.features.negotiated.streamManagement = true;
+                client.features.negotiated.bind = true;
+                client.sessionStarted = true;
+                client.off('sm', smHandler);
+                return done('break'); // Halt further processing of stream features
+            case 'failed':
+                client.sm.failed(sm);
+                client.emit('session:end');
+                client.releaseGroup('session');
+                client.off('sm', smHandler);
+                done();
+        }
+    };
+
     const smacks = async (features: StreamFeatures, done: (cmd?: string) => void) => {
         if (!client.config.useStreamManagement) {
             return done();
         }
 
-        client.on('stream:management:enabled', 'sm', (enabled: StreamManagementEnabled) => {
-            client.sm.enabled(enabled);
-            client.features.negotiated.streamManagement = true;
-            client.releaseGroup('sm');
-            done();
-        });
-
-        client.on('stream:management:resumed', 'sm', (resumed: StreamManagementResume) => {
-            client.sm.resumed(resumed);
-            client.features.negotiated.streamManagement = true;
-            client.features.negotiated.bind = true;
-            client.sessionStarted = true;
-            client.releaseGroup('sm');
-            done('break'); // Halt further processing of stream features
-        });
-
-        client.on('stream:management:failed', 'sm', (failed: StreamManagementFailed) => {
-            client.sm.failed(failed);
-            client.emit('session:end');
-            client.releaseGroup('session');
-            client.releaseGroup('sm');
-            done();
-        });
+        client.on('sm', sm => smHandler(sm, done));
 
         if (!client.sm.id) {
             if (client.features.negotiated.bind) {
                 client.sm.enable();
             } else {
-                client.releaseGroup('sm');
+                client.off('sm', smHandler);
                 done();
             }
         } else if (client.sm.id && client.sm.allowResume) {
             client.sm.resume();
         } else {
-            client.releaseGroup('sm');
+            client.off('sm', smHandler);
             done();
         }
     };

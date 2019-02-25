@@ -1,12 +1,12 @@
 import { Agent } from '../Definitions';
-import { SASL, SASLAuth, SASLChallengeResponse } from '../protocol/stanzas';
+import { SASL } from '../protocol/stanzas';
 
 declare module '../Definitions' {
     export interface Agent {
         getCredentials(): Promise<AgentConfig['credentials']>;
     }
     export interface AgentConfig {
-        credentials: {
+        credentials?: {
             [key: string]: any;
         };
     }
@@ -32,7 +32,6 @@ export default function(client: Agent) {
 
                 try {
                     const credentials = await client.getCredentials();
-                    console.log(credentials);
                     const resp = mech.response(credentials);
                     if (resp || resp === '') {
                         client.send('sasl', {
@@ -46,6 +45,9 @@ export default function(client: Agent) {
                     }
 
                     if (mech.cache) {
+                        if (!client.config.credentials) {
+                            client.config.credentials = {};
+                        }
                         for (const key of Object.keys(mech.cache)) {
                             if (!mech.cache[key]) {
                                 return;
@@ -91,7 +93,6 @@ export default function(client: Agent) {
         if (mech.clientFirst) {
             try {
                 const credentials = await client.getCredentials();
-                console.log(credentials);
                 client.send('sasl', {
                     mechanism: mech.name,
                     type: 'auth',
