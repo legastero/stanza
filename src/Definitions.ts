@@ -2,6 +2,7 @@ import WildEmitter from 'wildemitter';
 
 import { JID } from './protocol/jid';
 import {
+    CSI,
     IQ,
     Message,
     Presence,
@@ -10,6 +11,7 @@ import {
     StreamFeatures,
     StreamManagement
 } from './protocol/stanzas';
+import SM from './StreamManagement';
 
 export interface TopLevelElements {
     message: Message;
@@ -19,6 +21,7 @@ export interface TopLevelElements {
     sasl: SASL;
     features: StreamFeatures;
     sm: StreamManagement;
+    csi: CSI;
 }
 
 export interface AgentEvents {
@@ -26,10 +29,10 @@ export interface AgentEvents {
 }
 
 export interface Agent extends WildEmitter<AgentEvents> {
-    jid: JID;
+    jid: string;
     config: AgentConfig;
     transport?: any;
-    sm: any;
+    sm: SM;
     SASLFactory: any;
 
     sessionStarted: boolean;

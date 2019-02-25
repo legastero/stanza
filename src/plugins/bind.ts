@@ -22,6 +22,7 @@ export default function(client: Agent) {
             }
             return cb();
         } catch (err) {
+            console.error(err);
             client.emit('session:error', err);
             return cb('disconnect', 'JID binding failed');
         }
@@ -32,7 +33,7 @@ export default function(client: Agent) {
     });
 
     client.on('session:prebind', (boundJID: string) => {
-        client.jid = new JID(boundJID);
+        client.jid = boundJID;
         client.emit('session:bound', client.jid);
     });
 

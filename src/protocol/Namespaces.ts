@@ -161,8 +161,8 @@ export const NS_REACH_0 = 'urn:xmpp:reach:0';
 export const NS_VCARD_TEMP_UPDATE = 'vcard-temp:x:update';
 
 // XEP-0156
-export const ALT_CONNECTIONS_WEBSOCKET = 'urn:xmpp:alt-connections:websocket';
-export const ALT_CONNECTIONS_XBOSH = 'urn:xmpp:alt-connections:xbosh';
+export const NS_ALT_CONNECTIONS_WEBSOCKET = 'urn:xmpp:alt-connections:websocket';
+export const NS_ALT_CONNECTIONS_XBOSH = 'urn:xmpp:alt-connections:xbosh';
 
 // XEP-0158
 export const NS_CAPTCHA = 'urn:xmpp:captcha';

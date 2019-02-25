@@ -13,7 +13,7 @@ export default function(client: Agent) {
     client.enableCarbons = (): Promise<IQ> => {
         return client.sendIQ({
             carbons: {
-                type: 'enable'
+                action: 'enable'
             },
             type: 'set'
         });
@@ -22,7 +22,7 @@ export default function(client: Agent) {
     client.disableCarbons = (): Promise<IQ> => {
         return client.sendIQ({
             carbons: {
-                type: 'disable'
+                action: 'disable'
             },
             type: 'set'
         });

@@ -104,8 +104,7 @@
                     codeData.textContent = data;
                 } else {
                     if (name === 'connected' || name === 'disconnected') {
-                        codeData.textContent =
-                            'Client instance: ' + JSON.stringify(data.config, null, '  ');
+                        codeData.textContent = '';
                     } else {
                         codeData.textContent = JSON.stringify(data, null, '  ');
                     }
@@ -149,18 +148,17 @@
 
                 client.on('*', log);
 
-                client.on('session:started', function() {
-                    client.enableCarbons(function(err) {
-                        if (err) {
-                            console.log('Server does not support carbons');
-                        }
-                    });
+                client.on('session:started', async () => {
+                    try {
+                        await client.enableCarbons();
+                    } catch (err) {
+                        console.log('Server does not support carbons');
+                    }
 
-                    client.getRoster(function(err, resp) {
-                        client.updateCaps();
-                        client.sendPresence({
-                            caps: client.disco.caps
-                        });
+                    await client.getRoster();
+                    client.updateCaps();
+                    client.sendPresence({
+                        legacyEntityCapabilities: client.disco.caps
                     });
                 });
 

@@ -14,6 +14,8 @@
     ],
     "dependencies": {
         "@types/async": "^2.4.0",
+        "@types/uuid": "^3.4.4",
+        "@types/ws": "^6.0.1",
         "async": "^2.5.0",
         "cross-fetch": "^3.0.0",
         "iana-hashes": "^1.1.0",

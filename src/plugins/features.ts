@@ -50,7 +50,7 @@ export default function(client: Agent) {
         this.features.handlers[name] = handler.bind(client);
     };
 
-    client.on('streamFeatures', (features: StreamFeatures) => {
+    client.on('features', (features: StreamFeatures) => {
         const series = [];
         const negotiated = client.features.negotiated;
         const handlers = client.features.handlers;

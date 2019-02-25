@@ -23,7 +23,7 @@ declare module './rfc6120' {
 }
 
 export interface CarbonControl {
-    type: 'enable' | 'disable';
+    action: 'enable' | 'disable';
 }
 
 export interface CarbonMessage {

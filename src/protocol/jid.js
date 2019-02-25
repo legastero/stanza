@@ -140,13 +140,13 @@ export function allowedResponders(jid1, jid2) {
     allowed.add(undefined);
     allowed.add('');
 
-    const split1 = prep(jid1);
+    const split1 = parse(jid1);
     allowed.add(split1.full);
     allowed.add(split1.bare);
     allowed.add(split1.domain);
 
     if (jid2) {
-        const split2 = prep(jid2);
+        const split2 = parse(jid2);
         allowed.add(split2.domain);
         allowed.add(split2.bare);
         allowed.add(split2.full);
@@ -198,9 +198,19 @@ export function isFull(jid) {
     return hasResource;
 }
 
+export function user(jid) {
+    jid = new JID(jid);
+    return jid.local;
+}
+
 export function bare(jid) {
     jid = new JID(jid);
     return jid.bare;
+}
+
+export function server(jid) {
+    jid = new JID(jid);
+    return jid.domain;
 }
 
 export function resource(jid) {

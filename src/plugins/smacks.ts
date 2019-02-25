@@ -1,5 +1,12 @@
 import { Agent } from '../Definitions';
-import { StreamFeatures, StreamManagement } from '../protocol/stanzas';
+import {
+    StreamFeatures,
+    StreamManagement,
+    StreamManagementEnable,
+    StreamManagementEnabled,
+    StreamManagementFailed,
+    StreamManagementResume
+} from '../protocol/stanzas';
 
 declare module '../Definitions' {
     export interface AgentConfig {
@@ -13,14 +20,14 @@ export default function(client: Agent) {
             return done();
         }
 
-        client.on('stream:management:enabled', 'sm', (enabled: StreamManagement) => {
+        client.on('stream:management:enabled', 'sm', (enabled: StreamManagementEnabled) => {
             client.sm.enabled(enabled);
             client.features.negotiated.streamManagement = true;
             client.releaseGroup('sm');
             done();
         });
 
-        client.on('stream:management:resumed', 'sm', (resumed: StreamManagement) => {
+        client.on('stream:management:resumed', 'sm', (resumed: StreamManagementResume) => {
             client.sm.resumed(resumed);
             client.features.negotiated.streamManagement = true;
             client.features.negotiated.bind = true;
@@ -29,7 +36,7 @@ export default function(client: Agent) {
             done('break'); // Halt further processing of stream features
         });
 
-        client.on('stream:management:failed', 'sm', (failed: StreamManagement) => {
+        client.on('stream:management:failed', 'sm', (failed: StreamManagementFailed) => {
             client.sm.failed(failed);
             client.emit('session:end');
             client.releaseGroup('session');

@@ -3,6 +3,7 @@ declare module 'wildemitter' {
 
     class WildEmitter<T = object> extends EventEmitter {
         constructor();
+        public callbacks: { [key: string]: (data: any) => void };
         public isWildEmitter: boolean;
         public on<E extends keyof T>(name: E, handler: (data: T[E]) => void): this;
         public on(name: string, handler: (...data: any[]) => void): this;

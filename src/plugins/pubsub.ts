@@ -92,7 +92,7 @@ export default function(client: Agent) {
                 node: opts
             };
         }
-        opts.jid = opts.jid || client.jid.full;
+        opts.jid = opts.jid || client.jid;
 
         return client.sendIQ({
             pubsub: {
@@ -110,7 +110,7 @@ export default function(client: Agent) {
                 node: opts
             };
         }
-        opts.jid = opts.jid || client.jid.full;
+        opts.jid = opts.jid || client.jid;
 
         return client.sendIQ({
             pubsub: {

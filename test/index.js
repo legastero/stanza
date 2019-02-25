@@ -1,9 +1,6 @@
 // Generic Connection Tests
 import './connection';
 
-// Stanza Support Tests
-import './stanza-dataforms';
-
 // Host-meta Tests
 import './hostmeta';
 
