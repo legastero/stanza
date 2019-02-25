@@ -1,5 +1,6 @@
 import { Agent } from '../Definitions';
 import { SASL } from '../protocol/stanzas';
+import { Mechanism } from '../sasl';
 
 declare module '../Definitions' {
     export interface Agent {
@@ -15,7 +16,7 @@ declare module '../Definitions' {
 export default function(client: Agent) {
     const saslHandler = async (
         sasl: SASL,
-        mech: any,
+        mech: Mechanism,
         done: (cmd?: string | undefined, msg?: string | undefined) => void
     ) => {
         switch (sasl.type) {
@@ -32,7 +33,7 @@ export default function(client: Agent) {
 
                 try {
                     const credentials = await client.getCredentials();
-                    const resp = mech.response(credentials);
+                    const resp = Buffer.from(mech.response(credentials) || '');
                     if (resp || resp === '') {
                         client.send('sasl', {
                             type: 'response',
@@ -81,7 +82,7 @@ export default function(client: Agent) {
     };
 
     client.registerFeature('sasl', 100, async (features, done) => {
-        const mech = client.SASLFactory.create(features.sasl!.mechanisms);
+        const mech = client.sasl.create(features.sasl!.mechanisms);
         if (!mech) {
             client.off('sasl', saslHandler);
             client.emit('auth:failed');
@@ -96,7 +97,7 @@ export default function(client: Agent) {
                 client.send('sasl', {
                     mechanism: mech.name,
                     type: 'auth',
-                    value: mech.response(credentials)
+                    value: Buffer.from(mech.response(credentials) || '')
                 });
             } catch (err) {
                 console.error(err);

@@ -23,7 +23,10 @@ async function promiseAny(promises: Array<Promise<any>>) {
     }
 }
 
-export async function getHostMeta(registry: JXT.Registry, opts: any) {
+export async function getHostMeta(
+    registry: JXT.Registry,
+    opts: string | { host?: string; json?: boolean; ssl?: boolean; xrd?: boolean }
+) {
     if (typeof opts === 'string') {
         opts = { host: opts };
     }

@@ -88,7 +88,6 @@ export default class SCRAM {
         this._verifier = values.v;
         this._error = values.e;
         this._challenge = chal;
-        return this;
     }
 }
 

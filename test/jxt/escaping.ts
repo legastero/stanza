@@ -1,5 +1,12 @@
 import * as tape from 'tape';
-import { attribute, childText, parse, Registry, StreamParser } from '../../src/jxt/index';
+import {
+    attribute,
+    childText,
+    parse,
+    ParsedData,
+    Registry,
+    StreamParser
+} from '../../src/jxt/index';
 
 const test = tape.test;
 
@@ -221,7 +228,7 @@ export default function runTests() {
             registry
         });
 
-        parser.on('data', (data: any) => {
+        parser.on('data', (data: ParsedData) => {
             t.deepEqual(data.stanza, {
                 body: 'test "body""body2"',
                 id: '123',

@@ -2,7 +2,9 @@ import * as async from 'async';
 import WildEmitter from 'wildemitter';
 
 import WSNode from 'ws';
+import { Transport } from '../Definitions';
 import { parse, Registry, XMLElement } from '../jxt';
+import { Stream } from '../protocol/stanzas';
 import StreamManagement from '../StreamManagement';
 
 let WS: typeof WSNode | typeof WebSocket;
@@ -13,9 +15,9 @@ if (typeof WSNode !== 'function') {
 }
 const WS_OPEN = 1;
 
-export default class WSConnection extends WildEmitter {
+export default class WSConnection extends WildEmitter implements Transport {
     public hasStream?: boolean;
-    public stream?: any;
+    public stream?: Stream;
 
     private config: any;
     private sm: StreamManagement;

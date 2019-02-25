@@ -7,7 +7,7 @@ declare module '../Definitions' {
     export interface Agent {
         features: {
             handlers: {
-                [key: string]: (data: any, done: () => void) => void;
+                [key: string]: FeatureHandler;
             };
             negotiated: {
                 [key: string]: boolean;
@@ -18,13 +18,11 @@ declare module '../Definitions' {
             }>;
         };
 
-        registerFeature(
-            name: string,
-            priority: number,
-            handler: (data: StreamFeatures, done: (cmd?: string, msg?: string) => void) => void
-        ): void;
+        registerFeature(name: string, priority: number, handler: FeatureHandler): void;
     }
 }
+
+type FeatureHandler = (data: StreamFeatures, done: (cmd?: string, msg?: string) => void) => void;
 
 export default function(client: Agent) {
     client.features = {

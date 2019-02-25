@@ -1,7 +1,7 @@
 import * as uuid from 'uuid';
 import WildEmitter from 'wildemitter';
 
-import { Agent, AgentConfig } from './Definitions';
+import { Agent, AgentConfig, Transport } from './Definitions';
 import * as JXT from './jxt';
 import Bind from './plugins/bind';
 import Features from './plugins/features';
@@ -18,7 +18,7 @@ import BOSH from './transports/bosh';
 import WebSocket from './transports/websocket';
 import { timeoutPromise } from './Utils';
 
-const SASL_MECHS: { [key: string]: any } = {
+const SASL_MECHS: { [key: string]: SASL.MechClass } = {
     anonymous: SASL.Anonymous,
     'digest-md5': SASL.DigestMD5,
     external: SASL.External,
@@ -29,15 +29,17 @@ const SASL_MECHS: { [key: string]: any } = {
 
 export default class Client extends WildEmitter {
     public jid: string;
-    public config: any;
+    public config!: AgentConfig;
     public sm: StreamManagement;
-    public transport?: any;
+    public transport?: Transport;
     public stanzas: JXT.Registry;
     public sessionStarted?: boolean;
-    public transports: any;
-    public SASLFactory!: SASL.Factory;
+    public transports: {
+        [key: string]: { new (sm: StreamManagement, registry: JXT.Registry): Transport };
+    };
+    public sasl!: SASL.Factory;
 
-    constructor(opts = {}) {
+    constructor(opts: AgentConfig = {}) {
         super();
 
         this._initConfig(opts);
@@ -163,9 +165,12 @@ export default class Client extends WildEmitter {
         return this._getConfiguredCredentials();
     }
 
-    public async connect(opts: any, transInfo: any): Promise<void> {
+    public async connect(
+        opts?: AgentConfig,
+        transInfo?: { name?: string; url?: string }
+    ): Promise<void> {
         this._initConfig(opts);
-        if (!transInfo && this.config.transports.length === 1) {
+        if (!transInfo && this.config.transports && this.config.transports.length === 1) {
             transInfo = {};
             transInfo.name = this.config.transports[0];
         }
@@ -182,11 +187,9 @@ export default class Client extends WildEmitter {
 
         try {
             const endpoints = await ((this as unknown) as Agent).discoverBindings(
-                this.config.server
+                this.config.server!
             );
-            for (let t = 0, tlen = this.config.transports.length; t < tlen; t++) {
-                const transport = this.config.transports[t];
-                console.log('Checking for %s endpoints', transport);
+            for (const transport of this.config.transports || []) {
                 for (let i = 0, len = (endpoints[transport] || []).length; i < len; i++) {
                     const uri = endpoints[transport][i];
                     if (uri.indexOf('wss://') === 0 || uri.indexOf('https://') === 0) {
@@ -195,9 +198,8 @@ export default class Client extends WildEmitter {
                         } else {
                             this.config.boshURL = uri;
                         }
-                        console.log('Using %s endpoint: %s', transport, uri);
                         return this.connect(
-                            null,
+                            undefined,
                             {
                                 name: transport,
                                 url: uri
@@ -212,6 +214,7 @@ export default class Client extends WildEmitter {
                     }
                 }
             }
+
             console.error('No endpoints found for the requested transports.');
             return this.disconnect();
         } catch (err) {
@@ -221,8 +224,7 @@ export default class Client extends WildEmitter {
                     '/.well-known/host-meta file to discover connection endpoints for the requested transports.',
                 err
             );
-            throw err;
-            // return this.disconnect();
+            return this.disconnect();
         }
     }
 
@@ -337,7 +339,7 @@ export default class Client extends WildEmitter {
 
     private _getConfiguredCredentials() {
         const creds = this.config.credentials || {};
-        const requestedJID = this.config.jid;
+        const requestedJID = this.config.jid || '';
         const username = creds.username || JID.user(requestedJID);
         const server = creds.server || JID.server(requestedJID);
         return {
@@ -352,9 +354,10 @@ export default class Client extends WildEmitter {
         };
     }
 
-    private _initConfig(opts: any) {
+    private _initConfig(opts: AgentConfig = {}) {
         const currConfig = this.config || {};
         this.config = {
+            jid: '',
             sasl: ['external', 'scram-sha-1', 'digest-md5', 'plain', 'anonymous'],
             transports: ['websocket', 'bosh'],
             useStreamManagement: true,
@@ -364,18 +367,18 @@ export default class Client extends WildEmitter {
 
         // Enable SASL authentication mechanisms (and their preferred order)
         // based on user configuration.
-        if (!Array.isArray(this.config.sasl)) {
+        if (this.config.sasl && !Array.isArray(this.config.sasl)) {
             this.config.sasl = [this.config.sasl];
         }
-        this.SASLFactory = new SASL.Factory();
-        for (const mech of this.config.sasl) {
+        this.sasl = new SASL.Factory();
+        for (const mech of this.config.sasl || []) {
             if (typeof mech === 'string') {
                 const existingMech = SASL_MECHS[mech.toLowerCase()];
                 if (existingMech && existingMech.prototype && existingMech.prototype.name) {
-                    this.SASLFactory.use(existingMech);
+                    this.sasl.use(existingMech);
                 }
             } else {
-                this.SASLFactory.use(mech);
+                this.sasl.use(mech);
             }
         }
 
@@ -390,7 +393,7 @@ export default class Client extends WildEmitter {
         if (this.config.transport) {
             this.config.transports = [this.config.transport];
         }
-        if (!Array.isArray(this.config.transports)) {
+        if (this.config.transports && !Array.isArray(this.config.transports)) {
             this.config.transports = [this.config.transports];
         }
     }

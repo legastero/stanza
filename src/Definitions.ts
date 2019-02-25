@@ -7,10 +7,12 @@ import {
     Message,
     Presence,
     SASL,
+    Stream,
     StreamError,
     StreamFeatures,
     StreamManagement
 } from './protocol/stanzas';
+import { Factory, MechClass } from './sasl';
 import SM from './StreamManagement';
 
 export interface TopLevelElements {
@@ -31,9 +33,9 @@ export interface AgentEvents {
 export interface Agent extends WildEmitter<AgentEvents> {
     jid: string;
     config: AgentConfig;
-    transport?: any;
+    transport?: Transport;
     sm: SM;
-    SASLFactory: any;
+    sasl: Factory;
     stanzas: JXT.Registry;
 
     sessionStarted: boolean;
@@ -54,8 +56,25 @@ export interface Agent extends WildEmitter<AgentEvents> {
 }
 
 export interface AgentConfig {
-    jid: string;
+    jid?: string;
     server?: string;
     resource?: string;
     timeout?: number;
+    transports?: string | string[];
+    transport?: string;
+    wsURL?: string;
+    boshURL?: string;
+    sasl?: string | Array<string | MechClass>;
+    password?: string;
+}
+
+export interface Transport extends WildEmitter {
+    hasStream?: boolean;
+    stream?: Stream;
+    authenticated?: boolean;
+
+    connect(opts: any): void;
+    disconnect(): void;
+    restart(): void;
+    send(name: string, data?: object): void;
 }
