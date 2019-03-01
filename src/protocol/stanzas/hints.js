@@ -40,7 +40,7 @@ export default function(JXT) {
             set: function(hints) {
                 for (let i = 0, len = this.xml.childNodes.length; i < len; i++) {
                     const child = this.xml.childNodes[i];
-                    if (child.namespaceURI !== NS.HINTS) {
+                    if (child.namespaceURI === NS.HINTS) {
                         this.xml.removeChild(this.xml.childNodes[i]);
                     }
                 }
