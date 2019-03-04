@@ -12,7 +12,6 @@ export class Sender extends EventEmitter {
         this.config = {
             chunkSize: 16384,
             hash: 'sha-1',
-            pacing: 0,
             ...opts
         };
 
@@ -30,43 +29,49 @@ export class Sender extends EventEmitter {
         this.channel = channel;
         this.channel.binaryType = 'arraybuffer';
 
-        const usePoll = typeof channel.bufferedAmountLowThreshold !== 'number';
+        const fileReader = new FileReader();
+        let offset = 0;
+        let pendingRead = false;
 
-        const sliceFile = (offset = 0) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                const data = new Uint8Array(reader.result);
-                this.channel.send(data);
-                this.hash.update(data);
+        fileReader.addEventListener('load', event => {
+            const data = event.target.result;
 
-                this.emit('progress', offset, file.size, data);
+            pendingRead = false;
+            offset += data.byteLength;
 
-                if (file.size > offset + this.config.chunkSize) {
-                    if (usePoll) {
-                        setTimeout(sliceFile, this.config.pacing, offset + this.config.chunkSize);
-                    } else if (channel.bufferedAmount <= channel.bufferedAmountLowThreshold) {
-                        setTimeout(sliceFile, 0, offset + this.config.chunkSize);
-                    } else {
-                        // wait for bufferedAmountLow to fire
-                    }
-                } else {
-                    this.emit('progress', file.size, file.size, null);
-                    this.emit('sentFile', {
-                        algo: this.config.hash,
-                        hash: this.hash.digest('hex')
-                    });
+            this.channel.send(data);
+            this.hash.update(new Uint8Array(data));
+            this.emit('progress', offset, file.size, data);
+
+            if (offset < file.size) {
+                if (this.channel.bufferedAmount <= this.channel.bufferedAmountLowThreshold) {
+                    sliceFile();
                 }
-            };
+                // Otherwise wait for bufferedamountlow event to trigger reading more data
+            } else {
+                this.emit('progress', file.size, file.size, null);
+                this.emit('sentFile', {
+                    algo: this.config.hash,
+                    hash: this.hash.digest('hex')
+                });
+            }
+        });
 
+        const sliceFile = () => {
+            if (pendingRead || offset >= file.size) {
+                return;
+            }
+            pendingRead = true;
             const slice = file.slice(offset, offset + this.config.chunkSize);
-            reader.readAsArrayBuffer(slice);
+            fileReader.readAsArrayBuffer(slice);
         };
 
-        if (!usePoll) {
-            channel.bufferedAmountLowThreshold = 8 * this.config.chunkSize;
-            channel.addEventListener('bufferedamountlow', sliceFile);
-        }
-        setTimeout(sliceFile, 0, 0);
+        channel.bufferedAmountLowThreshold = 8 * this.config.chunkSize;
+        channel.onbufferedamountlow = () => {
+            sliceFile();
+        };
+
+        sliceFile();
     }
 }
 
