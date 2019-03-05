@@ -352,7 +352,7 @@ export default class Client extends WildEmitter {
     }
 
     send(data) {
-        this.sm.track(data);
+        this.sm.track(data._name, data);
         if (this.transport) {
             this.transport.send(data);
         }
