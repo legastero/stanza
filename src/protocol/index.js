@@ -62,6 +62,7 @@ import StreamError from './stanzas/streamError';
 import StreamFeatures from './stanzas/streamFeatures';
 import Time from './stanzas/time';
 import Tune from './stanzas/tune';
+import Upload from './stanzas/upload';
 import VCardTemp from './stanzas/vcard';
 import Version from './stanzas/version';
 import Visibility from './stanzas/visibility';
@@ -144,6 +145,7 @@ export default function(JXT) {
     JXT.use(StreamFeatures);
     JXT.use(Time);
     JXT.use(Tune);
+    JXT.use(Upload);
     JXT.use(VCardTemp);
     JXT.use(Version);
     JXT.use(Visibility);
