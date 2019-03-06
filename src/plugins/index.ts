@@ -35,6 +35,7 @@ import Register from './register';
 import Roster from './roster';
 import RTT from './rtt';
 import Time from './time';
+import Upload from './upload';
 import VCard from './vcard';
 import Version from './version';
 
@@ -75,6 +76,7 @@ export default function(client: Agent) {
     client.use(Roster);
     client.use(RTT);
     client.use(Time);
+    client.use(Upload);
     client.use(VCard);
     client.use(Version);
 }

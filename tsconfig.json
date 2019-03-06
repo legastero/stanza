@@ -5,12 +5,12 @@
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "importHelpers": true,
-        "lib": ["dom", "es2015"],
+        "lib": ["dom", "es2018"],
         "module": "commonjs",
         "moduleResolution": "node",
         "outDir": "./dist/cjs",
         "strict": true,
-        "target": "es2015"
+        "target": "es2018"
     },
     "include": ["src", "typings"]
 }

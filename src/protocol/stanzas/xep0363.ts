@@ -33,12 +33,14 @@ declare module './rfc6120' {
 }
 
 export interface HTTPUploadRequest {
+    type?: 'request';
     name: string;
     size: number;
     mediaType?: string;
 }
 
 export interface HTTPUploadSlot {
+    type?: 'slot';
     upload: HTTPUploadLocation;
     download: string;
 }

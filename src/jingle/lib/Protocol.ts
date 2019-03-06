@@ -295,17 +295,17 @@ export function convertContentToIntermediate(
                 payloadType: parseInt(payload.id, 10),
                 rtcpFeedback
             });
+        }
 
-            for (const ext of application.headerExtensions || []) {
-                media.rtpParameters.headerExtensions.push({
-                    direction:
-                        ext.senders && ext.senders !== 'both'
-                            ? sendersToDirection(role, ext.senders)
-                            : undefined,
-                    id: ext.id,
-                    uri: ext.uri
-                });
-            }
+        for (const ext of application.headerExtensions || []) {
+            media.rtpParameters.headerExtensions.push({
+                direction:
+                    ext.senders && ext.senders !== 'both'
+                        ? sendersToDirection(role, ext.senders)
+                        : undefined,
+                id: ext.id,
+                uri: ext.uri
+            });
         }
     }
 

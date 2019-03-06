@@ -81,6 +81,9 @@
         -   [Chat Markers](#chat-markers)
             -   [`client.markDisplayed(msg)`](#clientmarkdisplayed)
             -   [`client.markAcknowledged(msg)`](#clientmarkacknowledged)
+        -   [HTTP File Upload](#http-upload)
+            -   [`client.getUploadService()`](#clientgetuploadservice)
+            -   [`client.getUploadSlot(jid, request, [cb])`](#clientgetuploadslot)
         -   [Other](#other)
             -   [`client.deleteAccount([jid, cb])`](#clientdeleteaccountjid-cb)
             -   [`client.getAccountInfo([jid, cb])`](#clientgetaccountinfojid-cb)
@@ -329,8 +332,8 @@ Note the `session:started`. You'll need to send your presence immediately to get
 
 Options:
 
-- `interval` - Client pings server every interval time. Default is every 300 seconds.
-- `timeout` - Client will be disconnected if no response is received before the timeout time. Default is 15 seconds.
+-   `interval` - Client pings server every interval time. Default is every 300 seconds.
+-   `timeout` - Client will be disconnected if no response is received before the timeout time. Default is 15 seconds.
 
 ##### `client.disableKeepAlive()`
 
@@ -553,6 +556,19 @@ Marks a message as displayed by using [Chat Markers](http://xmpp.org/extensions/
 ##### `client.markAcknowledged(msg))`
 
 Marks a message as acknowledged by using [Chat Markers](http://xmpp.org/extensions/xep-0333.html).
+
+#### HTTP File Upload
+
+[HTTP File Upload](https://xmpp.org/extensions/xep-0363.html) allows requesting upload slots for sharing files via HTTP.
+
+##### `client.getUploadService()`
+
+Returns upload service information including maximum file size and upload service JID.
+
+##### `client.getUploadSlot(jid, request, [cb]))`
+
+Requests a new upload slot from upload service given as `jid`. The `request` is an object
+that contains `filename`, `type`, and `size` properties.
 
 #### Avatars
 
