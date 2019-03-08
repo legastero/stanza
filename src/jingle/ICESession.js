@@ -15,7 +15,7 @@ export default class ICESession extends BaseSession {
         this.pc = new RTCPeerConnection(
             {
                 ...opts.config,
-                ...opts.iceServers
+                iceServers: opts.iceServers
             },
             opts.constraints
         );
