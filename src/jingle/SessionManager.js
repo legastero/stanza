@@ -14,6 +14,7 @@ export default class SessionManager extends WildEmitter {
         this.selfID = conf.selfID;
         this.sessions = {};
         this.peers = {};
+        this.iceServers = conf.iceServers || [{ urls: 'stun:stun.l.google.com:19302' }];
 
         this.prepareSession =
             conf.prepareSession ||
@@ -44,7 +45,6 @@ export default class SessionManager extends WildEmitter {
             debug: false,
             peerConnectionConfig: {
                 bundlePolicy: conf.bundlePolicy || 'balanced',
-                iceServers: conf.iceServers || [{ urls: 'stun:stun.l.google.com:19302' }],
                 iceTransportPolicy: conf.iceTransportPolicy || 'all',
                 rtcpMuxPolicy: conf.rtcpMuxPolicy || 'require'
             },
@@ -53,8 +53,6 @@ export default class SessionManager extends WildEmitter {
             },
             ...conf
         };
-
-        this.iceServers = this.config.peerConnectionConfig.iceServers;
     }
 
     addICEServer(server) {
@@ -67,6 +65,10 @@ export default class SessionManager extends WildEmitter {
             server = { urls: server };
         }
         this.iceServers.push(server);
+    }
+
+    resetICEServers() {
+        this.iceServers = [];
     }
 
     addSession(session) {
