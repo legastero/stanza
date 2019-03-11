@@ -182,7 +182,14 @@ export default class Client extends WildEmitter {
             trans.on('*', (event: string, ...data: any[]) => {
                 this.emit(event, ...data);
             });
-            return trans.connect(this.config);
+            return trans.connect({
+                acceptLanguages: this.config.acceptLanguages || ['en'],
+                jid: this.config.jid!,
+                lang: this.config.lang || 'en',
+                server: this.config.server!,
+                url:
+                    (transInfo.name === 'websocket' ? this.config.wsURL : this.config.boshURL) || ''
+            });
         }
 
         try {

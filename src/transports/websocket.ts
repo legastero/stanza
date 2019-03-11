@@ -2,8 +2,8 @@ import * as async from 'async';
 import WildEmitter from 'wildemitter';
 
 import WSNode from 'ws';
-import { Transport } from '../Definitions';
-import { parse, Registry, XMLElement } from '../jxt';
+import { Transport, TransportConfig } from '../Definitions';
+import { ParsedData, Registry, StreamParser } from '../jxt';
 import { Stream } from '../protocol/stanzas';
 import StreamManagement from '../StreamManagement';
 
@@ -19,12 +19,13 @@ export default class WSConnection extends WildEmitter implements Transport {
     public hasStream?: boolean;
     public stream?: Stream;
 
-    private config: any;
+    private config!: TransportConfig;
     private sm: StreamManagement;
     private stanzas: Registry;
     private closing: boolean;
     private sendQueue: async.AsyncQueue<string>;
     private conn?: WSNode | WebSocket;
+    private parser?: StreamParser;
 
     constructor(sm: StreamManagement, stanzas: Registry) {
         super();
@@ -49,36 +50,29 @@ export default class WSConnection extends WildEmitter implements Transport {
         });
 
         this.on('raw:incoming', (data: string) => {
-            data = data.trim();
-            if (data === '') {
-                return;
+            if (this.parser) {
+                this.parser.write(data);
             }
+        });
+    }
 
-            let xml: XMLElement;
-            try {
-                xml = parse(data, {
-                    allowComments: false
-                });
-            } catch (e) {
-                const err = {
-                    error: {
-                        condition: 'invalid-xml'
-                    }
-                };
-                this.emit('stream:error', err, e);
-                this.send(stanzas.export('error', err)!.toString());
-                return this.disconnect();
-            }
+    public connect(opts: TransportConfig) {
+        this.config = opts;
+        this.hasStream = false;
+        this.closing = false;
 
-            const name = stanzas.getImportKey(xml);
-            const stanzaObj = stanzas.import(xml, {
-                acceptLanguages: [this.config.lang || 'en'],
-                lang: this.stream ? this.stream.lang : this.config.lang || 'en'
-            });
+        this.parser = new StreamParser({
+            acceptLanguages: this.config.acceptLanguages,
+            allowComments: false,
+            lang: this.config.lang,
+            registry: this.stanzas,
+            wrappedStream: false
+        });
 
-            if (!stanzaObj) {
-                return;
-            }
+        this.parser.on('data', (e: ParsedData) => {
+            const name = e.kind;
+            const stanzaObj = e.stanza;
+
             if (name === 'stream') {
                 if (stanzaObj.type === 'open') {
                     this.hasStream = true;
@@ -92,13 +86,19 @@ export default class WSConnection extends WildEmitter implements Transport {
             }
             this.emit('stream:data', stanzaObj, name);
         });
-    }
 
-    public connect(opts: any) {
-        this.config = opts;
-        this.hasStream = false;
-        this.closing = false;
-        this.conn = new WS(opts.wsURL, 'xmpp');
+        this.parser.on('error', (err: any) => {
+            const streamError = {
+                error: {
+                    condition: 'invalid-xml'
+                }
+            };
+            this.emit('stream:error', streamError, err);
+            this.send(this.stanzas.export('error', streamError)!.toString());
+            return this.disconnect();
+        });
+
+        this.conn = new WS(opts.url, 'xmpp');
         this.conn.onerror = (e: any) => {
             if (e.preventDefault) {
                 e.preventDefault();
@@ -112,7 +112,7 @@ export default class WSConnection extends WildEmitter implements Transport {
             this.sm.started = false;
             this.emit('connected');
         };
-        this.conn.onmessage = (wsMsg: any) => {
+        this.conn.onmessage = (wsMsg: MessageEvent) => {
             this.emit('raw:incoming', Buffer.from(wsMsg.data, 'utf8').toString());
         };
     }
@@ -150,9 +150,9 @@ export default class WSConnection extends WildEmitter implements Transport {
     private startHeader() {
         const header = this.stanzas.export('stream', {
             action: 'open',
-            lang: this.config.lang || 'en',
+            lang: this.config.lang,
             to: this.config.server,
-            version: this.config.version || '1.0'
+            version: '1.0'
         })!;
         return header.toString();
     }

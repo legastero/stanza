@@ -9,6 +9,7 @@ import Registry from './Registry';
 export interface StreamParserOptions {
     allowComments?: boolean;
     registry: Registry;
+    lang?: string;
     acceptLanguages?: string[];
     wrappedStream?: boolean;
     rootKey?: string;
@@ -25,6 +26,7 @@ export default class StreamParser extends Transform {
     private closedStream: boolean = false;
     private wrappedStream: boolean = false;
     private registry: Registry;
+    private lang?: string;
     private acceptLanguages: string[];
     private currentElement?: XMLElement;
     private rootElement?: XMLElement;
@@ -61,7 +63,8 @@ export default class StreamParser extends Transform {
                     }
 
                     const root = this.registry.import(el, {
-                        acceptLanguages: this.acceptLanguages
+                        acceptLanguages: this.acceptLanguages,
+                        lang: this.lang
                     });
 
                     if (root) {
@@ -117,7 +120,8 @@ export default class StreamParser extends Transform {
                 }
                 const key = this.registry.getImportKey(this.currentElement);
                 const stanza = this.registry.import(this.currentElement, {
-                    acceptLanguages: this.acceptLanguages
+                    acceptLanguages: this.acceptLanguages,
+                    lang: this.lang
                 });
 
                 if (stanza) {

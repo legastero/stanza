@@ -66,6 +66,8 @@ export interface AgentConfig {
     boshURL?: string;
     sasl?: string | Array<string | MechClass>;
     password?: string;
+    lang?: string;
+    acceptLanguages?: string[];
 }
 
 export interface Transport extends WildEmitter {
@@ -73,8 +75,22 @@ export interface Transport extends WildEmitter {
     stream?: Stream;
     authenticated?: boolean;
 
-    connect(opts: any): void;
+    connect(opts: TransportConfig): void;
     disconnect(): void;
     restart(): void;
     send(name: string, data?: object): void;
+}
+
+export interface TransportConfig {
+    lang?: string;
+    acceptLanguages?: string[];
+    server: string;
+    url: string;
+    jid: string;
+
+    // BOSH settings
+    sid?: string;
+    rid?: number;
+    maxRetries?: number;
+    wait?: number;
 }
