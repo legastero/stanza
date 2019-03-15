@@ -24,7 +24,7 @@ client connection (i.e., a specific connection for the associated "bare JID" acc
 ## Usage
 
 ```javascript
-const jid = require('stanza.io').jid;
+const jid = require('stanza').jid;
 const res = new jid.JID('user@example.com');
 // or jid.create('user@example.com');
 

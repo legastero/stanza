@@ -5,7 +5,7 @@ export default function(client) {
         client.sendIq(
             iq.resultReply({
                 version: client.config.softwareVersion || {
-                    name: 'stanza.io'
+                    name: 'stanzajs.org'
                 }
             })
         );

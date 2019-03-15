@@ -1,8 +1,7 @@
 # Creating a Stanza.io Plugin
 
-
 ```javascript
-module.exports = function (client, stanzas) {
+module.exports = function(client, stanzas) {
     // 1. Create and register our custom `mystanza` stanza type
 
     var types = stanzas.utils;
@@ -17,14 +16,13 @@ module.exports = function (client, stanzas) {
         }
     });
 
-    stanzas.withMessage(function (Message) {
+    stanzas.withMessage(function(Message) {
         stanzas.extend(Message, Foo);
     });
 
+    // 2. Add API to the Stanza client for sending `mystanza` data
 
-    // 2. Add API to the stanza.io client for sending `mystanza` data
-
-    client.sendMyStanza = function (jid, foo) {
+    client.sendMyStanza = function(jid, foo) {
         client.sendMessage({
             to: jid,
             mystanza: {
@@ -34,10 +32,9 @@ module.exports = function (client, stanzas) {
         });
     };
 
-
     // 3. Listen for incoming `mystanza` data and emit our own event
 
-    client.on('message', function (msg) {
+    client.on('message', function(msg) {
         if (msg.mystanza) {
             client.emit('foo', msg);
         }

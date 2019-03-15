@@ -1,5 +1,10 @@
 # Change Log
 
+## 11.0.0
+
+-   **Changed package name from `stanza.io` to `stanza`.**
+-   The new website URL is https://stanzajs.org
+
 ## 10.0.0 -> 10.1.0
 
 -   Renamed `muc:affiliation` event to `muc:other`

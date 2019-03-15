@@ -204,13 +204,13 @@ _Instantiating a client via this function will not load any built-in plugins._
 -   `options` - An object with the client configuration as described in [client options](#client-options).
 
 ```javascript
-var XMPP = require('stanza.io');
+var XMPP = require('stanza');
 var client = new XMPP.Client({
     jid: 'test@example.com',
     password: 'hunter2'
 });
 // Loading plugins
-var plugins = require('stanza.io/lib/plugins');
+var plugins = require('stanza/plugins');
 client.use(plugins);
 ```
 
@@ -223,7 +223,7 @@ _Instantiating a client via this function will load all built-in plugins._
 -   `options` - An object with the client configuration as described in [client options](#client-options).
 
 ```javascript
-var XMPP = require('stanza.io');
+var XMPP = require('stanza');
 var client = XMPP.createClient({
     jid: 'test@example.com',
     password: 'hunter2'
@@ -259,8 +259,8 @@ When creating a client instance, the following settings will configure its behav
 -   `rosterVer` - version ID of cached roster data given by the server, typically saved from a previous session.
 -   `capsNode` - a URL for identifying the client app.
 -   `softwareVersion`
-    -   `name` - the name of the client software using stanza.io
-    -   `version` - the version of the client software using stanza.io
+    -   `name` - the name of the client software using Stanza
+    -   `version` - the version of the client software using Stanza
     -   `os` - the operating system that the client is running on
 -   `timeout` - number of seconds that IQ requests will wait for a response before generating a timeout error.
 -   `lang` - preferred language used by the client, such as `'en'` or `'de'`.
@@ -332,8 +332,8 @@ Note the `session:started`. You'll need to send your presence immediately to get
 
 Options:
 
-- `interval` - Client pings server every interval time. Default is every 300 seconds.
-- `timeout` - Client will be disconnected if no response is received before the timeout time. Default is 15 seconds.
+-   `interval` - Client pings server every interval time. Default is every 300 seconds.
+-   `timeout` - Client will be disconnected if no response is received before the timeout time. Default is 15 seconds.
 
 ##### `client.disableKeepAlive()`
 
@@ -712,7 +712,7 @@ Example:
     from: JID,
     caps: {
         hash: 'sha-1',
-        node: 'https://stanza.io',
+        node: 'https://stanzajs.org',
         ver: 'rs/tl9NCfXBpKoOYUy+JdBbPGDg='
     }
 }

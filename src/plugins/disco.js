@@ -196,7 +196,7 @@ export default function(client) {
     };
 
     client.updateCaps = function() {
-        let node = this.config.capsNode || 'https://stanza.io';
+        let node = this.config.capsNode || 'https://stanzajs.org';
         const data = JSON.parse(
             JSON.stringify({
                 extensions: this.disco.extensions[''],
