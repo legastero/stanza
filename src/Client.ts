@@ -123,7 +123,12 @@ export default class Client extends WildEmitter {
         });
 
         this.on('message', (msg: Message) => {
-            if (msg.alternateLanguageBodies && msg.alternateLanguageBodies.length) {
+            const isChat =
+                (msg.alternateLanguageBodies && msg.alternateLanguageBodies.length) ||
+                (msg.links && msg.links.length);
+            const isMarker = msg.marker && msg.marker.type !== 'markable';
+
+            if (isChat && !isMarker) {
                 if (msg.type === 'chat' || msg.type === 'normal') {
                     this.emit('chat', msg);
                 } else if (msg.type === 'groupchat') {

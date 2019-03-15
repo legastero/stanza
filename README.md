@@ -1,20 +1,20 @@
-# Stanza.io
+# Stanza
 
 **Modern XMPP in the browser, with a JSON API.**
 
 <hr />
 
-![](https://img.shields.io/npm/v/stanza.io.svg?style=flat) [![](https://img.shields.io/badge/endpoint.svg?url=https://stanza.io/discuss/badge.json&style=flat)](https://stanza.io/discuss/logs/)
+![](https://img.shields.io/npm/v/stanza.svg?style=flat) [![](https://img.shields.io/badge/endpoint.svg?url=https://stanzajs.org/discuss/badge.json&style=flat)](https://stanzajs.org/discuss/logs/)
 
 ## What is this?
 
-Stanza.io is a library for using modern XMPP in the browser, and it does that by exposing everything as JSON. Unless you insist, you
-have no need to ever see or touch any XML when using stanza.io.
+Stanza is a library for using modern XMPP in the browser, and it does that by exposing everything as JSON. Unless you insist, you
+have no need to ever see or touch any XML when using Stanza.
 
 ## Installing
 
 ```sh
-$ npm install stanza.io
+$ npm install stanza
 
 ```
 
@@ -31,7 +31,7 @@ $ npm install stanza.io
 ## Echo Client Demo
 
 ```javascript
-var XMPP = require('stanza.io');
+var XMPP = require('stanza');
 
 var client = XMPP.createClient({
     jid: 'echobot@example.com',
@@ -70,7 +70,7 @@ client.connect();
 
 ## Discussion
 
-MUC Room: [discuss@stanza.io](https://stanza.io/discuss/logs) / [Logs](https://stanza.io/discuss/logs)
+MUC Room: [discuss@stanzajs.org](https://stanzajs.org/discuss/logs) / [Logs](https://stanzajs.org/discuss/logs)
 
 ## License
 

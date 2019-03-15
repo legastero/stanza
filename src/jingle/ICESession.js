@@ -12,7 +12,13 @@ export default class ICESession extends BaseSession {
     constructor(opts) {
         super(opts);
 
-        this.pc = new RTCPeerConnection(opts.config, opts.constraints);
+        this.pc = new RTCPeerConnection(
+            {
+                ...opts.config,
+                iceServers: opts.iceServers
+            },
+            opts.constraints
+        );
 
         this.pc.addEventListener('iceconnectionstatechange', () => {
             this.onIceStateChange();

@@ -1,7 +1,7 @@
 {
-    "name": "stanza.io",
+    "name": "stanza",
     "description": "Modern XMPP in the browser, with a JSON API",
-    "version": "10.3.1",
+    "version": "11.0.0",
     "author": "Lance Stout <lancestout@gmail.com>",
     "browser": {
         "node-stringprep": false,
@@ -46,19 +46,16 @@
         "webpack-bundle-analyzer": "^3.0.3",
         "webpack-cli": "^3.1.2"
     },
-    "homepage": "https://stanza.io",
+    "homepage": "https://stanzajs.org",
     "husky": {
         "hooks": {
             "pre-commit": "pretty-quick --stage && npm run lint && npm test"
         }
     },
     "keywords": [
-        "bosh",
         "jingle",
-        "json",
         "stanza",
         "stanza.io",
-        "websocket",
         "xmpp"
     ],
     "license": "MIT",

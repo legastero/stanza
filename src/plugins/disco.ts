@@ -79,7 +79,7 @@ export default function(client: Agent) {
     };
 
     client.updateCaps = () => {
-        const node = client.config.capsNode || 'https://stanza.io';
+        const node = client.config.capsNode || 'https://stanzajs.org';
         return client.disco.updateCaps(node, 'sha-1');
     };
 
