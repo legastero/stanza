@@ -46,6 +46,7 @@ export interface BOSH {
     maxInactivityTime?: number;
     report?: number;
     timeSinceReport?: number;
+    type?: 'error' | 'terminate';
     condition?:
         | 'bad-request'
         | 'host-gone'

@@ -1,10 +1,10 @@
 import fetch from 'cross-fetch';
 import WildEmitter from 'wildemitter';
 
-import { Transport, TransportConfig } from '../Definitions';
+import { TopLevelElements, Transport, TransportConfig } from '../Definitions';
 import { parse, ParsedData, Registry, StreamParser, XMLElement } from '../jxt';
 import { NS_BOSH } from '../protocol';
-import { Stream } from '../protocol/stanzas';
+import { BOSH, Stream } from '../protocol/stanzas';
 import StreamManagement from '../StreamManagement';
 import { timeoutPromise } from '../Utils';
 
@@ -47,21 +47,33 @@ export default class BOSHConnection extends WildEmitter implements Transport {
     private sm: StreamManagement;
     private stanzas: Registry;
     private closing?: boolean;
-    private sendQueue: any[];
-    private requests: any[];
+    private sendBuffer: string[];
+    private requests: Set<number>;
 
     private maxRequests?: number;
+    private minPollingInterval: number;
+
+    private pollingInterval: any;
+    private lastResponseTime: number;
 
     constructor(sm: StreamManagement, stanzas: Registry) {
         super();
 
         this.sm = sm;
         this.stanzas = stanzas;
-        this.sendQueue = [];
-        this.requests = [];
+        this.sendBuffer = [];
+        this.requests = new Set();
         this.maxRequests = undefined;
+        this.minPollingInterval = 5;
         this.sid = '';
         this.authenticated = false;
+        this.lastResponseTime = Date.now();
+
+        this.pollingInterval = setInterval(() => {
+            if (Date.now() - this.lastResponseTime >= this.minPollingInterval * 1000) {
+                this.longPoll();
+            }
+        }, 1000);
 
         this.on('raw:incoming', (data: string) => {
             data = data.trim();
@@ -104,6 +116,8 @@ export default class BOSHConnection extends WildEmitter implements Transport {
 
                         this.sid = e.stanza.sid || this.sid;
                         this.maxRequests = e.stanza.maxRequests || this.maxRequests;
+                        this.minPollingInterval =
+                            e.stanza.minPollingInterval || this.minPollingInterval;
 
                         this.emit('stream:start', e.stanza);
                     }
@@ -130,7 +144,7 @@ export default class BOSHConnection extends WildEmitter implements Transport {
         this.url = this.config.url;
         this.sid = this.config.sid;
         this.rid = this.config.rid;
-        this.requests = [];
+        this.requests.clear();
         if (this.sid) {
             this.hasStream = true;
             this.stream = {};
@@ -140,26 +154,22 @@ export default class BOSHConnection extends WildEmitter implements Transport {
             return;
         }
         this.rid!++;
-        this.request(
-            new this.stanzas.BOSH({
-                hold: 1,
-                lang: this.config.lang,
-                to: this.config.server,
-                ver: '1.6',
-                version: '1.0',
-                wait: this.config.wait
-            })
-        );
+        this.request({
+            lang: this.config.lang,
+            maxHoldOpen: 1,
+            maxWaitTime: this.config.wait,
+            to: this.config.server,
+            version: '1.6',
+            xmppVersion: '1.0'
+        });
     }
 
     public disconnect() {
         if (this.hasStream) {
             this.rid!++;
-            this.request(
-                new this.stanzas.BOSH({
-                    type: 'terminate'
-                })
-            );
+            this.request({
+                type: 'terminate'
+            });
         } else {
             this.stream = undefined;
             this.sid = undefined;
@@ -171,52 +181,51 @@ export default class BOSHConnection extends WildEmitter implements Transport {
     public restart() {
         this.hasStream = false;
         this.rid!++;
-        this.request(
-            new self.stanzas.BOSH({
-                lang: this.config.lang,
-                restart: 'true',
-                to: this.config.server
-            })
-        );
+        this.request({
+            lang: this.config.lang,
+            to: this.config.server,
+            xmppRestart: true
+        });
     }
 
     public send(dataOrName: string, data?: object): void {
         if (data) {
             const output = this.stanzas.export(dataOrName, data);
             if (output) {
-                this.sendQueue.push(output.toString());
+                this.sendBuffer.push(output.toString());
             }
         } else {
-            this.sendQueue.push(dataOrName);
+            this.sendBuffer.push(dataOrName);
         }
+        this.longPoll();
     }
 
     private longPoll() {
-        const canReceive = !this.maxRequests || this.requests.length < this.maxRequests;
+        const canReceive = !this.maxRequests || this.requests.size < this.maxRequests;
         const canSend =
             !this.maxRequests ||
-            (this.sendQueue.length > 0 && this.requests.length < this.maxRequests);
+            (this.sendBuffer.length > 0 && this.requests.size < this.maxRequests);
         if (!this.sid || (!canReceive && !canSend)) {
+            console.log(canReceive, canSend);
             return;
         }
-        const stanzas = this.sendQueue;
-        this.sendQueue = [];
+        const stanzas = this.sendBuffer;
+        this.sendBuffer = [];
         this.rid!++;
-        this.request(
-            new this.stanzas.BOSH({
-                payload: stanzas
-            })
-        );
+        this.request({}, stanzas);
     }
 
-    private async request(bosh) {
-        const ticket = { id: this.rid, request: null };
-        bosh.rid = this.rid;
-        bosh.sid = this.sid;
-        const body = Buffer.from(bosh.toString(), 'utf8').toString();
+    private async request(meta: BOSH, payloads: string[] = []) {
+        const rid = this.rid!;
+        this.requests.add(rid);
+
+        meta.rid = this.rid;
+        meta.sid = this.sid;
+
+        const bosh = this.stanzas.export('bosh', meta)!;
+        const body = [bosh.openTag(), ...payloads, bosh.closeTag()].join('');
+
         this.emit('raw:outgoing', body);
-        this.emit('raw:outgoing:' + ticket.id, body);
-        this.requests.push(ticket);
 
         try {
             let respBody = await retryRequest(
@@ -231,33 +240,32 @@ export default class BOSHConnection extends WildEmitter implements Transport {
                 this.config.wait! * 1.5,
                 this.config.maxRetries
             );
-            this.requests = this.requests.filter(item => {
-                return item.id !== ticket.id;
-            });
+            this.requests.delete(rid);
+            this.lastResponseTime = Date.now();
 
             if (respBody) {
                 respBody = Buffer.from(respBody, 'utf8').toString();
                 this.emit('raw:incoming', respBody);
-                this.emit('raw:incoming:' + ticket.id, respBody);
             }
             // do not (re)start long polling if terminating, or request is pending, or before authentication
             if (
                 this.hasStream &&
-                bosh.type !== 'terminate' &&
-                !this.requests.length &&
+                meta.type !== 'terminate' &&
+                !this.requests.size &&
                 this.authenticated
             ) {
-                setTimeout(() => {
-                    this.longPoll();
-                }, 30);
+                this.longPoll();
             }
         } catch (err) {
             console.log(err);
             this.hasStream = false;
-            const serr = new this.stanzas.StreamError({
-                condition: 'connection-timeout'
-            });
-            this.emit('stream:error', serr, err);
+            this.emit(
+                'stream:error',
+                {
+                    condition: 'connection-timeout'
+                },
+                err
+            );
             this.disconnect();
         }
     }

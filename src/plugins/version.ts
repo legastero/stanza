@@ -18,7 +18,7 @@ export default function(client: Agent) {
     client.on('iq:get:softwareVersion', (iq: IQ) => {
         return client.sendIQResult(iq, {
             softwareVersion: client.config.softwareVersion || {
-                name: 'stanza.io'
+                name: 'stanzajs.org'
             }
         });
     });
