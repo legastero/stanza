@@ -1,12 +1,11 @@
 import fetch from 'cross-fetch';
 import WildEmitter from 'wildemitter';
 
-import { TopLevelElements, Transport, TransportConfig } from '../Definitions';
-import { parse, ParsedData, Registry, StreamParser, XMLElement } from '../jxt';
-import { NS_BOSH } from '../protocol';
+import { Transport, TransportConfig } from '../Definitions';
+import { ParsedData, Registry, StreamParser, XMLElement } from '../jxt';
 import { BOSH, Stream } from '../protocol/stanzas';
 import StreamManagement from '../StreamManagement';
-import { timeoutPromise } from '../Utils';
+import { sleep, timeoutPromise } from '../Utils';
 
 async function retryRequest(
     url: string,
@@ -14,7 +13,8 @@ async function retryRequest(
     timeout: number,
     allowedRetries: number = 5
 ): Promise<string> {
-    while (allowedRetries >= 0) {
+    let attempt = 0;
+    while (attempt <= allowedRetries) {
         try {
             const resp = await timeoutPromise(fetch(url, opts), timeout * 1000, () => {
                 return new Error('Request timed out');
@@ -24,11 +24,13 @@ async function retryRequest(
             }
             return resp.text();
         } catch (err) {
-            allowedRetries -= 1;
-            if (allowedRetries < 0) {
+            attempt += 1;
+            if (attempt > allowedRetries) {
                 throw err;
             }
         }
+
+        await sleep(Math.pow(attempt, 2) * 1000);
     }
 
     throw new Error('Request failed');
@@ -50,10 +52,12 @@ export default class BOSHConnection extends WildEmitter implements Transport {
     private sendBuffer: string[];
     private requests: Set<number>;
 
-    private maxRequests?: number;
-    private minPollingInterval: number;
+    private maxRequests: number = 2;
+    private maxHoldOpen: number = 1;
+    private minPollingInterval: number = 5;
 
     private pollingInterval: any;
+    private idleTimeout: any;
     private lastResponseTime: number;
 
     constructor(sm: StreamManagement, stanzas: Registry) {
@@ -63,14 +67,14 @@ export default class BOSHConnection extends WildEmitter implements Transport {
         this.stanzas = stanzas;
         this.sendBuffer = [];
         this.requests = new Set();
-        this.maxRequests = undefined;
-        this.minPollingInterval = 5;
-        this.sid = '';
         this.authenticated = false;
         this.lastResponseTime = Date.now();
 
         this.pollingInterval = setInterval(() => {
-            if (Date.now() - this.lastResponseTime >= this.minPollingInterval * 1000) {
+            if (
+                this.requests.size === 0 &&
+                Date.now() - this.lastResponseTime >= this.minPollingInterval * 1000
+            ) {
                 this.longPoll();
             }
         }, 1000);
@@ -115,6 +119,7 @@ export default class BOSHConnection extends WildEmitter implements Transport {
                         this.stream = e.stanza;
 
                         this.sid = e.stanza.sid || this.sid;
+                        this.maxHoldOpen = e.stanza.maxHoldOpen || this.maxHoldOpen;
                         this.maxRequests = e.stanza.maxRequests || this.maxRequests;
                         this.minPollingInterval =
                             e.stanza.minPollingInterval || this.minPollingInterval;
@@ -165,6 +170,7 @@ export default class BOSHConnection extends WildEmitter implements Transport {
     }
 
     public disconnect() {
+        clearInterval(this.pollingInterval);
         if (this.hasStream) {
             this.rid!++;
             this.request({
@@ -205,10 +211,11 @@ export default class BOSHConnection extends WildEmitter implements Transport {
         const canSend =
             !this.maxRequests ||
             (this.sendBuffer.length > 0 && this.requests.size < this.maxRequests);
+
         if (!this.sid || (!canReceive && !canSend)) {
-            console.log(canReceive, canSend);
             return;
         }
+
         const stanzas = this.sendBuffer;
         this.sendBuffer = [];
         this.rid!++;
@@ -237,7 +244,7 @@ export default class BOSHConnection extends WildEmitter implements Transport {
                     },
                     method: 'POST'
                 },
-                this.config.wait! * 1.5,
+                this.config.wait! * 1.1,
                 this.config.maxRetries
             );
             this.requests.delete(rid);
@@ -247,14 +254,17 @@ export default class BOSHConnection extends WildEmitter implements Transport {
                 respBody = Buffer.from(respBody, 'utf8').toString();
                 this.emit('raw:incoming', respBody);
             }
+
+            if (meta.type === 'terminate') {
+                this.closing = true;
+            }
+
             // do not (re)start long polling if terminating, or request is pending, or before authentication
-            if (
-                this.hasStream &&
-                meta.type !== 'terminate' &&
-                !this.requests.size &&
-                this.authenticated
-            ) {
-                this.longPoll();
+            if (this.hasStream && !this.closing && !this.requests.size && this.authenticated) {
+                clearTimeout(this.idleTimeout);
+                this.idleTimeout = setTimeout(() => {
+                    this.longPoll();
+                }, 100);
             }
         } catch (err) {
             console.log(err);

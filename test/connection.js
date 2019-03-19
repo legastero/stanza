@@ -18,7 +18,6 @@ test('Connect using WebSocket', function(t) {
     client.connect();
 });
 
-/*
 test('Connect using BOSH', function(t) {
     t.plan(1);
 
@@ -35,4 +34,3 @@ test('Connect using BOSH', function(t) {
 
     client.connect();
 });
-*/
