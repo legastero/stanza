@@ -158,7 +158,13 @@ export default class BOSHConnection extends WildEmitter {
         const self = this;
         if (self.hasStream) {
             self.sendQueue.push(data);
-            process.nextTick(self.longPoll.bind(self));
+            // Schedule polling to send the data just a little
+            // bit into the future so we have time for multiple
+            // sends to get batched.
+            clearTimeout(this.pollTimeout);
+            this.pollTimeout = setTimeout(() => {
+                self.longPoll();
+            }, 50);
         }
     }
 
