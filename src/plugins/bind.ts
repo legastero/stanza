@@ -1,5 +1,4 @@
 import { Agent } from '../Definitions';
-import { JID } from '../protocol/jid';
 
 export default function(client: Agent) {
     client.registerFeature('bind', 300, async (features, cb) => {
