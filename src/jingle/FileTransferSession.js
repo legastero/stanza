@@ -175,34 +175,36 @@ export default class FileTransferSession extends ICESession {
         };
 
         try {
-            const offer = await this.pc.createOffer({
-                offerToReceiveAudio: false,
-                offerToReceiveVideo: false
+            await this.processLocal('session-initiate', async () => {
+                const offer = await this.pc.createOffer({
+                    offerToReceiveAudio: false,
+                    offerToReceiveVideo: false
+                });
+
+                const json = importFromSDP(offer.sdp);
+                const jingle = convertIntermediateToRequest(json, this.role);
+
+                this.contentName = jingle.contents[0].name;
+
+                jingle.sessionId = this.sid;
+                jingle.action = 'session-initate';
+                jingle.contents[0].application = {
+                    applicationType: 'filetransfer',
+                    offer: {
+                        date: file.lastModifiedDate,
+                        hash: {
+                            algo: 'sha-1',
+                            value: ''
+                        },
+                        name: file.name,
+                        size: file.size
+                    }
+                };
+
+                this.send('session-initiate', jingle);
+
+                await this.pc.setLocalDescription(offer);
             });
-
-            const json = importFromSDP(offer.sdp);
-            const jingle = convertIntermediateToRequest(json, this.role);
-
-            this.contentName = jingle.contents[0].name;
-
-            jingle.sessionId = this.sid;
-            jingle.action = 'session-initate';
-            jingle.contents[0].application = {
-                applicationType: 'filetransfer',
-                offer: {
-                    date: file.lastModifiedDate,
-                    hash: {
-                        algo: 'sha-1',
-                        value: ''
-                    },
-                    name: file.name,
-                    size: file.size
-                }
-            };
-
-            this.send('session-initiate', jingle);
-
-            await this.pc.setLocalDescription(offer);
 
             next();
         } catch (err) {
@@ -220,19 +222,21 @@ export default class FileTransferSession extends ICESession {
         next = next || (() => undefined);
 
         try {
-            const answer = await this.pc.createAnswer();
+            await this.processLocal('session-accept', async () => {
+                const answer = await this.pc.createAnswer();
 
-            const json = importFromSDP(answer.sdp);
-            const jingle = convertIntermediateToRequest(json, this.role);
-            jingle.sessionId = this.sid;
-            jingle.action = 'session-accept';
-            jingle.contents.forEach(content => {
-                content.creator = 'initiator';
+                const json = importFromSDP(answer.sdp);
+                const jingle = convertIntermediateToRequest(json, this.role);
+                jingle.sessionId = this.sid;
+                jingle.action = 'session-accept';
+                jingle.contents.forEach(content => {
+                    content.creator = 'initiator';
+                });
+                this.contentName = jingle.contents[0].name;
+                this.send('session-accept', jingle);
+
+                await this.pc.setLocalDescription(answer);
             });
-            this.contentName = jingle.contents[0].name;
-            this.send('session-accept', jingle);
-
-            await this.pc.setLocalDescription(answer);
 
             next();
         } catch (err) {

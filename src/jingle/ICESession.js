@@ -49,9 +49,9 @@ export default class ICESession extends BaseSession {
     // ----------------------------------------------------------------
 
     async onTransportInfo(changes, cb) {
-        if (changes.contents[0].transport.gatheringComplete) {
+        if (changes.contents[0] && changes.contents[0].transport.gatheringComplete) {
             try {
-                if (this.pc.remoteDescription) {
+                if (this.pc.signalingState === 'stable') {
                     await this.pc.addIceCandidate(null);
                 } else {
                     this.candidateBuffer.push(null);
@@ -123,9 +123,9 @@ export default class ICESession extends BaseSession {
             }
         }
 
-        const all = changes.contents.map(content => {
+        const all = (changes.contents || []).map(content => {
             const sdpMid = content.name;
-            const results = content.transport.candidates.map(async json => {
+            const results = (content.transport.candidates || []).map(async json => {
                 json.relatedAddress = json.relAddr;
                 json.relatedPort = json.relPort;
                 const candidate = SDPUtils.writeCandidate(json);
@@ -141,7 +141,7 @@ export default class ICESession extends BaseSession {
                     }
                 }
 
-                if (this.pc.remoteDescription) {
+                if (this.pc.signalingState === 'stable') {
                     try {
                         await this.pc.addIceCandidate({ sdpMid, sdpMLineIndex, candidate });
                     } catch (err) {
@@ -321,7 +321,7 @@ export default class ICESession extends BaseSession {
     async processBufferedCandidates() {
         for (const candidate of this.candidateBuffer) {
             try {
-                this.pc.addIceCandidate(candidate);
+                await this.pc.addIceCandidate(candidate);
             } catch (err) {
                 this._log('error', 'Could not add ICE candidate', err);
             }
@@ -360,25 +360,28 @@ export default class ICESession extends BaseSession {
         if (this._maybeRestartingIce !== undefined) {
             clearTimeout(this._maybeRestartingIce);
         }
+
         try {
-            const offer = this.pc.createOffer({ iceRestart: true });
+            await this.processLocal('restart-ice', async () => {
+                const offer = await this.pc.createOffer({ iceRestart: true });
 
-            // extract new ufrag / pwd, send transport-info with just that.
-            const json = importFromSDP(offer.sdp);
-            const jingle = {
-                action: 'transport-info',
-                contents: json.media.map(media => {
-                    return {
-                        creator: 'initiator',
-                        name: media.mid,
-                        transport: convertIntermediateToTransport(media)
-                    };
-                }),
-                sessionId: this.sid
-            };
-            this.send('transport-info', jingle);
+                // extract new ufrag / pwd, send transport-info with just that.
+                const json = importFromSDP(offer.sdp);
+                const jingle = {
+                    action: 'transport-info',
+                    contents: json.media.map(media => {
+                        return {
+                            creator: 'initiator',
+                            name: media.mid,
+                            transport: convertIntermediateToTransport(media)
+                        };
+                    }),
+                    sessionId: this.sid
+                };
+                this.send('transport-info', jingle);
 
-            await this.pc.setLocalDescription(offer);
+                await this.pc.setLocalDescription(offer);
+            });
         } catch (err) {
             this._log('error', 'Could not create WebRTC offer', err);
             this.end('failed-application', true);
@@ -421,46 +424,42 @@ export default class ICESession extends BaseSession {
             parameters.encodings[0].maxBitrate = maximumBitrate;
         }
 
-        if (browser === 'chrome') {
-            try {
-                await sender.setParameters(parameters);
-            } catch (err) {
-                this._log('error', 'setParameters failed', err);
-            }
-        } else if (browser === 'firefox') {
-            // Firefox needs renegotiation:
-            // https://bugzilla.mozilla.org/show_bug.cgi?id=1253499
-            // but we do not want to intefere with our queue so we
-            // just hope this gets picked up.
-            if (this.pc.signalingState !== 'stable') {
-                try {
+        try {
+            await this.processLocal('set-bitrate', async () => {
+                if (browser === 'chrome') {
                     await sender.setParameters(parameters);
-                } catch (err) {
-                    this._log('error', 'setParameters failed', err);
-                }
-            } else if (this.pc.localDescription && this.pc.localDescription.type === 'offer') {
-                try {
-                    await sender.setParameters(parameters);
-                    const offer = await this.pc.createOffer();
-                    await this.pc.setLocalDescription(offer);
-                    await this.pc.setRemoteDescription(this.pc.remoteDescription);
-                    await this.processBufferedCandidates();
-                } catch (err) {
-                    this._log('error', 'setParameters failed', err);
-                }
-            } else if (this.pc.localDescription && this.pc.localDescription.type === 'answer') {
-                try {
-                    await sender.setParameters(parameters);
-                    await this.pc.setRemoteDescription(this.pc.remoteDescription);
-                    await this.processBufferedCandidates();
+                } else if (browser === 'firefox') {
+                    // Firefox needs renegotiation:
+                    // https://bugzilla.mozilla.org/show_bug.cgi?id=1253499
+                    // but we do not want to intefere with our queue so we
+                    // just hope this gets picked up.
+                    if (this.pc.signalingState !== 'stable') {
+                        await sender.setParameters(parameters);
+                    } else if (
+                        this.pc.localDescription &&
+                        this.pc.localDescription.type === 'offer'
+                    ) {
+                        await sender.setParameters(parameters);
 
-                    const answer = await this.pc.createAnswer();
-                    await this.pc.setLocalDescription(answer);
-                } catch (err) {
-                    this._log('error', 'setParameters failed', err);
+                        const offer = await this.pc.createOffer();
+                        await this.pc.setLocalDescription(offer);
+                        await this.pc.setRemoteDescription(this.pc.remoteDescription);
+                        await this.processBufferedCandidates();
+                    } else if (
+                        this.pc.localDescription &&
+                        this.pc.localDescription.type === 'answer'
+                    ) {
+                        await sender.setParameters(parameters);
+                        await this.pc.setRemoteDescription(this.pc.remoteDescription);
+                        await this.processBufferedCandidates();
+
+                        const answer = await this.pc.createAnswer();
+                        await this.pc.setLocalDescription(answer);
+                    }
                 }
-            }
+            });
+        } catch (err) {
+            this._log('error', 'setParameters failed', err);
         }
-        // else: not supported.
     }
 }

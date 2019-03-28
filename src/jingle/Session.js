@@ -3,24 +3,6 @@ import * as uuid from 'uuid';
 
 const WildEmitter = require('wildemitter');
 
-const ACTIONS = {
-    'content-accept': 'onContentAccept',
-    'content-add': 'onContentAdd',
-    'content-modify': 'onContentModify',
-    'content-reject': 'onContentReject',
-    'content-remove': 'onContentRemove',
-    'description-info': 'onDescriptionInfo',
-    'security-info': 'onSecurityInfo',
-    'session-accept': 'onSessionAccept',
-    'session-info': 'onSessionInfo',
-    'session-initiate': 'onSessionInitiate',
-    'session-terminate': 'onSessionTerminate',
-    'transport-accept': 'onTransportAccept',
-    'transport-info': 'onTransportInfo',
-    'transport-reject': 'onTransportReject',
-    'transport-replace': 'onTransportReplace'
-};
-
 export default class JingleSession extends WildEmitter {
     constructor(opts) {
         super();
@@ -37,24 +19,69 @@ export default class JingleSession extends WildEmitter {
         this.pendingAction = false;
         // Here is where we'll ensure that all actions are processed
         // in order, even if a particular action requires async handling.
-        this.processingQueue = async.queue((task, next) => {
+        this.processingQueue = async.priorityQueue(async (task, next) => {
             if (this.state === 'ended') {
                 // Don't process anything once the session has been ended
+                if (task.reject) {
+                    task.reject(new Error('Session ended'));
+                }
                 return next();
             }
-            const action = task.action;
-            const changes = task.changes;
-            const cb = task.cb;
-            this._log('debug', action);
-            if (!ACTIONS[action] || !this[ACTIONS[action]]) {
-                this._log('error', 'Invalid or unsupported action: ' + action);
-                cb({ condition: 'bad-request' });
-                return next();
-            }
-            this[ACTIONS[action]](changes, function(err, result) {
+
+            const done = (err, result) => {
                 cb(err, result);
                 return next();
-            });
+            };
+
+            if (task.type === 'local') {
+                this._log('debug', 'Processing local action:', task.name);
+                try {
+                    const res = await task.handler();
+                    task.resolve(res);
+                } catch (err) {
+                    task.reject(err);
+                }
+                return next();
+            }
+
+            const { action, changes, cb } = task;
+            this._log('debug', 'Processing remote action:', action);
+
+            switch (action) {
+                case 'content-accept':
+                    return this.onContentAccept(changes, done);
+                case 'content-add':
+                    return this.onContentAdd(changes, done);
+                case 'content-modify':
+                    return this.onContentModify(changes, done);
+                case 'content-reject':
+                    return this.onContentReject(changes, done);
+                case 'content-remove':
+                    return this.onContentRemove(changes, done);
+                case 'description-info':
+                    return this.onDescriptionInfo(changes, done);
+                case 'security-info':
+                    return this.onSecurityInfo(changes, done);
+                case 'session-accept':
+                    return this.onSessionAccept(changes, done);
+                case 'session-info':
+                    return this.onSessionInfo(changes, done);
+                case 'session-initiate':
+                    return this.onSessionInitiate(changes, done);
+                case 'session-terminate':
+                    return this.onSessionTerminate(changes, done);
+                case 'transport-accept':
+                    return this.onTransportAccept(changes, done);
+                case 'transport-info':
+                    return this.onTransportInfo(changes, done);
+                case 'transport-reject':
+                    return this.onTransportReject(changes, done);
+                case 'transport-replace':
+                    return this.onTransportReplace(changes, done);
+                default:
+                    this._log('error', 'Invalid or unsupported action: ' + action);
+                    done({ condition: 'bad-request' });
+            }
         });
     }
 
@@ -71,7 +98,6 @@ export default class JingleSession extends WildEmitter {
     }
     set state(value) {
         if (value !== this._sessionState) {
-            const prev = this._sessionState;
             this._log('info', 'Changing session state to: ' + value);
             this._sessionState = value;
             this.emit('sessionState', this, value);
@@ -83,7 +109,6 @@ export default class JingleSession extends WildEmitter {
     }
     set connectionState(value) {
         if (value !== this._connectionState) {
-            const prev = this._connectionState;
             this._log('info', 'Changing connection state to: ' + value);
             this._connectionState = value;
             this.emit('connectionState', this, value);
@@ -127,12 +152,31 @@ export default class JingleSession extends WildEmitter {
         });
     }
 
-    process(action, changes, cb) {
-        this.processingQueue.push({
-            action,
-            cb,
-            changes
+    processLocal(name, handler) {
+        return new Promise((resolve, reject) => {
+            this.processingQueue.push(
+                {
+                    handler,
+                    name,
+                    reject,
+                    resolve,
+                    type: 'local'
+                },
+                1 // Process local requests first
+            );
         });
+    }
+
+    process(action, changes, cb) {
+        this.processingQueue.push(
+            {
+                action,
+                cb,
+                changes,
+                type: 'remote'
+            },
+            2 // Process remote requests second
+        );
     }
 
     start(opts, next) {
@@ -181,6 +225,10 @@ export default class JingleSession extends WildEmitter {
         cb();
     }
 
+    onSessionAccept(changes, cb) {
+        cb();
+    }
+
     onSessionTerminate(changes, cb) {
         this.end(changes.reason, true);
         cb();
@@ -217,6 +265,16 @@ export default class JingleSession extends WildEmitter {
         }
     }
 
+    // It is mandatory to reply to a security-info action with
+    // an unsupported-info error if the info isn't recognized.
+    onSecurityInfo(changes, cb) {
+        cb({
+            condition: 'feature-not-implemented',
+            jingleCondition: 'unsupported-info',
+            type: 'modify'
+        });
+    }
+
     // It is mandatory to reply to a description-info action with
     // an unsupported-info error if the info isn't recognized.
     onDescriptionInfo(changes, cb) {
@@ -251,6 +309,22 @@ export default class JingleSession extends WildEmitter {
         });
     }
 
+    onContentAccept(changes, cb) {
+        cb({ condition: 'bad-request' });
+    }
+
+    onContentReject(changes, cb) {
+        cb({ condition: 'bad-request' });
+    }
+
+    onContentModify(changes, cb) {
+        cb({ condition: 'bad-request' });
+    }
+
+    onContentRemove(changes, cb) {
+        cb({ condition: 'bad-request' });
+    }
+
     // It is mandatory to reply to a transport-add action with either
     // a transport-accept or transport-reject.
     onTransportReplace(changes, cb) {
@@ -263,5 +337,13 @@ export default class JingleSession extends WildEmitter {
                 text: 'transport-replace is not supported'
             }
         });
+    }
+
+    onTransportAccept(changes, cb) {
+        cb({ condition: 'bad-request' });
+    }
+
+    onTransportReject(changes, cb) {
+        cb({ condition: 'bad-request' });
     }
 }

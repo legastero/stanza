@@ -60,19 +60,20 @@ export default class MediaSession extends ICESession {
         this.offerOptions = offerOptions;
 
         try {
-            const offer = await this.pc.createOffer(offerOptions);
-            const json = importFromSDP(offer.sdp);
-            const jingle = convertIntermediateToRequest(json, this.role);
-            jingle.sessionId = this.sid;
-            jingle.action = 'session-initate';
-            jingle.contents.forEach(content => {
-                content.creator = 'initiator';
-                applyStreamsCompatibility(content);
+            await this.processLocal('session-initiate', async () => {
+                const offer = await this.pc.createOffer(offerOptions);
+                const json = importFromSDP(offer.sdp);
+                const jingle = convertIntermediateToRequest(json, this.role);
+                jingle.sessionId = this.sid;
+                jingle.action = 'session-initate';
+                jingle.contents.forEach(content => {
+                    content.creator = 'initiator';
+                    applyStreamsCompatibility(content);
+                });
+                await this.pc.setLocalDescription(offer);
+
+                this.send('session-initiate', jingle);
             });
-
-            this.send('session-initiate', jingle);
-
-            await this.pc.setLocalDescription(offer);
 
             next();
         } catch (err) {
@@ -93,22 +94,23 @@ export default class MediaSession extends ICESession {
         this._log('info', 'Accepted incoming session');
 
         this.state = 'active';
-
         this.role = 'responder';
 
         try {
-            const answer = await this.pc.createAnswer(opts);
+            await this.processLocal('session-accept', async () => {
+                const answer = await this.pc.createAnswer(opts);
 
-            const json = importFromSDP(answer.sdp);
-            const jingle = convertIntermediateToRequest(json, this.role);
-            jingle.sessionId = this.sid;
-            jingle.action = 'session-accept';
-            jingle.contents.forEach(content => {
-                content.creator = 'initiator';
+                const json = importFromSDP(answer.sdp);
+                const jingle = convertIntermediateToRequest(json, this.role);
+                jingle.sessionId = this.sid;
+                jingle.action = 'session-accept';
+                jingle.contents.forEach(content => {
+                    content.creator = 'initiator';
+                });
+                await this.pc.setLocalDescription(answer);
+
+                this.send('session-accept', jingle);
             });
-            this.send('session-accept', jingle);
-
-            await this.pc.setLocalDescription(answer);
 
             next();
         } catch (err) {
@@ -125,40 +127,50 @@ export default class MediaSession extends ICESession {
     }
 
     ring() {
-        this._log('info', 'Ringing on incoming session');
-        this.ringing = true;
-        this.send('session-info', { ringing: true });
+        return this.processLocal('ring', () => {
+            this._log('info', 'Ringing on incoming session');
+            this.ringing = true;
+            this.send('session-info', { ringing: true });
+        });
     }
 
     mute(creator, name) {
-        this._log('info', 'Muting', name);
+        return this.processLocal('mute', () => {
+            this._log('info', 'Muting', name);
 
-        this.send('session-info', {
-            mute: {
-                creator,
-                name
-            }
+            this.send('session-info', {
+                mute: {
+                    creator,
+                    name
+                }
+            });
         });
     }
 
     unmute(creator, name) {
-        this._log('info', 'Unmuting', name);
-        this.send('session-info', {
-            unmute: {
-                creator,
-                name
-            }
+        return this.processLocal('unmute', () => {
+            this._log('info', 'Unmuting', name);
+            this.send('session-info', {
+                unmute: {
+                    creator,
+                    name
+                }
+            });
         });
     }
 
     hold() {
-        this._log('info', 'Placing on hold');
-        this.send('session-info', { hold: true });
+        return this.processLocal('hold', () => {
+            this._log('info', 'Placing on hold');
+            this.send('session-info', { hold: true });
+        });
     }
 
     resume() {
-        this._log('info', 'Resuming from hold');
-        this.send('session-info', { active: true });
+        return this.processLocal('resume', () => {
+            this._log('info', 'Resuming from hold');
+            this.send('session-info', { active: true });
+        });
     }
 
     // ----------------------------------------------------------------
@@ -166,21 +178,25 @@ export default class MediaSession extends ICESession {
     // ----------------------------------------------------------------
 
     addTrack(track, stream, cb) {
-        if (this.pc.addTrack) {
-            this.pc.addTrack(track, stream);
-        } else {
-            this.pc.addStream(stream, cb);
-        }
-        if (cb) {
-            return cb();
-        }
+        return this.processLocal('addtrack', async () => {
+            if (this.pc.addTrack) {
+                this.pc.addTrack(track, stream);
+            } else {
+                this.pc.addStream(stream);
+            }
+            if (cb) {
+                cb();
+            }
+        });
     }
 
-    removeTrack(sender, cb) {
-        this.pc.removeTrack(sender);
-        if (cb) {
-            return cb();
-        }
+    async removeTrack(sender, cb) {
+        return this.processLocal('removetrack', async () => {
+            this.pc.removeTrack(sender);
+            if (cb) {
+                return cb();
+            }
+        });
     }
 
     // ----------------------------------------------------------------
