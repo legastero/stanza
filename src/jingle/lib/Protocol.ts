@@ -1,3 +1,5 @@
+import { NS_JINGLE_ICE_UDP_1, NS_JINGLE_RTP_1 } from '../../protocol';
+
 import * as SDP from './SDP';
 
 import {
@@ -15,16 +17,16 @@ import {
 } from './JingleUtil';
 
 import {
-    ICETransportCandidate,
-    ICETransportDescription,
-    RTPApplicationDescription,
-    RTPApplicationPayload
-} from './Definitions';
+    JingleIceUdp,
+    JingleIceUdpCandidate,
+    JingleRtpCodec,
+    JingleRtpDescription
+} from '../../protocol/stanzas';
 
 export function convertIntermediateToApplication(
     media: IntermediateMediaDescription,
     role: SessionRole
-): RTPApplicationDescription {
+): JingleRtpDescription {
     const rtp = media.rtpParameters!;
     const rtcp = media.rtcpParameters || {};
     const encodingParameters = media.rtpEncodingParameters || [];
@@ -34,13 +36,13 @@ export function convertIntermediateToApplication(
         hasSSRC = !!encodingParameters[0].ssrc; // !== false ???
     }
 
-    const application: RTPApplicationDescription = {
-        applicationType: 'rtp',
+    const application: JingleRtpDescription = {
+        applicationType: NS_JINGLE_RTP_1,
+        codecs: [],
         headerExtensions: [],
-        media: media.kind,
-        mux: rtcp.mux,
-        payloads: [],
-        reducedSize: rtcp.reducedSize,
+        media: media.kind as 'audio' | 'video',
+        rtcpMux: rtcp.mux,
+        rtcpReducedSize: rtcp.reducedSize,
         sourceGroups: [],
         sources: [],
         ssrc: hasSSRC ? encodingParameters[0].ssrc.toString() : undefined,
@@ -61,12 +63,9 @@ export function convertIntermediateToApplication(
     if (rtcp.ssrc && rtcp.cname) {
         application.sources = [
             {
-                parameters: [
-                    {
-                        key: 'cname',
-                        value: rtcp.cname
-                    }
-                ],
+                parameters: {
+                    cname: rtcp.cname
+                },
                 ssrc: rtcp.ssrc.toString()
             }
         ];
@@ -92,14 +91,14 @@ export function convertIntermediateToApplication(
     }
 
     for (const codec of rtp.codecs || []) {
-        const payload: RTPApplicationPayload = {
-            channels: codec.channels.toString(),
-            clockrate: codec.clockRate.toString(),
-            feedback: [],
+        const payload: JingleRtpCodec = {
+            channels: codec.channels,
+            clockRate: codec.clockRate,
             id: codec.payloadType.toString(),
             maxptime: codec.maxptime ? codec.maxptime.toString() : undefined,
             name: codec.name,
-            parameters: []
+            parameters: codec.parameters,
+            rtcpFeedback: codec.rtcpFeedback
         };
 
         for (const key of Object.keys(codec.parameters || {})) {
@@ -107,70 +106,56 @@ export function convertIntermediateToApplication(
                 payload.ptime = codec.parameters![key].toString();
                 continue;
             }
-
-            payload.parameters!.push({
-                key,
-                value: codec.parameters![key]
-            });
         }
 
-        for (const feedback of codec.rtcpFeedback || []) {
-            payload.feedback!.push({
-                subtype: feedback.parameter,
-                type: feedback.type
-            });
-        }
-
-        application.payloads!.push(payload);
+        application.codecs!.push(payload);
     }
 
     return application;
 }
 
-function convertIntermediateToCandidate(candidate: IntermediateCandidate): ICETransportCandidate {
+function convertIntermediateToCandidate(candidate: IntermediateCandidate): JingleIceUdpCandidate {
     return {
-        component: candidate.component.toString(),
+        component: candidate.component,
         foundation: candidate.foundation,
         generation: undefined,
         id: undefined,
         ip: candidate.ip,
         network: undefined,
-        port: candidate.port.toString(),
-        priority: candidate.priority.toString(),
+        port: candidate.port,
+        priority: candidate.priority,
         protocol: candidate.protocol,
-        relAddr: candidate.relatedAddress,
-        relPort: candidate.relatedPort ? candidate.relatedPort.toString() : undefined,
-        tcpType: candidate.tcpType,
+        relatedAddress: candidate.relatedAddress,
+        relatedPort: candidate.relatedPort,
+        tcpType: candidate.tcpType as 'active' | 'passive' | 'so',
         type: candidate.type
     };
 }
 
-export function convertIntermediateToTransport(
-    media: IntermediateMediaDescription
-): ICETransportDescription {
+export function convertIntermediateToTransport(media: IntermediateMediaDescription): JingleIceUdp {
     const ice = media.iceParameters;
     const dtls = media.dtlsParameters;
 
-    const transport: ICETransportDescription = {
+    const transport: JingleIceUdp = {
         candidates: [],
-        transportType: 'iceUdp'
+        transportType: NS_JINGLE_ICE_UDP_1
     };
 
     if (ice) {
-        transport.ufrag = ice.usernameFragment;
-        transport.pwd = ice.password;
+        transport.usernameFragment = ice.usernameFragment;
+        transport.password = ice.password;
     }
 
     if (dtls) {
         transport.fingerprints = dtls.fingerprints.map(fingerprint => ({
-            hash: fingerprint.algorithm,
+            algorithm: fingerprint.algorithm,
             setup: media.setup!,
             value: fingerprint.value
         }));
     }
 
     if (media.sctp) {
-        transport.sctp = [media.sctp];
+        transport.sctp = media.sctp;
     }
 
     for (const candidate of media.candidates || []) {
@@ -213,10 +198,10 @@ export function convertContentToIntermediate(
     content: ContentDescription,
     role: SessionRole
 ): IntermediateMediaDescription {
-    const application = (content.application! as RTPApplicationDescription) || {};
-    const transport = content.transport as ICETransportDescription;
+    const application = (content.application! as JingleRtpDescription) || {};
+    const transport = content.transport as JingleIceUdp;
 
-    const isRTP = application && application.applicationType === 'rtp';
+    const isRTP = application && application.applicationType === NS_JINGLE_RTP_1;
 
     const media: IntermediateMediaDescription = {
         direction: sendersToDirection(role, content.senders),
@@ -227,16 +212,15 @@ export function convertContentToIntermediate(
 
     if (isRTP) {
         media.rtcpParameters = {
-            mux: application.mux,
-            reducedSize: application.reducedSize
+            mux: application.rtcpMux,
+            reducedSize: application.rtcpReducedSize
         };
 
         if (application.sources && application.sources.length) {
             const source = application.sources[0];
             media.rtcpParameters.ssrc = parseInt(source.ssrc, 10);
             if (source.parameters) {
-                const cname = source.parameters.find(p => p.key === 'cname');
-                media.rtcpParameters.cname = cname ? cname.value : undefined;
+                media.rtcpParameters.cname = source.parameters.cname;
             }
         }
 
@@ -251,7 +235,7 @@ export function convertContentToIntermediate(
             for (const stream of application.streams) {
                 media.streams.push({
                     stream: stream.id,
-                    track: stream.track
+                    track: stream.track!
                 });
             }
         }
@@ -272,25 +256,22 @@ export function convertContentToIntermediate(
             }
         }
 
-        for (const payload of application.payloads || []) {
-            const parameters: SDP.SDPCodecAdditionalParameters = {};
-            for (const param of payload.parameters || []) {
-                parameters[param.key] = param.value!;
-            }
+        for (const payload of application.codecs || []) {
+            const parameters: SDP.SDPCodecAdditionalParameters = payload.parameters || {};
 
             const rtcpFeedback: SDP.SDPFeedbackParameter[] = [];
-            for (const fb of payload.feedback || []) {
+            for (const fb of payload.rtcpFeedback || []) {
                 rtcpFeedback.push({
-                    parameter: fb.subtype!,
+                    parameter: fb.parameter!,
                     type: fb.type
                 });
             }
 
             media.rtpParameters.codecs.push({
-                channels: parseInt(payload.channels, 10),
-                clockRate: parseInt(payload.clockrate, 10),
+                channels: payload.channels!,
+                clockRate: payload.clockRate!,
                 name: payload.name!,
-                numChannels: parseInt(payload.channels, 10),
+                numChannels: payload.channels!,
                 parameters,
                 payloadType: parseInt(payload.id, 10),
                 rtcpFeedback
@@ -310,10 +291,10 @@ export function convertContentToIntermediate(
     }
 
     if (transport) {
-        if (transport.ufrag && transport.pwd) {
+        if (transport.usernameFragment && transport.password) {
             media.iceParameters = {
-                password: transport.pwd,
-                usernameFragment: transport.ufrag
+                password: transport.password,
+                usernameFragment: transport.usernameFragment
             };
         }
 
@@ -325,13 +306,13 @@ export function convertContentToIntermediate(
 
             for (const fingerprint of transport.fingerprints) {
                 media.dtlsParameters.fingerprints.push({
-                    algorithm: fingerprint.hash,
-                    value: fingerprint.value
+                    algorithm: fingerprint.algorithm!,
+                    value: fingerprint.value!
                 });
             }
 
             if (transport.sctp) {
-                media.sctp = transport.sctp[0];
+                media.sctp = transport.sctp;
             }
 
             media.setup = transport.fingerprints[0].setup;
@@ -375,9 +356,9 @@ export function convertIntermediateToTransportInfo(
                 name: mid,
                 transport: {
                     candidates: [convertIntermediateToCandidate(candidate)],
-                    transportType: 'iceUdp',
-                    ufrag: candidate.usernameFragment || undefined
-                } as ICETransportDescription
+                    transportType: NS_JINGLE_ICE_UDP_1,
+                    usernameFragment: candidate.usernameFragment || undefined
+                } as JingleIceUdp
             }
         ]
     };

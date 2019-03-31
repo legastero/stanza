@@ -25,17 +25,17 @@ export interface JingleIceUdp extends JingleTransport {
 
 export interface JingleIceUdpCandidate {
     component: number;
-    generation: number;
+    generation?: number;
     foundation: string;
-    id: string;
+    id?: string;
     ip: string;
-    network: number;
+    network?: number;
     port: number;
     priority: number;
     protocol?: 'tcp' | 'udp';
     relatedAddress?: string;
     relatedPort?: number;
-    tcptype?: 'active' | 'passive' | 'so';
+    tcpType?: 'active' | 'passive' | 'so';
     type: 'host' | 'prflx' | 'srflx' | 'relay';
 }
 

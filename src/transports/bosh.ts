@@ -267,7 +267,6 @@ export default class BOSHConnection extends WildEmitter implements Transport {
                 }, 100);
             }
         } catch (err) {
-            console.log(err);
             this.hasStream = false;
             this.emit(
                 'stream:error',

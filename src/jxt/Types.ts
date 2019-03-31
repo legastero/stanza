@@ -132,7 +132,9 @@ export function integerAttribute(name: string, defaultValue?: number): FieldDefi
             }
         },
         exporter(xml, value) {
-            xml.setAttribute(name, value.toString());
+            if (value !== undefined) {
+                xml.setAttribute(name, value.toString());
+            }
         }
     };
 }
@@ -148,7 +150,9 @@ export function floatAttribute(name: string, defaultValue?: number): FieldDefini
             }
         },
         exporter(xml, value) {
-            xml.setAttribute(name, value.toString());
+            if (value !== undefined) {
+                xml.setAttribute(name, value.toString());
+            }
         }
     };
 }
@@ -245,12 +249,14 @@ export function namespacedIntegerAttribute(
             }
         },
         exporter(xml, value) {
-            const namespaces = xml.getNamespaceContext();
-            if (!namespaces[namespace]) {
-                xml.setAttribute(`xmlns:${prefix}`, namespace);
-                namespaces[namespace] = prefix;
+            if (value !== undefined) {
+                const namespaces = xml.getNamespaceContext();
+                if (!namespaces[namespace]) {
+                    xml.setAttribute(`xmlns:${prefix}`, namespace);
+                    namespaces[namespace] = prefix;
+                }
+                xml.setAttribute(`${namespaces[namespace]}:${name}`, value.toString());
             }
-            xml.setAttribute(`${namespaces[namespace]}:${name}`, value.toString());
         }
     };
 }
@@ -271,12 +277,14 @@ export function namespacedFloatAttribute(
             }
         },
         exporter(xml, value) {
-            const namespaces = xml.getNamespaceContext();
-            if (!namespaces[namespace]) {
-                xml.setAttribute(`xmlns:${prefix}`, namespace);
-                namespaces[namespace] = prefix;
+            if (value !== undefined) {
+                const namespaces = xml.getNamespaceContext();
+                if (!namespaces[namespace]) {
+                    xml.setAttribute(`xmlns:${prefix}`, namespace);
+                    namespaces[namespace] = prefix;
+                }
+                xml.setAttribute(`${namespaces[namespace]}:${name}`, value.toString());
             }
-            xml.setAttribute(`${namespaces[namespace]}:${name}`, value.toString());
         }
     };
 }
@@ -699,8 +707,10 @@ export function childInteger(
             }
         },
         exporter(xml, value) {
-            const child = findOrCreate(xml, namespace || xml.getNamespace(), element);
-            child.children.push(value.toString());
+            if (value !== undefined) {
+                const child = findOrCreate(xml, namespace || xml.getNamespace(), element);
+                child.children.push(value.toString());
+            }
         }
     };
 }

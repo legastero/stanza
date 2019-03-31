@@ -14,7 +14,7 @@ import {
     NS_JINGLE_RTP_SSMA_0,
     NS_JINGLE_RTP_VIDEO
 } from '../protocol';
-import { IQ, Presence } from '../protocol/stanzas';
+import { IQ, NS_JINGLE_DTLS_SCTP_1, Presence } from '../protocol/stanzas';
 
 let root: any;
 try {
@@ -47,7 +47,7 @@ export default function(client: Agent) {
             NS_JINGLE_ICE_UDP_1,
             NS_JINGLE_RTP_AUDIO,
             NS_JINGLE_RTP_VIDEO,
-            'urn:xmpp:jingle:transports:dtls-sctp:1',
+            NS_JINGLE_DTLS_SCTP_1,
             'urn:ietf:rfc:3264',
             'urn:ietf:rfc:5576',
             'urn:ietf:rfc:5888'
@@ -80,13 +80,22 @@ export default function(client: Agent) {
 
     jingle.on('send', async (data: any) => {
         try {
-            const resp = await client.sendIQ(data);
-            if (!resp.jingle) {
-                resp.jingle = {};
+            if (data.type === 'set') {
+                const resp = await client.sendIQ(data);
+                if (!resp.jingle) {
+                    resp.jingle = {};
+                }
+                resp.jingle.sid = data.jingle.sid;
+                jingle.process(resp);
             }
-            resp.jingle.sid = data.jingle.sid;
-            jingle.process(resp);
+            if (data.type === 'result') {
+                client.sendIQResult({ type: 'set', id: data.id, from: data.to }, data);
+            }
+            if (data.type === 'error') {
+                client.sendIQError({ type: 'set', id: data.id, from: data.to }, data);
+            }
         } catch (err) {
+            console.error(err);
             if (!err.jingle) {
                 err.jingle = {};
             }

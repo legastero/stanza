@@ -35,31 +35,28 @@ export function parameterMap(
         importer(
             xml: XMLElement,
             context: TranslationContext
-        ): Array<{ key: string; value?: string }> {
-            const result: Array<{ key: string; value?: string }> = [];
+        ): { [key: string]: string | undefined } {
+            const result: { [key: string]: string | undefined } = {};
             const params = findAll(xml, namespace, element);
             const keyImporter = attribute(keyName).importer;
             const valueImporter = attribute(valueName).importer;
             for (const param of params) {
-                result.push({
-                    key: keyImporter(param, context)!,
-                    value: valueImporter(param, context)
-                });
+                result[keyImporter(param, context)!] = valueImporter(param, context);
             }
             return result;
         },
         exporter(
             xml: XMLElement,
-            values: Array<{ key: string; value?: string }>,
+            values: { [key: string]: string | undefined },
             context: TranslationContext
         ) {
             const keyExporter = attribute(keyName).exporter;
             const valueExporter = attribute(valueName).exporter;
-            for (const param of values) {
+            for (const param of Object.keys(values)) {
                 const paramEl = createElement(namespace, element);
-                keyExporter(paramEl, param.key, context);
-                if (param.value) {
-                    valueExporter(paramEl, param.value, context);
+                keyExporter(paramEl, param, context);
+                if (values[param]) {
+                    valueExporter(paramEl, values[param]!, context);
                 }
                 xml.appendChild(paramEl);
             }

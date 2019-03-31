@@ -73,7 +73,7 @@ export interface JingleRtpDescription extends JingleApplication {
     ssrc?: string;
     rtcpMux?: boolean;
     rtcpFeedback?: JingleRtcpFeedback[];
-    rtcpRecucedSize?: boolean;
+    rtcpReducedSize?: boolean;
     headerExtensions?: JingleRtpHeaderExtension[];
     codecs?: JingleRtpCodec[];
     sources?: JingleRtpSource[];
@@ -110,9 +110,9 @@ export interface JingleRtpMediaStream {
 }
 
 export interface JingleRtpHeaderExtension {
-    id: string;
+    id: number;
     uri: string;
-    senders: string;
+    senders?: 'initiator' | 'responder' | 'both' | 'none';
 }
 
 export interface JingleRtpSourceGroup {
@@ -221,7 +221,7 @@ export default [
         ],
         element: 'rtp-hdrext',
         fields: {
-            id: attribute('id'),
+            id: integerAttribute('id'),
             senders: attribute('senders'),
             uri: attribute('uri')
         },
@@ -231,7 +231,7 @@ export default [
         aliases: [
             {
                 multiple: true,
-                path: 'iq.jingle.contents.application.payloads',
+                path: 'iq.jingle.contents.application.codecs',
                 selector: NS_JINGLE_RTP_1
             },
             'rtpcodec'

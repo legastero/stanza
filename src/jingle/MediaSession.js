@@ -11,19 +11,13 @@ function applyStreamsCompatibility(content) {
         content.application.sources.length
     ) {
         const msid = content.application.streams[0];
-        content.application.sources[0].parameters.push({
-            key: 'msid',
-            value: `${msid.id} ${msid.track}`
-        });
+        content.application.sources[0].parameters.msid = `${msid.id} ${msid.track}`;
         if (content.application.sourceGroups && content.application.sourceGroups.length > 0) {
             content.application.sources.push({
-                parameters: [
-                    {
-                        key: 'cname',
-                        value: content.application.sources[0].parameters[0].value
-                    },
-                    { key: 'msid', value: `${msid.id} ${msid.track}` }
-                ],
+                parameters: {
+                    cname: content.application.sources[0].parameters.cname,
+                    msid: `${msid.id} ${msid.track}`
+                },
                 ssrc: content.application.sourceGroups[0].sources[1]
             });
         }

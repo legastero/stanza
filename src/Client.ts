@@ -330,7 +330,7 @@ export default class Client extends WildEmitter {
             ...reply,
             id: original.id,
             to: original.from,
-            type: 'reply'
+            type: 'result'
         });
     }
 

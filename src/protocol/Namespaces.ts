@@ -335,7 +335,7 @@ export const NS_JINGLE_RTP_SSMA_0 = 'urn:xmpp:jingle:apps:rtp:ssma:0';
 export const NS_COLIBRI = 'http://jitsi.org/protocol/colibri';
 
 // XEP-0343
-export const NS_DTLS_SCTP_1 = 'urn:xmpp:jingle:transports:dtls-sctp:1';
+export const NS_JINGLE_DTLS_SCTP_1 = 'urn:xmpp:jingle:transports:dtls-sctp:1';
 
 // XEP-0352
 export const NS_CSI_0 = 'urn:xmpp:csi:0';

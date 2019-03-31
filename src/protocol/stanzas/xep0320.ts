@@ -15,6 +15,12 @@ export interface JingleDtlsFingerprint {
     value?: string;
 }
 
+declare module './xep0176' {
+    export interface JingleIceUdp {
+        fingerprints?: JingleDtlsFingerprint[];
+    }
+}
+
 export default {
     aliases: [
         {

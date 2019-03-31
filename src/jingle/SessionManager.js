@@ -1,5 +1,7 @@
 const WildEmitter = require('wildemitter');
 
+import { NS_JINGLE_RTP_1 } from '../protocol';
+
 import FileSession from './FileTransferSession';
 import MediaSession from './MediaSession';
 import BaseSession from './Session';
@@ -19,7 +21,7 @@ export default class SessionManager extends WildEmitter {
         this.prepareSession =
             conf.prepareSession ||
             function(opts) {
-                if (opts.applicationTypes.indexOf('rtp') >= 0) {
+                if (opts.applicationTypes.indexOf(NS_JINGLE_RTP_1) >= 0) {
                     return new MediaSession(opts);
                 }
                 if (opts.applicationTypes.indexOf('filetransfer') >= 0) {
