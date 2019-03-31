@@ -186,7 +186,7 @@ export default class FileTransferSession extends ICESession {
 
                 this.contentName = jingle.contents[0].name;
 
-                jingle.sessionId = this.sid;
+                jingle.sid = this.sid;
                 jingle.action = 'session-initate';
                 jingle.contents[0].application = {
                     applicationType: 'filetransfer',
@@ -227,7 +227,7 @@ export default class FileTransferSession extends ICESession {
 
                 const json = importFromSDP(answer.sdp);
                 const jingle = convertIntermediateToRequest(json, this.role);
-                jingle.sessionId = this.sid;
+                jingle.sid = this.sid;
                 jingle.action = 'session-accept';
                 jingle.contents.forEach(content => {
                     content.creator = 'initiator';

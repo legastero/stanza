@@ -12,7 +12,7 @@ import './rfc6120';
 
 declare module './xep0166' {
     export interface Jingle {
-        groups?: JingleContentGroup;
+        groups?: JingleContentGroup[];
     }
 }
 

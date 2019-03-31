@@ -96,7 +96,7 @@ export default class ICESession extends BaseSession {
                                     transport: convertIntermediateToTransport(media)
                                 };
                             }),
-                            sessionId: this.sid
+                            sid: this.sid
                         };
                         this.send('transport-info', jingle);
                         await this.pc.setLocalDescription(answer);
@@ -375,7 +375,7 @@ export default class ICESession extends BaseSession {
                             transport: convertIntermediateToTransport(media)
                         };
                     }),
-                    sessionId: this.sid
+                    sid: this.sid
                 };
                 this.send('transport-info', jingle);
 

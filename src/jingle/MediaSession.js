@@ -1,6 +1,7 @@
 import ICESession from './ICESession';
 import { importFromSDP, exportToSDP } from './lib/Intermediate';
 import { convertRequestToIntermediate, convertIntermediateToRequest } from './lib/Protocol';
+import { INFO_MUTE, INFO_UNHOLD, INFO_HOLD, INFO_ACTIVE, INFO_RINGING } from '../protocol/stanzas';
 
 function applyStreamsCompatibility(content) {
     /* signal .streams as a=ssrc: msid */
@@ -58,7 +59,7 @@ export default class MediaSession extends ICESession {
                 const offer = await this.pc.createOffer(offerOptions);
                 const json = importFromSDP(offer.sdp);
                 const jingle = convertIntermediateToRequest(json, this.role);
-                jingle.sessionId = this.sid;
+                jingle.sid = this.sid;
                 jingle.action = 'session-initate';
                 jingle.contents.forEach(content => {
                     content.creator = 'initiator';
@@ -96,7 +97,7 @@ export default class MediaSession extends ICESession {
 
                 const json = importFromSDP(answer.sdp);
                 const jingle = convertIntermediateToRequest(json, this.role);
-                jingle.sessionId = this.sid;
+                jingle.sid = this.sid;
                 jingle.action = 'session-accept';
                 jingle.contents.forEach(content => {
                     content.creator = 'initiator';
@@ -124,7 +125,11 @@ export default class MediaSession extends ICESession {
         return this.processLocal('ring', () => {
             this._log('info', 'Ringing on incoming session');
             this.ringing = true;
-            this.send('session-info', { ringing: true });
+            this.send('session-info', {
+                info: {
+                    infoType: INFO_RINGING
+                }
+            });
         });
     }
 
@@ -133,8 +138,9 @@ export default class MediaSession extends ICESession {
             this._log('info', 'Muting', name);
 
             this.send('session-info', {
-                mute: {
+                info: {
                     creator,
+                    infoType: INFO_MUTE,
                     name
                 }
             });
@@ -145,8 +151,9 @@ export default class MediaSession extends ICESession {
         return this.processLocal('unmute', () => {
             this._log('info', 'Unmuting', name);
             this.send('session-info', {
-                unmute: {
+                info: {
                     creator,
+                    infoType: INFO_UNMUTE,
                     name
                 }
             });
@@ -156,14 +163,22 @@ export default class MediaSession extends ICESession {
     hold() {
         return this.processLocal('hold', () => {
             this._log('info', 'Placing on hold');
-            this.send('session-info', { hold: true });
+            this.send('session-info', {
+                info: {
+                    infoType: INFO_HOLD
+                }
+            });
         });
     }
 
     resume() {
         return this.processLocal('resume', () => {
             this._log('info', 'Resuming from hold');
-            this.send('session-info', { active: true });
+            this.send('session-info', {
+                info: {
+                    infoType: INFO_ACTIVE
+                }
+            });
         });
     }
 
@@ -242,38 +257,33 @@ export default class MediaSession extends ICESession {
         super.onSessionTerminate(changes, cb);
     }
 
-    onSessionInfo(info, cb) {
-        if (info.ringing) {
-            this._log('info', 'Outgoing session is ringing');
-            this.ringing = true;
-            this.emit('ringing', this);
-            return cb();
+    onSessionInfo(changes, cb) {
+        const info = changes.info;
+        switch (info.infoType) {
+            case INFO_RINGING:
+                this._log('info', 'Outgoing session is ringing');
+                this.ringing = true;
+                this.emit('ringing', this);
+                return cb();
+            case INFO_HOLD:
+                this._log('info', 'On hold');
+                this.emit('hold', this);
+                return cb();
+            case INFO_UNHOLD:
+            case INFO_ACTIVE:
+                this._log('info', 'Resuming from hold');
+                this.emit('resumed', this);
+                return cb();
+            case INFO_MUTE:
+                this._log('info', 'Muting', info.mute);
+                this.emit('mute', this, info);
+                return cb();
+            case INFO_UNMUTE:
+                this._log('info', 'Unmuting', info.unmute);
+                this.emit('unmute', this, info);
+                return cb();
+            default:
         }
-
-        if (info.hold) {
-            this._log('info', 'On hold');
-            this.emit('hold', this);
-            return cb();
-        }
-
-        if (info.active) {
-            this._log('info', 'Resuming from hold');
-            this.emit('resumed', this);
-            return cb();
-        }
-
-        if (info.mute) {
-            this._log('info', 'Muting', info.mute);
-            this.emit('mute', this, info.mute);
-            return cb();
-        }
-
-        if (info.unmute) {
-            this._log('info', 'Unmuting', info.unmute);
-            this.emit('unmute', this, info.unmute);
-            return cb();
-        }
-
         return cb();
     }
 

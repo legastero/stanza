@@ -1,6 +1,5 @@
 import { Agent } from '../Definitions';
 import * as Jingle from '../jingle';
-import { Request as JingleRequest } from '../jingle/lib/JingleUtil';
 import {
     NS_FILE_TRANSFER_3,
     NS_JINGLE_1,
@@ -14,7 +13,7 @@ import {
     NS_JINGLE_RTP_SSMA_0,
     NS_JINGLE_RTP_VIDEO
 } from '../protocol';
-import { IQ, NS_JINGLE_DTLS_SCTP_1, Presence } from '../protocol/stanzas';
+import { IQ, Jingle as JingleRequest, NS_JINGLE_DTLS_SCTP_1, Presence } from '../protocol/stanzas';
 
 let root: any;
 try {

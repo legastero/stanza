@@ -52,6 +52,7 @@ import {
 import {
     NS_JINGLE_RTP_1,
     NS_JINGLE_RTP_HDREXT_0,
+    NS_JINGLE_RTP_INFO_1,
     NS_JINGLE_RTP_MSID_0,
     NS_JINGLE_RTP_RTCP_FB_0,
     NS_JINGLE_RTP_SSMA_0
@@ -138,6 +139,13 @@ export interface JingleRtpZrtp {
     version?: string;
     value?: Buffer;
 }
+
+export const INFO_MUTE = `{${NS_JINGLE_RTP_INFO_1}}mute`;
+export const INFO_UNMUTE = `{${NS_JINGLE_RTP_INFO_1}}unmute`;
+export const INFO_HOLD = `{${NS_JINGLE_RTP_INFO_1}}hold`;
+export const INFO_UNHOLD = `{${NS_JINGLE_RTP_INFO_1}}unhold`;
+export const INFO_ACTIVE = `{${NS_JINGLE_RTP_INFO_1}}active`;
+export const INFO_RINGING = `{${NS_JINGLE_RTP_INFO_1}}ringing`;
 
 function rtcpFeedback(): FieldDefinition {
     return {
@@ -332,5 +340,49 @@ export default [
             version: attribute('version')
         },
         namespace: NS_JINGLE_RTP_1
+    },
+    {
+        element: 'mute',
+        fields: {
+            creator: attribute('creator'),
+            name: attribute('name')
+        },
+        namespace: NS_JINGLE_RTP_INFO_1,
+        path: 'iq.jingle.info',
+        type: INFO_MUTE
+    },
+    {
+        element: 'unmute',
+        fields: {
+            creator: attribute('creator'),
+            name: attribute('name')
+        },
+        namespace: NS_JINGLE_RTP_INFO_1,
+        path: 'iq.jingle.info',
+        type: INFO_UNMUTE
+    },
+    {
+        element: 'hold',
+        namespace: NS_JINGLE_RTP_INFO_1,
+        path: 'iq.jingle.info',
+        type: INFO_HOLD
+    },
+    {
+        element: 'unhold',
+        namespace: NS_JINGLE_RTP_INFO_1,
+        path: 'iq.jingle.info',
+        type: INFO_UNHOLD
+    },
+    {
+        element: 'active',
+        namespace: NS_JINGLE_RTP_INFO_1,
+        path: 'iq.jingle.info',
+        type: INFO_ACTIVE
+    },
+    {
+        element: 'ringing',
+        namespace: NS_JINGLE_RTP_INFO_1,
+        path: 'iq.jingle.info',
+        type: INFO_RINGING
     }
 ] as DefinitionOptions[];

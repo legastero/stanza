@@ -21,32 +21,6 @@ export type ApplicationDirection = (typeof ApplicationDirection)[keyof typeof Ap
 export type ContentSenders = (typeof ContentSenders)[keyof typeof ContentSenders];
 export type SessionRole = (typeof SessionRole)[keyof typeof SessionRole];
 
-export interface ApplicationDescription {
-    readonly applicationType: string;
-}
-
-export interface TransportDescription {
-    readonly transportType: string;
-}
-
-export interface ContentDescription {
-    creator: SessionRole;
-    name: string;
-    application?: ApplicationDescription;
-    transport?: TransportDescription;
-    senders?: ContentSenders;
-}
-
-export interface Request {
-    sessionId?: string;
-    action?: string;
-    readonly groups?: Array<{
-        semantics: string;
-        contents: string[];
-    }>;
-    readonly contents: ContentDescription[];
-}
-
 export function sendersToDirection(
     role: SessionRole,
     senders: ContentSenders = 'both'

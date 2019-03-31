@@ -20,8 +20,8 @@ import { JingleApplication } from './xep0166';
 import { Thumbnail } from './xep0264';
 import { Hash, HashUsed } from './xep0300';
 
-export const CHECKSUM_5 = `{${NS_FILE_TRANSFER_5}}checksum`;
-export const RECEIVED_5 = `{${NS_FILE_TRANSFER_5}}received`;
+export const INFO_CHECKSUM_5 = `{${NS_FILE_TRANSFER_5}}checksum`;
+export const INFO_RECEIVED_5 = `{${NS_FILE_TRANSFER_5}}received`;
 
 export interface FileTransferDescription extends JingleApplication {
     applicationType: typeof NS_FILE_TRANSFER_5;
@@ -46,7 +46,7 @@ export interface FileRange {
 }
 
 export interface FileTransferInfo {
-    infoType: typeof CHECKSUM_5 | typeof RECEIVED_5;
+    infoType: typeof INFO_CHECKSUM_5 | typeof INFO_RECEIVED_5;
     creator: string;
     name: string;
     file?: FileDescription;

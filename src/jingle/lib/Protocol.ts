@@ -8,15 +8,12 @@ import {
     IntermediateSessionDescription
 } from './Intermediate';
 
-import {
-    ContentDescription,
-    directionToSenders,
-    Request,
-    sendersToDirection,
-    SessionRole
-} from './JingleUtil';
+import { directionToSenders, sendersToDirection, SessionRole } from './JingleUtil';
 
 import {
+    Jingle,
+    JingleContent,
+    JingleContentGroup,
     JingleIceUdp,
     JingleIceUdpCandidate,
     JingleRtpCodec,
@@ -168,9 +165,9 @@ export function convertIntermediateToTransport(media: IntermediateMediaDescripti
 export function convertIntermediateToRequest(
     session: IntermediateSessionDescription,
     role: SessionRole
-): Request {
+): Partial<Jingle> {
     return {
-        contents: session.media.map(media => {
+        contents: session.media.map<JingleContent>(media => {
             const isRTP = media.kind === 'audio' || media.kind === 'video';
             return {
                 application: isRTP
@@ -186,16 +183,16 @@ export function convertIntermediateToRequest(
             };
         }),
         groups: session.groups
-            ? session.groups.map(group => ({
+            ? session.groups.map<JingleContentGroup>(group => ({
                   contents: group.mids,
                   semantics: group.semantics
               }))
-            : undefined
+            : []
     };
 }
 
 export function convertContentToIntermediate(
-    content: ContentDescription,
+    content: JingleContent,
     role: SessionRole
 ): IntermediateMediaDescription {
     const application = (content.application! as JingleRtpDescription) || {};
@@ -323,12 +320,13 @@ export function convertContentToIntermediate(
 }
 
 export function convertRequestToIntermediate(
-    jingle: Request,
+    jingle: Jingle,
     role: SessionRole
 ): IntermediateSessionDescription {
     const session: IntermediateSessionDescription = {
         groups: [],
-        media: []
+        media: [],
+        sessionId: jingle.sid
     };
 
     for (const group of jingle.groups || []) {
@@ -348,7 +346,7 @@ export function convertRequestToIntermediate(
 export function convertIntermediateToTransportInfo(
     mid: string,
     candidate: IntermediateCandidate
-): Request {
+): Partial<Jingle> {
     return {
         contents: [
             {
