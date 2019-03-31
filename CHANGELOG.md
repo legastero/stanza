@@ -1,5 +1,9 @@
 # Change Log
 
+## 11.1.0
+
+-   Jingle sessions now queue local actions to allow safer handling of WebRTC peer connection objects.
+
 ## 11.0.0
 
 -   **Changed package name from `stanza.io` to `stanza`.**

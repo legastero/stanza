@@ -131,7 +131,7 @@ export default class FileTransferSession extends ICESession {
         this.file = null;
     }
 
-    start(file, next) {
+    async start(file, next) {
         next = next || (() => undefined);
 
         this.state = 'pending';
@@ -174,12 +174,13 @@ export default class FileTransferSession extends ICESession {
             this.sender.send(this.file, this.channel);
         };
 
-        this.pc
-            .createOffer({
-                offerToReceiveAudio: false,
-                offerToReceiveVideo: false
-            })
-            .then(offer => {
+        try {
+            await this.processLocal('session-initiate', async () => {
+                const offer = await this.pc.createOffer({
+                    offerToReceiveAudio: false,
+                    offerToReceiveVideo: false
+                });
+
                 const json = importFromSDP(offer.sdp);
                 const jingle = convertIntermediateToRequest(json, this.role);
 
@@ -202,16 +203,17 @@ export default class FileTransferSession extends ICESession {
 
                 this.send('session-initiate', jingle);
 
-                return this.pc.setLocalDescription(offer).then(() => next());
-            })
-            .catch(err => {
-                console.error(err);
-                this._log('error', 'Could not create WebRTC offer', err);
-                return this.end('failed-application', true);
+                await this.pc.setLocalDescription(offer);
             });
+
+            next();
+        } catch (err) {
+            this._log('error', 'Could not create WebRTC offer', err);
+            return this.end('failed-application', true);
+        }
     }
 
-    accept(next) {
+    async accept(next) {
         this._log('info', 'Accepted incoming session');
 
         this.role = 'responder';
@@ -219,9 +221,10 @@ export default class FileTransferSession extends ICESession {
 
         next = next || (() => undefined);
 
-        this.pc
-            .createAnswer()
-            .then(answer => {
+        try {
+            await this.processLocal('session-accept', async () => {
+                const answer = await this.pc.createAnswer();
+
                 const json = importFromSDP(answer.sdp);
                 const jingle = convertIntermediateToRequest(json, this.role);
                 jingle.sessionId = this.sid;
@@ -231,16 +234,18 @@ export default class FileTransferSession extends ICESession {
                 });
                 this.contentName = jingle.contents[0].name;
                 this.send('session-accept', jingle);
-                return this.pc.setLocalDescription(answer).then(() => next());
-            })
-            .catch(err => {
-                console.error(err);
-                this._log('error', 'Could not create WebRTC answer', err);
-                this.end('failed-application');
+
+                await this.pc.setLocalDescription(answer);
             });
+
+            next();
+        } catch (err) {
+            this._log('error', 'Could not create WebRTC answer', err);
+            this.end('failed-application');
+        }
     }
 
-    onSessionInitiate(changes, cb) {
+    async onSessionInitiate(changes, cb) {
         this._log('info', 'Initiating incoming session');
 
         this.role = 'responder';
@@ -264,20 +269,14 @@ export default class FileTransferSession extends ICESession {
             this.receiver.receive(null, e.channel);
         });
 
-        this.pc
-            .setRemoteDescription({ type: 'offer', sdp })
-            .then(() => {
-                if (cb) {
-                    return cb();
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                this._log('error', 'Could not create WebRTC answer', err);
-                if (cb) {
-                    return cb({ condition: 'general-error' });
-                }
-            });
+        try {
+            await this.pc.setRemoteDescription({ type: 'offer', sdp });
+            await this.processBufferedCandidates();
+            cb();
+        } catch (err) {
+            this._log('error', 'Could not create WebRTC answer', err);
+            cb({ condition: 'general-error' });
+        }
     }
 
     onDescriptionInfo(info, cb) {
