@@ -135,7 +135,7 @@ export default class ICESession extends BaseSession {
                 const remoteSDP = this.pc.remoteDescription.sdp;
                 const mediaSections = SDPUtils.getMediaSections(remoteSDP);
                 for (let i = 0; i < mediaSections.length; i++) {
-                    if (SDPUtils.getMid(mediaSections[i]) === candidate.sdpMid) {
+                    if (SDPUtils.getMid(mediaSections[i]) === sdpMid) {
                         sdpMLineIndex = i;
                         break;
                     }
