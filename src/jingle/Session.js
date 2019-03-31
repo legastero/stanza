@@ -28,11 +28,6 @@ export default class JingleSession extends WildEmitter {
                 return next();
             }
 
-            const done = (err, result) => {
-                cb(err, result);
-                return next();
-            };
-
             if (task.type === 'local') {
                 this._log('debug', 'Processing local action:', task.name);
                 try {
@@ -41,47 +36,60 @@ export default class JingleSession extends WildEmitter {
                 } catch (err) {
                     task.reject(err);
                 }
-                return next();
+                if (next) {
+                    return next();
+                }
+                return;
             }
 
             const { action, changes, cb } = task;
             this._log('debug', 'Processing remote action:', action);
 
-            switch (action) {
-                case 'content-accept':
-                    return this.onContentAccept(changes, done);
-                case 'content-add':
-                    return this.onContentAdd(changes, done);
-                case 'content-modify':
-                    return this.onContentModify(changes, done);
-                case 'content-reject':
-                    return this.onContentReject(changes, done);
-                case 'content-remove':
-                    return this.onContentRemove(changes, done);
-                case 'description-info':
-                    return this.onDescriptionInfo(changes, done);
-                case 'security-info':
-                    return this.onSecurityInfo(changes, done);
-                case 'session-accept':
-                    return this.onSessionAccept(changes, done);
-                case 'session-info':
-                    return this.onSessionInfo(changes, done);
-                case 'session-initiate':
-                    return this.onSessionInitiate(changes, done);
-                case 'session-terminate':
-                    return this.onSessionTerminate(changes, done);
-                case 'transport-accept':
-                    return this.onTransportAccept(changes, done);
-                case 'transport-info':
-                    return this.onTransportInfo(changes, done);
-                case 'transport-reject':
-                    return this.onTransportReject(changes, done);
-                case 'transport-replace':
-                    return this.onTransportReplace(changes, done);
-                default:
-                    this._log('error', 'Invalid or unsupported action: ' + action);
-                    done({ condition: 'bad-request' });
-            }
+            return new Promise(resolve => {
+                const done = (err, result) => {
+                    cb(err, result);
+                    if (next) {
+                        next();
+                    }
+                    resolve();
+                };
+
+                switch (action) {
+                    case 'content-accept':
+                        return this.onContentAccept(changes, done);
+                    case 'content-add':
+                        return this.onContentAdd(changes, done);
+                    case 'content-modify':
+                        return this.onContentModify(changes, done);
+                    case 'content-reject':
+                        return this.onContentReject(changes, done);
+                    case 'content-remove':
+                        return this.onContentRemove(changes, done);
+                    case 'description-info':
+                        return this.onDescriptionInfo(changes, done);
+                    case 'security-info':
+                        return this.onSecurityInfo(changes, done);
+                    case 'session-accept':
+                        return this.onSessionAccept(changes, done);
+                    case 'session-info':
+                        return this.onSessionInfo(changes, done);
+                    case 'session-initiate':
+                        return this.onSessionInitiate(changes, done);
+                    case 'session-terminate':
+                        return this.onSessionTerminate(changes, done);
+                    case 'transport-accept':
+                        return this.onTransportAccept(changes, done);
+                    case 'transport-info':
+                        return this.onTransportInfo(changes, done);
+                    case 'transport-reject':
+                        return this.onTransportReject(changes, done);
+                    case 'transport-replace':
+                        return this.onTransportReplace(changes, done);
+                    default:
+                        this._log('error', 'Invalid or unsupported action: ' + action);
+                        done({ condition: 'bad-request' });
+                }
+            });
         });
     }
 
