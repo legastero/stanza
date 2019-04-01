@@ -6,7 +6,7 @@ Child('npm run clean');
 Child('npm run compile');
 Child('npm run compile:module');
 Child('npm run compile:rollup');
-Child('mkdir -p dist/npm');
+Child('mkdirp dist/npm');
 Child('cp -r dist/cjs/* dist/npm/');
 Child('cp dist/es/index.module.js dist/npm/module.js');
 Child(`cp ${__dirname}/../*.md dist/npm`);
