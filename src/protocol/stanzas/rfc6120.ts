@@ -108,7 +108,7 @@ const _StreamError: DefinitionOptions = {
 
 export interface StanzaError {
     by?: string;
-    type: string;
+    type?: string;
     condition: string;
     text?: string;
     alternateLanguageText?: LanguageSet<string>;

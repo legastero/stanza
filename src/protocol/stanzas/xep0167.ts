@@ -64,7 +64,7 @@ import { JingleDtlsFingerprint } from './xep0320';
 
 declare module './xep0166' {
     export interface JingleReason {
-        rtpError: 'invalid-crypto' | 'crypto-required';
+        rtpError?: 'invalid-crypto' | 'crypto-required';
     }
 }
 

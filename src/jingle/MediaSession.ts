@@ -1,35 +1,54 @@
+import {
+    INFO_ACTIVE,
+    INFO_HOLD,
+    INFO_MUTE,
+    INFO_RINGING,
+    INFO_UNHOLD,
+    INFO_UNMUTE,
+    Jingle,
+    JingleContent,
+    JingleInfo,
+    JingleReason,
+    JingleRtpDescription
+} from '../protocol/stanzas';
 import ICESession from './ICESession';
-import { importFromSDP, exportToSDP } from './lib/Intermediate';
-import { convertRequestToIntermediate, convertIntermediateToRequest } from './lib/Protocol';
-import { INFO_MUTE, INFO_UNHOLD, INFO_HOLD, INFO_ACTIVE, INFO_RINGING } from '../protocol/stanzas';
+import { exportToSDP, importFromSDP } from './lib/Intermediate';
+import { ReasonCondition, SessionRole } from './lib/JingleUtil';
+import { convertIntermediateToRequest, convertRequestToIntermediate } from './lib/Protocol';
+import { ActionCallback } from './Session';
 
-function applyStreamsCompatibility(content) {
+function applyStreamsCompatibility(content: JingleContent) {
+    const application = content.application as JingleRtpDescription;
+
     /* signal .streams as a=ssrc: msid */
     if (
-        content.application.streams &&
-        content.application.streams.length &&
-        content.application.sources &&
-        content.application.sources.length
+        application.streams &&
+        application.streams.length &&
+        application.sources &&
+        application.sources.length
     ) {
-        const msid = content.application.streams[0];
-        content.application.sources[0].parameters.msid = `${msid.id} ${msid.track}`;
-        if (content.application.sourceGroups && content.application.sourceGroups.length > 0) {
-            content.application.sources.push({
+        const msid = application.streams[0];
+        application.sources[0].parameters.msid = `${msid.id} ${msid.track}`;
+        if (application.sourceGroups && application.sourceGroups.length > 0) {
+            application.sources.push({
                 parameters: {
-                    cname: content.application.sources[0].parameters.cname,
+                    cname: application.sources[0].parameters.cname,
                     msid: `${msid.id} ${msid.track}`
                 },
-                ssrc: content.application.sourceGroups[0].sources[1]
+                ssrc: application.sourceGroups[0].sources[1]
             });
         }
     }
 }
 
 export default class MediaSession extends ICESession {
-    constructor(opts) {
+    public offerOptions: any;
+    private _ringing: boolean = false;
+
+    constructor(opts: any) {
         super(opts);
 
-        this.pc.addEventListener('track', e => {
+        this.pc.addEventListener('track', (e: RTCTrackEvent) => {
             this.onAddTrack(e.track, e.streams[0]);
         });
 
@@ -38,15 +57,30 @@ export default class MediaSession extends ICESession {
                 this.addTrack(track, opts.stream);
             }
         }
+    }
 
-        this._ringing = false;
+    public get ringing(): boolean {
+        return this._ringing;
+    }
+    public set ringing(value) {
+        if (value !== this._ringing) {
+            this._ringing = value;
+            this.emit('change:ringing', value);
+        }
+    }
+
+    public get streams() {
+        if (this.pc.signalingState !== 'closed') {
+            return this.pc.getRemoteStreams();
+        }
+        return [];
     }
 
     // ----------------------------------------------------------------
     // Session control methods
     // ----------------------------------------------------------------
 
-    async start(offerOptions, next) {
+    public async start(offerOptions: RTCOfferOptions | ActionCallback, next?: ActionCallback) {
         this.state = 'pending';
 
         next = next || (() => undefined);
@@ -60,11 +94,11 @@ export default class MediaSession extends ICESession {
                 const json = importFromSDP(offer.sdp);
                 const jingle = convertIntermediateToRequest(json, this.role);
                 jingle.sid = this.sid;
-                jingle.action = 'session-initate';
-                jingle.contents.forEach(content => {
+                jingle.action = 'session-initiate';
+                for (const content of jingle.contents || []) {
                     content.creator = 'initiator';
                     applyStreamsCompatibility(content);
-                });
+                }
                 await this.pc.setLocalDescription(offer);
 
                 this.send('session-initiate', jingle);
@@ -77,7 +111,7 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    async accept(opts, next) {
+    public async accept(opts: RTCAnswerOptions | ActionCallback, next?: ActionCallback) {
         // support calling with accept(next) or accept(opts, next)
         if (arguments.length === 1 && typeof opts === 'function') {
             next = opts;
@@ -99,9 +133,9 @@ export default class MediaSession extends ICESession {
                 const jingle = convertIntermediateToRequest(json, this.role);
                 jingle.sid = this.sid;
                 jingle.action = 'session-accept';
-                jingle.contents.forEach(content => {
+                for (const content of jingle.contents || []) {
                     content.creator = 'initiator';
-                });
+                }
                 await this.pc.setLocalDescription(answer);
 
                 this.send('session-accept', jingle);
@@ -114,15 +148,15 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    end(reason, silent) {
-        this.pc.getReceivers().forEach(receiver => {
+    public end(reason: ReasonCondition | JingleReason = 'success', silent: boolean = false) {
+        for (const receiver of this.pc.getReceivers()) {
             this.onRemoveTrack(receiver.track);
-        });
+        }
         super.end(reason, silent);
     }
 
-    ring() {
-        return this.processLocal('ring', () => {
+    public ring(): Promise<void> {
+        return this.processLocal('ring', async () => {
             this._log('info', 'Ringing on incoming session');
             this.ringing = true;
             this.send('session-info', {
@@ -133,8 +167,8 @@ export default class MediaSession extends ICESession {
         });
     }
 
-    mute(creator, name) {
-        return this.processLocal('mute', () => {
+    public mute(creator: SessionRole, name: string): Promise<void> {
+        return this.processLocal('mute', async () => {
             this._log('info', 'Muting', name);
 
             this.send('session-info', {
@@ -147,8 +181,8 @@ export default class MediaSession extends ICESession {
         });
     }
 
-    unmute(creator, name) {
-        return this.processLocal('unmute', () => {
+    public unmute(creator: SessionRole, name: string): Promise<void> {
+        return this.processLocal('unmute', async () => {
             this._log('info', 'Unmuting', name);
             this.send('session-info', {
                 info: {
@@ -160,8 +194,8 @@ export default class MediaSession extends ICESession {
         });
     }
 
-    hold() {
-        return this.processLocal('hold', () => {
+    public hold(): Promise<void> {
+        return this.processLocal('hold', async () => {
             this._log('info', 'Placing on hold');
             this.send('session-info', {
                 info: {
@@ -171,8 +205,8 @@ export default class MediaSession extends ICESession {
         });
     }
 
-    resume() {
-        return this.processLocal('resume', () => {
+    public resume(): Promise<void> {
+        return this.processLocal('resume', async () => {
             this._log('info', 'Resuming from hold');
             this.send('session-info', {
                 info: {
@@ -186,7 +220,7 @@ export default class MediaSession extends ICESession {
     // Track control methods
     // ----------------------------------------------------------------
 
-    addTrack(track, stream, cb) {
+    public addTrack(track: MediaStreamTrack, stream: MediaStream, cb?: ActionCallback) {
         return this.processLocal('addtrack', async () => {
             if (this.pc.addTrack) {
                 this.pc.addTrack(track, stream);
@@ -199,7 +233,7 @@ export default class MediaSession extends ICESession {
         });
     }
 
-    async removeTrack(sender, cb) {
+    public async removeTrack(sender: RTCRtpSender, cb?: ActionCallback) {
         return this.processLocal('removetrack', async () => {
             this.pc.removeTrack(sender);
             if (cb) {
@@ -212,12 +246,12 @@ export default class MediaSession extends ICESession {
     // Track event handlers
     // ----------------------------------------------------------------
 
-    onAddTrack(track, stream) {
+    public onAddTrack(track: MediaStreamTrack, stream: MediaStream): void {
         this._log('info', 'Track added');
         this.emit('peerTrackAdded', this, track, stream);
     }
 
-    onRemoveTrack(track) {
+    public onRemoveTrack(track: MediaStreamTrack): void {
         this._log('info', 'Track removed');
         this.emit('peerTrackRemoved', this, track);
     }
@@ -226,7 +260,7 @@ export default class MediaSession extends ICESession {
     // Jingle action handers
     // ----------------------------------------------------------------
 
-    async onSessionInitiate(changes, cb) {
+    public async onSessionInitiate(changes: Jingle, cb: ActionCallback) {
         this._log('info', 'Initiating incoming session');
 
         this.state = 'pending';
@@ -250,15 +284,16 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    onSessionTerminate(changes, cb) {
+    public onSessionTerminate(changes: Jingle, cb: ActionCallback) {
         for (const receiver of this.pc.getReceivers()) {
             this.onRemoveTrack(receiver.track);
         }
         super.onSessionTerminate(changes, cb);
     }
 
-    onSessionInfo(changes, cb) {
-        const info = changes.info;
+    public onSessionInfo(changes: Jingle, cb: ActionCallback) {
+        const info: JingleInfo = changes.info || { infoType: '' };
+
         switch (info.infoType) {
             case INFO_RINGING:
                 this._log('info', 'Outgoing session is ringing');
@@ -275,32 +310,15 @@ export default class MediaSession extends ICESession {
                 this.emit('resumed', this);
                 return cb();
             case INFO_MUTE:
-                this._log('info', 'Muting', info.mute);
+                this._log('info', 'Muting', info);
                 this.emit('mute', this, info);
                 return cb();
             case INFO_UNMUTE:
-                this._log('info', 'Unmuting', info.unmute);
+                this._log('info', 'Unmuting', info);
                 this.emit('unmute', this, info);
                 return cb();
             default:
         }
         return cb();
-    }
-
-    get ringing() {
-        return this._ringing;
-    }
-    set ringing(value) {
-        if (value !== this._ringing) {
-            this._ringing = value;
-            this.emit('change:ringing', value);
-        }
-    }
-
-    get streams() {
-        if (this.pc.signalingState !== 'closed') {
-            return this.pc.getRemoteStreams();
-        }
-        return [];
     }
 }

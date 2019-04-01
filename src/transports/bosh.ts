@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch';
-import WildEmitter from 'wildemitter';
+import WildEmitter from '../WildEmitter';
 
 import { Transport, TransportConfig } from '../Definitions';
 import { ParsedData, Registry, StreamParser, XMLElement } from '../jxt';

@@ -23,7 +23,7 @@ test('Test tie-break from duplicate sids', function(t) {
         t.same(data, {
             error: {
                 condition: 'conflict',
-                jingleCondition: 'tie-break',
+                jingleError: 'tie-break',
                 type: 'cancel'
             },
             id: '123',
@@ -81,7 +81,7 @@ test('Test tie-break from existing session', function(t) {
         t.same(data, {
             error: {
                 condition: 'conflict',
-                jingleCondition: 'tie-break',
+                jingleError: 'tie-break',
                 type: 'cancel'
             },
             id: '123',
@@ -135,7 +135,7 @@ test('Test tie-break from pending action', function(t) {
         t.same(data, {
             error: {
                 condition: 'conflict',
-                jingleCondition: 'tie-break',
+                jingleError: 'tie-break',
                 type: 'cancel'
             },
             id: '123',
@@ -190,7 +190,7 @@ test('Test terminate session from lost tie-break during startup', function(t) {
     jingle.process({
         error: {
             condition: 'conflict',
-            jingleCondition: 'tie-break',
+            jingleError: 'tie-break',
             type: 'cancel'
         },
         from: 'peer@example.com',

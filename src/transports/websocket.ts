@@ -1,5 +1,5 @@
 import * as async from 'async';
-import WildEmitter from 'wildemitter';
+import WildEmitter from '../WildEmitter';
 
 import WSNode from 'ws';
 import { Transport, TransportConfig } from '../Definitions';

@@ -1,5 +1,5 @@
 import * as uuid from 'uuid';
-import WildEmitter from 'wildemitter';
+import WildEmitter from './WildEmitter';
 
 import { Agent, AgentConfig, Transport } from './Definitions';
 import * as JXT from './jxt';
@@ -35,7 +35,7 @@ export default class Client extends WildEmitter {
     public stanzas: JXT.Registry;
     public sessionStarted?: boolean;
     public transports: {
-        [key: string]: { new (sm: StreamManagement, registry: JXT.Registry): Transport };
+        [key: string]: new (sm: StreamManagement, registry: JXT.Registry) => Transport;
     };
     public sasl!: SASL.Factory;
 
@@ -109,7 +109,11 @@ export default class Client extends WildEmitter {
                         }
                     });
                 }
-                if (payloadType === 'unknown-payload' || !this.callbacks[iqEvent]) {
+                if (
+                    payloadType === 'unknown-payload' ||
+                    !this.callbacks[iqEvent] ||
+                    !this.callbacks[iqEvent].length
+                ) {
                     return this.sendIQError(iq, {
                         error: {
                             condition: 'service-unavailable',

@@ -54,7 +54,7 @@ test('Test session action from wrong sender', function(t) {
         t.same(data, {
             error: {
                 condition: 'item-not-found',
-                jingleCondition: 'unknown-session',
+                jingleError: 'unknown-session',
                 type: 'cancel'
             },
             id: '123',
@@ -94,7 +94,7 @@ test('Duplicate session-accept', function(t) {
         t.same(data, {
             error: {
                 condition: 'unexpected-request',
-                jingleCondition: 'out-of-order',
+                jingleError: 'out-of-order',
                 type: 'cancel'
             },
             id: '123',
@@ -134,7 +134,7 @@ test('Session-initiate after session accepted', function(t) {
         t.same(data, {
             error: {
                 condition: 'unexpected-request',
-                jingleCondition: 'out-of-order',
+                jingleError: 'out-of-order',
                 type: 'cancel'
             },
             id: '123',
@@ -186,7 +186,7 @@ test('Test session action for unknown session', function(t) {
         t.same(data, {
             error: {
                 condition: 'item-not-found',
-                jingleCondition: 'unknown-session',
+                jingleError: 'unknown-session',
                 type: 'cancel'
             },
             id: '123',

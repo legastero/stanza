@@ -17,6 +17,15 @@ declare module './rfc6120' {
     export interface IQ {
         jingle?: Jingle;
     }
+
+    export interface StanzaError {
+        jingleError?:
+            | 'out-of-order'
+            | 'tie-break'
+            | 'unknown-session'
+            | 'unknown-content'
+            | 'unsupported-info';
+    }
 }
 
 export interface Jingle {
@@ -41,6 +50,7 @@ export interface Jingle {
     sid: string;
     contents?: JingleContent[];
     reason?: JingleReason;
+    info?: JingleInfo;
 }
 
 export interface JingleContent {
@@ -86,6 +96,12 @@ export interface JingleTransport {
 
 export interface JingleSecurity {
     securityType: string;
+}
+
+export interface JingleInfo {
+    infoType: string;
+    creator?: 'initiator' | 'responder';
+    name?: string;
 }
 
 export default [

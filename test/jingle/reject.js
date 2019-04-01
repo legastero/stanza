@@ -146,7 +146,7 @@ test('Return error for unknown session-info action', function(t) {
             t.same(data, {
                 error: {
                     condition: 'feature-not-implemented',
-                    jingleCondition: 'unsupported-info',
+                    jingleError: 'unsupported-info',
                     type: 'modify'
                 },
                 id: '123',
@@ -169,8 +169,10 @@ test('Return error for unknown session-info action', function(t) {
         id: '123',
         jingle: {
             action: 'session-info',
-            sid: 'sid123',
-            unknownInfoData: true
+            info: {
+                infoType: 'unknownInfoData'
+            },
+            sid: 'sid123'
         },
         to: 'zuser@example.com',
         type: 'set'
@@ -207,7 +209,7 @@ test('Return error for unknown description-info action', function(t) {
         t.same(data, {
             error: {
                 condition: 'feature-not-implemented',
-                jingleCondition: 'unsupported-info',
+                jingleError: 'unsupported-info',
                 type: 'modify'
             },
             id: '123',
@@ -246,7 +248,7 @@ test('Return error for unknown transport-info action', function(t) {
         t.same(data, {
             error: {
                 condition: 'feature-not-implemented',
-                jingleCondition: 'unsupported-info',
+                jingleError: 'unsupported-info',
                 type: 'modify'
             },
             id: '123',

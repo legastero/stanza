@@ -1,4 +1,4 @@
-import WildEmitter from 'wildemitter';
+import WildEmitter from './WildEmitter';
 
 import * as JXT from './jxt';
 import {

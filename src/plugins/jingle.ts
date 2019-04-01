@@ -107,12 +107,12 @@ export default function(client: Agent) {
         jingle.selfID = jid;
     });
 
-    client.on('iq:set:jingle', 'jingle', (data: IQ) => {
+    client.on('iq:set:jingle', 'jingle', (data: IQ & { jingle: JingleRequest }) => {
         jingle.process(data);
     });
 
     client.on('unavailable', 'jingle', (pres: Presence) => {
-        jingle.endPeerSessions(pres.from, undefined, true);
+        jingle.endPeerSessions(pres.from!, undefined, true);
     });
 
     client.discoverICEServers = async (): Promise<RTCIceServer[]> => {

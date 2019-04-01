@@ -24,7 +24,6 @@
         "stanza": "0.0.1",
         "tslib": "^1.9.3",
         "uuid": "^3.0.1",
-        "wildemitter": "^1.0.1",
         "ws": "^6.1.2"
     },
     "devDependencies": {
@@ -40,8 +39,8 @@
         "tape": "^4.8.0",
         "ts-loader": "^5.3.0",
         "ts-node": "^8.0.3",
-        "tslint": "^5.11.0",
-        "typescript": "^3.1.6",
+        "tslint": "^5.14.0",
+        "typescript": "^3.4.1",
         "webpack": "^4.25.0",
         "webpack-bundle-analyzer": "^3.0.3",
         "webpack-cli": "^3.1.2"
