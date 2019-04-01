@@ -129,6 +129,24 @@ function convertIntermediateToCandidate(candidate: IntermediateCandidate): Jingl
     };
 }
 
+export function convertCandidateToIntermediate(
+    candidate: JingleIceUdpCandidate
+): IntermediateCandidate {
+    return {
+        address: candidate.ip,
+        component: candidate.component,
+        foundation: candidate.foundation,
+        ip: candidate.ip,
+        port: candidate.port,
+        priority: candidate.priority,
+        protocol: candidate.protocol!,
+        relatedAddress: candidate.relatedAddress,
+        relatedPort: candidate.relatedPort,
+        tcpType: candidate.tcpType as 'active' | 'passive' | 'so',
+        type: candidate.type
+    };
+}
+
 export function convertIntermediateToTransport(media: IntermediateMediaDescription): JingleIceUdp {
     const ice = media.iceParameters;
     const dtls = media.dtlsParameters;

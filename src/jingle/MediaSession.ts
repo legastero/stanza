@@ -69,9 +69,9 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    public get streams() {
+    public get streams(): MediaStream[] {
         if (this.pc.signalingState !== 'closed') {
-            return this.pc.getRemoteStreams();
+            return (this.pc as any).getRemoteStreams();
         }
         return [];
     }
@@ -80,18 +80,23 @@ export default class MediaSession extends ICESession {
     // Session control methods
     // ----------------------------------------------------------------
 
-    public async start(offerOptions: RTCOfferOptions | ActionCallback, next?: ActionCallback) {
+    public async start(opts: RTCOfferOptions | ActionCallback, next?: ActionCallback) {
         this.state = 'pending';
 
+        if (arguments.length === 1 && typeof opts === 'function') {
+            next = opts;
+            opts = {};
+        }
         next = next || (() => undefined);
+        opts = opts || {};
 
         this.role = 'initiator';
-        this.offerOptions = offerOptions;
+        this.offerOptions = opts;
 
         try {
             await this.processLocal('session-initiate', async () => {
-                const offer = await this.pc.createOffer(offerOptions);
-                const json = importFromSDP(offer.sdp);
+                const offer = await this.pc.createOffer(opts as RTCOfferOptions);
+                const json = importFromSDP(offer.sdp!);
                 const jingle = convertIntermediateToRequest(json, this.role);
                 jingle.sid = this.sid;
                 jingle.action = 'session-initiate';
@@ -127,9 +132,9 @@ export default class MediaSession extends ICESession {
 
         try {
             await this.processLocal('session-accept', async () => {
-                const answer = await this.pc.createAnswer(opts);
+                const answer = await this.pc.createAnswer(opts as RTCAnswerOptions);
 
-                const json = importFromSDP(answer.sdp);
+                const json = importFromSDP(answer.sdp!);
                 const jingle = convertIntermediateToRequest(json, this.role);
                 jingle.sid = this.sid;
                 jingle.action = 'session-accept';
@@ -225,7 +230,7 @@ export default class MediaSession extends ICESession {
             if (this.pc.addTrack) {
                 this.pc.addTrack(track, stream);
             } else {
-                this.pc.addStream(stream);
+                (this.pc as any).addStream(stream);
             }
             if (cb) {
                 cb();
@@ -260,7 +265,7 @@ export default class MediaSession extends ICESession {
     // Jingle action handers
     // ----------------------------------------------------------------
 
-    public async onSessionInitiate(changes: Jingle, cb: ActionCallback) {
+    protected async onSessionInitiate(changes: Jingle, cb: ActionCallback) {
         this._log('info', 'Initiating incoming session');
 
         this.state = 'pending';
@@ -284,14 +289,14 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    public onSessionTerminate(changes: Jingle, cb: ActionCallback) {
+    protected onSessionTerminate(changes: Jingle, cb: ActionCallback) {
         for (const receiver of this.pc.getReceivers()) {
             this.onRemoveTrack(receiver.track);
         }
         super.onSessionTerminate(changes, cb);
     }
 
-    public onSessionInfo(changes: Jingle, cb: ActionCallback) {
+    protected onSessionInfo(changes: Jingle, cb: ActionCallback) {
         const info: JingleInfo = changes.info || { infoType: '' };
 
         switch (info.infoType) {
