@@ -16,7 +16,7 @@ import {
 
 import { NS_FILE_TRANSFER_5, NS_HASHES_2, NS_THUMBS_1 } from '../Namespaces';
 import { addAlias } from './util';
-import { JingleApplication } from './xep0166';
+import { JingleApplication, JingleInfo } from './xep0166';
 import { Thumbnail } from './xep0264';
 import { Hash, HashUsed } from './xep0300';
 
@@ -45,9 +45,9 @@ export interface FileRange {
     length?: number;
 }
 
-export interface FileTransferInfo {
+export interface FileTransferInfo extends JingleInfo {
     infoType: typeof INFO_CHECKSUM_5 | typeof INFO_RECEIVED_5;
-    creator: string;
+    creator?: 'initiator' | 'responder';
     name: string;
     file?: FileDescription;
 }

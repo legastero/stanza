@@ -1,11 +1,31 @@
 import { EventEmitter } from 'events';
 import * as Hashes from 'iana-hashes';
 
+import {
+    FileDescription,
+    FileTransferDescription,
+    FileTransferInfo,
+    Hash,
+    INFO_CHECKSUM_5,
+    Jingle,
+    NS_FILE_TRANSFER_5
+} from '../protocol/stanzas';
 import ICESession from './ICESession';
-import { importFromSDP, exportToSDP } from './lib/Intermediate';
+import { exportToSDP, importFromSDP } from './lib/Intermediate';
+import { Action, SessionRole } from './lib/JingleUtil';
 import { convertIntermediateToRequest, convertRequestToIntermediate } from './lib/Protocol';
+import { ActionCallback } from './Session';
 
 export class Sender extends EventEmitter {
+    public file?: File;
+    public channel?: RTCDataChannel;
+    public hash: Hashes.Hash;
+
+    private config: {
+        chunkSize: number;
+        hash: string;
+    };
+
     constructor(opts = {}) {
         super();
 
@@ -15,12 +35,12 @@ export class Sender extends EventEmitter {
             ...opts
         };
 
-        this.file = null;
-        this.channel = null;
+        this.file = undefined;
+        this.channel = undefined;
         this.hash = Hashes.createHash(this.config.hash);
     }
 
-    send(file, channel) {
+    public send(file: File, channel: RTCDataChannel) {
         if (this.file && this.channel) {
             return;
         }
@@ -33,26 +53,28 @@ export class Sender extends EventEmitter {
         let offset = 0;
         let pendingRead = false;
 
-        fileReader.addEventListener('load', event => {
-            const data = event.target.result;
+        fileReader.addEventListener('load', (event: ProgressEvent) => {
+            const data: ArrayBuffer = (event.target as FileReader).result! as ArrayBuffer;
 
             pendingRead = false;
             offset += data.byteLength;
 
-            this.channel.send(data);
+            this.channel!.send(data);
             this.hash.update(new Uint8Array(data));
             this.emit('progress', offset, file.size, data);
 
             if (offset < file.size) {
-                if (this.channel.bufferedAmount <= this.channel.bufferedAmountLowThreshold) {
+                if (this.channel!.bufferedAmount <= this.channel!.bufferedAmountLowThreshold) {
                     sliceFile();
                 }
                 // Otherwise wait for bufferedamountlow event to trigger reading more data
             } else {
                 this.emit('progress', file.size, file.size, null);
                 this.emit('sentFile', {
-                    algo: this.config.hash,
-                    hash: this.hash.digest('hex')
+                    algorithm: this.config.hash,
+                    name: file.name,
+                    size: file.size,
+                    value: this.hash.digest()
                 });
             }
         });
@@ -75,7 +97,21 @@ export class Sender extends EventEmitter {
     }
 }
 
+interface ReceiverMetadata extends FileDescription {
+    actualhash?: string;
+    hash?: Hash;
+}
+
 export class Receiver extends EventEmitter {
+    public metadata!: ReceiverMetadata;
+    private config: {
+        hash: string;
+    };
+    private receiveBuffer: any[];
+    private received: number;
+    private channel?: RTCDataChannel;
+    private hash: Hashes.Hash;
+
     constructor(opts = {}) {
         super();
 
@@ -86,15 +122,12 @@ export class Receiver extends EventEmitter {
 
         this.receiveBuffer = [];
         this.received = 0;
-        this.metadata = {};
-        this.channel = null;
+        this.channel = undefined;
         this.hash = Hashes.createHash(this.config.hash);
     }
 
-    receive(metadata, channel) {
-        if (metadata) {
-            this.metadata = metadata;
-        }
+    public receive(metadata: ReceiverMetadata, channel: RTCDataChannel) {
+        this.metadata = metadata;
 
         this.channel = channel;
         this.channel.binaryType = 'arraybuffer';
@@ -113,7 +146,7 @@ export class Receiver extends EventEmitter {
 
                 this.emit('receivedFile', new Blob(this.receiveBuffer), this.metadata);
                 this.receiveBuffer = [];
-            } else if (this.received > this.metadata.size) {
+            } else if (this.received > this.metadata.size!) {
                 // FIXME
                 console.error('received more than expected, discarding...');
                 this.receiveBuffer = []; // just discard...
@@ -123,21 +156,32 @@ export class Receiver extends EventEmitter {
 }
 
 export default class FileTransferSession extends ICESession {
-    constructor(opts) {
+    private sender?: Sender;
+    private receiver?: Receiver;
+    private file?: File;
+    private receivedFile?: File;
+    private channel?: RTCDataChannel;
+    private contentName?: string;
+
+    constructor(opts: any) {
         super(opts);
 
-        this.sender = null;
-        this.receiver = null;
-        this.file = null;
+        this.sender = undefined;
+        this.receiver = undefined;
+        this.file = undefined;
     }
 
-    async start(file, next) {
+    public async start(file: File | ActionCallback, next?: ActionCallback) {
         next = next || (() => undefined);
+        if (typeof file === 'function') {
+            next = file;
+            throw new Error('File object required');
+        }
 
         this.state = 'pending';
         this.role = 'initiator';
 
-        this.file = file;
+        this.file = file as File;
 
         this.sender = new Sender();
         this.sender.on('progress', (sent, size) => {
@@ -146,22 +190,20 @@ export default class FileTransferSession extends ICESession {
         this.sender.on('sentFile', meta => {
             this._log('info', 'Sent file', meta.name);
 
-            this.send('description-info', {
-                contents: [
-                    {
-                        application: {
-                            applicationType: 'filetransfer',
-                            offer: {
-                                hash: {
-                                    algo: meta.algo,
-                                    value: meta.hash
-                                }
+            this.send(Action.SessionInfo, {
+                info: {
+                    creator: SessionRole.Initiator,
+                    file: {
+                        hashes: [
+                            {
+                                algorithm: meta.algorithm,
+                                value: meta.value
                             }
-                        },
-                        creator: 'initiator',
-                        name: this.contentName
-                    }
-                ]
+                        ]
+                    },
+                    infoType: INFO_CHECKSUM_5,
+                    name: this.contentName
+                } as FileTransferInfo
             });
 
             this.emit('sentFile', this, meta);
@@ -171,7 +213,7 @@ export default class FileTransferSession extends ICESession {
             ordered: true
         });
         this.channel.onopen = () => {
-            this.sender.send(this.file, this.channel);
+            this.sender!.send(this.file!, this.channel!);
         };
 
         try {
@@ -181,25 +223,26 @@ export default class FileTransferSession extends ICESession {
                     offerToReceiveVideo: false
                 });
 
-                const json = importFromSDP(offer.sdp);
+                const json = importFromSDP(offer.sdp!);
                 const jingle = convertIntermediateToRequest(json, this.role);
 
-                this.contentName = jingle.contents[0].name;
+                this.contentName = jingle.contents![0].name;
 
                 jingle.sid = this.sid;
-                jingle.action = 'session-initate';
-                jingle.contents[0].application = {
-                    applicationType: 'filetransfer',
-                    offer: {
-                        date: file.lastModifiedDate,
-                        hash: {
-                            algo: 'sha-1',
-                            value: ''
-                        },
+                jingle.action = 'session-initiate';
+                jingle.contents![0].application = {
+                    applicationType: NS_FILE_TRANSFER_5,
+                    file: {
+                        date: new Date(file.lastModified),
+                        hashesUsed: [
+                            {
+                                algorithm: 'sha-1'
+                            }
+                        ],
                         name: file.name,
                         size: file.size
                     }
-                };
+                } as FileTransferDescription;
 
                 this.send('session-initiate', jingle);
 
@@ -213,7 +256,7 @@ export default class FileTransferSession extends ICESession {
         }
     }
 
-    async accept(next) {
+    public async accept(next?: ActionCallback) {
         this._log('info', 'Accepted incoming session');
 
         this.role = 'responder';
@@ -225,14 +268,14 @@ export default class FileTransferSession extends ICESession {
             await this.processLocal('session-accept', async () => {
                 const answer = await this.pc.createAnswer();
 
-                const json = importFromSDP(answer.sdp);
+                const json = importFromSDP(answer.sdp!);
                 const jingle = convertIntermediateToRequest(json, this.role);
                 jingle.sid = this.sid;
                 jingle.action = 'session-accept';
-                jingle.contents.forEach(content => {
+                jingle.contents!.forEach(content => {
                     content.creator = 'initiator';
                 });
-                this.contentName = jingle.contents[0].name;
+                this.contentName = jingle.contents![0].name;
                 this.send('session-accept', jingle);
 
                 await this.pc.setLocalDescription(answer);
@@ -245,7 +288,7 @@ export default class FileTransferSession extends ICESession {
         }
     }
 
-    async onSessionInitiate(changes, cb) {
+    protected async onSessionInitiate(changes: Jingle, cb: ActionCallback) {
         this._log('info', 'Initiating incoming session');
 
         this.role = 'responder';
@@ -253,9 +296,11 @@ export default class FileTransferSession extends ICESession {
 
         const json = convertRequestToIntermediate(changes, this.peerRole);
         const sdp = exportToSDP(json);
-        const desc = changes.contents[0].application;
+        const desc = changes.contents![0].application as FileTransferDescription;
 
-        this.receiver = new Receiver({ hash: desc.offer.hash.algo });
+        const hashes = desc.file.hashesUsed ? desc.file.hashesUsed : desc.file.hashes || [];
+
+        this.receiver = new Receiver({ hash: hashes[0] && hashes[0].algorithm });
         this.receiver.on('progress', (received, size) => {
             this._log('info', 'Receive progress ' + received + '/' + size);
         });
@@ -263,10 +308,10 @@ export default class FileTransferSession extends ICESession {
             this.receivedFile = file;
             this._maybeReceivedFile();
         });
-        this.receiver.metadata = desc.offer;
+        this.receiver.metadata = desc.file;
         this.pc.addEventListener('datachannel', e => {
             this.channel = e.channel;
-            this.receiver.receive(null, e.channel);
+            this.receiver!.receive(this.receiver!.metadata, e.channel);
         });
 
         try {
@@ -279,25 +324,32 @@ export default class FileTransferSession extends ICESession {
         }
     }
 
-    onDescriptionInfo(info, cb) {
-        const hash = info.contents[0].application.offer.hash;
-        this.receiver.metadata.hash = hash;
-        if (this.receiver.metadata.actualhash) {
+    protected onSessionInfo(changes: Jingle, cb: ActionCallback) {
+        const info = changes.info as FileTransferInfo;
+        if (!info || !info.file || !info.file.hashes) {
+            return;
+        }
+        this.receiver!.metadata.hashes = info.file.hashes;
+        if (this.receiver!.metadata.actualhash) {
             this._maybeReceivedFile();
         }
         cb();
     }
 
-    _maybeReceivedFile() {
-        if (!this.receiver.metadata.hash.value) {
+    private _maybeReceivedFile() {
+        if (!this.receiver!.metadata.hashes || !this.receiver!.metadata.hashes.length) {
             // unknown hash, file transfer not completed
-        } else if (this.receiver.metadata.hash.value === this.receiver.metadata.actualhash) {
-            this._log('info', 'File hash matches');
-            this.emit('receivedFile', this, this.receivedFile, this.receiver.metadata);
-            this.end('success');
-        } else {
-            this._log('error', 'File hash does not match');
-            this.end('media-error');
+            return;
         }
+        for (const hash of this.receiver!.metadata.hashes || []) {
+            if (hash.value && hash.value.toString('hex') === this.receiver!.metadata.actualhash) {
+                this._log('info', 'File hash matches');
+                this.emit('receivedFile', this, this.receivedFile, this.receiver!.metadata);
+                this.end('success');
+                return;
+            }
+        }
+        this._log('error', 'File hash does not match');
+        this.end('media-error');
     }
 }

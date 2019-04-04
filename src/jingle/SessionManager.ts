@@ -2,7 +2,7 @@ import WildEmitter from '../WildEmitter';
 
 import { NS_JINGLE_RTP_1 } from '../protocol';
 
-import { IQ, Jingle, JingleReason, StanzaError } from '../protocol/stanzas';
+import { IQ, Jingle, JingleReason, NS_FILE_TRANSFER_5, StanzaError } from '../protocol/stanzas';
 import FileTransferSession from './FileTransferSession';
 import { ReasonCondition } from './lib/JingleUtil';
 import MediaSession from './MediaSession';
@@ -52,7 +52,7 @@ export default class SessionManager extends WildEmitter {
                 if (opts.applicationTypes.indexOf(NS_JINGLE_RTP_1) >= 0) {
                     return new MediaSession(opts);
                 }
-                if (opts.applicationTypes.indexOf('filetransfer') >= 0) {
+                if (opts.applicationTypes.indexOf(NS_FILE_TRANSFER_5) >= 0) {
                     return new FileTransferSession(opts);
                 }
             });

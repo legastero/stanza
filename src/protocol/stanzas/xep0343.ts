@@ -24,7 +24,6 @@ declare module './xep0176' {
 export default {
     aliases: [
         {
-            multiple: true,
             path: 'iq.jingle.contents.transport.sctp',
             selector: NS_JINGLE_ICE_UDP_1
         }

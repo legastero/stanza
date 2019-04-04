@@ -343,8 +343,7 @@ export function convertRequestToIntermediate(
 ): IntermediateSessionDescription {
     const session: IntermediateSessionDescription = {
         groups: [],
-        media: [],
-        sessionId: jingle.sid
+        media: []
     };
 
     for (const group of jingle.groups || []) {
