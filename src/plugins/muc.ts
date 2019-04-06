@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
 import { NS_HATS_0, NS_MUC, NS_MUC_DIRECT_INVITE } from '../protocol';
-import * as JID from '../protocol/jid';
+import * as JID from '../protocol/JID';
 import {
     DataForm,
     IQ,
@@ -128,7 +128,7 @@ export default function(client: Agent) {
     });
 
     client.on('presence', (pres: Presence) => {
-        const room = JID.bare(pres.from);
+        const room = JID.toBare(pres.from)!;
 
         if (client.joiningRooms.has(room) && pres.type === 'error') {
             client.joiningRooms.delete(room);
@@ -166,12 +166,13 @@ export default function(client: Agent) {
         client.emit('muc:available', pres);
         if (isSelf && !client.joinedRooms.has(room)) {
             client.emit('muc:join', pres);
-            client.joinedRooms.set(room, JID.resource(pres.from));
+            client.joinedRooms.set(room, JID.getResource(pres.from)!);
             client.joiningRooms.delete(room);
         }
     });
 
     client.joinRoom = (room: string, nick: string, opts: Presence = {}) => {
+        room = JID.toBare(room)!;
         client.joiningRooms.set(room, nick);
         client.sendPresence({
             ...opts,
@@ -238,7 +239,7 @@ export default function(client: Agent) {
 
     client.changeNick = (room: string, nick: string) => {
         client.sendPresence({
-            to: `${JID.bare(room)}/${nick}`
+            to: `${JID.toBare(room)}/${nick}`
         });
     };
 

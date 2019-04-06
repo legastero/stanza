@@ -1,5 +1,5 @@
 import { Agent } from '../Definitions';
-import * as JID from '../protocol/jid';
+import * as JID from '../protocol/JID';
 import { BookmarkStorage, IQ, MUCBookmark } from '../protocol/stanzas';
 
 declare module '../Definitions' {

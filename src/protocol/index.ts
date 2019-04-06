@@ -1,4 +1,4 @@
-import * as JID from './jid';
+import * as JID from './JID';
 
 export { JID };
 

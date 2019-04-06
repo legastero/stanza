@@ -9,8 +9,8 @@ import HostMeta from './plugins/hostmeta';
 import SASLPlugin from './plugins/sasl';
 import Session from './plugins/session';
 import Smacks from './plugins/smacks';
-import * as JID from './protocol/jid';
 import Protocol from './protocol/stanzas';
+import * as JID from './protocol/JID';
 import { IQ, Message, Presence, StreamError } from './protocol/stanzas';
 import * as SASL from './sasl';
 import StreamManagement from './StreamManagement';
@@ -355,9 +355,9 @@ export default class Client extends WildEmitter {
 
     private _getConfiguredCredentials() {
         const creds = this.config.credentials || {};
-        const requestedJID = this.config.jid || '';
-        const username = creds.username || JID.user(requestedJID);
-        const server = creds.server || JID.server(requestedJID);
+        const requestedJID = JID.parse(this.config.jid || '');
+        const username = creds.username || requestedJID.local;
+        const server = creds.server || requestedJID.domain;
         return {
             host: server,
             password: this.config.password,
@@ -399,7 +399,7 @@ export default class Client extends WildEmitter {
         }
 
         if (!this.config.server) {
-            this.config.server = JID.server(this.config.jid);
+            this.config.server = JID.getDomain(this.config.jid!);
         }
         if (this.config.password) {
             this.config.credentials = this.config.credentials || {};

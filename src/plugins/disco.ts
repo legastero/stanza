@@ -1,7 +1,7 @@
 import { Agent } from '../Definitions';
 import Disco, { DiscoNodeInfo } from '../DiscoManager';
 import { NS_DISCO_INFO, NS_DISCO_ITEMS } from '../protocol';
-import * as JID from '../protocol/jid';
+import * as JID from '../protocol/JID';
 import { DiscoInfo, DiscoItems, IQ, LegacyEntityCaps, Presence } from '../protocol/stanzas';
 
 declare module '../Definitions' {
@@ -48,9 +48,11 @@ export default function(client: Agent) {
     });
 
     client.registerFeature('caps', 100, (features, done) => {
+        const domain = JID.getDomain(client.jid) || client.config.server;
+
         client.emit('disco:caps', {
             caps: features.legacyCapabilities,
-            from: JID.server(client.jid) || client.config.server
+            from: domain
         });
         client.features.negotiated.caps = true;
         done();

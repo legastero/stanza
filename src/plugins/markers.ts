@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
 import { NS_CHAT_MARKERS_0 } from '../protocol';
-import * as JID from '../protocol/jid';
+import * as JID from '../protocol/JID';
 import { Message } from '../protocol/stanzas';
 
 declare module '../Definitions' {
@@ -34,7 +34,7 @@ export default function(client: Agent) {
 
     client.markReceived = (msg: Message) => {
         if (enabled(msg)) {
-            const to = msg.type === 'groupchat' ? JID.bare(msg.from) : msg.from;
+            const to = msg.type === 'groupchat' ? JID.toBare(msg.from) : msg.from;
             client.sendMessage({
                 body: '',
                 marker: {
@@ -49,7 +49,7 @@ export default function(client: Agent) {
 
     client.markDisplayed = (msg: Message) => {
         if (enabled(msg)) {
-            const to = msg.type === 'groupchat' ? JID.bare(msg.from) : msg.from;
+            const to = msg.type === 'groupchat' ? JID.toBare(msg.from) : msg.from;
             client.sendMessage({
                 body: '',
                 marker: {
@@ -63,7 +63,7 @@ export default function(client: Agent) {
 
     client.markAcknowledged = (msg: Message) => {
         if (enabled(msg)) {
-            const to = msg.type === 'groupchat' ? JID.bare(msg.from) : msg.from;
+            const to = msg.type === 'groupchat' ? JID.toBare(msg.from) : msg.from;
             client.sendMessage({
                 body: '',
                 marker: {

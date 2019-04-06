@@ -1,13 +1,13 @@
 const test = require('tape');
 
-import { jid as xmppjid, JID } from '../src';
+import { JID } from '../src';
 
 // --------------------------------------------------------------------
 // Test basic parsing
 // --------------------------------------------------------------------
 
 test('Parse JID with only domain', function(t) {
-    var res = new JID('example.com');
+    var res = JID.parse('example.com');
     t.equal(res.domain, 'example.com');
     t.equal(res.local, '');
     t.equal(res.resource, '');
@@ -17,7 +17,7 @@ test('Parse JID with only domain', function(t) {
 });
 
 test('Parse JID with domain + resource', function(t) {
-    var res = new JID('example.com/resource');
+    var res = JID.parse('example.com/resource');
     t.equal(res.domain, 'example.com');
     t.equal(res.local, '');
     t.equal(res.resource, 'resource');
@@ -27,7 +27,7 @@ test('Parse JID with domain + resource', function(t) {
 });
 
 test('Parse JID with local + domain', function(t) {
-    var res = new JID('local@example.com');
+    var res = JID.parse('local@example.com');
     t.equal(res.domain, 'example.com');
     t.equal(res.local, 'local');
     t.equal(res.resource, '');
@@ -37,7 +37,7 @@ test('Parse JID with local + domain', function(t) {
 });
 
 test('Parse JID with local + domain + resource', function(t) {
-    var res = new JID('local@example.com/resource');
+    var res = JID.parse('local@example.com/resource');
     t.equal(res.domain, 'example.com');
     t.equal(res.local, 'local');
     t.equal(res.resource, 'resource');
@@ -47,7 +47,7 @@ test('Parse JID with local + domain + resource', function(t) {
 });
 
 test('Parse JID with resource including @', function(t) {
-    var res = new JID('local@example.com/res@ource');
+    var res = JID.parse('local@example.com/res@ource');
     t.equal(res.domain, 'example.com');
     t.equal(res.local, 'local');
     t.equal(res.resource, 'res@ource');
@@ -57,7 +57,7 @@ test('Parse JID with resource including @', function(t) {
 });
 
 test('Parse JID with resource including /', function(t) {
-    var res = new JID('local@example.com/resource/2');
+    var res = JID.parse('local@example.com/resource/2');
     t.equal(res.domain, 'example.com');
     t.equal(res.local, 'local');
     t.equal(res.resource, 'resource/2');
@@ -71,7 +71,7 @@ test('Parse JID with resource including /', function(t) {
 // --------------------------------------------------------------------
 
 test('Construct JID with only domain', function(t) {
-    var res = new JID('', 'example.com');
+    var res = JID.parse(JID.create({ domain: 'example.com' }));
     t.equal(res.domain, 'example.com');
     t.equal(res.bare, 'example.com');
     t.equal(res.full, 'example.com');
@@ -79,7 +79,7 @@ test('Construct JID with only domain', function(t) {
 });
 
 test('Construct JID with domain + resource', function(t) {
-    var res = new JID('', 'example.com', 'resource');
+    var res = JID.parse(JID.create({ domain: 'example.com', resource: 'resource' }));
     t.equal(res.domain, 'example.com');
     t.equal(res.resource, 'resource');
     t.equal(res.bare, 'example.com');
@@ -88,7 +88,7 @@ test('Construct JID with domain + resource', function(t) {
 });
 
 test('Construct JID with local + domain', function(t) {
-    var res = new JID('local', 'example.com');
+    var res = JID.parse(JID.create({ local: 'local', domain: 'example.com' }));
     t.equal(res.domain, 'example.com');
     t.equal(res.local, 'local');
     t.equal(res.bare, 'local@example.com');
@@ -97,7 +97,9 @@ test('Construct JID with local + domain', function(t) {
 });
 
 test('Construct JID with local + domain + resource', function(t) {
-    var res = new JID('local', 'example.com', 'resource');
+    var res = JID.parse(
+        JID.create({ local: 'local', domain: 'example.com', resource: 'resource' })
+    );
     t.equal(res.domain, 'example.com');
     t.equal(res.local, 'local');
     t.equal(res.resource, 'resource');
@@ -107,7 +109,9 @@ test('Construct JID with local + domain + resource', function(t) {
 });
 
 test('Construct JID with resource including @', function(t) {
-    var res = new JID('local', 'example.com', 'res@ource');
+    var res = JID.parse(
+        JID.create({ local: 'local', domain: 'example.com', resource: 'res@ource' })
+    );
     t.equal(res.domain, 'example.com');
     t.equal(res.local, 'local');
     t.equal(res.resource, 'res@ource');
@@ -117,7 +121,9 @@ test('Construct JID with resource including @', function(t) {
 });
 
 test('Construct JID with resource including /', function(t) {
-    var res = new JID('local', 'example.com', 'resource/2');
+    var res = JID.parse(
+        JID.create({ local: 'local', domain: 'example.com', resource: 'resource/2' })
+    );
     t.equal(res.domain, 'example.com');
     t.equal(res.local, 'local');
     t.equal(res.resource, 'resource/2');
@@ -131,7 +137,7 @@ test('Construct JID with resource including /', function(t) {
 // --------------------------------------------------------------------
 
 test('Valid: IPv4 domain', function(t) {
-    var res = new JID('local@127.0.0.1/resource');
+    var res = JID.parse('local@127.0.0.1/resource');
     t.equal(res.domain, '127.0.0.1');
     t.equal(res.local, 'local');
     t.equal(res.resource, 'resource');
@@ -141,7 +147,7 @@ test('Valid: IPv4 domain', function(t) {
 });
 
 test('Valid: IPv6 domain', function(t) {
-    var res = new JID('local@[::1]/resource');
+    var res = JID.parse('local@[::1]/resource');
     t.equal(res.domain, '[::1]');
     t.equal(res.local, 'local');
     t.equal(res.resource, 'resource');
@@ -151,7 +157,7 @@ test('Valid: IPv6 domain', function(t) {
 });
 
 test('Valid: ACE domain', function(t) {
-    var res = new JID('local@xn--bcher-kva.ch/resource');
+    var res = JID.parse('local@xn--bcher-kva.ch/resource');
     t.equal(res.domain, 'bücher.ch');
     t.equal(res.local, 'local');
     t.equal(res.resource, 'resource');
@@ -161,7 +167,7 @@ test('Valid: ACE domain', function(t) {
 });
 
 test('Valid: domain includes trailing .', function(t) {
-    var res = new JID('local@example.com./resource');
+    var res = JID.parse('local@example.com./resource');
     t.equal(res.domain, 'example.com');
     t.equal(res.local, 'local');
     t.equal(res.resource, 'resource');
@@ -175,7 +181,7 @@ test('Valid: domain includes trailing .', function(t) {
 // --------------------------------------------------------------------
 
 test('Prep: Lowercase', function(t) {
-    var res = new JID('LOCAL@EXAMPLE.com/RESOURCE');
+    var res = JID.parse('LOCAL@EXAMPLE.com/RESOURCE');
     t.equal(res.local, 'local');
     t.equal(res.domain, 'example.com');
     t.equal(res.resource, 'RESOURCE');
@@ -189,57 +195,52 @@ test('Prep: Lowercase', function(t) {
 // --------------------------------------------------------------------
 
 test('Escape: No starting/ending \\20', function(t) {
-    var res = new JID(' test ', 'example.com');
+    var res = JID.parse(JID.create({ local: ' test ', domain: 'example.com' }));
     t.equal(res.local, 'test');
-    t.equal(res.unescapedLocal, 'test');
     t.end();
 });
 
 test('Escape: Existing escape sequences', function(t) {
-    var res = new JID('test\\20\\22\\26\\27\\2f\\3a\\3c\\3e\\40', 'example.com');
-    t.equal(res.local, 'test\\5c20\\5c22\\5c26\\5c27\\5c2f\\5c3a\\5c3c\\5c3e\\5c40');
+    var res = JID.parse(
+        JID.create({ local: 'test\\20\\22\\26\\27\\2f\\3a\\3c\\3e\\40', domain: 'example.com' })
+    );
+    t.equal(res.local, 'test\\20\\22\\26\\27\\2f\\3a\\3c\\3e\\40');
     t.equal(res.bare, 'test\\5c20\\5c22\\5c26\\5c27\\5c2f\\5c3a\\5c3c\\5c3e\\5c40@example.com');
-    t.equal(res.unescapedLocal, 'test\\20\\22\\26\\27\\2f\\3a\\3c\\3e\\40');
     t.end();
 });
 
 test('Escape: Existing escape sequence \\5c', function(t) {
-    var res = new JID('test\\5c', 'example.com');
-    t.equal(res.local, 'test\\5c5c');
+    var res = JID.parse(JID.create({ local: 'test\\5c', domain: 'example.com' }));
+    t.equal(res.local, 'test\\5c');
     t.equal(res.bare, 'test\\5c5c@example.com');
-    t.equal(res.unescapedLocal, 'test\\5c');
     t.end();
 });
 
 test('Escape: Non-escape sequence \\32\\', function(t) {
-    var res = new JID('test\\32\\', 'example.com');
+    var res = JID.parse(JID.create({ local: 'test\\32\\', domain: 'example.com' }));
     t.equal(res.local, 'test\\32\\');
     t.equal(res.bare, 'test\\32\\@example.com');
-    t.equal(res.unescapedLocal, 'test\\32\\');
     t.end();
 });
 
 test('Escape: Escaped characters', function(t) {
-    var res = new JID('testing @\\\'"?:&<>', 'example.com');
-    t.equal(res.local, 'testing\\20\\40\\\\27\\22?\\3a\\26\\3c\\3e');
+    var res = JID.parse(JID.create({ local: 'testing @\\\'"?:&<>', domain: 'example.com' }));
     t.equal(res.bare, 'testing\\20\\40\\\\27\\22?\\3a\\26\\3c\\3e@example.com');
-    t.equal(res.unescapedLocal, 'testing @\\\'"?:&<>');
-    t.equal(res.unescapedBare, 'testing @\\\'"?:&<>@example.com');
+    t.equal(res.local, 'testing @\\\'"?:&<>');
     t.end();
 });
 
 test('Unescape: Non-escape sequence', function(t) {
-    var res = new JID('test\\32@example.com');
+    var res = JID.parse('test\\32@example.com');
     t.equal(res.local, 'test\\32');
     t.equal(res.bare, 'test\\32@example.com');
-    t.equal(res.unescapedLocal, 'test\\32');
     t.end();
 });
 
 test('Unescape: Escaped characters', function(t) {
-    var res = new JID('testing\\20\\40\\5c\\27\\22?\\3a\\26\\3c\\3e@example.com');
-    t.equal(res.local, 'testing\\20\\40\\5c\\27\\22?\\3a\\26\\3c\\3e');
-    t.equal(res.unescapedLocal, 'testing @\\\'"?:&<>');
+    var res = JID.parse('testing\\20\\40\\5c\\27\\22?\\3a\\26\\3c\\3e@example.com');
+    t.equal(res.bare, 'testing\\20\\40\\5c\\27\\22?\\3a\\26\\3c\\3e@example.com');
+    t.equal(res.local, 'testing @\\\'"?:&<>');
     t.end();
 });
 
@@ -248,40 +249,16 @@ test('Unescape: Escaped characters', function(t) {
 // --------------------------------------------------------------------
 
 test('Equal: Full JID', function(t) {
-    var jid1 = new JID('local@example.com/resource');
-    var jid2 = new JID('LOcAL@EXample.COM/resource');
-    t.ok(xmppjid.equal(jid1, jid2));
-    t.end();
-});
-
-test('Equal: Full JID, require prepping', function(t) {
-    var jid1 = new JID('local@example.com/resource');
-    var jid2 = new JID('LOcAL@EXample.COM/resource');
-
-    jid1.prepped = true;
-    jid2.prepped = false;
-
-    t.notOk(xmppjid.equal(jid1, jid2, true));
-    t.ok(xmppjid.equal(jid1, jid2, false));
+    var jid1 = 'local@example.com/resource';
+    var jid2 = 'LOcAL@EXample.COM/resource';
+    t.ok(JID.equal(jid1, jid2));
     t.end();
 });
 
 test('Equal: Bare JID', function(t) {
-    var jid1 = new JID('local@example.com/resource');
-    var jid2 = new JID('LOcAL@EXample.COM/resource');
-    t.ok(xmppjid.equalBare(jid1, jid2));
-    t.end();
-});
-
-test('Equal: Bare JID, require prepping', function(t) {
-    var jid1 = new JID('local@example.com/resource');
-    var jid2 = new JID('LOcAL@EXample.COM/resource');
-
-    jid1.prepped = true;
-    jid2.prepped = false;
-
-    t.notOk(xmppjid.equalBare(jid1, jid2, true));
-    t.ok(xmppjid.equalBare(jid1, jid2, false));
+    var jid1 = 'local@example.com/resource1';
+    var jid2 = 'LOcAL@EXample.COM/resource2';
+    t.ok(JID.equalBare(jid1, jid2));
     t.end();
 });
 
@@ -289,60 +266,20 @@ test('Equal: Bare JID, require prepping', function(t) {
 // Test JID utilities
 // --------------------------------------------------------------------
 
-test('toString', function(t) {
-    var res = new JID('local@example.com/resource');
-    t.equal(res.toString(), 'local@example.com/resource');
-    t.end();
-});
-
-test('JSON.stringify', function(t) {
-    var res = new JID('local@example.com/resource');
-    t.equal(JSON.stringify(res), '"local@example.com/resource"');
-    t.end();
-});
-
-test('Create', function(t) {
-    var res = xmppjid.create('local@example.com/resource');
-    t.equal(res.domain, 'example.com');
-    t.equal(res.local, 'local');
-    t.equal(res.resource, 'resource');
-    t.equal(res.bare, 'local@example.com');
-    t.equal(res.full, 'local@example.com/resource');
-    t.end();
-});
-
-test('Clone JID', function(t) {
-    var orig = new JID('local@example.com/resource');
-    var clone = new JID(orig);
-    t.equal(orig.full, clone.full);
-    t.equal(orig.bare, clone.bare);
-    t.equal(orig.domain, clone.domain);
-    t.equal(orig.local, clone.local);
-    t.equal(orig.resource, clone.resource);
-    t.end();
-});
-
 test('isBare', function(t) {
-    var jid1 = new JID('local@example.com');
-    var jid2 = new JID('local@example.com/resource');
+    var jid1 = 'local@example.com';
+    var jid2 = 'local@example.com/resource';
 
-    t.ok(xmppjid.isBare(jid1));
-    t.notOk(xmppjid.isBare(jid2));
+    t.ok(JID.isBare(jid1));
+    t.notOk(JID.isBare(jid2));
     t.end();
 });
 
 test('isFull', function(t) {
-    var jid1 = new JID('local@example.com/resource');
-    var jid2 = new JID('local@example.com');
+    var jid1 = 'local@example.com/resource';
+    var jid2 = 'local@example.com';
 
-    t.ok(xmppjid.isFull(jid1));
-    t.notOk(xmppjid.isFull(jid2));
-    t.end();
-});
-
-test('Invalid arguments', function(t) {
-    t.throws(function() {
-        const x = new JID(1234);
-    });
+    t.ok(JID.isFull(jid1));
+    t.notOk(JID.isFull(jid2));
     t.end();
 });

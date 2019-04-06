@@ -4,7 +4,6 @@
     "version": "11.1.0",
     "author": "Lance Stout <lancestout@gmail.com>",
     "browser": {
-        "node-stringprep": false,
         "ws": false
     },
     "bugs": "https://github.com/legastero/stanza.io/issues",
@@ -91,6 +90,7 @@
         "compile": "tsc -p .",
         "compile:module": "tsc -p . --outDir ./dist/es --target es2015 --module es2015",
         "compile:rollup": "rollup -c rollup.config.js",
+        "compile:rollup-browser": "rollup -c rollup-browser.config.js",
         "compile:webpack": "webpack --mode production",
         "lint": "tslint -p .",
         "test": "nyc ts-node --files test/index.js | tap-spec && nyc report --reporter=text",

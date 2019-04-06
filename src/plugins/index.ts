@@ -17,7 +17,6 @@ import DataForms from './dataforms';
 import ExtDisco from './extdisco';
 import Geoloc from './geoloc';
 import Invisible from './invisible';
-import JIDPrep from './jidprep';
 import Jingle from './jingle';
 import KeepAlive from './keepalive';
 import MAM from './mam';
@@ -58,7 +57,6 @@ export default function(client: Agent) {
     client.use(ExtDisco);
     client.use(Geoloc);
     client.use(Invisible);
-    client.use(JIDPrep);
     client.use(Jingle);
     client.use(KeepAlive);
     client.use(MAM);

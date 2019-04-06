@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
 import { NS_HTTP_UPLOAD_0 } from '../protocol';
-import * as JID from '../protocol/jid';
+import * as JID from '../protocol/JID';
 import { HTTPUploadRequest, HTTPUploadSlot, IQ } from '../protocol/stanzas';
 
 declare module '../Definitions' {
@@ -41,7 +41,7 @@ export default function(client: Agent) {
         }
     }
 
-    client.getUploadService = async (domain = JID.server(client.jid)) => {
+    client.getUploadService = async (domain = JID.getDomain(client.jid)!) => {
         const domainParameters = await getUploadParameters(domain);
         if (domainParameters) {
             return domainParameters;

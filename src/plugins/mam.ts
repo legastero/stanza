@@ -1,7 +1,7 @@
 import { Agent } from '../Definitions';
 import { NS_MAM_2 } from '../protocol';
 import { mergeFields } from '../protocol/DataForms';
-import * as JID from '../protocol/jid';
+import * as JID from '../protocol/JID';
 import {
     DataForm,
     DataFormField,
