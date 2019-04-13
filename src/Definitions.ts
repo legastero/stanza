@@ -1,6 +1,7 @@
 import WildEmitter from './WildEmitter';
 
 import * as JXT from './jxt';
+import { Factory, MechClass } from './lib/sasl';
 import {
     CSI,
     IQ,
@@ -12,7 +13,6 @@ import {
     StreamFeatures,
     StreamManagement
 } from './protocol/stanzas';
-import { Factory, MechClass } from './sasl';
 import SM from './StreamManagement';
 
 export interface TopLevelElements {

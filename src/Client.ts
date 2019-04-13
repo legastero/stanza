@@ -3,16 +3,16 @@ import WildEmitter from './WildEmitter';
 
 import { Agent, AgentConfig, Transport } from './Definitions';
 import * as JXT from './jxt';
+import * as SASL from './lib/sasl';
 import Bind from './plugins/bind';
 import Features from './plugins/features';
 import HostMeta from './plugins/hostmeta';
 import SASLPlugin from './plugins/sasl';
 import Session from './plugins/session';
 import Smacks from './plugins/smacks';
-import Protocol from './protocol/stanzas';
 import * as JID from './protocol/JID';
 import { IQ, Message, Presence, StreamError } from './protocol/stanzas';
-import * as SASL from './sasl';
+import Protocol from './protocol/stanzas';
 import StreamManagement from './StreamManagement';
 import BOSH from './transports/bosh';
 import WebSocket from './transports/websocket';

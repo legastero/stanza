@@ -1,5 +1,5 @@
 import test from 'tape';
-import SCRAM from '../../src/sasl/scram-sha-1';
+import SCRAM from '../../src/lib/sasl/scram-sha-1';
 
 test('SCRAM', function(t) {
     const mech = new SCRAM({

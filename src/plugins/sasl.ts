@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
+import { Mechanism } from '../lib/sasl';
 import { SASL } from '../protocol/stanzas';
-import { Mechanism } from '../sasl';
 
 declare module '../Definitions' {
     export interface Agent {
