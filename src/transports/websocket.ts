@@ -1,4 +1,4 @@
-import * as async from 'async';
+import { AsyncQueue, queue } from '../lib/async';
 import WildEmitter from '../WildEmitter';
 
 import WSNode from 'ws';
@@ -23,7 +23,7 @@ export default class WSConnection extends WildEmitter implements Transport {
     private sm: StreamManagement;
     private stanzas: Registry;
     private closing: boolean;
-    private sendQueue: async.AsyncQueue<string>;
+    private sendQueue: AsyncQueue<string>;
     private conn?: WSNode | WebSocket;
     private parser?: StreamParser;
 
@@ -34,7 +34,7 @@ export default class WSConnection extends WildEmitter implements Transport {
         this.stanzas = stanzas;
         this.closing = false;
 
-        this.sendQueue = async.queue((data, cb) => {
+        this.sendQueue = queue((data, cb) => {
             if (this.conn) {
                 data = Buffer.from(data, 'utf8').toString();
                 this.emit('raw:outgoing', data);

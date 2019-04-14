@@ -1,4 +1,4 @@
-import * as async from 'async';
+import { series as asyncSeries } from '../lib/async';
 
 import { Agent } from '../Definitions';
 import { StreamFeatures } from '../protocol/stanzas';
@@ -59,7 +59,7 @@ export default function(client: Agent) {
             }
         }
 
-        async.series<string, string>(series, (cmd, msg) => {
+        asyncSeries<string, string>(series, (cmd, msg) => {
             if (cmd === 'restart') {
                 if (client.transport) {
                     client.transport.restart();

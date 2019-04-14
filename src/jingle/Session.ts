@@ -1,4 +1,4 @@
-import * as async from 'async';
+import { priorityQueue } from '../lib/async';
 import { uuid } from '../Utils';
 
 import { Jingle, JingleReason } from '../protocol/stanzas';
@@ -59,7 +59,7 @@ export default class JingleSession extends WildEmitter {
 
         // Here is where we'll ensure that all actions are processed
         // in order, even if a particular action requires async handling.
-        this.processingQueue = async.priorityQueue<LocalProcessingTask | RemoteProcessingTask>(
+        this.processingQueue = priorityQueue<LocalProcessingTask | RemoteProcessingTask>(
             async (task, next) => {
                 if (this.state === 'ended') {
                     // Don't process anything once the session has been ended
