@@ -7,7 +7,7 @@ Child('npm run compile');
 Child('npm run compile:module');
 Child('npm run compile:rollup');
 Child('npm run compile:rollup-browser');
-Child('mkdir -p dist/npm');
+Child('mkdir dist/npm');
 Child('cp -r dist/cjs/* dist/npm/');
 Child('cp dist/es/index.module.js dist/npm/module.js');
 Child('cp dist/es/index-browser.module.js dist/npm/browser-module.js');
