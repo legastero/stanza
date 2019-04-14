@@ -36,15 +36,8 @@ export default function(client: Agent) {
             name,
             priority
         });
-        this.features.order.sort((a, b) => {
-            if (a.priority < b.priority) {
-                return -1;
-            }
-            if (a.priority > b.priority) {
-                return 1;
-            }
-            return 0;
-        });
+        // We want the features with smallest priority values at the start of the list
+        this.features.order.sort((a, b) => a.priority - b.priority);
         this.features.handlers[name] = handler.bind(client);
     };
 

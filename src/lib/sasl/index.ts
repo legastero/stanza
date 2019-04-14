@@ -94,15 +94,8 @@ export class Factory {
             name: name.toUpperCase(),
             priority: priority || this.mechanisms.length
         });
-        this.mechanisms.sort((a, b) => {
-            if (a.priority < b.priority) {
-                return 1;
-            }
-            if (a.priority > b.priority) {
-                return -1;
-            }
-            return 0;
-        });
+        // We want mechanisms with highest priority at the start of the list
+        this.mechanisms.sort((a, b) => b.priority - a.priority);
     }
 
     public disable(name: string): void {
