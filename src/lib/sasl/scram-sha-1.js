@@ -1,4 +1,4 @@
-import { createHash, createHmac, randomBytes } from 'iana-hashes';
+import { createHash, createHmac, randomBytes } from '../crypto';
 
 const RESP = {};
 const CLIENT_KEY = 'Client Key';
@@ -49,13 +49,13 @@ function XOR(a, b) {
 }
 
 function H(text) {
-    return createHash('sha1')
+    return createHash('sha-1')
         .update(text)
         .digest();
 }
 
 function HMAC(key, msg) {
-    return createHmac('sha1', key)
+    return createHmac('sha-1', key)
         .update(msg)
         .digest();
 }

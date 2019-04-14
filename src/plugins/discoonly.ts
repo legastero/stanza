@@ -1,4 +1,4 @@
-import * as hashes from 'iana-hashes';
+import * as hashes from '../lib/crypto';
 
 import { Agent } from '../Definitions';
 import {

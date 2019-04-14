@@ -1,4 +1,3 @@
-import * as uuid from 'uuid';
 import WildEmitter from './WildEmitter';
 
 import { Agent, AgentConfig, Transport } from './Definitions';
@@ -16,7 +15,7 @@ import Protocol from './protocol/stanzas';
 import StreamManagement from './StreamManagement';
 import BOSH from './transports/bosh';
 import WebSocket from './transports/websocket';
-import { timeoutPromise } from './Utils';
+import { timeoutPromise, uuid } from './Utils';
 
 const SASL_MECHS: { [key: string]: SASL.MechClass } = {
     anonymous: SASL.Anonymous,
@@ -167,7 +166,7 @@ export default class Client extends WildEmitter {
     }
 
     public nextId() {
-        return uuid.v4();
+        return uuid();
     }
 
     public async getCredentials() {

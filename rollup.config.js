@@ -4,18 +4,13 @@ export default {
     external: [
         'async',
         'cross-fetch',
+        'crypto',
         'events',
-        'iana-hashes',
-        'jxt',
         'punycode',
-        'randombytes',
         'sdp',
         'stream',
         'tslib',
-        'uuid',
-        'wildemitter',
-        'ws',
-        'xmpp-jid'
+        'ws'
     ],
     input: 'dist/es/index.js',
     output: {

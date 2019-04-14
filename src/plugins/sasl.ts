@@ -58,6 +58,7 @@ export default function(client: Agent) {
                         client.emit('credentials:update', client.config.credentials);
                     }
                 } catch (err) {
+                    console.error(err);
                     client.send('sasl', {
                         type: 'abort'
                     });

@@ -4,7 +4,8 @@
     "version": "11.1.0",
     "author": "Lance Stout <lancestout@gmail.com>",
     "browser": {
-        "ws": false
+        "ws": false,
+        "./dist/es/lib/crypto/index.js": "./dist/es/lib/crypto/index-browser.js"
     },
     "bugs": "https://github.com/legastero/stanza.io/issues",
     "contributors": [
@@ -13,16 +14,12 @@
     ],
     "dependencies": {
         "@types/async": "^2.4.0",
-        "@types/uuid": "^3.4.4",
         "@types/ws": "^6.0.1",
         "async": "^2.5.0",
         "cross-fetch": "^3.0.0",
-        "iana-hashes": "^1.1.0",
-        "jxt": "^4.0.0",
         "sdp": "^2.9.0",
         "stanza": "0.0.1",
         "tslib": "^1.9.3",
-        "uuid": "^3.0.1",
         "ws": "^6.1.2"
     },
     "devDependencies": {

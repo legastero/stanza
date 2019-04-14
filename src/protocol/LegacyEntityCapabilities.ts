@@ -1,5 +1,4 @@
-import * as Hashes from 'iana-hashes';
-
+import * as Hashes from '../lib/crypto';
 import { octetCompare } from '../Utils';
 
 import { DataForm, DataFormField, DiscoInfo, DiscoInfoIdentity } from './stanzas';
