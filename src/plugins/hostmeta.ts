@@ -1,7 +1,6 @@
-import fetch from 'cross-fetch';
-
 import { Agent } from '../Definitions';
 import * as JXT from '../jxt';
+import fetch from '../lib/fetch';
 import { NS_ALT_CONNECTIONS_WEBSOCKET, NS_ALT_CONNECTIONS_XBOSH } from '../protocol';
 
 declare module '../Definitions' {

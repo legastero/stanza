@@ -1,11 +1,10 @@
-import fetch from 'cross-fetch';
-import WildEmitter from '../WildEmitter';
-
 import { Transport, TransportConfig } from '../Definitions';
-import { ParsedData, Registry, StreamParser, XMLElement } from '../jxt';
+import { ParsedData, Registry, StreamParser } from '../jxt';
+import fetch from '../lib/fetch';
 import { BOSH, Stream } from '../protocol/stanzas';
 import StreamManagement from '../StreamManagement';
 import { sleep, timeoutPromise } from '../Utils';
+import WildEmitter from '../WildEmitter';
 
 async function retryRequest(
     url: string,

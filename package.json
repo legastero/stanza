@@ -5,7 +5,8 @@
     "author": "Lance Stout <lancestout@gmail.com>",
     "browser": {
         "ws": false,
-        "./dist/es/lib/crypto/index.js": "./dist/es/lib/crypto/index-browser.js"
+        "./dist/es/lib/crypto/index.js": "./dist/es/lib/crypto/index-browser.js",
+        "./dist/es/lib/fetch/index.js": "./dist/es/lib/fetch/index-browser.js"
     },
     "bugs": "https://github.com/legastero/stanza.io/issues",
     "contributors": [
@@ -16,7 +17,7 @@
         "@types/async": "^2.4.0",
         "@types/ws": "^6.0.1",
         "async": "^2.5.0",
-        "cross-fetch": "^3.0.0",
+        "cross-fetch": "^3.0.2",
         "sdp": "^2.9.0",
         "tslib": "^1.9.3",
         "ws": "^6.1.2"
