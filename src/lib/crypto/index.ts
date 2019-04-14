@@ -1,4 +1,8 @@
-import * as crypto from 'crypto';
+import {
+    createHash as nodeCreateHash,
+    createHmac as nodeCreateHmac,
+    randomBytes as nodeRandomBytes
+} from 'crypto';
 
 export interface Hash {
     update(data: Buffer | Uint8Array | string, inputEncoding?: string): Hash;
@@ -27,13 +31,13 @@ export function getHashes() {
 }
 
 export function createHash(alg: string) {
-    return crypto.createHash(ianaNames.get(alg.toLowerCase()) || alg);
+    return nodeCreateHash(ianaNames.get(alg.toLowerCase()) || alg);
 }
 
 export function createHmac(alg: string, key: string | Buffer) {
-    return crypto.createHmac(ianaNames.get(alg.toLowerCase()) || alg, key);
+    return nodeCreateHmac(ianaNames.get(alg.toLowerCase()) || alg, key);
 }
 
 export function randomBytes(size: number) {
-    return crypto.randomBytes(size);
+    return nodeRandomBytes(size);
 }
