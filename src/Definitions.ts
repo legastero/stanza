@@ -1,7 +1,7 @@
 import WildEmitter from './WildEmitter';
 
 import * as JXT from './jxt';
-import { Factory, MechClass } from './lib/sasl';
+import { Factory, Mechanism } from './lib/sasl';
 import {
     CSI,
     IQ,
@@ -64,7 +64,6 @@ export interface AgentConfig {
     transport?: string;
     wsURL?: string;
     boshURL?: string;
-    sasl?: string | Array<string | MechClass>;
     password?: string;
     lang?: string;
     acceptLanguages?: string[];

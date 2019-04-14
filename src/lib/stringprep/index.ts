@@ -242,6 +242,6 @@ const SASLPrepProfile: StringPrepProfile = {
     prohibited: [C12, C21, C22, C3, C4, C5, C6, C7, C8, C9],
     unassigned: A1
 };
-export function saslprep(str: string, allowUnassigned: boolean = true): string {
+export function saslprep(str: string, allowUnassigned: boolean = false): string {
     return prepare(SASLPrepProfile, allowUnassigned, str);
 }

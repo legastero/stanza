@@ -1,14 +1,14 @@
 import * as crypto from 'crypto';
 
 export interface Hash {
-    update(data: any, inputEncoding?: string): Hash;
-    digest(encoding: string): any;
+    update(data: Buffer | Uint8Array | string, inputEncoding?: string): Hash;
+    digest(encoding: string): string;
     digest(encoding?: 'buffer'): Buffer;
 }
 
 export interface Hmac {
-    update(data: any, inputEncoding?: string): Hash;
-    digest(encoding: string): any;
+    update(data: Buffer | Uint8Array | string, inputEncoding?: string): Hash;
+    digest(encoding: string): string;
     digest(encoding?: 'buffer'): Buffer;
 }
 
@@ -30,7 +30,7 @@ export function createHash(alg: string) {
     return crypto.createHash(ianaNames.get(alg.toLowerCase()) || alg);
 }
 
-export function createHmac(alg: string, key: string) {
+export function createHmac(alg: string, key: string | Buffer) {
     return crypto.createHmac(ianaNames.get(alg.toLowerCase()) || alg, key);
 }
 

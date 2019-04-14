@@ -15,7 +15,6 @@ have no need to ever see or touch any XML when using Stanza.
 
 ```sh
 $ npm install stanza
-
 ```
 
 ## Getting Started
@@ -74,7 +73,7 @@ MUC Room: [discuss@stanzajs.org](https://stanzajs.org/discuss/logs) / [Logs](htt
 
 ## License
 
-[MIT](./LICENSE)
+[MIT](./LICENSE.md)
 
 ## Created By
 

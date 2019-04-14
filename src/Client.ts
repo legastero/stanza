@@ -17,15 +17,6 @@ import BOSH from './transports/bosh';
 import WebSocket from './transports/websocket';
 import { timeoutPromise, uuid } from './Utils';
 
-const SASL_MECHS: { [key: string]: SASL.MechClass } = {
-    anonymous: SASL.Anonymous,
-    'digest-md5': SASL.DigestMD5,
-    external: SASL.External,
-    plain: SASL.Plain,
-    'scram-sha-1': SASL.ScramSha1,
-    'x-oauth2': SASL.XOauth2
-};
-
 export default class Client extends WildEmitter {
     public jid: string;
     public config!: AgentConfig;
@@ -36,7 +27,7 @@ export default class Client extends WildEmitter {
     public transports: {
         [key: string]: new (sm: StreamManagement, registry: JXT.Registry) => Transport;
     };
-    public sasl!: SASL.Factory;
+    public sasl: SASL.Factory;
 
     constructor(opts: AgentConfig = {}) {
         super();
@@ -44,6 +35,18 @@ export default class Client extends WildEmitter {
         this._initConfig(opts);
 
         this.jid = '';
+
+        this.sasl = new SASL.Factory();
+        this.sasl.register('EXTERNAL', SASL.EXTERNAL, 1000);
+        this.sasl.register('SCRAM-SHA-256-PLUS', SASL.SCRAM, 350);
+        this.sasl.register('SCRAM-SHA-256', SASL.SCRAM, 300);
+        this.sasl.register('SCRAM-SHA-1-PLUS', SASL.SCRAM, 250);
+        this.sasl.register('SCRAM-SHA-1', SASL.SCRAM, 200);
+        this.sasl.register('DIGEST-MD5', SASL.DIGEST, 100);
+        this.sasl.register('X-OAUTH2', SASL.OAUTH, 100);
+        this.sasl.register('PLAIN', SASL.PLAIN, 1);
+        this.sasl.register('ANONYMOUS', SASL.ANONYMOUS, 0);
+
         this.stanzas = new JXT.Registry();
         this.stanzas.define(Protocol);
 
@@ -169,7 +172,7 @@ export default class Client extends WildEmitter {
         return uuid();
     }
 
-    public async getCredentials() {
+    public async getCredentials(): Promise<SASL.Credentials> {
         return this._getConfiguredCredentials();
     }
 
@@ -352,16 +355,15 @@ export default class Client extends WildEmitter {
         this.disconnect();
     }
 
-    private _getConfiguredCredentials() {
+    private _getConfiguredCredentials(): SASL.Credentials {
         const creds = this.config.credentials || {};
         const requestedJID = JID.parse(this.config.jid || '');
         const username = creds.username || requestedJID.local;
-        const server = creds.server || requestedJID.domain;
+        const server = creds.host || requestedJID.domain;
         return {
             host: server,
             password: this.config.password,
             realm: server,
-            server,
             serviceName: server,
             serviceType: 'xmpp',
             username,
@@ -373,29 +375,11 @@ export default class Client extends WildEmitter {
         const currConfig = this.config || {};
         this.config = {
             jid: '',
-            sasl: ['external', 'scram-sha-1', 'digest-md5', 'plain', 'anonymous'],
             transports: ['websocket', 'bosh'],
             useStreamManagement: true,
             ...currConfig,
             ...opts
         };
-
-        // Enable SASL authentication mechanisms (and their preferred order)
-        // based on user configuration.
-        if (this.config.sasl && !Array.isArray(this.config.sasl)) {
-            this.config.sasl = [this.config.sasl];
-        }
-        this.sasl = new SASL.Factory();
-        for (const mech of this.config.sasl || []) {
-            if (typeof mech === 'string') {
-                const existingMech = SASL_MECHS[mech.toLowerCase()];
-                if (existingMech && existingMech.prototype && existingMech.prototype.name) {
-                    this.sasl.use(existingMech);
-                }
-            } else {
-                this.sasl.use(mech);
-            }
-        }
 
         if (!this.config.server) {
             this.config.server = JID.getDomain(this.config.jid!);

@@ -1,5 +1,5 @@
 import { Agent } from '../Definitions';
-import { Mechanism } from '../lib/sasl';
+import { Credentials, Mechanism } from '../lib/sasl';
 import { SASL } from '../protocol/stanzas';
 
 declare module '../Definitions' {
@@ -7,9 +7,7 @@ declare module '../Definitions' {
         getCredentials(): Promise<AgentConfig['credentials']>;
     }
     export interface AgentConfig {
-        credentials?: {
-            [key: string]: any;
-        };
+        credentials?: Credentials;
     }
 }
 
@@ -29,15 +27,15 @@ export default function(client: Agent) {
             }
 
             case 'challenge': {
-                mech.challenge(sasl.value!.toString());
+                mech.processChallenge(sasl.value!);
 
                 try {
-                    const credentials = await client.getCredentials();
-                    const resp = Buffer.from(mech.response(credentials) || '');
+                    const credentials = (await client.getCredentials()) as Credentials;
+                    const resp = mech.createResponse(credentials);
                     if (resp || resp === '') {
                         client.send('sasl', {
                             type: 'response',
-                            value: resp
+                            value: resp!
                         });
                     } else {
                         client.send('sasl', {
@@ -45,16 +43,15 @@ export default function(client: Agent) {
                         });
                     }
 
-                    if (mech.cache) {
+                    const cacheable = mech.getCacheableCredentials();
+                    if (cacheable) {
                         if (!client.config.credentials) {
                             client.config.credentials = {};
                         }
-                        for (const key of Object.keys(mech.cache)) {
-                            if (!mech.cache[key]) {
-                                return;
-                            }
-                            client.config.credentials[key] = Buffer.from(mech.cache[key]);
-                        }
+                        client.config.credentials = {
+                            ...client.config.credentials,
+                            ...cacheable
+                        };
                         client.emit('credentials:update', client.config.credentials);
                     }
                 } catch (err) {
@@ -83,7 +80,7 @@ export default function(client: Agent) {
     };
 
     client.registerFeature('sasl', 100, async (features, done) => {
-        const mech = client.sasl.create(features.sasl!.mechanisms);
+        const mech = client.sasl.createMechanism(features.sasl!.mechanisms);
         if (!mech) {
             client.off('sasl', saslHandler);
             client.emit('auth:failed');
@@ -92,24 +89,17 @@ export default function(client: Agent) {
 
         client.on('sasl', sasl => saslHandler(sasl, mech, done));
 
-        if (mech.clientFirst) {
-            try {
-                const credentials = await client.getCredentials();
-                client.send('sasl', {
-                    mechanism: mech.name,
-                    type: 'auth',
-                    value: Buffer.from(mech.response(credentials) || '')
-                });
-            } catch (err) {
-                console.error(err);
-                client.send('sasl', {
-                    type: 'abort'
-                });
-            }
-        } else {
+        try {
+            const credentials = (await client.getCredentials()) as Credentials;
             client.send('sasl', {
                 mechanism: mech.name,
-                type: 'auth'
+                type: 'auth',
+                value: mech.createResponse(credentials)!
+            });
+        } catch (err) {
+            console.error(err);
+            client.send('sasl', {
+                type: 'abort'
             });
         }
     });
