@@ -1,6 +1,6 @@
-# Stanza
+# StanzaJS
 
-**Modern XMPP in the browser, with a JSON API.**
+**Modern XMPP, with a JSON API.**
 
 <hr />
 
@@ -8,7 +8,7 @@
 
 ## What is this?
 
-Stanza is a library for using modern XMPP in the browser, and it does that by exposing everything as JSON. Unless you insist, you
+StanzaJS is a library for using modern XMPP, and it does that by exposing everything as JSON. Unless you insist, you
 have no need to ever see or touch any XML when using Stanza.
 
 ## Installing
