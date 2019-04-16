@@ -66,6 +66,6 @@ export function uuid() {
         bth[buf[i++]],
         bth[buf[i++]],
         bth[buf[i++]],
-        bth[buf[i++]]
+        bth[buf[i]]
     ].join('');
 }

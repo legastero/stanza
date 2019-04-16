@@ -91,7 +91,7 @@ export default class ICESession extends BaseSession {
             });
         } catch (err) {
             this._log('error', 'Could not create WebRTC offer', err);
-            this.end('failed-application', true);
+            this.end(ReasonCondition.FailedApplication, true);
         }
     }
 
@@ -352,7 +352,7 @@ export default class ICESession extends BaseSession {
                     transport: {
                         gatheringComplete: true,
                         transportType: NS_JINGLE_ICE_UDP_1,
-                        usernameFragment: firstMedia!.iceParameters!.usernameFragment
+                        usernameFragment: firstMedia.iceParameters!.usernameFragment
                     } as JingleIceUdp
                 }
             ]

@@ -101,7 +101,6 @@ export function convertIntermediateToApplication(
         for (const key of Object.keys(codec.parameters || {})) {
             if (key === 'ptime') {
                 payload.ptime = codec.parameters![key].toString();
-                continue;
             }
         }
 
@@ -285,7 +284,7 @@ export function convertContentToIntermediate(
             media.rtpParameters.codecs.push({
                 channels: payload.channels!,
                 clockRate: payload.clockRate!,
-                name: payload.name!,
+                name: payload.name,
                 numChannels: payload.channels!,
                 parameters,
                 payloadType: parseInt(payload.id, 10),
@@ -347,14 +346,14 @@ export function convertRequestToIntermediate(
     };
 
     for (const group of jingle.groups || []) {
-        session.groups!.push({
+        session.groups.push({
             mids: group.contents,
             semantics: group.semantics
         });
     }
 
     for (const content of jingle.contents || []) {
-        session.media!.push(convertContentToIntermediate(content, role));
+        session.media.push(convertContentToIntermediate(content, role));
     }
 
     return session;

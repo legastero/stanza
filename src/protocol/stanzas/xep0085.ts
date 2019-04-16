@@ -19,4 +19,4 @@ declare module './rfc6120' {
 
 export default extendMessage({
     chatState: childEnum(NS_CHAT_STATES, ['active', 'composing', 'paused', 'inactive', 'gone'])
-}) as DefinitionOptions;
+});

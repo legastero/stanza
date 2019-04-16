@@ -13,7 +13,7 @@ import {
 } from '../protocol/stanzas';
 import ICESession from './ICESession';
 import { exportToSDP, importFromSDP } from './lib/Intermediate';
-import { ReasonCondition, SessionRole } from './lib/JingleUtil';
+import { Action, ReasonCondition, SessionRole } from './lib/JingleUtil';
 import { convertIntermediateToRequest, convertRequestToIntermediate } from './lib/Protocol';
 import { ActionCallback } from './Session';
 
@@ -94,12 +94,12 @@ export default class MediaSession extends ICESession {
         this.offerOptions = opts;
 
         try {
-            await this.processLocal('session-initiate', async () => {
+            await this.processLocal(Action.SessionInitiate, async () => {
                 const offer = await this.pc.createOffer(opts as RTCOfferOptions);
                 const json = importFromSDP(offer.sdp!);
                 const jingle = convertIntermediateToRequest(json, this.role);
                 jingle.sid = this.sid;
-                jingle.action = 'session-initiate';
+                jingle.action = Action.SessionInitiate;
                 for (const content of jingle.contents || []) {
                     content.creator = 'initiator';
                     applyStreamsCompatibility(content);
@@ -131,13 +131,13 @@ export default class MediaSession extends ICESession {
         this.role = 'responder';
 
         try {
-            await this.processLocal('session-accept', async () => {
+            await this.processLocal(Action.SessionAccept, async () => {
                 const answer = await this.pc.createAnswer(opts as RTCAnswerOptions);
 
                 const json = importFromSDP(answer.sdp!);
                 const jingle = convertIntermediateToRequest(json, this.role);
                 jingle.sid = this.sid;
-                jingle.action = 'session-accept';
+                jingle.action = Action.SessionAccept;
                 for (const content of jingle.contents || []) {
                     content.creator = 'initiator';
                 }
@@ -164,7 +164,7 @@ export default class MediaSession extends ICESession {
         return this.processLocal('ring', async () => {
             this._log('info', 'Ringing on incoming session');
             this.ringing = true;
-            this.send('session-info', {
+            this.send(Action.SessionInfo, {
                 info: {
                     infoType: INFO_RINGING
                 }
@@ -176,7 +176,7 @@ export default class MediaSession extends ICESession {
         return this.processLocal('mute', async () => {
             this._log('info', 'Muting', name);
 
-            this.send('session-info', {
+            this.send(Action.SessionInfo, {
                 info: {
                     creator,
                     infoType: INFO_MUTE,
@@ -189,7 +189,7 @@ export default class MediaSession extends ICESession {
     public unmute(creator: SessionRole, name: string): Promise<void> {
         return this.processLocal('unmute', async () => {
             this._log('info', 'Unmuting', name);
-            this.send('session-info', {
+            this.send(Action.SessionInfo, {
                 info: {
                     creator,
                     infoType: INFO_UNMUTE,

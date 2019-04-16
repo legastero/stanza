@@ -19,4 +19,4 @@ declare module './rfc6120' {
 
 export default extendIQ({
     ping: childBoolean(NS_PING, 'ping')
-}) as DefinitionOptions;
+});

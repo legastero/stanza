@@ -117,7 +117,7 @@ export default class StreamManagement {
             return;
         }
 
-        const numAcked = mod(ack.handled! - this.lastAck, MAX_SEQ);
+        const numAcked = mod(ack.handled - this.lastAck, MAX_SEQ);
         this.pendingAck = false;
         for (let i = 0; i < numAcked && this.unacked.length > 0; i++) {
             this.client.emit('stanza:acked', this.unacked.shift());

@@ -152,7 +152,7 @@ const sanitizeRoot = (input: JSONElement | string): JSONElement | string | undef
     }
 
     if (input.attributes.style) {
-        attributes.style = input.attributes.style!;
+        attributes.style = input.attributes.style;
     }
     if (input.attributes['xml:lang'] !== undefined) {
         attributes['xml:lang'] = input.attributes['xml:lang']!;
@@ -202,7 +202,7 @@ const sanitizeInterior = (
             continue;
         }
 
-        attributes[key] = value!;
+        attributes[key] = value;
     }
 
     return {

@@ -56,6 +56,7 @@ export default function(client: Agent) {
                     id: msg.id,
                     type: 'displayed'
                 },
+                to,
                 type: msg.type
             });
         }

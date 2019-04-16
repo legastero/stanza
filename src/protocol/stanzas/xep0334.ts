@@ -77,4 +77,4 @@ export default [
     extendMessage({
         processingHints: processingHints()
     })
-] as DefinitionOptions[];
+];

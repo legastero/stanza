@@ -182,14 +182,12 @@ export default class Parser extends EventEmitter {
                 }
 
                 case State.CDATA: {
-                    if (c === Character.GreaterThan) {
-                        if (this.lookBehindMatch(data, pos, ']]')) {
-                            const text = this.endRecording(data, pos - 2);
-                            if (text) {
-                                this.emit('text', text);
-                            }
-                            this.state = State.TEXT;
+                    if (c === Character.GreaterThan && this.lookBehindMatch(data, pos, ']]')) {
+                        const text = this.endRecording(data, pos - 2);
+                        if (text) {
+                            this.emit('text', text);
                         }
+                        this.state = State.TEXT;
                     }
                     break;
                 }
@@ -254,13 +252,12 @@ export default class Parser extends EventEmitter {
                 }
 
                 case State.IGNORE_COMMENT: {
-                    if (c === Character.GreaterThan) {
-                        if (
-                            this.lookBehindMatch(data, pos, '--') ||
-                            this.lookBehindMatch(data, pos, ']]')
-                        ) {
-                            this.state = State.TEXT;
-                        }
+                    if (
+                        c === Character.GreaterThan &&
+                        (this.lookBehindMatch(data, pos, '--') ||
+                            this.lookBehindMatch(data, pos, ']]'))
+                    ) {
+                        this.state = State.TEXT;
                     }
                     break;
                 }
@@ -297,10 +294,8 @@ export default class Parser extends EventEmitter {
                 }
 
                 case State.IGNORE_INSTRUCTION: {
-                    if (c === Character.GreaterThan) {
-                        if (this.lookBehindMatch(data, pos, '?')) {
-                            this.state = State.TEXT;
-                        }
+                    if (c === Character.GreaterThan && this.lookBehindMatch(data, pos, '?')) {
+                        this.state = State.TEXT;
                     }
                     break;
                 }

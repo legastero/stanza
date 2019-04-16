@@ -356,7 +356,7 @@ export function textBuffer(encoding: string = 'utf8'): FieldDefinition<Buffer, s
             if (encoding === 'base64' && data === '=') {
                 data = '';
             }
-            return Buffer.from(xml.getText().trim(), encoding);
+            return Buffer.from(data.trim(), encoding);
         },
         exporter(xml, value) {
             let data: string;
@@ -1027,8 +1027,8 @@ export function splicePath(
                     continue;
                 }
 
-                if (context.registry!.getImportKey(grandChild as XMLElement) === path) {
-                    const imported = context.registry!.import(grandChild as XMLElement);
+                if (context.registry!.getImportKey(grandChild) === path) {
+                    const imported = context.registry!.import(grandChild);
                     if (imported) {
                         results.push(imported);
                     }

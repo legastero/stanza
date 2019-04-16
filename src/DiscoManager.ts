@@ -18,7 +18,7 @@ export default class Disco {
     public identities: Map<string, DiscoInfoIdentity[]>;
     public extensions: Map<string, DataForm[]>;
     public items: Map<string, DiscoItem[]>;
-    public caps: LegacyEntityCaps | undefined;
+    public caps?: LegacyEntityCaps;
 
     constructor() {
         this.features = new Map();

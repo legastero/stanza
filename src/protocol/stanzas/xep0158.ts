@@ -27,4 +27,4 @@ export default [
     extendIQ({
         captcha: splicePath(NS_CAPTCHA, 'captcha', 'dataform')
     })
-] as DefinitionOptions[];
+];

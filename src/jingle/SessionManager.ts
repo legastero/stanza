@@ -4,7 +4,7 @@ import { NS_JINGLE_RTP_1 } from '../protocol';
 
 import { IQ, Jingle, JingleReason, NS_FILE_TRANSFER_5, StanzaError } from '../protocol/stanzas';
 import FileTransferSession from './FileTransferSession';
-import { ReasonCondition } from './lib/JingleUtil';
+import { Action, ReasonCondition } from './lib/JingleUtil';
 import MediaSession from './MediaSession';
 import BaseSession from './Session';
 
@@ -123,7 +123,7 @@ export default class SessionManager extends WildEmitter {
             // trigger the outgoing event.
             if (name === 'send') {
                 const action = data.jingle && data.jingle.action;
-                if (session.isInitiator && action === 'session-initiate') {
+                if (session.isInitiator && action === Action.SessionInitiate) {
                     this.emit('outgoing', session);
                 }
             }
@@ -233,7 +233,7 @@ export default class SessionManager extends WildEmitter {
         });
         // Now verify that we are allowed to actually process the
         // requested action
-        if (action !== 'session-initiate') {
+        if (action !== Action.SessionInitiate) {
             // Can't modify a session that we don't have.
             if (!session) {
                 this._log('error', 'Unknown session', sid);

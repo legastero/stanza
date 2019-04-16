@@ -163,10 +163,8 @@ export function prepare(
                 throw new Error('Prohibited code point: x' + codePoint.toString(16));
             }
         }
-        if (!allowUnassigned) {
-            if (profile.unassigned.contains(codePoint)) {
-                throw new Error('Prohibited code point: x' + codePoint.toString(16));
-            }
+        if (!allowUnassigned && profile.unassigned.contains(codePoint)) {
+            throw new Error('Prohibited code point: x' + codePoint.toString(16));
         }
         if (profile.bidirectional) {
             hasRandALCat = hasRandALCat || D1.contains(codePoint);

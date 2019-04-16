@@ -56,29 +56,27 @@ export default class StreamParser extends Transform {
             const el = new XMLElement(name, attributes);
             const key = this.registry.getImportKey(el);
 
-            if (this.wrappedStream) {
-                if (!this.rootElement) {
-                    if (this.rootImportKey && key !== this.rootImportKey) {
-                        return this.emit('error', JXTError.unknownRoot());
-                    }
+            if (this.wrappedStream && !this.rootElement) {
+                if (this.rootImportKey && key !== this.rootImportKey) {
+                    return this.emit('error', JXTError.unknownRoot());
+                }
 
-                    const root = this.registry.import(el, {
-                        acceptLanguages: this.acceptLanguages,
-                        lang: this.lang
+                const root = this.registry.import(el, {
+                    acceptLanguages: this.acceptLanguages,
+                    lang: this.lang
+                });
+
+                if (root) {
+                    this.rootElement = el;
+                    this.push({
+                        event: 'stream-start',
+                        kind: key,
+                        stanza: root,
+                        xml: el
                     });
-
-                    if (root) {
-                        this.rootElement = el;
-                        this.push({
-                            event: 'stream-start',
-                            kind: key,
-                            stanza: root,
-                            xml: el
-                        });
-                        return;
-                    } else {
-                        return this.emit('error', JXTError.notWellFormed());
-                    }
+                    return;
+                } else {
+                    return this.emit('error', JXTError.notWellFormed());
                 }
             }
 
@@ -90,21 +88,19 @@ export default class StreamParser extends Transform {
         });
 
         this.parser.on('endElement', (name: string) => {
-            if (this.wrappedStream) {
-                if (!this.currentElement) {
-                    if (!this.rootElement || name !== this.rootElement.name) {
-                        this.closedStream = true;
-                        return this.emit('error', JXTError.notWellFormed());
-                    }
+            if (this.wrappedStream && !this.currentElement) {
+                if (!this.rootElement || name !== this.rootElement.name) {
                     this.closedStream = true;
-                    this.push({
-                        event: 'stream-end',
-                        kind: this.rootImportKey,
-                        stanza: {},
-                        xml: this.rootElement
-                    });
-                    return this.end();
+                    return this.emit('error', JXTError.notWellFormed());
                 }
+                this.closedStream = true;
+                this.push({
+                    event: 'stream-end',
+                    kind: this.rootImportKey,
+                    stanza: {},
+                    xml: this.rootElement
+                });
+                return this.end();
             }
 
             if (!this.currentElement || name !== this.currentElement.name) {

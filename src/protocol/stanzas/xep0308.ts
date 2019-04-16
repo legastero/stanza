@@ -19,4 +19,4 @@ declare module './rfc6120' {
 
 export default extendMessage({
     replace: childAttribute(NS_CORRECTION_0, 'replace', 'id')
-}) as DefinitionOptions;
+});

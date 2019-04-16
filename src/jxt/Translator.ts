@@ -116,7 +116,7 @@ export default class Translator {
         field: FieldName | undefined,
         xid: XName,
         value: Type,
-        implied?: boolean
+        implied: boolean = false
     ): void {
         if (selector) {
             path = `${path}[${selector}]`;
@@ -390,8 +390,8 @@ export default class Translator {
 
         const keys = Object.keys(data);
         keys.sort((key1, key2) => {
-            const a = exporter!.fieldOrders.get(key1) || 100000;
-            const b = exporter!.fieldOrders.get(key2) || 100000;
+            const a = exporter.fieldOrders.get(key1) || 100000;
+            const b = exporter.fieldOrders.get(key2) || 100000;
             return a < b ? -1 : a > b ? 1 : 0;
         });
         for (const key of keys) {
@@ -401,7 +401,7 @@ export default class Translator {
             }
 
             const value = data[key];
-            const fieldExporter = exporter!.fields.get(key);
+            const fieldExporter = exporter.fields.get(key);
 
             if (fieldExporter) {
                 fieldExporter(output, value, context);

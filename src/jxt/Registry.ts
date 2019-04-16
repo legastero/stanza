@@ -187,7 +187,7 @@ export default class Registry {
         }
 
         for (const key of Object.keys(fields)) {
-            const field = fields[key] as FieldDefinition;
+            const field = fields[key];
             importers.set(key, field.importer);
             importerOrdering.set(key, field.importOrder || field.order || 0);
             exporters.set(key, field.exporter);

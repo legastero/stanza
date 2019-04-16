@@ -8,7 +8,7 @@ function escape(value: string): Buffer {
 }
 
 function encodeIdentities(identities: DiscoInfoIdentity[] = []): Buffer[] | null {
-    let result: Buffer[] = [];
+    const result: Buffer[] = [];
     const existing = new Set<string>();
 
     for (const { category, type, lang, name } of identities) {
@@ -20,12 +20,12 @@ function encodeIdentities(identities: DiscoInfoIdentity[] = []): Buffer[] | null
         result.push(escape(encoded));
     }
 
-    result = result.sort(octetCompare);
+    result.sort(octetCompare);
     return result;
 }
 
 function encodeFeatures(features: string[] = []): Buffer[] | null {
-    let result: Buffer[] = [];
+    const result: Buffer[] = [];
     const existing = new Set<string>();
 
     for (const feature of features) {
@@ -36,12 +36,12 @@ function encodeFeatures(features: string[] = []): Buffer[] | null {
         result.push(escape(feature));
     }
 
-    result = result.sort(octetCompare);
+    result.sort(octetCompare);
     return result;
 }
 
 function encodeForms(extensions: DataForm[] = []): Buffer[] | null {
-    let forms: Array<{ type: Buffer; form: DataForm }> = [];
+    const forms: Array<{ type: Buffer; form: DataForm }> = [];
     const types = new Set<string>();
 
     for (const form of extensions) {
@@ -71,7 +71,7 @@ function encodeForms(extensions: DataForm[] = []): Buffer[] | null {
         forms.push({ type, form });
     }
 
-    forms = forms.sort((a, b) => octetCompare(a.type, b.type));
+    forms.sort((a, b) => octetCompare(a.type, b.type));
 
     const results: Buffer[] = [];
 
@@ -88,7 +88,7 @@ function encodeForms(extensions: DataForm[] = []): Buffer[] | null {
 }
 
 function encodeFields(fields: DataFormField[] = []): Buffer[] {
-    let sortedFields: Array<{ name: Buffer; values: Buffer[] }> = [];
+    const sortedFields: Array<{ name: Buffer; values: Buffer[] }> = [];
 
     for (const field of fields) {
         if (field.name === 'FORM_TYPE') {
@@ -100,7 +100,7 @@ function encodeFields(fields: DataFormField[] = []): Buffer[] {
         });
     }
 
-    sortedFields = sortedFields.sort((a, b) => octetCompare(a.name, b.name));
+    sortedFields.sort((a, b) => octetCompare(a.name, b.name));
 
     const result: Buffer[] = [];
 

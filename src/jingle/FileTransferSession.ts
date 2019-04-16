@@ -181,7 +181,7 @@ export default class FileTransferSession extends ICESession {
         this.state = 'pending';
         this.role = 'initiator';
 
-        this.file = file as File;
+        this.file = file;
 
         this.sender = new Sender();
         this.sender.on('progress', (sent, size) => {
@@ -217,7 +217,7 @@ export default class FileTransferSession extends ICESession {
         };
 
         try {
-            await this.processLocal('session-initiate', async () => {
+            await this.processLocal(Action.SessionInitiate, async () => {
                 const offer = await this.pc.createOffer({
                     offerToReceiveAudio: false,
                     offerToReceiveVideo: false
@@ -229,7 +229,7 @@ export default class FileTransferSession extends ICESession {
                 this.contentName = jingle.contents![0].name;
 
                 jingle.sid = this.sid;
-                jingle.action = 'session-initiate';
+                jingle.action = Action.SessionInitiate;
                 jingle.contents![0].application = {
                     applicationType: NS_FILE_TRANSFER_5,
                     file: {
@@ -265,7 +265,7 @@ export default class FileTransferSession extends ICESession {
         next = next || (() => undefined);
 
         try {
-            await this.processLocal('session-accept', async () => {
+            await this.processLocal(Action.SessionAccept, async () => {
                 const answer = await this.pc.createAnswer();
 
                 const json = importFromSDP(answer.sdp!);

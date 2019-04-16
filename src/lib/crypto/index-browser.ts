@@ -46,11 +46,11 @@ export default class Hmac extends Transform {
         this._opad = Buffer.alloc(blocksize);
 
         for (let i = 0; i < blocksize; i++) {
-            this._ipad[i] = (key[i] as number) ^ 0x36;
-            this._opad[i] = (key[i] as number) ^ 0x5c;
+            this._ipad[i] = key[i] ^ 0x36;
+            this._opad[i] = key[i] ^ 0x5c;
         }
 
-        this._hash = createHash(alg).update(this._ipad) as Hash;
+        this._hash = createHash(alg).update(this._ipad);
     }
 
     public _transform(data: Buffer | string, enc: string | undefined, next: (err?: Error) => void) {

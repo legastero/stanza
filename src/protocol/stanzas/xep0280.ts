@@ -70,4 +70,4 @@ export default [
         namespace: NS_CARBONS_2,
         path: 'message.carbon'
     }
-] as DefinitionOptions[];
+];

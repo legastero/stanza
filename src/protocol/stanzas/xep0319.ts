@@ -19,4 +19,4 @@ declare module './rfc6120' {
 
 export default extendPresence({
     idleSince: childDate(NS_IDLE_1, 'since')
-}) as DefinitionOptions;
+});

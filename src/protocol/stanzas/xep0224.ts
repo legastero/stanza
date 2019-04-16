@@ -19,4 +19,4 @@ declare module './rfc6120' {
 
 export default extendMessage({
     requestingAttention: childBoolean(NS_ATTENTION_0, 'attention')
-}) as DefinitionOptions;
+});
