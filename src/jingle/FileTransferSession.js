@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
-import * as Hashes from 'iana-hashes';
+
+import * as Hashes from '../lib/crypto';
 
 import ICESession from './ICESession';
 import { importFromSDP, exportToSDP } from './lib/Intermediate';

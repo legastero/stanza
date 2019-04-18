@@ -1,6 +1,6 @@
-import fetch from 'cross-fetch';
 import WildEmitter from 'wildemitter';
 
+import fetch from '../lib/fetch';
 import { Namespaces } from '../protocol';
 
 function timeoutPromise(targetPromise, delay) {

@@ -1,5 +1,4 @@
-import * as hashes from 'iana-hashes';
-
+import * as hashes from '../lib/crypto';
 import { Namespaces } from '../protocol';
 
 export default function(client) {

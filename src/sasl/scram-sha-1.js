@@ -1,4 +1,4 @@
-import { createHash, createHmac, randomBytes } from 'iana-hashes';
+import { createHash, createHmac, randomBytes } from '../lib/crypto';
 
 const RESP = {};
 const CLIENT_KEY = 'Client Key';

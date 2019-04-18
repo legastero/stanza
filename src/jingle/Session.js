@@ -1,4 +1,4 @@
-import * as async from 'async';
+import * as async from '../lib/async';
 import * as uuid from 'uuid';
 
 const WildEmitter = require('wildemitter');
