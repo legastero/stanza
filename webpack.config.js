@@ -3,7 +3,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const Pkg = require('./package.json');
 
 module.exports = {
-    entry: './dist/npm/module.js',
+    entry: ['babel-polyfill', './dist/npm/module.js'],
 
     output: {
         filename: 'stanza.browser.js',
@@ -24,8 +24,11 @@ module.exports = {
             },
             {
                 exclude: /node_modules/,
-                loader: 'ts-loader',
-                test: /\.m?[jt]s$/
+                loader: 'babel-loader',
+                test: /\.m?[jt]s$/,
+                options: {
+                    presets: ['@babel/preset-env']
+                }
             }
         ]
     },
