@@ -21,11 +21,6 @@ module.exports = {
                     search: '__STANZAIO_VERSION__'
                 },
                 test: /index\.[jt]s/
-            },
-            {
-                exclude: /node_modules/,
-                loader: 'ts-loader',
-                test: /\.m?[jt]s$/
             }
         ]
     },
