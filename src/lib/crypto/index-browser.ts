@@ -84,7 +84,7 @@ export default class Hmac extends Transform {
     }
 
     public update(data: Buffer | string, inputEnc?: string): this {
-        this._hash.update(data, inputEnc);
+        this._hash.update(data, inputEnc as BufferEncoding);
         return this;
     }
 
