@@ -10,7 +10,7 @@ for (let i = 0; i < 256; ++i) {
 export async function timeoutPromise<T>(
     target: Promise<T>,
     delay: number,
-    rejectValue: (() => any) = () => undefined
+    rejectValue: () => any = () => undefined
 ) {
     let timeoutRef: any;
     const result = await Promise.race([

@@ -216,13 +216,10 @@ export default class Client extends WildEmitter {
                         } else {
                             this.config.boshURL = uri;
                         }
-                        return this.connect(
-                            undefined,
-                            {
-                                name: transport,
-                                url: uri
-                            }
-                        );
+                        return this.connect(undefined, {
+                            name: transport,
+                            url: uri
+                        });
                     } else {
                         console.warn(
                             'Discovered unencrypted %s endpoint (%s). Ignoring',

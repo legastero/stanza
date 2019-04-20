@@ -349,7 +349,9 @@ export function text(defaultValue?: string): FieldDefinition<string> {
     };
 }
 
-export function textBuffer(encoding: string = 'utf8'): FieldDefinition<Buffer, string | null> {
+export function textBuffer(
+    encoding: BufferEncoding = 'utf8'
+): FieldDefinition<Buffer, string | null> {
     return {
         importer(xml) {
             let data = xml.getText();
@@ -539,7 +541,7 @@ export function childText(
 export function childTextBuffer(
     namespace: string | null,
     element: string,
-    encoding: string = 'utf8'
+    encoding: BufferEncoding = 'utf8'
 ): FieldDefinition<Buffer, string> {
     return {
         importer(xml) {

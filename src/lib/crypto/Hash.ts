@@ -26,7 +26,7 @@ export default abstract class Hash extends Transform {
     ) {
         let error = null;
         try {
-            this.update(chunk, encoding);
+            this.update(chunk, encoding as BufferEncoding);
         } catch (err) {
             error = err;
         }
@@ -45,7 +45,7 @@ export default abstract class Hash extends Transform {
         callback(error);
     }
 
-    public update(data: Buffer | string, enc?: string): this {
+    public update(data: Buffer | string, enc?: BufferEncoding): this {
         if (typeof data === 'string') {
             enc = enc || 'utf8';
             data = Buffer.from(data, enc);
