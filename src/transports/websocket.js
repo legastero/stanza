@@ -1,5 +1,5 @@
 import WildEmitter from 'wildemitter';
-import * as async from 'async';
+import * as async from '../lib/async';
 
 let WS = require('ws');
 if (typeof WS !== 'function') {

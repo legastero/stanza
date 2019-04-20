@@ -1,5 +1,4 @@
-import fetch from 'cross-fetch';
-
+import fetch from '../lib/fetch';
 import { Namespaces } from '../protocol';
 
 async function promiseAny(promises) {

@@ -1,4 +1,4 @@
-import { createHash, randomBytes } from 'iana-hashes';
+import { createHash, randomBytes } from '../lib/crypto';
 
 function parse(chal) {
     const dtives = {};

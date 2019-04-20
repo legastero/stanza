@@ -2,9 +2,10 @@ import * as Jingle from '../jingle';
 import { Namespaces } from '../protocol';
 
 let root;
-try {
+if (typeof window !== 'undefined') {
     root = window;
-} catch (err) {
+}
+if (typeof global !== 'undefined') {
     root = global;
 }
 
@@ -18,7 +19,7 @@ export default function(client) {
     };
 
     client.disco.addFeature(Namespaces.JINGLE_1);
-    if (root.RTCPeerConnection) {
+    if (root && root.RTCPeerConnection) {
         const caps = [
             Namespaces.JINGLE_RTP_1,
             Namespaces.JINGLE_RTP_RTCP_FB_0,

@@ -1,16 +1,16 @@
 {
     "compilerOptions": {
-        "importHelpers": true,
-        "target": "es2015",
         "allowJs": true,
-        "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "strict": true,
+        "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
+        "importHelpers": true,
+        "lib": ["dom", "es2018"],
         "module": "commonjs",
         "moduleResolution": "node",
         "outDir": "./dist/cjs",
-        "lib": ["dom", "es2015"]
+        "strict": true,
+        "target": "es2018"
     },
     "include": ["src", "typings"]
 }
