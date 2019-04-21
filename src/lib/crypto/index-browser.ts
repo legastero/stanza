@@ -18,7 +18,7 @@ if (typeof window !== 'undefined') {
 // ====================================================================
 const ZEROS = Buffer.alloc(128);
 
-export default class Hmac extends Transform {
+export class Hmac extends Transform {
     private _alg: string;
     private _hash: Hash;
     private _ipad: Buffer;
@@ -108,7 +108,7 @@ const HASH_IMPLEMENTATIONS = new Map<string, any>([
     ['sha512', SHA512]
 ]);
 
-export { Hash, Hmac };
+export { Hash };
 
 export function randomBytes(size: number) {
     const rawBytes = new Uint8Array(size);
