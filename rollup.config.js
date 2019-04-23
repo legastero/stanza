@@ -10,6 +10,7 @@ export default {
         'jxt',
         'punycode',
         'sdp',
+        'readable-stream',
         'stream',
         'tslib',
         'uuid',

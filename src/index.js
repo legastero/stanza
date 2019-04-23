@@ -3,7 +3,7 @@ import * as jid from './protocol/jid';
 import Client from './client';
 import Plugins from './plugins';
 
-export const VERSION = '__STANZAIO_VERSION__';
+export const VERSION = '__STANZAJS_VERSION__';
 export const JID = jid.JID;
 
 export { Client, jid };

@@ -1,6 +1,6 @@
 // tslint:disable no-bitwise
 
-import { Transform } from 'stream';
+import { Transform } from 'readable-stream';
 
 export default abstract class Hash extends Transform {
     protected _block: Buffer;

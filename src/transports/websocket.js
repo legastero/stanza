@@ -1,10 +1,7 @@
 import WildEmitter from 'wildemitter';
 import * as async from '../lib/async';
+import WS from '../lib/ws';
 
-let WS = require('ws');
-if (typeof WS !== 'function') {
-    WS = window.WebSocket;
-}
 const WS_OPEN = 1;
 
 export default class WSConnection extends WildEmitter {
