@@ -90,7 +90,19 @@ export default class StreamManagement {
         this._cache();
     }
 
-    failed() {
+    failed(resp) {
+        // Resumption might fail, but the server can still tell us how far
+        // the old session progressed.
+        if (resp.h) {
+            this.process(resp);
+        }
+
+        // We alert that any remaining unacked stanzas failed to send. It has
+        // been too long for auto-retrying these to be the right thing to do.
+        for (const [kind, stanza] of this.unacked) {
+            this.client.emit('stanza:failed', stanza, kind);
+        }
+
         this.inboundStarted = false;
         this.outboundStarted = false;
         this.id = false;

@@ -22,8 +22,8 @@ export default function(client, stanzas, config) {
             cb('break'); // Halt further processing of stream features
         });
 
-        self.on('stream:management:failed', 'sm', function() {
-            self.sm.failed();
+        self.on('stream:management:failed', 'sm', function(failed) {
+            self.sm.failed(failed);
             self.emit('session:end');
             self.releaseGroup('session');
             self.releaseGroup('sm');
