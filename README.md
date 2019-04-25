@@ -23,7 +23,7 @@ $ npm install stanza
 1. Find or install a server which supports XMPP over WebSocket (Prosody recommended).
 2. Clone this repo with `git clone https://github.com/legastero/stanza.io.git`
 3. Run `npm install` in the new `stanza.io` directory.
-4. Run `npm run build` to create `dist/stanzaio.browser.js`.
+4. Run `npm run build` to create `dist/stanza.browser.js`.
 5. Open `demo.html` in your browser.
 6. Enter your connection info, click connect.
 7. Use the JS console to play with the XMPP client (`var client`).
