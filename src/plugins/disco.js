@@ -1,6 +1,7 @@
 import * as hashes from '../lib/crypto';
 import { Namespaces } from '../protocol';
 import { JID } from '../protocol/jid';
+import { octetCompare } from '../Utils';
 
 function generateVerString(info, hash) {
     let S = '';
@@ -26,8 +27,8 @@ function generateVerString(info, hash) {
     const idLen = identities.length;
     const featureLen = features.length;
 
-    identities = [...new Set(identities)].sort();
-    features = [...new Set(features)].sort();
+    identities = [...new Set(identities)].sort(octetCompare);
+    features = [...new Set(features)].sort(octetCompare);
 
     if (featureLen !== features.length || idLen !== identities.length) {
         return false;
@@ -56,7 +57,7 @@ function generateVerString(info, hash) {
         return false;
     }
 
-    formOrder.sort();
+    formOrder.sort(octetCompare);
 
     for (const name of formOrder) {
         const ext = formTypes[name];
@@ -72,12 +73,12 @@ function generateVerString(info, hash) {
                 if (typeof values !== 'object') {
                     values = values.split('\n');
                 }
-                fields[fieldName] = values.sort();
+                fields[fieldName] = values.sort(octetCompare);
                 fieldOrder.push(fieldName);
             }
         }
 
-        fieldOrder.sort();
+        fieldOrder.sort(octetCompare);
 
         for (const fieldName of fieldOrder) {
             S += '<' + fieldName;

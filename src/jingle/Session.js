@@ -1,5 +1,4 @@
-import * as uuid from 'uuid';
-
+import { uuid } from '../Utils';
 import * as async from '../lib/async';
 import WildEmitter from '../lib/WildEmitter';
 
@@ -7,7 +6,7 @@ export default class JingleSession extends WildEmitter {
     constructor(opts) {
         super();
 
-        this.sid = opts.sid || uuid.v4();
+        this.sid = opts.sid || uuid();
         this.peerID = opts.peerID;
         this.role = opts.initiator ? 'initiator' : 'responder';
         this.parent = opts.parent;
@@ -153,7 +152,7 @@ export default class JingleSession extends WildEmitter {
         }
 
         this.emit('send', {
-            id: uuid.v4(),
+            id: uuid(),
             jingle: data,
             to: this.peerID,
             type: 'set'

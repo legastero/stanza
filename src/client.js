@@ -1,10 +1,10 @@
-import * as uuid from 'uuid';
 import jxt from 'jxt';
 
 import * as SASL from './sasl';
 import StreamManagement from './sm';
 import Protocol from './protocol';
 import WildEmitter from './lib/WildEmitter';
+import { uuid, timeoutPromise } from './Utils';
 
 import HostMeta from './plugins/hostmeta';
 import Features from './plugins/features';
@@ -26,27 +26,6 @@ const SASL_MECHS = {
     'scram-sha-1': SASL.ScramSha1,
     'x-oauth2': SASL.XOauth2
 };
-
-function timeoutRequest(targetPromise, id, delay) {
-    let timeoutRef;
-    return Promise.race([
-        targetPromise,
-        new Promise(function(resolve, reject) {
-            timeoutRef = setTimeout(function() {
-                reject({
-                    error: {
-                        condition: 'timeout'
-                    },
-                    id: id,
-                    type: 'error'
-                });
-            }, delay);
-        })
-    ]).then(function(result) {
-        clearTimeout(timeoutRef);
-        return result;
-    });
-}
 
 export default class Client extends WildEmitter {
     constructor(opts) {
@@ -250,7 +229,7 @@ export default class Client extends WildEmitter {
     }
 
     nextId() {
-        return uuid.v4();
+        return uuid();
     }
 
     _getConfiguredCredentials() {
@@ -419,7 +398,13 @@ export default class Client extends WildEmitter {
             this.on(respEvent, 'session', handler);
         });
         this.send(iq);
-        return timeoutRequest(request, data.id, (this.config.timeout || 15) * 1000).then(
+        return timeoutPromise(request, (this.config.timeout || 15) * 1000, () => ({
+            error: {
+                condition: 'timeout'
+            },
+            id,
+            type: 'error'
+        })).then(
             function(result) {
                 if (cb) {
                     cb(null, result);

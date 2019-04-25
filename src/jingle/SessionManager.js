@@ -1,4 +1,5 @@
 import WildEmitter from '../lib/WildEmitter';
+import { octetCompare } from '../Utils';
 
 import FileSession from './FileTransferSession';
 import MediaSession from './MediaSession';
@@ -295,7 +296,7 @@ export default class SessionManager extends WildEmitter {
                 if (
                     sess &&
                     sess.state === 'pending' &&
-                    sess.sid > sid &&
+                    octetCompare(sess.sid, sid) > 0 &&
                     this.performTieBreak(sess, req)
                 ) {
                     this._log('info', 'Tie break session-initiate');

@@ -32,13 +32,12 @@
         "async": "^2.6.2",
         "async-es": "^2.6.2",
         "cross-fetch": "^3.0.2",
-        "jxt": "^4.0.0",
+        "jxt": "^4.0.1",
         "punycode": "^2.1.1",
         "react-native-randombytes": "^3.5.2",
         "readable-stream": "^2.3.6",
         "sdp": "^2.9.0",
         "tslib": "^1.9.3",
-        "uuid": "^3.3.2",
         "ws": "^6.1.2"
     },
     "devDependencies": {

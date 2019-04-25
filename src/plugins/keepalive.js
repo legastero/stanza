@@ -1,17 +1,4 @@
-function timeoutPromise(targetPromise, delay) {
-    let timeoutRef;
-    return Promise.race([
-        targetPromise,
-        new Promise(function(resolve, reject) {
-            timeoutRef = setTimeout(function() {
-                reject();
-            }, delay);
-        })
-    ]).then(function(result) {
-        clearTimeout(timeoutRef);
-        return result;
-    });
-}
+import { timeoutPromise } from '../Utils';
 
 function checkConnection(client, timeout) {
     return timeoutPromise(

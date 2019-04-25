@@ -1,26 +1,6 @@
+import { timeoutPromise } from '../Utils';
 import { Namespaces } from '../protocol';
 import { JID } from '../protocol/jid';
-
-function timeoutPromise(targetPromise, queryid, delay) {
-    let timeoutRef;
-    return Promise.race([
-        targetPromise,
-        new Promise(function(resolve, reject) {
-            timeoutRef = setTimeout(function() {
-                reject({
-                    error: {
-                        condition: 'timeout'
-                    },
-                    id: queryid,
-                    type: 'error'
-                });
-            }, delay);
-        })
-    ]).then(function(result) {
-        clearTimeout(timeoutRef);
-        return result;
-    });
-}
 
 export default function(client) {
     client.disco.addFeature(Namespaces.MAM_2);
@@ -107,7 +87,13 @@ export default function(client) {
             type: 'set'
         });
 
-        return timeoutPromise(mamQuery, queryid, this.config.timeout * 1000 || 15000)
+        return timeoutPromise(mamQuery, this.config.timeout * 1000 || 15000, () => ({
+            error: {
+                condition: 'timeout'
+            },
+            id: queryid,
+            type: 'error'
+        }))
             .then(mamRes => {
                 mamRes.mamResult.items = results;
                 this.off('mam:item:' + queryid);

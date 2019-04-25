@@ -1,16 +1,7 @@
 import fetch from '../lib/fetch';
-import { Namespaces } from '../protocol';
 import WildEmitter from '../lib/WildEmitter';
-
-function timeoutPromise(targetPromise, delay) {
-    return new Promise((resolve, reject) => {
-        const t = setTimeout(reject, delay, new Error('Request timed out'));
-        targetPromise.then(result => {
-            clearTimeout(t);
-            resolve(result);
-        }, reject);
-    });
-}
+import { Namespaces } from '../protocol';
+import { timeoutPromise } from '../Utils';
 
 async function retryRequest(url, opts, timeout, allowedRetries) {
     try {

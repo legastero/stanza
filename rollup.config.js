@@ -13,7 +13,6 @@ export default {
         'readable-stream',
         'stream',
         'tslib',
-        'uuid',
         'ws'
     ],
     input: 'dist/es/index.js',
