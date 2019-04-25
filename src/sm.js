@@ -17,9 +17,16 @@ export default class StreamManagement {
         this.unacked = [];
         this.pendingAck = false;
 
+        this.cacheHandler = () => {
+            return;
+        };
+
         this.stanzas = {
             Ack: client.stanzas.getDefinition('a', NS.SMACKS_3),
             Enable: client.stanzas.getDefinition('enable', NS.SMACKS_3),
+            IQ: client.stanzas.getIQ(),
+            Message: client.stanzas.getMessage(),
+            Presence: client.stanzas.getPresence(),
             Request: client.stanzas.getDefinition('r', NS.SMACKS_3),
             Resume: client.stanzas.getDefinition('resume', NS.SMACKS_3)
         };
@@ -34,6 +41,18 @@ export default class StreamManagement {
             this.outboundStarted = false;
             this.inboundStarted = false;
         }
+    }
+
+    load(opts) {
+        this.id = opts.id;
+        this.allowResume = true;
+        this.handled = opts.handled;
+        this.lastAck = opts.lastAck;
+        this.unacked = opts.unacked;
+    }
+
+    cache(handler) {
+        this.cacheHandler = handler;
     }
 
     enable() {
@@ -57,6 +76,8 @@ export default class StreamManagement {
         this.id = resp.id;
         this.handled = 0;
         this.inboundStarted = true;
+
+        this._cache();
     }
 
     resumed(resp) {
@@ -65,6 +86,8 @@ export default class StreamManagement {
             this.process(resp, true);
         }
         this.inboundStarted = true;
+
+        this._cache();
     }
 
     failed() {
@@ -74,6 +97,8 @@ export default class StreamManagement {
         this.lastAck = 0;
         this.handled = 0;
         this.unacked = [];
+
+        this._cache();
     }
 
     ack() {
@@ -96,33 +121,47 @@ export default class StreamManagement {
         this.pendingAck = false;
 
         for (let i = 0; i < numAcked && this.unacked.length > 0; i++) {
-            this.client.emit('stanza:acked', this.unacked.shift());
+            const [kind, stanza] = this.unacked.shift();
+            this.client.emit('stanza:acked', stanza, kind);
         }
         this.lastAck = ack.h;
 
         if (resend) {
             const resendUnacked = this.unacked;
             this.unacked = [];
-            for (const stanza of resendUnacked) {
-                self.client.send(stanza);
+            for (const [kind, stanza] of resendUnacked) {
+                let rebuilt;
+                if (kind === 'message') {
+                    rebuilt = new this.stanzas.Message(stanza);
+                }
+                if (kind === 'presence') {
+                    rebuilt = new this.stanzas.Presence(stanza);
+                }
+                if (kind === 'iq') {
+                    rebuilt = new this.stanzas.IQ(stanza);
+                }
+                self.client.send(rebuilt);
             }
         }
+
+        this._cache();
 
         if (this.needAck()) {
             this.request();
         }
     }
 
-    track(stanza) {
-        const name = stanza._name;
+    track(kind, stanza) {
         const acceptable = {
             iq: true,
             message: true,
             presence: true
         };
 
-        if (this.outboundStarted && acceptable[name]) {
-            this.unacked.push(stanza);
+        if (this.outboundStarted && acceptable[kind]) {
+            this.unacked.push([kind, stanza.toJSON()]);
+            this._cache();
+
             if (this.needAck()) {
                 this.request();
             }
@@ -132,10 +171,20 @@ export default class StreamManagement {
     handle() {
         if (this.inboundStarted) {
             this.handled = mod(this.handled + 1, MAX_SEQ);
+            this._cache();
         }
     }
 
     needAck() {
         return !this.pendingAck && this.unacked.length >= this.windowSize;
+    }
+
+    _cache() {
+        this.cacheHandler({
+            handled: this.handled,
+            id: this.id,
+            lastAck: this.lastAck,
+            unacked: this.unacked
+        });
     }
 }
