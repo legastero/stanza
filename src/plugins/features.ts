@@ -1,5 +1,3 @@
-import { series as asyncSeries } from '../lib/async';
-
 import { Agent } from '../Definitions';
 import { StreamFeatures } from '../protocol/stanzas';
 
@@ -41,36 +39,64 @@ export default function(client: Agent) {
         this.features.handlers[name] = handler.bind(client);
     };
 
-    client.on('features', (features: StreamFeatures) => {
-        const series = [];
+    client.on('features', async (features: StreamFeatures) => {
+        const series: Array<() => Promise<null | { command: string; message?: string }>> = [];
         const negotiated = client.features.negotiated;
         const handlers = client.features.handlers;
 
         for (const feature of client.features.order) {
             const name = feature.name;
             if ((features as any)[name] && handlers[name] && !negotiated[name]) {
-                series.push((cb: () => void) => {
-                    if (!negotiated[name]) {
-                        handlers[name](features, cb);
-                    } else {
-                        cb();
-                    }
-                });
+                series.push(
+                    () =>
+                        new Promise(resolve => {
+                            if (!negotiated[name]) {
+                                handlers[name](features, (command, message) => {
+                                    if (command) {
+                                        resolve({ command, message });
+                                    } else {
+                                        resolve();
+                                    }
+                                });
+                            } else {
+                                resolve();
+                            }
+                        })
+                );
             }
         }
 
-        asyncSeries<string, string>(series, (cmd, msg) => {
+        for (const item of series) {
+            let cmd = '';
+            let msg = '';
+            try {
+                const res = await item();
+                if (res) {
+                    cmd = res.command;
+                    msg = res.message || '';
+                }
+            } catch (err) {
+                cmd = 'disconnect';
+                msg = err.message;
+                console.error(err);
+            }
+            if (!cmd) {
+                continue;
+            }
+
             if (cmd === 'restart') {
                 if (client.transport) {
                     client.transport.restart();
                 }
-            } else if (cmd === 'disconnect') {
+            }
+            if (cmd === 'disconnect') {
                 client.emit('stream:error', {
                     condition: 'policy-violation',
                     text: 'Failed to negotiate stream features: ' + msg
                 });
                 client.disconnect();
             }
-        });
+            return;
+        }
     });
 }

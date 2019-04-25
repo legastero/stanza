@@ -1,4 +1,4 @@
-import { AsyncQueue, queue } from '../lib/async';
+import { AsyncPriorityQueue, priorityQueue } from '../lib/async';
 import WildEmitter from '../lib/WildEmitter';
 
 import { Transport, TransportConfig } from '../Definitions';
@@ -17,7 +17,7 @@ export default class WSConnection extends WildEmitter implements Transport {
     private sm: StreamManagement;
     private stanzas: Registry;
     private closing: boolean;
-    private sendQueue: AsyncQueue<string>;
+    private sendQueue: AsyncPriorityQueue<string>;
     private conn?: WS;
     private parser?: StreamParser;
 
@@ -28,7 +28,7 @@ export default class WSConnection extends WildEmitter implements Transport {
         this.stanzas = stanzas;
         this.closing = false;
 
-        this.sendQueue = queue((data, cb) => {
+        this.sendQueue = priorityQueue((data, cb) => {
             if (this.conn) {
                 data = Buffer.from(data, 'utf8').toString();
                 this.emit('raw:outgoing', data);
@@ -129,10 +129,10 @@ export default class WSConnection extends WildEmitter implements Transport {
         if (data) {
             const output = this.stanzas.export(dataOrName, data);
             if (output) {
-                this.sendQueue.push(output.toString());
+                this.sendQueue.push(output.toString(), 0);
             }
         } else {
-            this.sendQueue.push(dataOrName);
+            this.sendQueue.push(dataOrName, 0);
         }
     }
 
