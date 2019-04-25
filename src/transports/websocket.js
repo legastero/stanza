@@ -17,7 +17,7 @@ export default class WSConnection extends WildEmitter {
             StreamError: stanzas.getStreamError()
         };
 
-        self.sendQueue = async.queue(function(data, cb) {
+        self.sendQueue = async.priorityQueue(function(data, cb) {
             if (self.conn) {
                 if (typeof data !== 'string') {
                     data = data.toString();
