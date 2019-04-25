@@ -9,6 +9,7 @@ export default {
         'events',
         'punycode',
         'sdp',
+        'readable-stream',
         'stream',
         'tslib',
         'ws'

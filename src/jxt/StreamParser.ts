@@ -1,4 +1,4 @@
-import { Transform } from 'stream';
+import { Transform } from 'readable-stream';
 
 import { JSONData } from './Definitions';
 import XMLElement from './Element';

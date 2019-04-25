@@ -1,6 +1,6 @@
 // tslint:disable no-bitwise
 
-import { Transform } from 'stream';
+import { Transform } from 'readable-stream';
 
 import Hash from './Hash';
 import MD5 from './MD5';

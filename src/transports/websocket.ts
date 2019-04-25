@@ -1,18 +1,12 @@
 import { AsyncQueue, queue } from '../lib/async';
 import WildEmitter from '../WildEmitter';
 
-import WSNode from 'ws';
 import { Transport, TransportConfig } from '../Definitions';
 import { ParsedData, Registry, StreamParser } from '../jxt';
+import WS from '../lib/ws';
 import { Stream } from '../protocol/stanzas';
 import StreamManagement from '../StreamManagement';
 
-let WS: typeof WSNode | typeof WebSocket;
-if (typeof WSNode !== 'function') {
-    WS = WebSocket;
-} else {
-    WS = WSNode;
-}
 const WS_OPEN = 1;
 
 export default class WSConnection extends WildEmitter implements Transport {
@@ -24,7 +18,7 @@ export default class WSConnection extends WildEmitter implements Transport {
     private stanzas: Registry;
     private closing: boolean;
     private sendQueue: AsyncQueue<string>;
-    private conn?: WSNode | WebSocket;
+    private conn?: WS;
     private parser?: StreamParser;
 
     constructor(sm: StreamManagement, stanzas: Registry) {
@@ -112,8 +106,8 @@ export default class WSConnection extends WildEmitter implements Transport {
             this.sm.started = false;
             this.emit('connected');
         };
-        this.conn.onmessage = (wsMsg: MessageEvent) => {
-            this.emit('raw:incoming', Buffer.from(wsMsg.data, 'utf8').toString());
+        this.conn.onmessage = wsMsg => {
+            this.emit('raw:incoming', Buffer.from(wsMsg.data as string, 'utf8').toString());
         };
     }
 

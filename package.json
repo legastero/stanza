@@ -1,14 +1,21 @@
 {
     "name": "stanza",
     "description": "Modern XMPP in the browser, with a JSON API",
-    "version": "11.2.1",
+    "version": "11.2.2",
     "author": "Lance Stout <lancestout@gmail.com>",
-    "browser": {
-        "ws": false,
-        "stream": "readable-stream",
-        "./dist/es/lib/async/index.js": "./dist/es/lib/async/index-browser.js",
-        "./dist/es/lib/crypto/index.js": "./dist/es/lib/crypto/index-browser.js",
-        "./dist/es/lib/fetch/index.js": "./dist/es/lib/fetch/index-browser.js"
+    "stanzajs_env_mappings": {
+        "browser": {
+            "./dist/es/lib/async/index.js": "./dist/es/lib/async/index-browser.js",
+            "./dist/es/lib/crypto/index.js": "./dist/es/lib/crypto/index-browser.js",
+            "./dist/es/lib/fetch/index.js": "./dist/es/lib/fetch/index-browser.js",
+            "./dist/es/lib/ws/index.js": "./dist/es/lib/ws/index-browser.js"
+        },
+        "react-native": {
+            "./dist/es/lib/async/index.js": "./dist/es/lib/async/index-browser.js",
+            "./dist/es/lib/crypto/index.js": "./dist/es/lib/crypto/index-react-native.js",
+            "./dist/es/lib/fetch/index.js": "./dist/es/lib/fetch/index-browser.js",
+            "./dist/es/lib/ws/index.js": "./dist/es/lib/ws/index-browser.js"
+        }
     },
     "bugs": "https://github.com/legastero/stanza.io/issues",
     "contributors": [
@@ -18,10 +25,14 @@
     "dependencies": {
         "@types/async": "^2.4.0",
         "@types/node": "^11.13.6",
+        "@types/readable-stream": "^2.3.1",
         "@types/ws": "^6.0.1",
         "async": "^2.6.2",
         "async-es": "^2.6.2",
         "cross-fetch": "^3.0.2",
+        "punycode": "^2.1.1",
+        "react-native-randombytes": "^3.5.2",
+        "readable-stream": "^2.3.6",
         "sdp": "^2.9.0",
         "tslib": "^1.9.3",
         "ws": "^6.1.2"
@@ -34,7 +45,6 @@
         "rimraf": "^2.6.2",
         "rollup": "^1.0.0",
         "rollup-plugin-node-resolve": "^4.0.0",
-        "string-replace-loader": "^2.1.1",
         "tap-spec": "^5.0.0",
         "tape": "^4.8.0",
         "ts-node": "^8.0.3",
@@ -91,6 +101,7 @@
         "compile:module": "tsc -p . --outDir ./dist/es --target es2015 --module es2015",
         "compile:rollup": "rollup -c rollup.config.js",
         "compile:rollup-browser": "rollup -c rollup-browser.config.js",
+        "compile:rollup-react-native": "rollup -c rollup-react-native.config.js",
         "compile:webpack": "webpack --mode production",
         "lint": "tslint -p .",
         "test": "nyc ts-node --files test/index.js | tap-spec && nyc report --reporter=text",

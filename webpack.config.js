@@ -12,19 +12,6 @@ module.exports = {
         path: Path.resolve('dist')
     },
 
-    module: {
-        rules: [
-            {
-                loader: 'string-replace-loader',
-                options: {
-                    replace: Pkg.version,
-                    search: '__STANZAIO_VERSION__'
-                },
-                test: /index\.[jt]s/
-            }
-        ]
-    },
-
     plugins: [
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',

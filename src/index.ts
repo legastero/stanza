@@ -5,7 +5,7 @@ import { AgentConfig } from './Definitions';
 import * as JXT from './jxt';
 import Plugins from './plugins';
 
-export const VERSION = '__STANZAIO_VERSION__';
+export const VERSION = '__STANZAJS_VERSION__';
 
 export { Client, JXT, JID };
 
