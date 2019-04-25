@@ -12,6 +12,13 @@ import {
 const MAX_SEQ = Math.pow(2, 32);
 const mod = (v: number, n: number) => ((v % n) + n) % n;
 
+interface SMState {
+    handled: number;
+    id?: string;
+    lastAck: number;
+    unacked: Array<['message' | 'presence' | 'iq', Message | Presence | IQ]>;
+}
+
 export default class StreamManagement {
     public id?: string;
     public allowResume: boolean;
@@ -24,6 +31,7 @@ export default class StreamManagement {
     private inboundStarted: boolean;
     private outboundStarted: boolean;
     private client: Agent;
+    private cacheHandler: (state: SMState) => void;
 
     constructor(client: Agent) {
         this.client = client;
@@ -37,6 +45,7 @@ export default class StreamManagement {
         this.windowSize = 1;
         this.unacked = [];
         this.pendingAck = false;
+        this.cacheHandler = () => null;
     }
 
     get started() {
@@ -48,6 +57,18 @@ export default class StreamManagement {
             this.outboundStarted = false;
             this.inboundStarted = false;
         }
+    }
+
+    public load(opts: SMState): void {
+        this.id = opts.id;
+        this.allowResume = true;
+        this.handled = opts.handled;
+        this.lastAck = opts.lastAck;
+        this.unacked = opts.unacked;
+    }
+
+    public cache(handler: (data: SMState) => void) {
+        this.cacheHandler = handler;
     }
 
     public enable() {
@@ -72,6 +93,8 @@ export default class StreamManagement {
         this.id = resp.id;
         this.handled = 0;
         this.inboundStarted = true;
+
+        this._cache();
     }
 
     public resumed(resp: StreamManagementResume) {
@@ -80,11 +103,21 @@ export default class StreamManagement {
             this.process(resp, true);
         }
         this.inboundStarted = true;
+
+        this._cache();
     }
 
     public failed(resp: StreamManagementFailed) {
+        // Resumption might fail, but the server can still tell us how far
+        // the old session progressed.
         if (resp.handled) {
-            this.process(resp, true);
+            this.process(resp);
+        }
+
+        // We alert that any remaining unacked stanzas failed to send. It has
+        // been too long for auto-retrying these to be the right thing to do.
+        for (const [kind, stanza] of this.unacked) {
+            this.client.emit('stanza:failed', stanza, kind);
         }
 
         this.inboundStarted = false;
@@ -93,6 +126,8 @@ export default class StreamManagement {
         this.lastAck = 0;
         this.handled = 0;
         this.unacked = [];
+
+        this._cache();
     }
 
     public ack() {
@@ -132,6 +167,8 @@ export default class StreamManagement {
             }
         }
 
+        this._cache();
+
         if (this.needAck()) {
             this.request();
         }
@@ -144,6 +181,8 @@ export default class StreamManagement {
 
         if (this.outboundStarted) {
             this.unacked.push([kind, stanza]);
+            this._cache();
+
             if (this.needAck()) {
                 this.request();
             }
@@ -153,10 +192,20 @@ export default class StreamManagement {
     public handle() {
         if (this.inboundStarted) {
             this.handled = mod(this.handled + 1, MAX_SEQ);
+            this._cache();
         }
     }
 
     public needAck() {
         return !this.pendingAck && this.unacked.length >= this.windowSize;
+    }
+
+    private _cache() {
+        this.cacheHandler({
+            handled: this.handled,
+            id: this.id,
+            lastAck: this.lastAck,
+            unacked: this.unacked
+        });
     }
 }
