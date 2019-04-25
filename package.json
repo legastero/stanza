@@ -39,7 +39,6 @@
         "sdp": "^2.9.0",
         "tslib": "^1.9.3",
         "uuid": "^3.3.2",
-        "wildemitter": "^1.2.0",
         "ws": "^6.1.2"
     },
     "devDependencies": {

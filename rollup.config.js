@@ -14,8 +14,7 @@ export default {
         'stream',
         'tslib',
         'uuid',
-        'ws',
-        'wildemitter'
+        'ws'
     ],
     input: 'dist/es/index.js',
     output: {

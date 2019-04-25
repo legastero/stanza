@@ -1,4 +1,4 @@
-const WildEmitter = require('wildemitter');
+import WildEmitter from '../lib/WildEmitter';
 
 import FileSession from './FileTransferSession';
 import MediaSession from './MediaSession';

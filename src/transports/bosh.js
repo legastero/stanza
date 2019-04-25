@@ -1,7 +1,6 @@
-import WildEmitter from 'wildemitter';
-
 import fetch from '../lib/fetch';
 import { Namespaces } from '../protocol';
+import WildEmitter from '../lib/WildEmitter';
 
 function timeoutPromise(targetPromise, delay) {
     return new Promise((resolve, reject) => {

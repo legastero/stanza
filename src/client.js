@@ -1,10 +1,10 @@
 import * as uuid from 'uuid';
 import jxt from 'jxt';
-import WildEmitter from 'wildemitter';
 
 import * as SASL from './sasl';
 import StreamManagement from './sm';
 import Protocol from './protocol';
+import WildEmitter from './lib/WildEmitter';
 
 import HostMeta from './plugins/hostmeta';
 import Features from './plugins/features';
@@ -312,13 +312,10 @@ export default class Client extends WildEmitter {
                             this.config.boshURL = uri;
                         }
                         console.log('Using %s endpoint: %s', transport, uri);
-                        return this.connect(
-                            null,
-                            {
-                                name: transport,
-                                url: uri
-                            }
-                        );
+                        return this.connect(null, {
+                            name: transport,
+                            url: uri
+                        });
                     } else {
                         console.warn(
                             'Discovered unencrypted %s endpoint (%s). Ignoring',

@@ -1,5 +1,5 @@
-import WildEmitter from 'wildemitter';
 import * as async from '../lib/async';
+import WildEmitter from '../lib/WildEmitter';
 import WS from '../lib/ws';
 
 const WS_OPEN = 1;
