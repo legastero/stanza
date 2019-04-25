@@ -1,5 +1,5 @@
 import { AsyncQueue, queue } from '../lib/async';
-import WildEmitter from '../WildEmitter';
+import WildEmitter from '../lib/WildEmitter';
 
 import { Transport, TransportConfig } from '../Definitions';
 import { ParsedData, Registry, StreamParser } from '../jxt';

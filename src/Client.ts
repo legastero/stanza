@@ -1,4 +1,4 @@
-import WildEmitter from './WildEmitter';
+import WildEmitter from './lib/WildEmitter';
 
 import { Agent, AgentConfig, Transport } from './Definitions';
 import * as JXT from './jxt';

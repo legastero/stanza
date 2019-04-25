@@ -1,4 +1,4 @@
-import WildEmitter from './WildEmitter';
+import WildEmitter from './lib/WildEmitter';
 
 import * as JXT from './jxt';
 import { Factory, Mechanism } from './lib/sasl';

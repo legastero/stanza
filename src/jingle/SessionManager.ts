@@ -1,4 +1,4 @@
-import WildEmitter from '../WildEmitter';
+import WildEmitter from '../lib/WildEmitter';
 
 import { NS_JINGLE_RTP_1 } from '../protocol';
 
