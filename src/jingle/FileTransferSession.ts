@@ -9,7 +9,7 @@ import {
     INFO_CHECKSUM_5,
     Jingle,
     NS_FILE_TRANSFER_5
-} from '../protocol/stanzas';
+} from '../protocol';
 import ICESession from './ICESession';
 import { exportToSDP, importFromSDP } from './lib/Intermediate';
 import { Action, SessionRole } from './lib/JingleUtil';

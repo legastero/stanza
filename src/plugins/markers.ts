@@ -1,7 +1,7 @@
 import { Agent } from '../Definitions';
+import * as JID from '../JID';
 import { NS_CHAT_MARKERS_0 } from '../protocol';
-import * as JID from '../protocol/JID';
-import { Message } from '../protocol/stanzas';
+import { Message } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

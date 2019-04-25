@@ -2,7 +2,7 @@ import * as FS from 'fs';
 import * as tape from 'tape';
 
 import { parse, Registry, XMLElement } from '../../src/jxt';
-import XMPP from '../../src/protocol/stanzas';
+import XMPP from '../../src/protocol';
 
 const test = tape.test;
 

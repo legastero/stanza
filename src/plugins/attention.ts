@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
 import { NS_ATTENTION_0 } from '../protocol';
-import { Message } from '../protocol/stanzas';
+import { Message } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

@@ -12,7 +12,7 @@ import {
     StreamError,
     StreamFeatures,
     StreamManagement
-} from './protocol/stanzas';
+} from './protocol';
 import SM from './StreamManagement';
 
 export interface TopLevelElements {

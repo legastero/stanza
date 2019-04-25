@@ -3,7 +3,7 @@ import { octetCompare } from '../Utils';
 
 import { NS_JINGLE_RTP_1 } from '../protocol';
 
-import { IQ, Jingle, JingleReason, NS_FILE_TRANSFER_5, StanzaError } from '../protocol/stanzas';
+import { IQ, Jingle, JingleReason, NS_FILE_TRANSFER_5, StanzaError } from '../protocol';
 import FileTransferSession from './FileTransferSession';
 import { Action, ReasonCondition } from './lib/JingleUtil';
 import MediaSession from './MediaSession';

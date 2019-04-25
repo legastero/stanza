@@ -7,7 +7,7 @@ import {
     StreamManagementEnabled,
     StreamManagementFailed,
     StreamManagementResume
-} from './protocol/stanzas';
+} from './protocol';
 
 const MAX_SEQ = Math.pow(2, 32);
 const mod = (v: number, n: number) => ((v % n) + n) % n;

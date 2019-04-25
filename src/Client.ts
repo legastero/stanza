@@ -1,6 +1,7 @@
 import WildEmitter from './lib/WildEmitter';
 
 import { Agent, AgentConfig, Transport } from './Definitions';
+import * as JID from './JID';
 import * as JXT from './jxt';
 import * as SASL from './lib/sasl';
 import Bind from './plugins/bind';
@@ -9,9 +10,8 @@ import HostMeta from './plugins/hostmeta';
 import SASLPlugin from './plugins/sasl';
 import Session from './plugins/session';
 import Smacks from './plugins/smacks';
-import * as JID from './protocol/JID';
-import { IQ, Message, Presence, StreamError } from './protocol/stanzas';
-import Protocol from './protocol/stanzas';
+import { IQ, Message, Presence, StreamError } from './protocol';
+import Protocol from './protocol';
 import StreamManagement from './StreamManagement';
 import BOSH from './transports/bosh';
 import WebSocket from './transports/websocket';

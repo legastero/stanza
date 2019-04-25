@@ -1,6 +1,5 @@
 import { Agent } from '../Definitions';
-import { IQ } from '../protocol/stanzas';
-import { ExternalServiceCredentials, ExternalServiceList } from '../protocol/stanzas/xep0215';
+import { ExternalServiceCredentials, ExternalServiceList, IQ } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

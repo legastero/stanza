@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
+import * as JID from '../JID';
 import { NS_HATS_0, NS_MUC, NS_MUC_DIRECT_INVITE } from '../protocol';
-import * as JID from '../protocol/JID';
 import {
     DataForm,
     IQ,
@@ -15,7 +15,7 @@ import {
     MUCUserItem,
     MUCUserList,
     Presence
-} from '../protocol/stanzas';
+} from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

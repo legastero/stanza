@@ -1,5 +1,5 @@
 import { Agent } from '../Definitions';
-import { CSI } from '../protocol/stanzas';
+import { CSI } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

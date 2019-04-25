@@ -13,7 +13,7 @@ import {
     NS_JINGLE_RTP_SSMA_0,
     NS_JINGLE_RTP_VIDEO
 } from '../protocol';
-import { IQ, Jingle as JingleRequest, NS_JINGLE_DTLS_SCTP_1, Presence } from '../protocol/stanzas';
+import { IQ, Jingle as JingleRequest, NS_JINGLE_DTLS_SCTP_1, Presence } from '../protocol';
 
 let root: any;
 try {

@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
 import { NS_VCARD_TEMP } from '../protocol';
-import { IQ, VCardTemp } from '../protocol/stanzas';
+import { IQ, VCardTemp } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

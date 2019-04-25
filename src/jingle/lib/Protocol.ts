@@ -18,7 +18,7 @@ import {
     JingleIceUdpCandidate,
     JingleRtpCodec,
     JingleRtpDescription
-} from '../../protocol/stanzas';
+} from '../../protocol';
 
 export function convertIntermediateToApplication(
     media: IntermediateMediaDescription,

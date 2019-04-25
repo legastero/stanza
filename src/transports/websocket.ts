@@ -4,7 +4,7 @@ import WildEmitter from '../lib/WildEmitter';
 import { Transport, TransportConfig } from '../Definitions';
 import { ParsedData, Registry, StreamParser } from '../jxt';
 import WS from '../lib/ws';
-import { Stream } from '../protocol/stanzas';
+import { Stream } from '../protocol';
 import StreamManagement from '../StreamManagement';
 
 const WS_OPEN = 1;

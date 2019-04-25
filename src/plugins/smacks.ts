@@ -1,5 +1,5 @@
 import { Agent } from '../Definitions';
-import { StreamFeatures, StreamManagement } from '../protocol/stanzas';
+import { StreamFeatures, StreamManagement } from '../protocol';
 
 declare module '../Definitions' {
     export interface AgentConfig {

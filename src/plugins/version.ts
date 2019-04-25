@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
 import { NS_VERSION } from '../protocol';
-import { IQ, SoftwareVersion } from '../protocol/stanzas';
+import { IQ, SoftwareVersion } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

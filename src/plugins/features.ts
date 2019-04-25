@@ -1,5 +1,5 @@
 import { Agent } from '../Definitions';
-import { StreamFeatures } from '../protocol/stanzas';
+import { StreamFeatures } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

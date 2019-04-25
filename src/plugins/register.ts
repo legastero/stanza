@@ -1,5 +1,5 @@
 import { Agent } from '../Definitions';
-import { AccountManagement, IQ } from '../protocol/stanzas';
+import { AccountManagement, IQ } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

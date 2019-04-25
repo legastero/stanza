@@ -1,8 +1,8 @@
 import { Agent } from '../Definitions';
 import Disco, { DiscoNodeInfo } from '../DiscoManager';
+import * as JID from '../JID';
 import { NS_DISCO_INFO, NS_DISCO_ITEMS } from '../protocol';
-import * as JID from '../protocol/JID';
-import { DiscoInfo, DiscoItems, IQ, LegacyEntityCaps, Presence } from '../protocol/stanzas';
+import { DiscoInfo, DiscoItems, IQ, LegacyEntityCaps, Presence } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

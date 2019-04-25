@@ -104,7 +104,7 @@
         "compile:rollup-react-native": "rollup -c rollup-react-native.config.js",
         "compile:webpack": "webpack --mode production",
         "lint": "tslint -p .",
-        "test": "nyc ts-node --files test/index.js | tap-spec && nyc report --reporter=text",
+        "test": "nyc ts-node -O \"{ \\\"allowJs\\\": true }\" --files test/index.js | tap-spec && nyc report --reporter=text",
         "validate": "npm ls"
     }
 }

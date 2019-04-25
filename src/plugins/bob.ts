@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
 import { NS_BOB } from '../protocol';
-import { IQ } from '../protocol/stanzas';
+import { IQ } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

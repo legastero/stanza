@@ -10,7 +10,7 @@ import {
     JingleInfo,
     JingleReason,
     JingleRtpDescription
-} from '../protocol/stanzas';
+} from '../protocol';
 import ICESession from './ICESession';
 import { exportToSDP, importFromSDP } from './lib/Intermediate';
 import { Action, ReasonCondition, SessionRole } from './lib/JingleUtil';

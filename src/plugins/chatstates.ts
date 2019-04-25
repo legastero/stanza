@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
 import { NS_CHAT_STATES } from '../protocol';
-import { Message } from '../protocol/stanzas';
+import { Message } from '../protocol';
 
 const ALLOWED_TYPES = ['chat', 'groupcaht', 'normal'];
 

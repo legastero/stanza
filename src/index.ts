@@ -1,17 +1,17 @@
-import * as JID from './protocol/JID';
-
 import Client from './Client';
-import { AgentConfig } from './Definitions';
+import { Agent, AgentConfig } from './Definitions';
+import * as JID from './JID';
 import * as JXT from './jxt';
 import Plugins from './plugins';
+import * as Stanzas from './protocol';
 
 export const VERSION = '__STANZAJS_VERSION__';
 
-export { Client, JXT, JID };
+export { Agent, Client, JXT, JID, Stanzas };
 
-export function createClient(opts: AgentConfig) {
+export function createClient(opts: AgentConfig): Client & Agent {
     const client = new Client(opts);
     client.use(Plugins);
 
-    return client;
+    return client as Client & Agent;
 }

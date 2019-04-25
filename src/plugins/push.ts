@@ -1,5 +1,5 @@
 import { Agent } from '../Definitions';
-import { DataFormField, IQ } from '../protocol/stanzas';
+import { DataFormField, IQ } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

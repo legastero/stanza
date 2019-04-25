@@ -2,7 +2,7 @@ import test from 'tape';
 import * as JXT from '../src/jxt';
 
 import { getHostMeta } from '../src/plugins/hostmeta';
-import XRD from '../src/protocol/stanzas/xrd';
+import XRD from '../src/protocol';
 
 const registry = new JXT.Registry();
 registry.define(XRD);

@@ -5,7 +5,7 @@ import {
     NS_DATAFORM_MEDIA,
     NS_DATAFORM_VALIDATION
 } from '../protocol';
-import { Message } from '../protocol/stanzas';
+import { Message } from '../protocol';
 
 export default function(client: Agent) {
     client.disco.addFeature(NS_DATAFORM);

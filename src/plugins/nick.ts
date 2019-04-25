@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
 import { NS_NICK, NS_PEP_NOTIFY } from '../protocol';
-import { IQ, Message, UserNick } from '../protocol/stanzas';
+import { IQ, Message, UserNick } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
 import { NS_GEOLOC, NS_PEP_NOTIFY } from '../protocol';
-import { Geolocation, IQ, Message } from '../protocol/stanzas';
+import { Geolocation, IQ, Message } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

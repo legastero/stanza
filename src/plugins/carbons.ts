@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
-import * as JID from '../protocol/JID';
-import { IQ, Message } from '../protocol/stanzas';
+import * as JID from '../JID';
+import { IQ, Message } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

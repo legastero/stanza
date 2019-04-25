@@ -2,7 +2,7 @@ import { Transport, TransportConfig } from '../Definitions';
 import { ParsedData, Registry, StreamParser } from '../jxt';
 import fetch from '../lib/fetch';
 import WildEmitter from '../lib/WildEmitter';
-import { BOSH, Stream } from '../protocol/stanzas';
+import { BOSH, Stream } from '../protocol';
 import StreamManagement from '../StreamManagement';
 import { sleep, timeoutPromise } from '../Utils';
 

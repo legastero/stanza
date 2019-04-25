@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
 import { NS_PEP_NOTIFY, NS_REACH_0 } from '../protocol';
-import { IQ, Message, Presence, ReachabilityAddress, UserReachability } from '../protocol/stanzas';
+import { IQ, Message, Presence, ReachabilityAddress, UserReachability } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

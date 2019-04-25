@@ -1,6 +1,6 @@
 import { Agent } from '../Definitions';
 import { NS_AVATAR_DATA, NS_AVATAR_METADATA, NS_PEP_NOTIFY } from '../protocol';
-import { AvatarMetaData, IQ, Message, Presence } from '../protocol/stanzas';
+import { AvatarMetaData, IQ, Message, Presence } from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {

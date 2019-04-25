@@ -11,7 +11,7 @@ import {
     PubsubSubscription,
     PubsubSubscriptions,
     PubsubUnsubscribe
-} from '../protocol/stanzas';
+} from '../protocol';
 
 declare module '../Definitions' {
     export interface Agent {
