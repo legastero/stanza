@@ -1,4 +1,5 @@
 import WildEmitter from '../lib/WildEmitter';
+import { octetCompare } from '../Utils';
 
 import { NS_JINGLE_RTP_1 } from '../protocol';
 
@@ -308,7 +309,7 @@ export default class SessionManager extends WildEmitter {
                     sess &&
                     sess.state === 'pending' &&
                     sid &&
-                    sess.sid > sid &&
+                    octetCompare(sess.sid, sid) > 0 &&
                     this.performTieBreak(sess, req)
                 ) {
                     this._log('info', 'Tie break session-initiate');
