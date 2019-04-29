@@ -1,7 +1,7 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { StreamFeatures } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         features: {
             handlers: {

@@ -9,8 +9,8 @@ import { attribute, DefinitionOptions } from '../jxt';
 
 import { NS_DATAFORM, NS_PUSH_0 } from './Namespaces';
 
+import { DataForm } from './';
 import { addAlias, JID, JIDAttribute, pubsubItemContentAliases } from './util';
-import { DataForm } from './xep0004';
 
 declare module './' {
     export interface IQ {

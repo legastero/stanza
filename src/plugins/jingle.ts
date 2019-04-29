@@ -1,4 +1,4 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import * as Jingle from '../jingle';
 import {
     NS_FILE_TRANSFER_3,
@@ -22,7 +22,7 @@ try {
     root = global;
 }
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         jingle: Jingle.SessionManager;
 

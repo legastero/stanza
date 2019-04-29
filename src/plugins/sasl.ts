@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { Credentials, Mechanism } from '../lib/sasl';
 import { SASL } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getCredentials(): Promise<AgentConfig['credentials']>;
     }

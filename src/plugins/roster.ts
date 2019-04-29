@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import * as JID from '../JID';
 import { IQ, RosterItem } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getRoster(): Promise<IQ>;
         updateRosterItem(item: RosterItem): Promise<IQ>;

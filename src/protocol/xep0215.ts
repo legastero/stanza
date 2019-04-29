@@ -17,38 +17,37 @@ import {
     integerAttribute
 } from '../jxt';
 
+import { DataForm } from './';
 import { NS_DISCO_EXTERNAL_1 } from './Namespaces';
 
-import { DataForm } from './xep0004';
+export interface ExternalService {
+    action?: 'add' | 'remove' | 'modify';
+    expires?: Date;
+    host?: string;
+    name?: string;
+    password?: string;
+    port?: number;
+    restricted?: boolean;
+    transport?: string;
+    type?: string;
+    username?: string;
+    form?: DataForm;
+}
+
+export interface ExternalServiceList {
+    version?: '1' | '2';
+    type?: string;
+    services?: ExternalService[];
+}
+
+export interface ExternalServiceCredentials extends ExternalService {
+    version?: '1' | '2';
+}
 
 declare module './' {
     export interface IQ {
         externalServices?: ExternalServiceList;
         externalServiceCredentials?: ExternalServiceCredentials;
-    }
-
-    export interface ExternalService {
-        action?: 'add' | 'remove' | 'modify';
-        expires?: Date;
-        host?: string;
-        name?: string;
-        password?: string;
-        port?: number;
-        restricted?: boolean;
-        transport?: string;
-        type?: string;
-        username?: string;
-        form?: DataForm;
-    }
-
-    export interface ExternalServiceList {
-        version?: '1' | '2';
-        type?: string;
-        services?: ExternalService[];
-    }
-
-    export interface ExternalServiceCredentials extends ExternalService {
-        version?: '1' | '2';
     }
 }
 

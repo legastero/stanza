@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { NS_VCARD_TEMP } from '../protocol';
 import { IQ, VCardTemp } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getVCard(jid: string): Promise<IQ>;
         publishVCard(vcard: VCardTemp): Promise<IQ>;

@@ -7,10 +7,9 @@
 
 import { childBoolean, childDate, childText, DefinitionOptions } from '../jxt';
 
+import { DataForm, Link } from './';
 import { NS_DATAFORM, NS_INBAND_REGISTRATION, NS_OOB, NS_REGISTER } from './Namespaces';
 import { addAlias, extendStreamFeatures } from './util';
-import { DataForm } from './xep0004';
-import { Link } from './xep0066';
 
 declare module './' {
     export interface StreamFeatures {

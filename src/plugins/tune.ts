@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { NS_PEP_NOTIFY, NS_TUNE } from '../protocol';
 import { IQ, Message, UserTune } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         publishTune(tune: UserTune): Promise<IQ>;
     }

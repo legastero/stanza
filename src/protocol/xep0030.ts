@@ -14,9 +14,9 @@
 
 import { attribute, DefinitionOptions, languageAttribute, multipleChildAttribute } from '../jxt';
 
+import { DataForm } from './';
 import { NS_DATAFORM, NS_DISCO_INFO, NS_DISCO_ITEMS, NS_RSM } from './Namespaces';
 import { addAlias, JID, JIDAttribute } from './util';
-import { DataForm } from './xep0004';
 
 declare module './' {
     export interface IQ {

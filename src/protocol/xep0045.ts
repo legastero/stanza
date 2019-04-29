@@ -32,6 +32,7 @@ import {
     text
 } from '../jxt';
 
+import { DataForm } from './';
 import {
     NS_DATAFORM,
     NS_MUC,
@@ -42,7 +43,6 @@ import {
     NS_MUC_USER
 } from './Namespaces';
 import { addAlias, JID, JIDAttribute } from './util';
-import { DataForm } from './xep0004';
 
 declare module './' {
     export interface Presence {

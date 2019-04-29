@@ -1,8 +1,7 @@
-import { Agent } from '../Definitions';
-import { NS_ATTENTION_0 } from '../protocol';
-import { Message } from '../protocol';
+import { Agent } from '../';
+import { Message, NS_ATTENTION_0 } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getAttention(jid: string, opts?: Partial<Message>): void;
     }

@@ -1,7 +1,7 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { timeoutPromise } from '../Utils';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         _keepAliveInterval: any;
 

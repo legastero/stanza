@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import * as JID from '../JID';
 import { BookmarkStorage, IQ, MUCBookmark } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getBookmarks(): Promise<IQ>;
         setBookmarks(bookmarks: BookmarkStorage | MUCBookmark[]): Promise<IQ>;

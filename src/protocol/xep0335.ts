@@ -9,8 +9,8 @@ import { childJSON, DefinitionOptions } from '../jxt';
 
 import { NS_JSON_0 } from './Namespaces';
 
+import { PubsubItemContent } from './';
 import { extendMessage, pubsubItemContentAliases } from './util';
-import { PubsubItemContent } from './xep0060';
 
 declare module './' {
     export interface Message {

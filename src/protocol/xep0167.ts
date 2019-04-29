@@ -49,6 +49,7 @@ import {
     XMLElement
 } from '../jxt';
 
+import { JingleApplication, JingleDtlsFingerprint, Thumbnail } from './';
 import {
     NS_JINGLE_RTP_1,
     NS_JINGLE_RTP_HDREXT_0,
@@ -58,9 +59,6 @@ import {
     NS_JINGLE_RTP_SSMA_0
 } from './Namespaces';
 import { parameterMap } from './util';
-import { JingleApplication } from './xep0166';
-import { Thumbnail } from './xep0264';
-import { JingleDtlsFingerprint } from './xep0320';
 
 declare module './xep0166' {
     export interface JingleReason {
@@ -70,7 +68,7 @@ declare module './xep0166' {
 
 export interface JingleRtpDescription extends JingleApplication {
     applicationType: typeof NS_JINGLE_RTP_1;
-    media: 'audio' | 'video';
+    media?: 'audio' | 'video';
     ssrc?: string;
     rtcpMux?: boolean;
     rtcpFeedback?: JingleRtcpFeedback[];

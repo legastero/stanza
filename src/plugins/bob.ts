@@ -1,8 +1,7 @@
-import { Agent } from '../Definitions';
-import { NS_BOB } from '../protocol';
-import { IQ } from '../protocol';
+import { Agent } from '../';
+import { IQ, NS_BOB } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getBits(jid: string, cid: string): Promise<IQ>;
     }

@@ -1,7 +1,7 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { IQ } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         block(jid: string): Promise<IQ>;
         unblock(jid: string): Promise<IQ>;

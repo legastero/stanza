@@ -1,9 +1,9 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import * as JXT from '../jxt';
 import fetch from '../lib/fetch';
 import { NS_ALT_CONNECTIONS_WEBSOCKET, NS_ALT_CONNECTIONS_XBOSH } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         discoverBindings(server: string): Promise<{ [key: string]: string[] }>;
     }

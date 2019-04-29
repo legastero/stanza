@@ -1,4 +1,4 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { NS_SHIM } from '../protocol';
 import {
     DataForm,
@@ -13,7 +13,7 @@ import {
     PubsubUnsubscribe
 } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         subscribeToNode(jid: string, opts: string | PubsubSubscribe): Promise<IQ>;
         unsubscribeFromNode(jid: string, opts: string | PubsubUnsubscribe): Promise<IQ>;

@@ -1,15 +1,9 @@
-import WildEmitter from './lib/WildEmitter';
-
-import { Agent, AgentConfig, Transport } from './Definitions';
+import { Agent, AgentConfig, Transport } from './';
 import * as JID from './JID';
 import * as JXT from './jxt';
 import * as SASL from './lib/sasl';
-import Bind from './plugins/bind';
-import Features from './plugins/features';
-import HostMeta from './plugins/hostmeta';
-import SASLPlugin from './plugins/sasl';
-import Session from './plugins/session';
-import Smacks from './plugins/smacks';
+import WildEmitter from './lib/WildEmitter';
+import { core as corePlugins } from './plugins';
 import { IQ, Message, Presence, StreamError } from './protocol';
 import Protocol from './protocol';
 import StreamManagement from './StreamManagement';
@@ -49,13 +43,7 @@ export default class Client extends WildEmitter {
 
         this.stanzas = new JXT.Registry();
         this.stanzas.define(Protocol);
-
-        this.use(HostMeta);
-        this.use(Features);
-        this.use(SASLPlugin);
-        this.use(Smacks);
-        this.use(Bind);
-        this.use(Session);
+        this.use(corePlugins);
 
         this.sm = new StreamManagement((this as unknown) as Agent);
         this.transports = {
@@ -278,7 +266,7 @@ export default class Client extends WildEmitter {
         return msg.id;
     }
 
-    public sendPresence(data: Presence) {
+    public sendPresence(data: Presence = {}) {
         const pres = {
             id: this.nextId(),
             ...data

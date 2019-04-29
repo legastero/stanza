@@ -15,8 +15,8 @@ import {
 
 import { NS_MOOD } from './Namespaces';
 
+import { PubsubItemContent } from './';
 import { pubsubItemContentAliases } from './util';
-import { PubsubItemContent } from './xep0060';
 
 declare module './' {
     export interface Message {

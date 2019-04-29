@@ -1,8 +1,15 @@
-import { Agent } from '../Definitions';
-import { NS_AVATAR_DATA, NS_AVATAR_METADATA, NS_PEP_NOTIFY } from '../protocol';
-import { AvatarMetaData, IQ, Message, Presence } from '../protocol';
+import { Agent } from '../';
+import {
+    AvatarMetaData,
+    IQ,
+    Message,
+    NS_AVATAR_DATA,
+    NS_AVATAR_METADATA,
+    NS_PEP_NOTIFY,
+    Presence
+} from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         publishAvatar(id: string, data: Buffer): Promise<IQ>;
         useAvatars(info: AvatarMetaData): Promise<IQ>;

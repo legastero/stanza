@@ -7,9 +7,9 @@
 
 import { attribute, childText, DefinitionOptions } from '../jxt';
 
+import { PubsubItemContent } from './';
 import { NS_BOOKMARKS } from './Namespaces';
 import { JID, JIDAttribute, pubsubItemContentAliases } from './util';
-import { PubsubItemContent } from './xep0060';
 
 declare module './' {
     export interface PrivateStorage {

@@ -7,9 +7,9 @@
 
 import { DefinitionOptions, splicePath } from '../jxt';
 
+import { DataForm } from './';
 import { NS_CAPTCHA } from './Namespaces';
 import { extendIQ, extendMessage } from './util';
-import { DataForm } from './xep0004';
 
 declare module './' {
     export interface Message {

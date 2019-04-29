@@ -1,7 +1,7 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { IQ, PrivateStorage } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getPrivateData(opts: PrivateStorage): Promise<IQ>;
         setPrivateData(opts: PrivateStorage): Promise<IQ>;

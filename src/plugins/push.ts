@@ -1,7 +1,7 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { DataFormField, IQ } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         enableNotifications(jid: string, node: string, fieldList?: DataFormField[]): Promise<IQ>;
         disableNotifications(jid: string, node?: string): Promise<IQ>;

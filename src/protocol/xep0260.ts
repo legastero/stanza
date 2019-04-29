@@ -13,9 +13,9 @@ import {
     integerAttribute
 } from '../jxt';
 
+import { JingleTransport } from './';
 import { NS_JINGLE_SOCKS5_1 } from './Namespaces';
 import { JIDAttribute } from './util';
-import { JingleTransport } from './xep0166';
 
 export interface JingleSocks5 extends JingleTransport {
     transportType: typeof NS_JINGLE_SOCKS5_1;

@@ -14,11 +14,9 @@ import {
     integerAttribute
 } from '../jxt';
 
+import { Hash, HashUsed, JingleApplication, JingleInfo, Thumbnail } from './';
 import { NS_FILE_TRANSFER_5, NS_HASHES_2, NS_THUMBS_1 } from './Namespaces';
 import { addAlias } from './util';
-import { JingleApplication, JingleInfo } from './xep0166';
-import { Thumbnail } from './xep0264';
-import { Hash, HashUsed } from './xep0300';
 
 export const INFO_CHECKSUM_5 = `{${NS_FILE_TRANSFER_5}}checksum`;
 export const INFO_RECEIVED_5 = `{${NS_FILE_TRANSFER_5}}received`;

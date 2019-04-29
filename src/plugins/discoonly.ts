@@ -1,6 +1,6 @@
 import * as hashes from '../lib/crypto';
 
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import {
     NS_DELAY,
     NS_EME_0,

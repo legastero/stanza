@@ -9,9 +9,9 @@ import { define, DefinitionOptions } from '../jxt';
 
 import { NS_DELAY, NS_FORWARD_0 } from './Namespaces';
 
+import { Delay } from './';
 import { IQ, Message, Presence } from './';
 import { addAlias, STREAM_TYPES } from './util';
-import { Delay } from './xep0203';
 
 declare module './' {
     export interface Message {

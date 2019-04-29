@@ -9,8 +9,8 @@ import { childInteger, childText, DefinitionOptions } from '../jxt';
 
 import { NS_TUNE } from './Namespaces';
 
+import { PubsubItemContent } from './';
 import { pubsubItemContentAliases } from './util';
-import { PubsubItemContent } from './xep0060';
 
 export interface UserTune extends PubsubItemContent {
     itemType?: typeof NS_TUNE;

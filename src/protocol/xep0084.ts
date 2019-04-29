@@ -7,9 +7,9 @@
 
 import { attribute, DefinitionOptions, integerAttribute, textBuffer } from '../jxt';
 
+import { PubsubItemContent } from './';
 import { NS_AVATAR_DATA, NS_AVATAR_METADATA } from './Namespaces';
 import { pubsubItemContentAliases } from './util';
-import { PubsubItemContent } from './xep0060';
 
 export interface AvatarData extends PubsubItemContent {
     itemType?: typeof NS_AVATAR_DATA;

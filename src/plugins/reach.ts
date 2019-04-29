@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { NS_PEP_NOTIFY, NS_REACH_0 } from '../protocol';
 import { IQ, Message, Presence, ReachabilityAddress, UserReachability } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         publishReachability(data: ReachabilityAddress[]): Promise<IQ>;
     }

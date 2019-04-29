@@ -9,8 +9,8 @@ import { attribute, DefinitionOptions, integerAttribute } from '../jxt';
 
 import { NS_BOB, NS_THUMBS_1 } from './Namespaces';
 
+import { Bits } from './';
 import { addAlias } from './util';
-import { Bits } from './xep0231';
 
 declare module './xep0166' {
     export interface Jingle {

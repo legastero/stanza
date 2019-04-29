@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { NS_TIME } from '../protocol';
 import { IQ } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getTime(jid: string): Promise<IQ>;
     }

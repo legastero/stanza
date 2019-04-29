@@ -7,9 +7,9 @@
 
 import { attribute, childBoolean, childEnum, DefinitionOptions, text } from '../jxt';
 
+import { DataForm } from './';
 import { NS_ADHOC_COMMANDS, NS_DATAFORM } from './Namespaces';
 import { addAlias, extendStanzaError } from './util';
-import { DataForm } from './xep0004';
 
 declare module './' {
     export interface IQ {

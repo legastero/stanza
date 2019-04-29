@@ -1,4 +1,4 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { mergeFields } from '../helpers/DataForms';
 import * as JID from '../JID';
 import { NS_MAM_2 } from '../protocol';
@@ -13,7 +13,7 @@ import {
     Message
 } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getHistorySearchForm(jid: string): Promise<IQ>;
         getHistoryPreferences(): Promise<IQ>;

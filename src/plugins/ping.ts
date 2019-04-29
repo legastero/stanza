@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { NS_PING } from '../protocol';
 import { IQ } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         ping(jid?: string): Promise<IQ>;
     }

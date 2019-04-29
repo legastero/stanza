@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { NS_ADHOC_COMMANDS } from '../protocol';
 import { IQ } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getCommands(jid?: string): Promise<IQ>;
     }

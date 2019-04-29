@@ -7,9 +7,9 @@
 
 import { childText, DefinitionOptions } from '../jxt';
 
+import { DataForm } from './';
 import { NS_DATAFORM, NS_SEARCH } from './Namespaces';
 import { addAlias, JID, JIDAttribute } from './util';
-import { DataForm } from './xep0004';
 
 declare module './' {
     export interface IQ {

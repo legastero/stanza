@@ -1,4 +1,4 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import * as JID from '../JID';
 import { NS_HATS_0, NS_MUC, NS_MUC_DIRECT_INVITE } from '../protocol';
 import {
@@ -17,7 +17,7 @@ import {
     Presence
 } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         joinedRooms: Map<string, string>;
         joiningRooms: Map<string, string>;

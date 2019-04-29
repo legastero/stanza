@@ -1,4 +1,4 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 
 export default function(client: Agent) {
     client.registerFeature('session', 1000, async (features, cb) => {

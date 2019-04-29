@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { NS_NICK, NS_PEP_NOTIFY } from '../protocol';
 import { IQ, Message, UserNick } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         publishNick(nick: string): Promise<IQ>;
     }

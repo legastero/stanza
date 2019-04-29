@@ -19,6 +19,7 @@ import {
     splicePath
 } from '../jxt';
 
+import { DataForm, Paging } from './';
 import {
     NS_DATAFORM,
     NS_PUBSUB,
@@ -28,8 +29,6 @@ import {
     NS_RSM
 } from './Namespaces';
 import { addAlias, extendStanzaError, JID, JIDAttribute } from './util';
-import { DataForm } from './xep0004';
-import { Paging } from './xep0059';
 
 declare module './' {
     export interface Message {

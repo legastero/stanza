@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { NS_MOOD, NS_PEP_NOTIFY } from '../protocol';
 import { IQ, Message, UserMood } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         publishMood(mood: UserMood): Promise<IQ>;
     }

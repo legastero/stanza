@@ -1,9 +1,9 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import * as JID from '../JID';
 import { NS_CHAT_MARKERS_0 } from '../protocol';
 import { Message } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         markReceived(msg: Message): void;
         markDisplayed(msg: Message): void;

@@ -1,7 +1,7 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { AccountManagement, IQ } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getAccountInfo(jid?: string): Promise<IQ>;
         updateAccount(jid: string, data: AccountManagement): Promise<IQ>;

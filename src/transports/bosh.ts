@@ -1,4 +1,4 @@
-import { Transport, TransportConfig } from '../Definitions';
+import { Transport, TransportConfig } from '../';
 import { ParsedData, Registry, StreamParser } from '../jxt';
 import fetch from '../lib/fetch';
 import WildEmitter from '../lib/WildEmitter';

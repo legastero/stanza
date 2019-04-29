@@ -1,7 +1,7 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { CSI } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         markActive(): void;
         markInactive(): void;

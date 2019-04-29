@@ -1095,6 +1095,20 @@ export function childJSON(namespace: string | null, element: string): FieldDefin
     };
 }
 
+export function textJSON(): FieldDefinition<JSONData> {
+    return {
+        importer(xml) {
+            const data = xml.getText();
+            if (data) {
+                return JSON.parse(data);
+            }
+        },
+        exporter(xml, value) {
+            xml.children.push(JSON.stringify(value));
+        }
+    };
+}
+
 export function childTimezoneOffset(
     namespace: string | null,
     element: string

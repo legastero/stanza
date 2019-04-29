@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { NS_VERSION } from '../protocol';
 import { IQ, SoftwareVersion } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getSoftwareVersion(jid: string): Promise<IQ>;
     }

@@ -1,4 +1,4 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import {
     NS_DATAFORM,
     NS_DATAFORM_LAYOUT,

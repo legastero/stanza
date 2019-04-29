@@ -15,8 +15,8 @@ import {
 
 import { NS_ACTIVITY } from './Namespaces';
 
+import { PubsubItemContent } from './';
 import { pubsubItemContentAliases } from './util';
-import { PubsubItemContent } from './xep0060';
 
 const GENERAL = [
     'doing_chores',

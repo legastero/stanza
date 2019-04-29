@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import * as JID from '../JID';
 import { HTTPUploadRequest, HTTPUploadSlot, IQ, NS_HTTP_UPLOAD_0 } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         getUploadService(
             domain?: string

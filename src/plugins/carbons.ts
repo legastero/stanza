@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import * as JID from '../JID';
 import { IQ, Message } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface Agent {
         enableCarbons(): Promise<IQ>;
         disableCarbons(): Promise<IQ>;

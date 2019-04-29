@@ -9,10 +9,8 @@ import { attribute, booleanAttribute, DefinitionOptions } from '../jxt';
 
 import { NS_DATAFORM, NS_FORWARD_0, NS_MAM_2, NS_RSM } from './Namespaces';
 
+import { DataForm, Forward, Paging } from './';
 import { addAlias, JID } from './util';
-import { DataForm } from './xep0004';
-import { Paging } from './xep0059';
-import { Forward } from './xep0297';
 
 declare module './' {
     export interface Message {

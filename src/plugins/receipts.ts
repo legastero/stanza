@@ -1,8 +1,8 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { NS_RECEIPTS } from '../protocol';
 import { Message } from '../protocol';
 
-declare module '../Definitions' {
+declare module '../' {
     export interface AgentConfig {
         sendReceipts?: boolean;
     }

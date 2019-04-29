@@ -21,9 +21,9 @@ import {
     languageAttribute
 } from '../jxt';
 
+import { PubsubItemContent } from './';
 import { NS_GEOLOC } from './Namespaces';
 import { pubsubItemContentAliases } from './util';
-import { PubsubItemContent } from './xep0060';
 
 export interface Geolocation extends PubsubItemContent {
     itemType?: typeof NS_GEOLOC;

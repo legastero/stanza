@@ -1,4 +1,4 @@
-import { Agent } from '../Definitions';
+import { Agent } from '../';
 import { NS_CHAT_STATES } from '../protocol';
 import { Message } from '../protocol';
 
