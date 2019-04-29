@@ -402,7 +402,7 @@ export default class Client extends WildEmitter {
             error: {
                 condition: 'timeout'
             },
-            id,
+            id: data.id,
             type: 'error'
         })).then(
             function(result) {
