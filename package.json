@@ -26,7 +26,7 @@
     ],
     "dependencies": {
         "@types/async": "^2.4.0",
-        "@types/node": "^11.13.6",
+        "@types/node": "^12.0.0",
         "@types/readable-stream": "^2.3.1",
         "@types/ws": "^6.0.1",
         "async": "^2.6.2",
