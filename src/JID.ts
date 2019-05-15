@@ -1,4 +1,4 @@
-import punycode from 'punycode';
+import Punycode from 'punycode';
 import { nameprep, nodeprep, resourceprep } from './lib/stringprep';
 
 export interface JIDParts {
@@ -57,7 +57,7 @@ export function prepare(data: JIDParts): JIDParts {
     domain = nameprep(
         domain
             .split('.')
-            .map(punycode.toUnicode)
+            .map(Punycode.toUnicode)
             .join('.')
     );
 

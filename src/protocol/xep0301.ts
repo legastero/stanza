@@ -19,25 +19,30 @@ export interface RTT {
     id?: string;
     event?: 'new' | 'reset' | 'edit' | 'init' | 'cancel';
     seq?: number;
-    actions?: Array<RTTInsert | RTTErase | RTTWait>;
+    actions?: RTTAction[];
 }
 
 export interface RTTInsert {
     type: 'insert';
     position?: number;
     text?: string;
+    baseTime?: number;
 }
 
 export interface RTTErase {
     type: 'erase';
     position?: number;
     length?: number;
+    baseTime?: number;
 }
 
 export interface RTTWait {
     type: 'wait';
     duration: number;
+    baseTime?: number;
 }
+
+export type RTTAction = RTTInsert | RTTErase | RTTWait;
 
 export default [
     {

@@ -18,6 +18,7 @@ import {
 } from './protocol';
 import SM from './StreamManagement';
 export * from './StreamManagement';
+import * as RTT from './helpers/RTT';
 import * as Utils from './Utils';
 
 export interface TopLevelElements {
@@ -96,7 +97,7 @@ export interface TransportConfig {
     wait?: number;
 }
 
-export { Client, JXT, JID, Stanzas, Jingle, Utils };
+export { Client, JXT, JID, Stanzas, Jingle, Utils, RTT };
 
 export const VERSION = '__STANZAJS_VERSION__';
 

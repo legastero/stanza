@@ -1,4 +1,4 @@
-import punycode from 'punycode';
+import Punycode from 'punycode';
 import { TABLE_DATA } from './Tables';
 
 export class Table {
@@ -120,7 +120,7 @@ export function prepare(
     allowUnassigned: boolean,
     input: string
 ): string {
-    const inputCodePoints = punycode.ucs2.decode(input);
+    const inputCodePoints = Punycode.ucs2.decode(input);
     let mappedCodePoints: number[] = [];
     for (const codePoint of inputCodePoints) {
         if (!allowUnassigned && profile.unassigned.contains(codePoint)) {
@@ -150,9 +150,9 @@ export function prepare(
 
     let normalizedCodePoints: number[] = mappedCodePoints;
     if (profile.normalize) {
-        const mappedString = punycode.ucs2.encode(mappedCodePoints);
+        const mappedString = Punycode.ucs2.encode(mappedCodePoints);
         const normalizedString = mappedString.normalize('NFKC');
-        normalizedCodePoints = punycode.ucs2.decode(normalizedString);
+        normalizedCodePoints = Punycode.ucs2.decode(normalizedString);
     }
 
     let hasRandALCat = false;
@@ -187,7 +187,7 @@ export function prepare(
         }
     }
 
-    return punycode.ucs2.encode(normalizedCodePoints);
+    return Punycode.ucs2.encode(normalizedCodePoints);
 }
 
 const NamePrepProfile: StringPrepProfile = {
