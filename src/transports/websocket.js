@@ -83,8 +83,8 @@ export default class WSConnection extends WildEmitter {
             }
             self.emit('disconnected', self);
         };
-        self.conn.onclose = function() {
-            self.emit('disconnected', self);
+        self.conn.onclose = function(e) {
+            self.emit('disconnected', self, e);
         };
         self.conn.onopen = function() {
             self.sm.started = false;
