@@ -97,10 +97,10 @@ export default class WSConnection extends WildEmitter implements Transport {
             if (e.preventDefault) {
                 e.preventDefault();
             }
-            this.emit('disconnected');
+            this.emit('disconnected', e);
         };
-        this.conn.onclose = () => {
-            this.emit('disconnected');
+        this.conn.onclose = (e: any) => {
+            this.emit('disconnected', e);
         };
         this.conn.onopen = () => {
             this.sm.started = false;
