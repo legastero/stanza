@@ -29,7 +29,7 @@
         "@types/node": "^11.13.6",
         "@types/readable-stream": "^2.3.1",
         "@types/ws": "^6.0.1",
-        "async": "^2.6.2",
+        "async": "^3.0.1",
         "async-es": "^2.6.2",
         "cross-fetch": "^3.0.2",
         "jxt": "^4.0.2",
