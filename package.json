@@ -30,7 +30,7 @@
         "@types/readable-stream": "^2.3.1",
         "@types/ws": "^6.0.1",
         "async": "^2.6.2",
-        "async-es": "^2.6.2",
+        "async-es": "^3.0.1",
         "cross-fetch": "^3.0.2",
         "jxt": "^4.0.2",
         "punycode": "^2.1.1",
