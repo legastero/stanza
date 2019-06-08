@@ -1,5 +1,6 @@
+import * as async from 'async';
+
 import { uuid } from '../Utils';
-import * as async from '../lib/async';
 import WildEmitter from '../lib/WildEmitter';
 
 export default class JingleSession extends WildEmitter {

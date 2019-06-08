@@ -1,4 +1,5 @@
-import * as async from '../lib/async';
+import * as async from 'async';
+
 import WildEmitter from '../lib/WildEmitter';
 import WS from '../lib/ws';
 

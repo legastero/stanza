@@ -3,7 +3,6 @@ import resolve from 'rollup-plugin-node-resolve';
 export default {
     external: [
         'async',
-        'async-es',
         'cross-fetch',
         'crypto',
         'events',
