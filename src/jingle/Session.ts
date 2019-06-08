@@ -1,8 +1,9 @@
-import { priorityQueue } from '../lib/async';
-import { uuid } from '../Utils';
+import { priorityQueue } from 'async';
 
 import WildEmitter from '../lib/WildEmitter';
 import { Jingle, JingleReason } from '../protocol';
+import { uuid } from '../Utils';
+
 import { Action, ReasonCondition, SessionRole } from './lib/JingleUtil';
 import SessionManager from './SessionManager';
 

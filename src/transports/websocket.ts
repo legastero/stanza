@@ -1,8 +1,8 @@
-import { AsyncPriorityQueue, priorityQueue } from '../lib/async';
-import WildEmitter from '../lib/WildEmitter';
+import { AsyncPriorityQueue, priorityQueue } from 'async';
 
 import { Transport, TransportConfig } from '../';
 import { ParsedData, Registry, StreamParser } from '../jxt';
+import WildEmitter from '../lib/WildEmitter';
 import WS from '../lib/ws';
 import { Stream } from '../protocol';
 import StreamManagement from '../StreamManagement';

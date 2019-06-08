@@ -1,5 +1,5 @@
+import { AsyncPriorityQueue, priorityQueue } from 'async';
 import Punycode from 'punycode';
-import { AsyncPriorityQueue, priorityQueue } from '../lib/async';
 
 import { RTT, RTTAction } from '../protocol/xep0301';
 

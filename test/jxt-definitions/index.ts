@@ -29,7 +29,7 @@ const testCaseFolders = FS.readdirSync(__dirname + '/cases');
 const testSuites: Map<string, Set<string>> = new Map();
 
 for (const dir of testCaseFolders) {
-    const cases = new Set();
+    const cases = new Set<string>();
 
     const testCaseFiles = FS.readdirSync(__dirname + '/cases/' + dir);
     for (const file of testCaseFiles) {
