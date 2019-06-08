@@ -1,17 +1,15 @@
 {
     "name": "stanza",
     "description": "Modern XMPP in the browser, with a JSON API",
-    "version": "11.3.1",
+    "version": "11.3.3",
     "author": "Lance Stout <lancestout@gmail.com>",
     "stanzajs_env_mappings": {
         "browser": {
-            "./dist/es/lib/async/index.js": "./dist/es/lib/async/index-browser.js",
             "./dist/es/lib/crypto/index.js": "./dist/es/lib/crypto/index-browser.js",
             "./dist/es/lib/fetch/index.js": "./dist/es/lib/fetch/index-browser.js",
             "./dist/es/lib/ws/index.js": "./dist/es/lib/ws/index-browser.js"
         },
         "react-native": {
-            "./dist/es/lib/async/index.js": "./dist/es/lib/async/index-browser.js",
             "./dist/es/lib/crypto/index.js": "./dist/es/lib/crypto/index-react-native.js",
             "./dist/es/lib/fetch/index.js": "./dist/es/lib/fetch/index-browser.js",
             "./dist/es/lib/ws/index.js": "./dist/es/lib/ws/index-browser.js"
@@ -23,37 +21,37 @@
         "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
     ],
     "dependencies": {
-        "@types/async": "^2.4.0",
-        "@types/node": "^11.13.6",
+        "@types/async": "^3.0.0",
+        "@types/node": "^12.0.7",
         "@types/punycode": "^2.1.0",
         "@types/readable-stream": "^2.3.1",
         "@types/ws": "^6.0.1",
-        "async": "^2.6.2",
-        "async-es": "^2.6.2",
-        "cross-fetch": "^3.0.2",
+        "async": "^3.0.1",
+        "cross-fetch": "^3.0.4",
+        "jxt": "^4.0.2",
         "punycode": "^2.1.1",
-        "react-native-randombytes": "^3.5.2",
-        "readable-stream": "^3.3.0",
+        "react-native-randombytes": "^3.5.3",
+        "readable-stream": "^3.4.0",
         "sdp": "^2.9.0",
         "tslib": "^1.9.3",
-        "ws": "^6.1.2"
+        "ws": "^7.0.0"
     },
     "devDependencies": {
-        "husky": "^2.1.0",
-        "nyc": "^14.0.0",
-        "prettier": "^1.14.3",
-        "pretty-quick": "^1.8.0",
+        "husky": "^2.4.0",
+        "nyc": "^14.1.1",
+        "prettier": "^1.18.2",
+        "pretty-quick": "^1.11.0",
         "rimraf": "^2.6.2",
-        "rollup": "^1.0.0",
-        "rollup-plugin-node-resolve": "^4.0.0",
+        "rollup": "^1.14.4",
+        "rollup-plugin-node-resolve": "^5.0.1",
         "tap-spec": "^5.0.0",
-        "tape": "^4.8.0",
-        "ts-node": "^8.0.3",
-        "tslint": "^5.14.0",
-        "typescript": "^3.4.1",
-        "webpack": "^4.25.0",
+        "tape": "^4.10.2",
+        "ts-node": "^8.2.0",
+        "tslint": "^5.17.0",
+        "typescript": "^3.5.1",
+        "webpack": "^4.33.0",
         "webpack-bundle-analyzer": "^3.0.3",
-        "webpack-cli": "^3.1.2"
+        "webpack-cli": "^3.3.3"
     },
     "homepage": "https://stanzajs.org",
     "husky": {
