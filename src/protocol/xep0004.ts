@@ -85,6 +85,11 @@ export interface DataFormFieldJIDMulti extends DataFormFieldBase {
     options?: Array<DataFormFieldOption<JID>>;
 }
 
+export interface DataFormFieldAny extends DataFormFieldBase {
+    type?: undefined;
+    value?: boolean | string | string[] | JID | JID[];
+}
+
 export interface DataFormFieldOption<T> {
     label?: string;
     value: T;
@@ -97,7 +102,8 @@ export type DataFormField =
     | DataFormFieldList
     | DataFormFieldListMulti
     | DataFormFieldJID
-    | DataFormFieldJIDMulti;
+    | DataFormFieldJIDMulti
+    | DataFormFieldAny;
 
 export default [
     {
