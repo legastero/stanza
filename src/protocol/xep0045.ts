@@ -25,9 +25,11 @@ import {
     childEnum,
     childText,
     dateAttribute,
+    deepChildText,
     DefinitionOptions,
     integerAttribute,
     multipleChildAttribute,
+    splicePath,
     staticValue,
     text
 } from '../jxt';
@@ -42,7 +44,7 @@ import {
     NS_MUC_UNIQUE,
     NS_MUC_USER
 } from './Namespaces';
-import { addAlias, JID, JIDAttribute } from './util';
+import { addAlias, childJIDAttribute, JID, JIDAttribute } from './util';
 
 declare module './' {
     export interface Presence {
@@ -64,12 +66,11 @@ export interface MUCJoin {
     history?: MUCHistory;
 }
 
-export interface MUCInfo {
+export interface MUCInfo extends MUCUserItem {
     type: 'info';
     action?: 'invite' | 'decline' | 'destroy';
     password?: string;
     statusCodes?: string[];
-    user?: MUCUserItem;
     destroy?: MUCDestroy;
     invite?: MUCInvite[];
     decline?: MUCDecline;
@@ -175,7 +176,16 @@ export default [
         element: 'x',
         fields: {
             action: childEnum(null, ['invite', 'decline', 'destroy']),
+            actor: splicePath(null, 'item', 'mucactor'),
+            affiliation: childAttribute(null, 'item', 'affiliation'),
+            jid: childJIDAttribute(null, 'item', 'jid'),
+            nick: childAttribute(null, 'item', 'nick'),
             password: childText(null, 'password'),
+            reason: deepChildText([
+                { namespace: null, element: 'item' },
+                { namespace: null, element: 'reason' }
+            ]),
+            role: childAttribute(null, 'item', 'role'),
             statusCodes: multipleChildAttribute(null, 'status', 'code')
         },
         namespace: NS_MUC_USER,
@@ -183,28 +193,13 @@ export default [
         typeField: 'type'
     },
     {
-        aliases: [
-            { path: 'presence.muc.user', selector: 'info' },
-            { path: 'message.muc.user', selector: 'info' }
-        ],
-        element: 'item',
-        fields: {
-            affiliation: attribute('affiliation'),
-            jid: JIDAttribute('jid'),
-            nick: attribute('nick'),
-            reason: childText(null, 'reason'),
-            role: attribute('role')
-        },
-        namespace: NS_MUC_USER
-    },
-    {
-        aliases: ['presence.muc.user.actor', 'message.muc.user.actor'],
         element: 'actor',
         fields: {
             jid: JIDAttribute('jid'),
             nick: attribute('nick')
         },
-        namespace: NS_MUC_USER
+        namespace: NS_MUC_USER,
+        path: 'mucactor'
     },
     {
         element: 'destroy',

@@ -569,6 +569,39 @@ export function childTextBuffer(
     };
 }
 
+export function deepChildText(
+    path: Array<{ namespace: string | null; element: string }>,
+    defaultValue?: string
+): FieldDefinition<string> {
+    return {
+        importer(xml) {
+            let current = xml;
+            for (const node of path) {
+                current = current.getChild(node.element, node.namespace || current.getNamespace());
+                if (!current) {
+                    return defaultValue;
+                }
+            }
+            return current.getText() || defaultValue;
+        },
+        exporter(xml, value) {
+            if (!value) {
+                return;
+            }
+
+            let current = xml;
+            for (const node of path) {
+                current = findOrCreate(
+                    current,
+                    node.namespace || current.getNamespace(),
+                    node.element
+                );
+            }
+            current.children.push(value.toString());
+        }
+    };
+}
+
 export function childBoolean(namespace: string | null, element: string): FieldDefinition<boolean> {
     return {
         importer(xml) {
