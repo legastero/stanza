@@ -168,7 +168,7 @@ export function getLocal(jid: string = ''): string | undefined {
     return parse(jid).local;
 }
 
-export function getDomain(jid: string = ''): string | undefined {
+export function getDomain(jid: string = ''): string {
     return parse(jid).domain;
 }
 
@@ -176,7 +176,7 @@ export function getResource(jid: string = ''): string | undefined {
     return parse(jid).resource;
 }
 
-export function toBare(jid: string = ''): string | undefined {
+export function toBare(jid: string = ''): string {
     return parse(jid).bare;
 }
 

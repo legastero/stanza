@@ -34,7 +34,7 @@ import {
     text
 } from '../jxt';
 
-import { DataForm } from './';
+import { DataForm, Presence, ReceivedPresence } from './';
 import {
     NS_DATAFORM,
     NS_MUC,
@@ -58,6 +58,14 @@ declare module './' {
     export interface IQ {
         muc?: MUCConfigure | MUCUserList | MUCUnique;
     }
+}
+
+export interface MUCPresence extends Presence {
+    muc?: MUCJoin;
+}
+
+export interface ReceivedMUCPresence extends ReceivedPresence {
+    muc: MUCInfo;
 }
 
 export interface MUCJoin {

@@ -68,6 +68,12 @@ declare module './' {
         bind?: Bind;
     }
 
+    export interface ReceivedIQ extends IQ {
+        to: string;
+        from: string;
+        id: string;
+    }
+
     export interface Message {
         to?: string;
         from?: string;
@@ -77,6 +83,11 @@ declare module './' {
         error?: StanzaError;
     }
 
+    export interface ReceivedMessage extends Message {
+        to: string;
+        from: string;
+    }
+
     export interface Presence {
         to?: string;
         from?: string;
@@ -84,6 +95,11 @@ declare module './' {
         lang?: string;
         streamType?: string;
         error?: StanzaError;
+    }
+
+    export interface ReceivedPresence extends Presence {
+        to: string;
+        from: string;
     }
 
     export interface SASLFeature {

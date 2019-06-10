@@ -1,6 +1,12 @@
 import { Agent } from '../';
 import * as JID from '../JID';
-import { NS_HATS_0, NS_MUC, NS_MUC_DIRECT_INVITE } from '../protocol';
+import {
+    MUCPresence,
+    NS_HATS_0,
+    NS_MUC,
+    NS_MUC_DIRECT_INVITE,
+    ReceivedMUCPresence
+} from '../protocol';
 import {
     DataForm,
     IQ,
@@ -127,7 +133,7 @@ export default function(client: Agent) {
         });
     });
 
-    client.on('presence', (pres: Presence) => {
+    client.on('presence', (pres: ReceivedMUCPresence) => {
         const room = JID.toBare(pres.from)!;
 
         if (client.joiningRooms.has(room) && pres.type === 'error') {
@@ -137,7 +143,7 @@ export default function(client: Agent) {
             return;
         }
 
-        if (!pres.muc || pres.muc.type === 'join') {
+        if (!pres.muc) {
             return;
         }
 
@@ -171,7 +177,7 @@ export default function(client: Agent) {
         }
     });
 
-    client.joinRoom = (room: string, nick: string, opts: Presence = {}) => {
+    client.joinRoom = (room: string, nick: string, opts: MUCPresence = {}) => {
         room = JID.toBare(room)!;
         client.joiningRooms.set(room, nick);
         client.sendPresence({
