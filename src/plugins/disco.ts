@@ -3,7 +3,9 @@ import Disco, { DiscoNodeInfo } from '../DiscoManager';
 import * as JID from '../JID';
 import {
     DiscoInfo,
+    DiscoInfoResult,
     DiscoItems,
+    DiscoItemsResult,
     IQ,
     LegacyEntityCaps,
     NS_DISCO_INFO,
@@ -19,7 +21,7 @@ declare module '../' {
             node?: string
         ): Promise<
             IQ & {
-                disco: DiscoInfo;
+                disco: DiscoInfoResult;
             }
         >;
         getDiscoItems(
@@ -27,7 +29,7 @@ declare module '../' {
             node?: string
         ): Promise<
             IQ & {
-                disco: DiscoItems;
+                disco: DiscoItemsResult;
             }
         >;
         updateCaps(): LegacyEntityCaps | undefined;
@@ -65,26 +67,38 @@ export default function(client: Agent) {
         done();
     });
 
-    client.getDiscoInfo = (jid: string, node?: string) => {
-        return client.sendIQ({
+    client.getDiscoInfo = async (jid: string, node?: string) => {
+        const result = await client.sendIQ<{ disco: DiscoInfo }, { disco: DiscoInfoResult }>({
             disco: {
                 node,
                 type: 'info'
-            } as DiscoInfo,
+            },
             to: jid,
             type: 'get'
         });
+
+        return {
+            extensions: [],
+            features: [],
+            identities: [],
+            ...result
+        };
     };
 
-    client.getDiscoItems = (jid: string, node?: string) => {
-        return client.sendIQ({
+    client.getDiscoItems = async (jid: string, node?: string) => {
+        const result = await client.sendIQ<{ disco: DiscoItems }, { disco: DiscoItemsResult }>({
             disco: {
                 node,
                 type: 'items'
-            } as DiscoItems,
+            },
             to: jid,
             type: 'get'
         });
+
+        return {
+            items: [],
+            ...result
+        };
     };
 
     client.updateCaps = () => {

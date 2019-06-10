@@ -49,10 +49,22 @@ export interface DiscoInfo {
     extensions?: DataForm[];
 }
 
+export interface DiscoInfoResult extends DiscoInfo {
+    features: string[];
+    identities: DiscoInfoIdentity[];
+
+    // XEP-0128
+    extensions: DataForm[];
+}
+
 export interface DiscoItems {
     type: 'items';
     node?: string;
     items?: DiscoItem[];
+}
+
+export interface DiscoItemsResult extends DiscoItems {
+    items: DiscoItem[];
 }
 
 export interface DiscoItem {
