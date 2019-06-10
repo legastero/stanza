@@ -1,10 +1,10 @@
 import { Agent } from '../';
 import * as JID from '../JID';
-import { IQ, RosterItem } from '../protocol';
+import { IQ, Roster, RosterItem, RosterResult } from '../protocol';
 
 declare module '../' {
     export interface Agent {
-        getRoster(): Promise<IQ>;
+        getRoster(): Promise<IQ & { roster: RosterResult }>;
         updateRosterItem(item: RosterItem): Promise<IQ>;
         removeRosterItem(jid: string): Promise<IQ>;
         subscribe(jid: string): void;
@@ -35,7 +35,7 @@ export default function(client: Agent) {
     });
 
     client.getRoster = async () => {
-        const resp = await client.sendIQ({
+        const resp = await client.sendIQ<{ roster: Roster }, { roster: RosterResult }>({
             roster: {
                 version: client.config.rosterVer
             },
@@ -48,6 +48,7 @@ export default function(client: Agent) {
                 client.emit('roster:ver', version);
             }
         }
+        resp.roster.items = resp.roster.items || [];
         return resp;
     };
 

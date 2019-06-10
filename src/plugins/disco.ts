@@ -77,12 +77,14 @@ export default function(client: Agent) {
             type: 'get'
         });
 
-        return {
+        result.disco = {
             extensions: [],
             features: [],
             identities: [],
-            ...result
+            ...result.disco
         };
+
+        return result;
     };
 
     client.getDiscoItems = async (jid: string, node?: string) => {

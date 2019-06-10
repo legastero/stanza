@@ -63,6 +63,9 @@ export interface Roster {
     version?: string;
     items?: RosterItem[];
 }
+export interface RosterResult extends Roster {
+    items: RosterItem[];
+}
 export interface RosterItem {
     jid: string;
     name?: string;
