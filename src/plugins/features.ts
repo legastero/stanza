@@ -39,7 +39,7 @@ export default function(client: Agent) {
         this.features.handlers[name] = handler.bind(client);
     };
 
-    client.on('features', async (features: StreamFeatures) => {
+    client.on('features', async features => {
         const series: Array<() => Promise<null | { command: string; message?: string }>> = [];
         const negotiated = client.features.negotiated;
         const handlers = client.features.handlers;

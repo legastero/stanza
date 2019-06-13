@@ -1,29 +1,32 @@
 import { Agent } from '../';
 import { NS_NICK, NS_PEP_NOTIFY } from '../protocol';
-import { IQ, Message, UserNick } from '../protocol';
+import { IQ, UserNick } from '../protocol';
 
 declare module '../' {
     export interface Agent {
         publishNick(nick: string): Promise<IQ>;
     }
+
+    export interface AgentEvents {
+        nick: UserNickEvent;
+    }
+}
+
+export interface UserNickEvent {
+    jid: string;
+    nick?: string;
 }
 
 export default function(client: Agent) {
     client.disco.addFeature(NS_NICK);
     client.disco.addFeature(NS_PEP_NOTIFY(NS_NICK));
 
-    client.on('pubsub:event', (msg: Message) => {
-        if (!msg.pubsub || !msg.pubsub.items) {
-            return;
-        }
+    client.on('pubsub:published', msg => {
         if (msg.pubsub.items.node !== NS_NICK) {
             return;
         }
-        if (!msg.pubsub.items.published) {
-            return;
-        }
 
-        const content = msg.pubsub.items.published[0].content as UserNick;
+        const content = msg.pubsub.items.published[0]!.content as UserNick;
 
         client.emit('nick', {
             jid: msg.from,

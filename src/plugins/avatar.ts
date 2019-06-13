@@ -1,44 +1,53 @@
 import { Agent } from '../';
 import {
     AvatarMetaData,
+    AvatarPointer,
+    AvatarVersion,
+    Geolocation,
     IQ,
     Message,
     NS_AVATAR_DATA,
     NS_AVATAR_METADATA,
     NS_PEP_NOTIFY,
-    Presence
+    ReceivedMessage
 } from '../protocol';
 
 declare module '../' {
     export interface Agent {
         publishAvatar(id: string, data: Buffer): Promise<IQ>;
-        useAvatars(info: AvatarMetaData): Promise<IQ>;
+        useAvatars(versions: AvatarVersion[], pointers?: AvatarPointer[]): Promise<IQ>;
         getAvatar(jid: string, id: string): Promise<IQ>;
     }
+
+    export interface AgentEvents {
+        avatar: AvatarsEvent;
+    }
+}
+
+export interface AvatarsEvent {
+    avatars: AvatarVersion[];
+    jid: string;
+    source: 'pubsub' | 'vcard';
 }
 
 export default function(client: Agent) {
     client.disco.addFeature(NS_PEP_NOTIFY(NS_AVATAR_METADATA));
 
-    client.on('pubsub:event', (msg: Message) => {
-        if (!msg.pubsub || !msg.pubsub.items) {
-            return;
-        }
+    client.on('pubsub:published', msg => {
         if (msg.pubsub.items.node !== NS_AVATAR_METADATA) {
             return;
         }
-        if (!msg.pubsub.items.published) {
-            return;
-        }
 
-        client.emit('geoloc', {
-            geoloc: msg.pubsub.items.published[0]!.content,
+        const info = msg.pubsub.items.published[0]!.content as AvatarMetaData;
+
+        client.emit('avatar', {
+            avatars: info.versions || [],
             jid: msg.from,
             source: 'pubsub'
         });
     });
 
-    client.on('presence', (pres: Presence) => {
+    client.on('presence', pres => {
         if (pres.vcardAvatar && typeof pres.vcardAvatar === 'string') {
             client.emit('avatar', {
                 avatars: [
@@ -64,13 +73,14 @@ export default function(client: Agent) {
         );
     };
 
-    client.useAvatars = (info: AvatarMetaData) => {
+    client.useAvatars = (versions: AvatarVersion[], pointers: AvatarPointer[] = []) => {
         return client.publish(
             '',
             NS_AVATAR_METADATA,
             {
                 itemType: NS_AVATAR_METADATA,
-                ...info
+                pointers,
+                versions
             },
             'current'
         );

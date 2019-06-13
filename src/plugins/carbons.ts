@@ -1,17 +1,37 @@
 import { Agent } from '../';
 import * as JID from '../JID';
-import { IQ, Message } from '../protocol';
+import { CarbonMessage, IQ, Message, ReceivedMessage } from '../protocol';
 
 declare module '../' {
     export interface Agent {
-        enableCarbons(): Promise<IQ>;
-        disableCarbons(): Promise<IQ>;
+        enableCarbons(): Promise<void>;
+        disableCarbons(): Promise<void>;
+    }
+
+    export interface AgentEvents {
+        'carbon:received': ReceivedCarbon;
+        'carbon:sent': SentCarbon;
     }
 }
 
+export type ReceivedCarbon = ReceivedMessage & {
+    carbon: CarbonMessage & { type: 'received' };
+};
+
+export type SentCarbon = ReceivedMessage & {
+    carbon: CarbonMessage & { type: 'sent' };
+};
+
+function isReceivedCarbon(msg: Message): msg is ReceivedCarbon {
+    return !!msg.carbon && msg.carbon.type === 'received';
+}
+function isSentCarbon(msg: Message): msg is SentCarbon {
+    return !!msg.carbon && msg.carbon.type === 'sent';
+}
+
 export default function(client: Agent) {
-    client.enableCarbons = (): Promise<IQ> => {
-        return client.sendIQ({
+    client.enableCarbons = async () => {
+        await client.sendIQ({
             carbons: {
                 action: 'enable'
             },
@@ -19,8 +39,8 @@ export default function(client: Agent) {
         });
     };
 
-    client.disableCarbons = (): Promise<IQ> => {
-        return client.sendIQ({
+    client.disableCarbons = async () => {
+        await client.sendIQ({
             carbons: {
                 action: 'disable'
             },
@@ -28,16 +48,10 @@ export default function(client: Agent) {
         });
     };
 
-    client.on('message', (msg: Message) => {
-        if (!msg.carbon) {
+    client.on('message', msg => {
+        if (!msg.carbon || !JID.equalBare(msg.from, client.jid)) {
             return;
         }
-
-        if (!JID.equalBare(msg.from, client.jid)) {
-            return;
-        }
-
-        client.emit(`carbon:${msg.carbon.type}`, msg);
 
         if (msg.carbon.type !== 'received' && msg.carbon.type !== 'sent') {
             return;
@@ -50,11 +64,13 @@ export default function(client: Agent) {
             };
         }
 
-        if (msg.carbon.type === 'sent') {
-            client.emit('message:sent', forwardedMessage);
+        if (isReceivedCarbon(msg)) {
+            client.emit('carbon:received', msg);
+            client.emit('message', forwardedMessage as ReceivedMessage);
         }
-        if (msg.carbon.type === 'received') {
-            client.emit('message', forwardedMessage);
+        if (isSentCarbon(msg)) {
+            client.emit('carbon:sent', msg);
+            client.emit('message:sent', forwardedMessage);
         }
     });
 }

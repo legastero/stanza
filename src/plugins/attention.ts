@@ -1,9 +1,13 @@
 import { Agent } from '../';
-import { Message, NS_ATTENTION_0 } from '../protocol';
+import { Message, NS_ATTENTION_0, ReceivedMessage } from '../protocol';
 
 declare module '../' {
     export interface Agent {
         getAttention(jid: string, opts?: Partial<Message>): void;
+    }
+
+    export interface AgentEvents {
+        attention: ReceivedMessage;
     }
 }
 
@@ -19,7 +23,7 @@ export default function(client: Agent) {
         });
     };
 
-    client.on('message', (msg: Message) => {
+    client.on('message', msg => {
         if (msg.requestingAttention) {
             client.emit('attention', msg);
         }

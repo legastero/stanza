@@ -1,34 +1,38 @@
-export type EventHandler = (...data: any[]) => void;
+export type EventHandler<E> = (...data: E[]) => void;
 
-export default class WildEmitter<T = object> {
+export default class WildEmitter<T = { [key: string]: any }> {
     public isWildEmitter = true;
-    protected callbacks: { [key: string]: EventHandler[] } = {};
+    protected callbacks: { [key: string]: Array<EventHandler<any>> } = {};
 
-    public on(event: string, handler: EventHandler): this;
-    public on(event: string, group: string | undefined, handler: EventHandler): this;
-    public on(
-        event: string,
-        groupNameOrHandler: string | ((...data: any[]) => void) | undefined,
-        handler?: (...data: any[]) => void
+    public on<K extends keyof T>(event: K, handler: EventHandler<T[K]>): this;
+    public on<K extends keyof T>(
+        event: K,
+        group: string | undefined,
+        handler: EventHandler<T[K]>
+    ): this;
+    public on<K extends keyof T>(
+        event: K,
+        groupNameOrHandler: string | ((...data: Array<T[K]>) => void) | undefined,
+        handler?: (...data: Array<T[K]>) => void
     ): this {
         const hasGroup = arguments.length === 3;
         const group: string | undefined = hasGroup ? (arguments[1] as string) : undefined;
-        const func: EventHandler = hasGroup ? arguments[2] : arguments[1];
+        const func: EventHandler<T[K]> = hasGroup ? arguments[2] : arguments[1];
         (func as any)._groupName = group;
-        (this.callbacks[event] = this.callbacks[event] || []).push(func);
+        (this.callbacks[event as string] = this.callbacks[event as string] || []).push(func);
         return this;
     }
 
-    public once(event: string, handler: EventHandler): this;
-    public once(event: string, group: string, handler: EventHandler): this;
-    public once(
-        event: string,
-        groupNameOrHandler: string | EventHandler,
-        handler?: EventHandler
+    public once<K extends keyof T>(event: K, handler: EventHandler<T[K]>): this;
+    public once<K extends keyof T>(event: K, group: string, handler: EventHandler<T[K]>): this;
+    public once<K extends keyof T>(
+        event: K,
+        groupNameOrHandler: string | EventHandler<T[K]>,
+        handler?: EventHandler<T[K]>
     ): this {
         const hasGroup = arguments.length === 3;
         const group: string | undefined = hasGroup ? (arguments[1] as string) : undefined;
-        const func: EventHandler = hasGroup ? arguments[2] : arguments[1];
+        const func: EventHandler<T[K]> = hasGroup ? arguments[2] : arguments[1];
 
         const on = () => {
             this.off(event, on);
@@ -55,16 +59,16 @@ export default class WildEmitter<T = object> {
         return this;
     }
 
-    public off(event: string, fn?: EventHandler): this {
+    public off<K extends keyof T>(event: K, fn?: EventHandler<T[K]>): this {
         this.callbacks = this.callbacks || {};
-        const callbacks = this.callbacks[event];
+        const callbacks = this.callbacks[event as string];
         if (!callbacks) {
             return this;
         }
 
         // remove all handlers
         if (!fn) {
-            delete this.callbacks[event];
+            delete this.callbacks[event as string];
             return this;
         }
 
@@ -72,16 +76,16 @@ export default class WildEmitter<T = object> {
         const i = callbacks.indexOf(fn);
         callbacks.splice(i, 1);
         if (callbacks.length === 0) {
-            delete this.callbacks[event];
+            delete this.callbacks[event as string];
         }
         return this;
     }
 
-    public emit(event: string, ...data: any[]): this {
+    public emit<K extends keyof T>(event: K, ...data: Array<T[K]>): this {
         this.callbacks = this.callbacks || {};
         const args = [].slice.call(arguments, 1);
-        const callbacks = this.callbacks[event];
-        const specialCallbacks = this.getWildcardCallbacks(event);
+        const callbacks = this.callbacks[event as string];
+        const specialCallbacks = this.getWildcardCallbacks(event as string);
 
         if (callbacks) {
             const listeners = callbacks.slice();
@@ -106,9 +110,9 @@ export default class WildEmitter<T = object> {
         return this;
     }
 
-    private getWildcardCallbacks(eventName: string): EventHandler[] {
+    private getWildcardCallbacks(eventName: string): Array<EventHandler<any>> {
         this.callbacks = this.callbacks || {};
-        let result: EventHandler[] = [];
+        let result: Array<EventHandler<any>> = [];
 
         for (const item of Object.keys(this.callbacks)) {
             const split = item.split('*');

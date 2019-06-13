@@ -1,6 +1,6 @@
 import { Agent } from '../';
 import * as JID from '../JID';
-import { NS_CHAT_MARKERS_0 } from '../protocol';
+import { NS_CHAT_MARKERS_0, ReceivedMessage } from '../protocol';
 import { Message } from '../protocol';
 
 declare module '../' {
@@ -12,6 +12,12 @@ declare module '../' {
 
     export interface AgentConfig {
         chatMarkers?: boolean;
+    }
+
+    export interface AgentEvents {
+        'marker:acknowledged': ReceivedMessage;
+        'marker:displayed': ReceivedMessage;
+        'marker:received': ReceivedMessage;
     }
 }
 
@@ -28,7 +34,7 @@ export default function(client: Agent) {
             return;
         }
         if (msg.marker && msg.marker.type !== 'markable') {
-            client.emit(`marker:${msg.marker.type}`, msg);
+            client.emit(`marker:${msg.marker.type}` as any, msg);
         }
     });
 

@@ -1,30 +1,33 @@
 import { Agent } from '../';
-import { NS_GEOLOC, NS_PEP_NOTIFY } from '../protocol';
-import { Geolocation, IQ, Message } from '../protocol';
+import { Geolocation, IQ, Message, NS_GEOLOC, NS_PEP_NOTIFY } from '../protocol';
 
 declare module '../' {
     export interface Agent {
         publishGeoLoc(data: Geolocation): Promise<IQ>;
     }
+
+    export interface AgentEvents {
+        geoloc: GeolocEvent;
+    }
+}
+
+export interface GeolocEvent {
+    geoloc: Geolocation;
+    jid: string;
 }
 
 export default function(client: Agent) {
     client.disco.addFeature(NS_GEOLOC);
     client.disco.addFeature(NS_PEP_NOTIFY(NS_GEOLOC));
 
-    client.on('pubsub:event', (msg: Message) => {
-        if (!msg.pubsub || !msg.pubsub.items) {
-            return;
-        }
+    client.on('pubsub:published', msg => {
         if (msg.pubsub.items.node !== NS_GEOLOC) {
             return;
         }
-        if (!msg.pubsub.items.published) {
-            return;
-        }
 
+        const loc = msg.pubsub.items.published[0]!.content as Geolocation;
         client.emit('geoloc', {
-            geoloc: msg.pubsub.items.published[0]!.content,
+            geoloc: loc,
             jid: msg.from
         });
     });

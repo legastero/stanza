@@ -179,7 +179,7 @@ export default class BOSHConnection extends WildEmitter implements Transport {
             this.stream = undefined;
             this.sid = undefined;
             this.rid = undefined;
-            this.emit('disconnected', this);
+            this.emit('disconnected');
         }
     }
 

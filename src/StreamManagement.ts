@@ -117,7 +117,7 @@ export default class StreamManagement {
         // We alert that any remaining unacked stanzas failed to send. It has
         // been too long for auto-retrying these to be the right thing to do.
         for (const [kind, stanza] of this.unacked) {
-            this.client.emit('stanza:failed', stanza, kind);
+            this.client.emit('stanza:failed', { kind, stanza } as any);
         }
 
         this.inboundStarted = false;
@@ -155,7 +155,8 @@ export default class StreamManagement {
         const numAcked = mod(ack.handled - this.lastAck, MAX_SEQ);
         this.pendingAck = false;
         for (let i = 0; i < numAcked && this.unacked.length > 0; i++) {
-            this.client.emit('stanza:acked', this.unacked.shift());
+            const [kind, stanza] = this.unacked.shift()!;
+            this.client.emit('stanza:acked', { kind, stanza } as any);
         }
         this.lastAck = ack.handled;
 

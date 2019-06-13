@@ -74,6 +74,14 @@ declare module './' {
         id: string;
     }
 
+    export interface ReceivedIQGet extends ReceivedIQ {
+        type: 'get';
+    }
+
+    export interface ReceivedIQSet extends ReceivedIQ {
+        type: 'set';
+    }
+
     export interface Message {
         to?: string;
         from?: string;

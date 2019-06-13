@@ -5,12 +5,13 @@ import {
     NS_HATS_0,
     NS_MUC,
     NS_MUC_DIRECT_INVITE,
-    ReceivedMUCPresence
+    ReceivedMessage,
+    ReceivedMUCPresence,
+    ReceivedPresence
 } from '../protocol';
 import {
     DataForm,
     IQ,
-    Message,
     MUCAffiliation,
     MUCConfigure,
     MUCDestroy,
@@ -37,7 +38,7 @@ declare module '../' {
         declineInvite(room: string, sender: string, reason?: string): void;
         changeNick(room: string, nick: string): void;
         setSubject(room: string, subject: string): void;
-        discoverReservedNick(room: string): Promise<string>;
+        getReservedNick(room: string): Promise<string>;
         requestRoomVoice(room: string): void;
         setRoomAffiliation(
             room: string,
@@ -57,6 +58,49 @@ declare module '../' {
         destroyRoom(room: string, opts?: MUCDestroy): Promise<IQ & { muc: MUCConfigure }>;
         getUniqueRoomName(mucHost: string): Promise<string>;
     }
+
+    export interface AgentEvents {
+        'muc:topic': MUCTopicEvent;
+        'muc:invite': MUCInviteEvent;
+        'muc:other': ReceivedMessage;
+        'muc:declined': MUCDeclinedEvent;
+        'muc:failed': Presence;
+        'muc:error': Presence;
+        'muc:available': ReceivedMUCPresence;
+        'muc:unavailable': ReceivedMUCPresence;
+        'muc:destroyed': MUCDestroyedEvent;
+        'muc:leave': ReceivedMUCPresence;
+        'muc:join': ReceivedMUCPresence;
+    }
+}
+
+export interface MUCTopicEvent {
+    topic?: string;
+    room: string;
+    from: string;
+}
+export interface MUCInviteEvent {
+    from: string;
+    password?: string;
+    reason?: string;
+    room: string;
+    thread?: string;
+    type: 'direct' | 'mediated';
+}
+export interface MUCDeclinedEvent {
+    from: string;
+    reason?: string;
+    room: string;
+}
+export interface MUCDestroyedEvent {
+    newRoom?: string;
+    password?: string;
+    reason?: string;
+    room: string;
+}
+
+function isMUCPresence(pres: ReceivedPresence): pres is ReceivedMUCPresence {
+    return !!pres.muc;
 }
 
 export default function(client: Agent) {
@@ -83,9 +127,13 @@ export default function(client: Agent) {
     client.on('session:started', rejoinRooms);
     client.on('stream:management:resumed', rejoinRooms);
 
-    client.on('message', (msg: Message) => {
-        if (msg.type === 'groupchat' && msg.subject) {
-            client.emit('muc:subject', msg);
+    client.on('message', msg => {
+        if (msg.type === 'groupchat' && msg.hasSubject) {
+            client.emit('muc:topic', {
+                from: msg.from,
+                room: JID.toBare(msg.from),
+                topic: msg.subject || ''
+            });
             return;
         }
 
@@ -98,7 +146,7 @@ export default function(client: Agent) {
                 from: msg.from,
                 password: msg.muc.password,
                 reason: msg.muc.reason,
-                room: msg.muc.jid,
+                room: msg.muc.jid!,
                 thread: msg.muc.thread,
                 type: 'direct'
             });
@@ -107,7 +155,7 @@ export default function(client: Agent) {
 
         if (msg.muc.invite) {
             client.emit('muc:invite', {
-                from: msg.muc.invite[0].from,
+                from: msg.muc.invite[0].from!,
                 password: msg.muc.password,
                 reason: msg.muc.invite[0].reason,
                 room: msg.from,
@@ -119,21 +167,17 @@ export default function(client: Agent) {
 
         if (msg.muc.decline) {
             client.emit('muc:declined', {
-                from: msg.muc.decline.from,
+                from: msg.muc.decline.from!,
                 reason: msg.muc.decline.reason,
                 room: msg.from
             });
             return;
         }
 
-        client.emit('muc:other', {
-            muc: msg.muc,
-            room: msg.from,
-            to: msg.to
-        });
+        client.emit('muc:other', msg);
     });
 
-    client.on('presence', (pres: ReceivedMUCPresence) => {
+    client.on('presence', pres => {
         const room = JID.toBare(pres.from)!;
 
         if (client.joiningRooms.has(room) && pres.type === 'error') {
@@ -143,7 +187,7 @@ export default function(client: Agent) {
             return;
         }
 
-        if (!pres.muc) {
+        if (!isMUCPresence(pres)) {
             return;
         }
 
@@ -257,16 +301,15 @@ export default function(client: Agent) {
         });
     };
 
-    client.discoverReservedNick = async (room: string) => {
+    client.getReservedNick = async (room: string) => {
         try {
-            const result = await client.getDiscoInfo(room, 'x-roomuser-item');
-            if (result.disco && result.disco.type === 'info' && result.disco.identities) {
-                const identity = result.disco.identities[0];
-                if (identity.name) {
-                    return identity.name;
-                }
+            const info = await client.getDiscoInfo(room, 'x-roomuser-item');
+            const identity = info.identities[0];
+            if (identity.name) {
+                return identity.name;
+            } else {
+                throw new Error('No nickname reserved');
             }
-            throw new Error('No nickname reserved');
         } catch (err) {
             throw new Error('No nickname reserved');
         }

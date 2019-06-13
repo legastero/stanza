@@ -11,7 +11,7 @@ export default function(client: Agent) {
             });
 
             client.features.negotiated.bind = true;
-            client.emit('session:prebind', resp.bind!.jid);
+            client.emit('session:prebind', resp.bind.jid!);
 
             const canStartSession =
                 !features.legacySession ||
@@ -31,7 +31,7 @@ export default function(client: Agent) {
         client.sessionStarted = true;
     });
 
-    client.on('session:prebind', (boundJID: string) => {
+    client.on('session:prebind', boundJID => {
         client.jid = boundJID;
         client.emit('session:bound', client.jid);
     });

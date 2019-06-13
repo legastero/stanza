@@ -19,8 +19,7 @@ declare module './' {
 
 export interface BookmarkStorage extends PubsubItemContent {
     itemType?: typeof NS_BOOKMARKS;
-    conferences?: MUCBookmark[];
-    uris?: URIBookmark[];
+    rooms?: MUCBookmark[];
 }
 
 export interface MUCBookmark {
@@ -29,11 +28,6 @@ export interface MUCBookmark {
     nick?: string;
     autoJoin?: boolean;
     password?: string;
-}
-
-export interface URIBookmark {
-    name?: string;
-    uri: string;
 }
 
 export default [
@@ -57,15 +51,6 @@ export default [
             name: attribute('name'),
             nick: childText(null, 'nick'),
             password: childText(null, 'password')
-        },
-        namespace: NS_BOOKMARKS
-    },
-    {
-        aliases: [{ path: 'bookmarkStorage.urls', multiple: true }],
-        element: 'conference',
-        fields: {
-            name: attribute('name'),
-            uri: attribute('url')
         },
         namespace: NS_BOOKMARKS
     }

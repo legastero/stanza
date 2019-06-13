@@ -1,4 +1,4 @@
-import { Agent, AgentConfig, Transport } from './';
+import { Agent, AgentConfig, AgentEvents, Transport } from './';
 import * as JID from './JID';
 import * as JXT from './jxt';
 import * as SASL from './lib/sasl';
@@ -11,7 +11,7 @@ import BOSH from './transports/bosh';
 import WebSocket from './transports/websocket';
 import { timeoutPromise, uuid } from './Utils';
 
-export default class Client extends WildEmitter {
+export default class Client extends WildEmitter<AgentEvents> {
     public jid: string;
     public config!: AgentConfig;
     public sm: StreamManagement;
@@ -51,13 +51,14 @@ export default class Client extends WildEmitter {
             websocket: WebSocket
         };
 
-        this.on('stream:data', (json: any, kind: string) => {
-            this.emit(kind, json);
+        this.on('stream:data' as any, (json: any, kind: string) => {
+            this.emit(kind as any, json);
             if (kind === 'message' || kind === 'presence' || kind === 'iq') {
                 this.sm.handle();
                 this.emit('stanza', json);
             } else if (kind === 'sm') {
                 if (json.type === 'ack') {
+                    this.emit('stream:management:ack', json);
                     this.sm.process(json);
                 }
                 if (json.type === 'request') {
@@ -67,7 +68,7 @@ export default class Client extends WildEmitter {
             }
 
             if (json.id) {
-                this.emit(kind + ':id:' + json.id, json);
+                this.emit((kind + ':id:' + json.id) as any, json);
             }
         });
 
@@ -112,11 +113,11 @@ export default class Client extends WildEmitter {
                     });
                 }
 
-                this.emit(iqEvent, iq);
+                this.emit(iqEvent as any, iq);
             }
         });
 
-        this.on('message', (msg: Message) => {
+        this.on('message', msg => {
             const isChat =
                 (msg.alternateLanguageBodies && msg.alternateLanguageBodies.length) ||
                 (msg.links && msg.links.length);
@@ -139,7 +140,7 @@ export default class Client extends WildEmitter {
             if (presType === 'error') {
                 presType = 'presence:error';
             }
-            this.emit(presType, pres);
+            this.emit(presType as any, pres);
         });
     }
 
@@ -179,7 +180,7 @@ export default class Client extends WildEmitter {
                 this.stanzas
             ));
             trans.on('*', (event: string, ...data: any[]) => {
-                this.emit(event, ...data);
+                this.emit(event as any, ...data);
             });
             return trans.connect({
                 acceptLanguages: this.config.acceptLanguages || ['en'],
@@ -275,7 +276,7 @@ export default class Client extends WildEmitter {
         return pres.id;
     }
 
-    public sendIQ(data: IQ & { type: 'get' | 'set' }): Promise<IQ> {
+    public sendIQ<T extends IQ = IQ, R extends IQ = T>(data: T): Promise<R> {
         const iq = {
             id: this.nextId(),
             ...data
@@ -283,8 +284,8 @@ export default class Client extends WildEmitter {
 
         const allowed = JID.allowedResponders(this.jid, data.to);
         const respEvent = 'iq:id:' + iq.id;
-        const request = new Promise<IQ>((resolve, reject) => {
-            const handler = (res: IQ) => {
+        const request = new Promise<R>((resolve, reject) => {
+            const handler = (res: R) => {
                 // Only process result from the correct responder
                 if (!allowed.has(res.from)) {
                     return;
@@ -295,19 +296,19 @@ export default class Client extends WildEmitter {
                 if (res.type !== 'result' && res.type !== 'error') {
                     return;
                 }
-                this.off(respEvent, handler);
+                this.off(respEvent as any, handler);
                 if (res.type === 'result') {
                     resolve(res);
                 } else {
                     reject(res);
                 }
             };
-            this.on(respEvent, handler);
+            this.on(respEvent as any, handler);
         });
 
         this.send('iq', iq);
 
-        return timeoutPromise(request, (this.config.timeout || 15) * 1000, () => ({
+        return timeoutPromise<R>(request, (this.config.timeout || 15) * 1000, () => ({
             error: {
                 condition: 'timeout'
             },

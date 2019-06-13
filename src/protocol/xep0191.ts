@@ -25,6 +25,10 @@ export interface Blocking {
     action: 'list' | 'block' | 'unblock';
     jids?: JID[];
 }
+export interface BlockingList extends Blocking {
+    action: 'list';
+    jids: JID[];
+}
 
 export default [
     extendStanzaError({

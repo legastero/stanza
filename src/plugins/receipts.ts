@@ -1,11 +1,22 @@
 import { Agent } from '../';
-import { NS_RECEIPTS } from '../protocol';
-import { Message } from '../protocol';
+import { MessageReceipt, NS_RECEIPTS, ReceivedMessage } from '../protocol';
+
+type ReceiptMessage = ReceivedMessage & {
+    receipt: MessageReceipt;
+};
 
 declare module '../' {
     export interface AgentConfig {
         sendReceipts?: boolean;
     }
+
+    export interface AgentEvents {
+        receipt: ReceiptMessage;
+    }
+}
+
+function isReceiptMessage(msg: ReceivedMessage): msg is ReceiptMessage {
+    return !!msg.receipt;
 }
 
 const ACK_TYPES = new Set<string>(['chat', 'headline', 'normal']);
@@ -13,10 +24,10 @@ const ACK_TYPES = new Set<string>(['chat', 'headline', 'normal']);
 export default function(client: Agent) {
     client.disco.addFeature(NS_RECEIPTS);
 
-    client.on('message', (msg: Message) => {
+    client.on('message', msg => {
         const sendReceipts = client.config.sendReceipts !== false;
 
-        if (!msg.receipt) {
+        if (!isReceiptMessage(msg)) {
             return;
         }
 

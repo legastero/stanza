@@ -4,9 +4,9 @@ import { IQ, Roster, RosterItem, RosterResult } from '../protocol';
 
 declare module '../' {
     export interface Agent {
-        getRoster(): Promise<IQ & { roster: RosterResult }>;
-        updateRosterItem(item: RosterItem): Promise<IQ>;
-        removeRosterItem(jid: string): Promise<IQ>;
+        getRoster(): Promise<RosterResult>;
+        updateRosterItem(item: RosterItem): Promise<void>;
+        removeRosterItem(jid: string): Promise<void>;
         subscribe(jid: string): void;
         unsubscribe(jid: string): void;
         acceptSubscription(jid: string): void;
@@ -16,10 +16,20 @@ declare module '../' {
     export interface AgentConfig {
         rosterVer?: string;
     }
+
+    export interface AgentEvents {
+        'iq:set:roster': IQ & {
+            roster: Roster;
+        };
+        'roster:update': IQ & {
+            roster: Roster;
+        };
+        'roster:ver': string;
+    }
 }
 
 export default function(client: Agent) {
-    client.on('iq:set:roster', (iq: IQ) => {
+    client.on('iq:set:roster', iq => {
         const allowed = JID.allowedResponders(client.jid);
         if (!allowed.has(iq.from)) {
             return client.sendIQError(iq, {
@@ -35,7 +45,7 @@ export default function(client: Agent) {
     });
 
     client.getRoster = async () => {
-        const resp = await client.sendIQ<{ roster: Roster }, { roster: RosterResult }>({
+        const resp = await client.sendIQ({
             roster: {
                 version: client.config.rosterVer
             },
@@ -49,11 +59,11 @@ export default function(client: Agent) {
             }
         }
         resp.roster.items = resp.roster.items || [];
-        return resp;
+        return resp.roster as RosterResult;
     };
 
-    client.updateRosterItem = (item: RosterItem) => {
-        return client.sendIQ({
+    client.updateRosterItem = async (item: RosterItem) => {
+        await client.sendIQ({
             roster: {
                 items: [item]
             },

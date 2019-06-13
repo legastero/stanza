@@ -1,9 +1,18 @@
 import { Agent } from '../';
-import { NS_SHIM } from '../protocol';
+import {
+    NS_SHIM,
+    PubsubEvent,
+    PubsubEventConfiguration,
+    PubsubEventDelete,
+    PubsubEventItems,
+    PubsubEventPurge,
+    PubsubEventSubscription,
+    PubsubItem,
+    ReceivedMessage
+} from '../protocol';
 import {
     DataForm,
     IQ,
-    Message,
     Paging,
     PubsubAffiliation,
     PubsubItemContent,
@@ -44,38 +53,96 @@ declare module '../' {
         getNodeAffiliations(jid: string, node: string): Promise<IQ>;
         updateNodeAffiliations(jid: string, node: string, items: PubsubAffiliation[]): Promise<IQ>;
     }
+
+    export interface AgentEvents {
+        'pubsub:event': PubsubEventMessage;
+        'pubsub:published': PubsubPublish;
+        'pubsub:retracted': PubsubRetract;
+        'pubsub:purged': PubsubEventMessage & { pubsub: PubsubEventPurge };
+        'pubsub:deleted': PubsubEventMessage & { pubsub: PubsubEventDelete };
+        'pubsub:subscription': PubsubEventMessage & { pubsub: PubsubEventSubscription };
+        'pubsub:config': PubsubEventMessage & { pubsub: PubsubEventConfiguration };
+    }
+}
+
+type PubsubEventMessage = ReceivedMessage & { pubsub: PubsubEvent };
+type PubsubPublish = PubsubEventMessage & {
+    pubsub: PubsubEventItems & {
+        items: {
+            published: PubsubItem[];
+        };
+    };
+};
+type PubsubRetract = PubsubEventMessage & {
+    pubsub: PubsubEventItems & {
+        items: {
+            retracted: PubsubItem[];
+        };
+    };
+};
+
+function isPubsubMessage(msg: ReceivedMessage): msg is PubsubEventMessage {
+    return !!msg.pubsub;
+}
+function isPubsubPublish(msg: PubsubEventMessage): msg is PubsubPublish {
+    return !!msg.pubsub.items && !!msg.pubsub.items.published;
+}
+function isPubsubRetract(msg: PubsubEventMessage): msg is PubsubRetract {
+    return !!msg.pubsub.items && !!msg.pubsub.items.retracted;
+}
+function isPubsubPurge(
+    msg: PubsubEventMessage
+): msg is PubsubEventMessage & { pubsub: PubsubEventPurge } {
+    return msg.pubsub.eventType === 'purge';
+}
+function isPubsubDelete(
+    msg: PubsubEventMessage
+): msg is PubsubEventMessage & { pubsub: PubsubEventDelete } {
+    return msg.pubsub.eventType === 'purge';
+}
+function isPubsubSubscription(
+    msg: PubsubEventMessage
+): msg is PubsubEventMessage & { pubsub: PubsubEventSubscription } {
+    return msg.pubsub.eventType === 'subscription';
+}
+function isPubsubConfiguration(
+    msg: PubsubEventMessage
+): msg is PubsubEventMessage & { pubsub: PubsubEventConfiguration } {
+    return msg.pubsub.eventType === 'configuration';
 }
 
 export default function(client: Agent) {
     client.disco.addFeature(`${NS_SHIM}#SubID`, NS_SHIM);
 
-    client.on('message', (msg: Message) => {
-        if (!msg.pubsub) {
+    client.on('message', msg => {
+        if (!isPubsubMessage(msg)) {
             return;
         }
         client.emit('pubsub:event', msg);
 
-        switch (msg.pubsub.eventType) {
-            case 'items':
-                if (msg.pubsub.items && msg.pubsub.items.published) {
-                    client.emit('pubsub:published', msg);
-                }
-                if (msg.pubsub.items && msg.pubsub.items.retracted) {
-                    client.emit('pubsub:retracted', msg);
-                }
-                break;
-            case 'purge':
-                client.emit('pubsub:purged', msg);
-                break;
-            case 'delete':
-                client.emit('pubsub:deleted', msg);
-                break;
-            case 'subscription':
-                client.emit('pubsub:subscription', msg);
-                break;
-            case 'configuration':
-                client.emit('pubsub:config', msg);
-                break;
+        if (isPubsubPublish(msg)) {
+            client.emit('pubsub:published', msg);
+            return;
+        }
+        if (isPubsubRetract(msg)) {
+            client.emit('pubsub:retracted', msg);
+            return;
+        }
+        if (isPubsubPurge(msg)) {
+            client.emit('pubsub:purged', msg);
+            return;
+        }
+        if (isPubsubDelete(msg)) {
+            client.emit('pubsub:deleted', msg);
+            return;
+        }
+        if (isPubsubSubscription(msg)) {
+            client.emit('pubsub:subscription', msg);
+            return;
+        }
+        if (isPubsubConfiguration(msg)) {
+            client.emit('pubsub:config', msg);
+            return;
         }
 
         /*

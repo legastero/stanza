@@ -8,7 +8,7 @@ export default function(client: Agent) {
         }
 
         try {
-            const resp = client.sendIQ({
+            await client.sendIQ({
                 legacySession: true,
                 type: 'set'
             });

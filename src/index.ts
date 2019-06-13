@@ -32,7 +32,41 @@ export interface TopLevelElements {
     csi: CSI;
 }
 
-export interface Agent extends WildEmitter {
+export interface AgentEvents {
+    message: Stanzas.ReceivedMessage;
+    presence: Stanzas.ReceivedPresence;
+    iq: Stanzas.ReceivedIQ;
+    features: Stanzas.StreamFeatures;
+    'stream:error': Stanzas.StreamError;
+    stanza: Stanzas.Message | Stanzas.Presence | Stanzas.IQ;
+
+    'message:sent': Stanzas.Message;
+    'message:error': Stanzas.Message;
+    chat: Stanzas.ReceivedMessage;
+    groupchat: Stanzas.ReceivedMessage;
+
+    available: Stanzas.ReceivedPresence;
+    unavailable: Stanzas.ReceivedPresence;
+
+    'session:started': string;
+    'session:prebind': string;
+    'session:bound': string;
+    'session:error': any;
+    'session:end': undefined;
+
+    'stanza:failed':
+        | { kind: 'message'; stanza: Stanzas.Message }
+        | { kind: 'presence'; stanza: Stanzas.Presence }
+        | { kind: 'iq'; stanza: Stanzas.IQ };
+    'stanza:acked':
+        | { kind: 'message'; stanza: Stanzas.Message }
+        | { kind: 'presence'; stanza: Stanzas.Presence }
+        | { kind: 'iq'; stanza: Stanzas.IQ };
+
+    disconnected: Error | undefined;
+}
+
+export interface Agent extends WildEmitter<AgentEvents> {
     jid: string;
     config: AgentConfig;
     transport?: Transport;

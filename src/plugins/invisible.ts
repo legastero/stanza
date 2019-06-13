@@ -3,14 +3,14 @@ import { IQ } from '../protocol';
 
 declare module '../' {
     export interface Agent {
-        goInvisible(probe?: boolean): Promise<IQ>;
-        goVisible(): Promise<IQ>;
+        goInvisible(probe?: boolean): Promise<void>;
+        goVisible(): Promise<void>;
     }
 }
 
 export default function(client: Agent) {
-    client.goInvisible = (probe?: boolean) => {
-        return client.sendIQ({
+    client.goInvisible = async (probe?: boolean) => {
+        await client.sendIQ({
             type: 'set',
             visiblity: {
                 probe,
@@ -19,8 +19,8 @@ export default function(client: Agent) {
         });
     };
 
-    client.goVisible = () => {
-        return client.sendIQ({
+    client.goVisible = async () => {
+        await client.sendIQ({
             type: 'set',
             visiblity: {
                 type: 'visible'

@@ -1,7 +1,7 @@
 import { Agent } from '../';
 import { mergeFields } from '../helpers/DataForms';
 import * as JID from '../JID';
-import { NS_MAM_2 } from '../protocol';
+import { NS_MAM_2, ReceivedMessage } from '../protocol';
 import {
     DataForm,
     DataFormField,
@@ -20,6 +20,10 @@ declare module '../' {
         setHistoryPreferences(opts: Partial<MAMPrefs>): Promise<IQ>;
         searchHistory(opts: Partial<MAMQueryOptions>): Promise<IQ>;
         searchHistory(jid: string, opts: MAMQuery): Promise<IQ>;
+    }
+
+    export interface AgentEvents {
+        'mam:item': ReceivedMessage;
     }
 }
 
@@ -137,7 +141,7 @@ export default function(client: Agent) {
         });
     };
 
-    client.on('message', (msg: Message) => {
+    client.on('message', msg => {
         if (msg.archive) {
             client.emit('mam:item', msg);
         }

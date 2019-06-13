@@ -1,22 +1,29 @@
 import { Agent } from '../';
-import { NS_TIME } from '../protocol';
-import { IQ } from '../protocol';
+import { EntityTime, IQ, NS_TIME } from '../protocol';
 
 declare module '../' {
     export interface Agent {
-        getTime(jid: string): Promise<IQ>;
+        getTime(jid: string): Promise<EntityTime>;
+    }
+
+    export interface AgentEvents {
+        'iq:get:time': IQ & {
+            time: EntityTime;
+        };
     }
 }
 
 export default function(client: Agent) {
     client.disco.addFeature(NS_TIME);
 
-    client.getTime = (jid: string) => {
-        return client.sendIQ({
+    client.getTime = async (jid: string) => {
+        const resp = await client.sendIQ({
             time: {},
             to: jid,
             type: 'get'
         });
+
+        return resp.time;
     };
 
     client.on('iq:get:time', (iq: IQ) => {

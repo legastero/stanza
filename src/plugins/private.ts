@@ -3,22 +3,34 @@ import { IQ, PrivateStorage } from '../protocol';
 
 declare module '../' {
     export interface Agent {
-        getPrivateData(opts: PrivateStorage): Promise<IQ>;
-        setPrivateData(opts: PrivateStorage): Promise<IQ>;
+        getPrivateData<T extends keyof PrivateStorage>(key: T): Promise<PrivateStorage[T]>;
+        setPrivateData<T extends keyof PrivateStorage>(
+            key: T,
+            data: PrivateStorage[T]
+        ): Promise<IQ>;
     }
 }
 
 export default function(client: Agent) {
-    client.getPrivateData = (opts: PrivateStorage) => {
-        return client.sendIQ({
-            privateStorage: opts,
+    client.getPrivateData = async (key: keyof PrivateStorage) => {
+        const res = await client.sendIQ({
+            privateStorage: {
+                [key]: {}
+            },
             type: 'get'
         });
+
+        return res.privateStorage[key];
     };
 
-    client.setPrivateData = (opts: PrivateStorage) => {
+    client.setPrivateData = async <T extends keyof PrivateStorage>(
+        key: T,
+        value: PrivateStorage[T]
+    ) => {
         return client.sendIQ({
-            privateStorage: opts,
+            privateStorage: {
+                [key]: value
+            },
             type: 'set'
         });
     };

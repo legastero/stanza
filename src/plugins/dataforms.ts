@@ -1,11 +1,26 @@
 import { Agent } from '../';
 import {
+    DataForm,
     NS_DATAFORM,
     NS_DATAFORM_LAYOUT,
     NS_DATAFORM_MEDIA,
-    NS_DATAFORM_VALIDATION
+    NS_DATAFORM_VALIDATION,
+    ReceivedMessage
 } from '../protocol';
-import { Message } from '../protocol';
+
+type FormsMessage = ReceivedMessage & {
+    forms: DataForm[];
+};
+
+declare module '../' {
+    export interface AgentEvents {
+        dataform: FormsMessage;
+    }
+}
+
+function isFormsMessage(msg: ReceivedMessage): msg is FormsMessage {
+    return !!msg.forms && msg.forms.length > 0;
+}
 
 export default function(client: Agent) {
     client.disco.addFeature(NS_DATAFORM);
@@ -13,8 +28,8 @@ export default function(client: Agent) {
     client.disco.addFeature(NS_DATAFORM_VALIDATION);
     client.disco.addFeature(NS_DATAFORM_LAYOUT);
 
-    client.on('message', (msg: Message) => {
-        if (msg.forms && msg.forms.length) {
+    client.on('message', msg => {
+        if (isFormsMessage(msg)) {
             client.emit('dataform', msg);
         }
     });

@@ -11,13 +11,13 @@ declare module '../' {
             jid: string;
         }>;
 
-        getUploadSlot(jid: string, request: HTTPUploadRequest): Promise<IQ>;
+        getUploadSlot(jid: string, request: HTTPUploadRequest): Promise<HTTPUploadSlot>;
     }
 }
 
 export default function(client: Agent) {
     async function getUploadParameters(jid: string) {
-        const { disco } = await client.getDiscoInfo(jid);
+        const disco = await client.getDiscoInfo(jid);
         if (!disco.features || !disco.features.includes(NS_HTTP_UPLOAD_0)) {
             return;
         }
@@ -46,7 +46,7 @@ export default function(client: Agent) {
             return domainParameters;
         }
 
-        const { disco } = await client.getDiscoItems(domain);
+        const disco = await client.getDiscoItems(domain);
         for (const item of disco.items || []) {
             if (!item.jid) {
                 continue;
@@ -61,7 +61,7 @@ export default function(client: Agent) {
     };
 
     client.getUploadSlot = async (uploadService: string, uploadRequest: HTTPUploadRequest) => {
-        return client.sendIQ<{ httpUpload: HTTPUploadRequest }, { httpUpload: HTTPUploadSlot }>({
+        const resp = await client.sendIQ({
             httpUpload: {
                 type: 'request',
                 ...uploadRequest
@@ -69,5 +69,7 @@ export default function(client: Agent) {
             to: uploadService,
             type: 'get'
         });
+
+        return resp.httpUpload as HTTPUploadSlot;
     };
 }

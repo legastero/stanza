@@ -1,17 +1,29 @@
 import { Agent } from '../';
-import { IQ } from '../protocol';
+import { Blocking, IQ, ReceivedIQSet } from '../protocol';
 
 declare module '../' {
     export interface Agent {
-        block(jid: string): Promise<IQ>;
-        unblock(jid: string): Promise<IQ>;
-        getBlocked(): Promise<IQ>;
+        block(jid: string): Promise<void>;
+        unblock(jid: string): Promise<void>;
+        getBlocked(): Promise<string[]>;
+    }
+
+    export interface AgentEvents {
+        block: {
+            jids: string[];
+        };
+        unblock: {
+            jids: string[];
+        };
+        'iq:set:blockList': ReceivedIQSet & {
+            blockList: Blocking & { action: 'block' | 'unblock' };
+        };
     }
 }
 
 export default function(client: Agent) {
-    client.block = (jid: string) => {
-        return client.sendIQ({
+    client.block = async (jid: string) => {
+        await client.sendIQ({
             blockList: {
                 action: 'block',
                 jids: [jid]
@@ -20,8 +32,8 @@ export default function(client: Agent) {
         });
     };
 
-    client.unblock = (jid: string) => {
-        return client.sendIQ({
+    client.unblock = async (jid: string) => {
+        await client.sendIQ({
             blockList: {
                 action: 'unblock',
                 jids: [jid]
@@ -30,17 +42,19 @@ export default function(client: Agent) {
         });
     };
 
-    client.getBlocked = () => {
-        return client.sendIQ({
+    client.getBlocked = async () => {
+        const result = await client.sendIQ({
             blockList: {
                 action: 'list'
             },
             type: 'get'
         });
+
+        return result.blockList.jids || [];
     };
 
-    client.on('iq:set:blockList', (iq: IQ) => {
-        const blockList = iq.blockList!;
+    client.on('iq:set:blockList', iq => {
+        const blockList = iq.blockList;
         client.emit(blockList.action, {
             jids: blockList.jids || []
         });

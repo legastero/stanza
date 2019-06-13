@@ -1,9 +1,12 @@
 import { Agent } from '../';
 import * as Jingle from '../jingle';
 import {
+    IQ,
+    Jingle as JingleRequest,
     NS_FILE_TRANSFER_3,
     NS_JINGLE_1,
     NS_JINGLE_DTLS_0,
+    NS_JINGLE_DTLS_SCTP_1,
     NS_JINGLE_GROUPING_0,
     NS_JINGLE_ICE_UDP_1,
     NS_JINGLE_RTP_1,
@@ -11,9 +14,9 @@ import {
     NS_JINGLE_RTP_HDREXT_0,
     NS_JINGLE_RTP_RTCP_FB_0,
     NS_JINGLE_RTP_SSMA_0,
-    NS_JINGLE_RTP_VIDEO
+    NS_JINGLE_RTP_VIDEO,
+    Presence
 } from '../protocol';
-import { IQ, Jingle as JingleRequest, NS_JINGLE_DTLS_SCTP_1, Presence } from '../protocol';
 
 let root: any;
 try {
@@ -27,6 +30,19 @@ declare module '../' {
         jingle: Jingle.SessionManager;
 
         discoverICEServers(): Promise<RTCIceServer[]>;
+    }
+
+    export interface AgentEvents {
+        'iq:set:jingle': IQ & { jingle: JingleRequest };
+        'jingle:created': { session: Jingle.Session };
+        'jingle:outgoing': { session: Jingle.Session };
+        'jingle:incoming': { session: Jingle.Session };
+        'jingle:terminated': { session: Jingle.Session; data: JingleRequest['reason'] };
+        'jingle:mute': { session: Jingle.Session; data: JingleRequest['info'] };
+        'jingle:unmute': { session: Jingle.Session; data: JingleRequest['info'] };
+        'jingle:hold': { session: Jingle.Session; data: JingleRequest['info'] };
+        'jingle:resumed': { session: Jingle.Session; data: JingleRequest['info'] };
+        'jingle:ringing': { session: Jingle.Session };
     }
 }
 
@@ -68,13 +84,13 @@ export default function(client: Agent) {
         'resumed'
     ];
     for (const event of mappedEvents) {
-        jingle.on(event, (session, arg1) => {
-            client.emit('jingle:' + event, session, arg1);
+        jingle.on(event, (session: Jingle.Session, data) => {
+            client.emit(('jingle:' + event) as any, { session, data });
         });
     }
 
-    jingle.on('createdSession', (session: Jingle.Session) => {
-        client.emit('jingle:created', session);
+    jingle.on('createdSession', data => {
+        client.emit('jingle:created', data);
     });
 
     jingle.on('send', async (data: any) => {
@@ -118,7 +134,7 @@ export default function(client: Agent) {
     client.discoverICEServers = async (): Promise<RTCIceServer[]> => {
         try {
             const resp = await client.getServices(client.config.server!);
-            const services = resp.externalServices.services || [];
+            const services = resp.services || [];
             const discovered: RTCIceServer[] = [];
 
             for (const service of services) {

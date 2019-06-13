@@ -1,22 +1,24 @@
 import { Agent } from '../';
-import { IQ, NS_BOB } from '../protocol';
+import { Bits, IQ, NS_BOB } from '../protocol';
 
 declare module '../' {
     export interface Agent {
-        getBits(jid: string, cid: string): Promise<IQ>;
+        getBits(jid: string, cid: string): Promise<Bits>;
     }
 }
 
 export default function(client: Agent) {
     client.disco.addFeature(NS_BOB);
 
-    client.getBits = (jid, cid) => {
-        return client.sendIQ({
+    client.getBits = async (jid, cid) => {
+        const result = await client.sendIQ({
             bits: {
                 cid
-            },
+            } as Bits,
             to: jid,
             type: 'get'
         });
+
+        return result.bits;
     };
 }

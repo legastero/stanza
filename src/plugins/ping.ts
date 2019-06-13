@@ -1,22 +1,25 @@
 import { Agent } from '../';
-import { NS_PING } from '../protocol';
-import { IQ } from '../protocol';
+import { IQ, NS_PING } from '../protocol';
 
 declare module '../' {
     export interface Agent {
-        ping(jid?: string): Promise<IQ>;
+        ping(jid?: string): Promise<void>;
+    }
+
+    export interface AgentEvents {
+        'iq:get:ping': IQ & { ping: boolean };
     }
 }
 
 export default function(client: Agent) {
     client.disco.addFeature(NS_PING);
 
-    client.on('iq:get:ping', (iq: IQ) => {
+    client.on('iq:get:ping', iq => {
         client.sendIQResult(iq);
     });
 
-    client.ping = (jid: string) => {
-        return client.sendIQ({
+    client.ping = async (jid?: string) => {
+        await client.sendIQ({
             ping: true,
             to: jid,
             type: 'get'
