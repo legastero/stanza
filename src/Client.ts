@@ -1,8 +1,9 @@
+import { EventEmitter } from 'events';
+
 import { Agent, AgentConfig, AgentEvents, Transport } from './';
 import * as JID from './JID';
 import * as JXT from './jxt';
 import * as SASL from './lib/sasl';
-import WildEmitter from './lib/WildEmitter';
 import { core as corePlugins } from './plugins';
 import { IQ, Message, Presence, StreamError } from './protocol';
 import Protocol from './protocol';
@@ -11,7 +12,7 @@ import BOSH from './transports/bosh';
 import WebSocket from './transports/websocket';
 import { timeoutPromise, uuid } from './Utils';
 
-export default class Client extends WildEmitter<AgentEvents> {
+export default class Client extends EventEmitter {
     public jid: string;
     public config!: AgentConfig;
     public sm: StreamManagement;
@@ -19,12 +20,17 @@ export default class Client extends WildEmitter<AgentEvents> {
     public stanzas: JXT.Registry;
     public sessionStarted?: boolean;
     public transports: {
-        [key: string]: new (sm: StreamManagement, registry: JXT.Registry) => Transport;
+        [key: string]: new (
+            client: Agent,
+            sm: StreamManagement,
+            registry: JXT.Registry
+        ) => Transport;
     };
     public sasl: SASL.Factory;
 
     constructor(opts: AgentConfig = {}) {
         super();
+        this.setMaxListeners(100);
 
         this._initConfig(opts);
 
@@ -74,10 +80,8 @@ export default class Client extends WildEmitter<AgentEvents> {
 
         this.on('disconnected', () => {
             if (this.transport) {
-                this.transport.off('*');
                 delete this.transport;
             }
-            this.releaseGroup('connection');
         });
 
         this.on('auth:success', () => {
@@ -100,11 +104,7 @@ export default class Client extends WildEmitter<AgentEvents> {
                         }
                     });
                 }
-                if (
-                    payloadType === 'unknown-payload' ||
-                    !this.callbacks[iqEvent] ||
-                    !this.callbacks[iqEvent].length
-                ) {
+                if (payloadType === 'unknown-payload' || this.listenerCount(iqEvent) === 0) {
                     return this.sendIQError(iq, {
                         error: {
                             condition: 'service-unavailable',
@@ -176,12 +176,10 @@ export default class Client extends WildEmitter<AgentEvents> {
         }
         if (transInfo && transInfo.name) {
             const trans = (this.transport = new this.transports[transInfo.name](
+                (this as unknown) as Agent,
                 this.sm,
                 this.stanzas
             ));
-            trans.on('*', (event: string, ...data: any[]) => {
-                this.emit(event as any, ...data);
-            });
             return trans.connect({
                 acceptLanguages: this.config.acceptLanguages || ['en'],
                 jid: this.config.jid!,
@@ -234,7 +232,6 @@ export default class Client extends WildEmitter<AgentEvents> {
 
     public disconnect() {
         if (this.sessionStarted) {
-            this.releaseGroup('session');
             if (!this.sm.started) {
                 // Only emit session:end if we had a session, and we aren't using
                 // stream management to keep the session alive.
@@ -242,7 +239,6 @@ export default class Client extends WildEmitter<AgentEvents> {
             }
         }
         this.sessionStarted = false;
-        this.releaseGroup('connection');
         if (this.transport) {
             this.transport.disconnect();
         } else {

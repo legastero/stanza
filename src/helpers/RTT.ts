@@ -237,9 +237,6 @@ export class DisplayBuffer {
                 return done();
             }
         }, 1);
-        this.actionQueue.drain = () => {
-            this.emitState({ drained: true });
-        };
     }
 }
 

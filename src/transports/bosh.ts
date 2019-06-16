@@ -1,7 +1,6 @@
-import { Transport, TransportConfig } from '../';
+import { Agent, Transport, TransportConfig } from '../';
 import { ParsedData, Registry, StreamParser } from '../jxt';
 import fetch from '../lib/fetch';
-import WildEmitter from '../lib/WildEmitter';
 import { BOSH, Stream } from '../protocol';
 import StreamManagement from '../StreamManagement';
 import { sleep, timeoutPromise } from '../Utils';
@@ -35,7 +34,7 @@ async function retryRequest(
     throw new Error('Request failed');
 }
 
-export default class BOSHConnection extends WildEmitter implements Transport {
+export default class BOSHConnection implements Transport {
     public hasStream?: boolean;
     public stream?: Stream;
     public authenticated?: boolean;
@@ -43,6 +42,7 @@ export default class BOSHConnection extends WildEmitter implements Transport {
     public sid?: string;
     public rid?: number;
 
+    private client: Agent;
     private config!: TransportConfig;
     private url?: string;
     private sm: StreamManagement;
@@ -59,9 +59,8 @@ export default class BOSHConnection extends WildEmitter implements Transport {
     private idleTimeout: any;
     private lastResponseTime: number;
 
-    constructor(sm: StreamManagement, stanzas: Registry) {
-        super();
-
+    constructor(client: Agent, sm: StreamManagement, stanzas: Registry) {
+        this.client = client;
         this.sm = sm;
         this.stanzas = stanzas;
         this.sendBuffer = [];
@@ -77,63 +76,6 @@ export default class BOSHConnection extends WildEmitter implements Transport {
                 this.longPoll();
             }
         }, 1000);
-
-        this.on('raw:incoming', (data: string) => {
-            data = data.trim();
-            if (data === '') {
-                return;
-            }
-
-            const parser = new StreamParser({
-                acceptLanguages: this.config.acceptLanguages,
-                allowComments: false,
-                lang: this.config.lang,
-                registry: stanzas,
-                rootKey: 'bosh',
-                wrappedStream: true
-            });
-
-            parser.on('error', (err: any) => {
-                const streamError = {
-                    condition: 'invalid-xml'
-                };
-                this.emit('stream:error', streamError, err);
-                this.send('error', streamError);
-                return this.disconnect();
-            });
-
-            parser.on('data', (e: ParsedData) => {
-                if (e.event === 'stream-start') {
-                    if (e.stanza.type === 'terminate') {
-                        this.hasStream = false;
-                        this.rid = undefined;
-                        this.sid = undefined;
-                        this.emit('bosh:terminate', e.stanza);
-                        this.emit('stream:end');
-                        this.emit('disconnected');
-                        return;
-                    }
-                    if (!this.hasStream) {
-                        this.hasStream = true;
-                        this.stream = e.stanza;
-
-                        this.sid = e.stanza.sid || this.sid;
-                        this.maxHoldOpen = e.stanza.maxHoldOpen || this.maxHoldOpen;
-                        this.maxRequests = e.stanza.maxRequests || this.maxRequests;
-                        this.minPollingInterval =
-                            e.stanza.minPollingInterval || this.minPollingInterval;
-
-                        this.emit('stream:start', e.stanza);
-                    }
-                    return;
-                }
-                if (!e.event) {
-                    this.emit('stream:data', e.stanza, e.kind);
-                }
-            });
-
-            parser.write(data);
-        });
     }
 
     public connect(opts: TransportConfig) {
@@ -152,9 +94,9 @@ export default class BOSHConnection extends WildEmitter implements Transport {
         if (this.sid) {
             this.hasStream = true;
             this.stream = {};
-            this.emit('connected', this);
-            this.emit('session:prebind', this.config.jid);
-            this.emit('session:started');
+            this.client.emit('connected');
+            this.client.emit('session:prebind', this.config.jid);
+            this.client.emit('session:started');
             return;
         }
         this.rid!++;
@@ -179,7 +121,7 @@ export default class BOSHConnection extends WildEmitter implements Transport {
             this.stream = undefined;
             this.sid = undefined;
             this.rid = undefined;
-            this.emit('disconnected');
+            this.client.emit('disconnected', undefined);
         }
     }
 
@@ -231,10 +173,10 @@ export default class BOSHConnection extends WildEmitter implements Transport {
         const bosh = this.stanzas.export('bosh', meta)!;
         const body = [bosh.openTag(), ...payloads, bosh.closeTag()].join('');
 
-        this.emit('raw:outgoing', body);
+        this.client.emit('raw', 'outgoing', body);
 
         try {
-            let respBody = await retryRequest(
+            const respBody = await retryRequest(
                 this.url!,
                 {
                     body,
@@ -250,8 +192,62 @@ export default class BOSHConnection extends WildEmitter implements Transport {
             this.lastResponseTime = Date.now();
 
             if (respBody) {
-                respBody = Buffer.from(respBody, 'utf8').toString();
-                this.emit('raw:incoming', respBody);
+                const rawData = Buffer.from(respBody, 'utf8')
+                    .toString()
+                    .trim();
+                if (rawData === '') {
+                    return;
+                }
+                this.client.emit('raw', 'incoming', rawData);
+
+                const parser = new StreamParser({
+                    acceptLanguages: this.config.acceptLanguages,
+                    allowComments: false,
+                    lang: this.config.lang,
+                    registry: this.stanzas,
+                    rootKey: 'bosh',
+                    wrappedStream: true
+                });
+
+                parser.on('error', (err: any) => {
+                    const streamError = {
+                        condition: 'invalid-xml'
+                    };
+                    this.client.emit('stream:error', streamError, err);
+                    this.send('error', streamError);
+                    return this.disconnect();
+                });
+
+                parser.on('data', (e: ParsedData) => {
+                    if (e.event === 'stream-start') {
+                        if (e.stanza.type === 'terminate') {
+                            this.hasStream = false;
+                            this.rid = undefined;
+                            this.sid = undefined;
+                            this.client.emit('bosh:terminate', e.stanza);
+                            this.client.emit('stream:end');
+                            this.client.emit('disconnected', undefined);
+                            return;
+                        }
+                        if (!this.hasStream) {
+                            this.hasStream = true;
+                            this.stream = e.stanza;
+                            this.sid = e.stanza.sid || this.sid;
+                            this.maxHoldOpen = e.stanza.maxHoldOpen || this.maxHoldOpen;
+                            this.maxRequests = e.stanza.maxRequests || this.maxRequests;
+                            this.minPollingInterval =
+                                e.stanza.minPollingInterval || this.minPollingInterval;
+
+                            this.client.emit('stream:start', e.stanza);
+                        }
+                        return;
+                    }
+                    if (!e.event) {
+                        this.client.emit('stream:data', e.stanza, e.kind);
+                    }
+                });
+
+                parser.write(rawData);
             }
 
             if (meta.type === 'terminate') {
@@ -267,7 +263,7 @@ export default class BOSHConnection extends WildEmitter implements Transport {
             }
         } catch (err) {
             this.hasStream = false;
-            this.emit(
+            this.client.emit(
                 'stream:error',
                 {
                     condition: 'connection-timeout'

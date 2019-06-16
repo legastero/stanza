@@ -65,7 +65,6 @@ export default class MediaSession extends ICESession {
     public set ringing(value) {
         if (value !== this._ringing) {
             this._ringing = value;
-            this.emit('change:ringing', value);
         }
     }
 
@@ -116,7 +115,7 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    public async accept(opts: RTCAnswerOptions | ActionCallback, next?: ActionCallback) {
+    public async accept(opts?: RTCAnswerOptions | ActionCallback, next?: ActionCallback) {
         // support calling with accept(next) or accept(opts, next)
         if (arguments.length === 1 && typeof opts === 'function') {
             next = opts;
@@ -253,12 +252,12 @@ export default class MediaSession extends ICESession {
 
     public onAddTrack(track: MediaStreamTrack, stream: MediaStream): void {
         this._log('info', 'Track added');
-        this.emit('peerTrackAdded', this, track, stream);
+        this.parent.emit('peerTrackAdded', this, track, stream);
     }
 
     public onRemoveTrack(track: MediaStreamTrack): void {
         this._log('info', 'Track removed');
-        this.emit('peerTrackRemoved', this, track);
+        this.parent.emit('peerTrackRemoved', this, track);
     }
 
     // ----------------------------------------------------------------
@@ -303,24 +302,24 @@ export default class MediaSession extends ICESession {
             case INFO_RINGING:
                 this._log('info', 'Outgoing session is ringing');
                 this.ringing = true;
-                this.emit('ringing', this);
+                this.parent.emit('ringing', this);
                 return cb();
             case INFO_HOLD:
                 this._log('info', 'On hold');
-                this.emit('hold', this);
+                this.parent.emit('hold', this);
                 return cb();
             case INFO_UNHOLD:
             case INFO_ACTIVE:
                 this._log('info', 'Resuming from hold');
-                this.emit('resumed', this);
+                this.parent.emit('resumed', this);
                 return cb();
             case INFO_MUTE:
                 this._log('info', 'Muting', info);
-                this.emit('mute', this, info);
+                this.parent.emit('mute', this, info);
                 return cb();
             case INFO_UNMUTE:
                 this._log('info', 'Unmuting', info);
-                this.emit('unmute', this, info);
+                this.parent.emit('unmute', this, info);
                 return cb();
             default:
         }

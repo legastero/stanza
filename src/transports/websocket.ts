@@ -1,18 +1,18 @@
 import { AsyncPriorityQueue, priorityQueue } from 'async';
 
-import { Transport, TransportConfig } from '../';
+import { Agent, Transport, TransportConfig } from '../';
 import { ParsedData, Registry, StreamParser } from '../jxt';
-import WildEmitter from '../lib/WildEmitter';
 import WS from '../lib/ws';
 import { Stream } from '../protocol';
 import StreamManagement from '../StreamManagement';
 
 const WS_OPEN = 1;
 
-export default class WSConnection extends WildEmitter implements Transport {
+export default class WSConnection implements Transport {
     public hasStream?: boolean;
     public stream?: Stream;
 
+    private client: Agent;
     private config!: TransportConfig;
     private sm: StreamManagement;
     private stanzas: Registry;
@@ -21,33 +21,22 @@ export default class WSConnection extends WildEmitter implements Transport {
     private conn?: WS;
     private parser?: StreamParser;
 
-    constructor(sm: StreamManagement, stanzas: Registry) {
-        super();
-
+    constructor(client: Agent, sm: StreamManagement, stanzas: Registry) {
         this.sm = sm;
         this.stanzas = stanzas;
         this.closing = false;
+        this.client = client;
 
         this.sendQueue = priorityQueue((data, cb) => {
             if (this.conn) {
                 data = Buffer.from(data, 'utf8').toString();
-                this.emit('raw:outgoing', data);
+                this.client.emit('raw', 'outgoing', data);
                 if (this.conn.readyState === WS_OPEN) {
                     this.conn.send(data);
                 }
             }
             cb();
         }, 1);
-
-        this.on('connected', () => {
-            this.send(this.startHeader());
-        });
-
-        this.on('raw:incoming', (data: string) => {
-            if (this.parser) {
-                this.parser.write(data);
-            }
-        });
     }
 
     public connect(opts: TransportConfig) {
@@ -71,23 +60,21 @@ export default class WSConnection extends WildEmitter implements Transport {
                 if (stanzaObj.type === 'open') {
                     this.hasStream = true;
                     this.stream = stanzaObj;
-                    return this.emit('stream:start', stanzaObj);
+                    return this.client.emit('stream:start', stanzaObj);
                 }
                 if (stanzaObj.type === 'close') {
-                    this.emit('stream:end');
+                    this.client.emit('stream:end');
                     return this.disconnect();
                 }
             }
-            this.emit('stream:data', stanzaObj, name);
+            this.client.emit('stream:data', stanzaObj, name);
         });
 
         this.parser.on('error', (err: any) => {
             const streamError = {
-                error: {
-                    condition: 'invalid-xml'
-                }
+                condition: 'invalid-xml'
             };
-            this.emit('stream:error', streamError, err);
+            this.client.emit('stream:error', streamError, err);
             this.send(this.stanzas.export('error', streamError)!.toString());
             return this.disconnect();
         });
@@ -97,17 +84,22 @@ export default class WSConnection extends WildEmitter implements Transport {
             if (e.preventDefault) {
                 e.preventDefault();
             }
-            this.emit('disconnected', e);
+            this.client.emit('disconnected', e);
         };
         this.conn.onclose = (e: any) => {
-            this.emit('disconnected', e);
+            this.client.emit('disconnected', e);
         };
         this.conn.onopen = () => {
             this.sm.started = false;
-            this.emit('connected');
+            this.client.emit('connected');
+            this.send(this.startHeader());
         };
         this.conn.onmessage = wsMsg => {
-            this.emit('raw:incoming', Buffer.from(wsMsg.data as string, 'utf8').toString());
+            const data = Buffer.from(wsMsg.data as string, 'utf8').toString();
+            this.client.emit('raw', 'incoming', data);
+            if (this.parser) {
+                this.parser.write(data);
+            }
         };
     }
 

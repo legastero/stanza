@@ -1,6 +1,5 @@
 import { priorityQueue } from 'async';
 
-import WildEmitter from '../lib/WildEmitter';
 import { Jingle, JingleReason } from '../protocol';
 import { uuid } from '../Utils';
 
@@ -28,30 +27,31 @@ export interface SessionOpts {
     sid?: string;
     peerID: string;
     initiator?: boolean;
-    parent?: SessionManager;
+    parent: SessionManager;
     applicationTypes?: string[];
 }
 
-export default class JingleSession extends WildEmitter {
+export default class JingleSession {
+    public parent: SessionManager;
     public sid: string;
     public peerID: string;
     public role: SessionRole;
     public pendingApplicationTypes?: string[];
     public pendingAction?: Action;
-    public parent?: SessionManager;
 
     public processingQueue: async.AsyncPriorityQueue<any>;
 
-    private _sessionState: string = 'starting';
-    private _connectionState: string = 'starting';
+    private _sessionState: string;
+    private _connectionState: string;
 
     constructor(opts: SessionOpts) {
-        super();
-
+        this.parent = opts.parent;
         this.sid = opts.sid || uuid();
         this.peerID = opts.peerID;
         this.role = opts.initiator ? 'initiator' : 'responder';
-        this.parent = opts.parent;
+
+        this._sessionState = 'starting';
+        this._connectionState = 'starting';
 
         // We track the intial pending description types in case
         // of the need for a tie-breaker.
@@ -155,7 +155,9 @@ export default class JingleSession extends WildEmitter {
         if (value !== this._sessionState) {
             this._log('info', 'Changing session state to: ' + value);
             this._sessionState = value;
-            this.emit('sessionState', this, value);
+            if (this.parent) {
+                this.parent.emit('sessionState', this, value);
+            }
         }
     }
 
@@ -166,7 +168,9 @@ export default class JingleSession extends WildEmitter {
         if (value !== this._connectionState) {
             this._log('info', 'Changing connection state to: ' + value);
             this._connectionState = value;
-            this.emit('connectionState', this, value);
+            if (this.parent) {
+                this.parent.emit('connectionState', this, value);
+            }
         }
     }
 
@@ -194,9 +198,9 @@ export default class JingleSession extends WildEmitter {
             this.pendingAction = undefined;
         }
 
-        this.emit('send', {
+        this.parent.signal(this, {
             id: uuid(),
-            jingle: data,
+            jingle: data as Jingle,
             to: this.peerID,
             type: 'set'
         });
@@ -235,8 +239,8 @@ export default class JingleSession extends WildEmitter {
         this.end('unsupported-applications', true);
     }
 
-    public accept(next: ActionCallback): void;
-    public accept(opts: any, next?: ActionCallback): void {
+    public accept(next?: ActionCallback): void;
+    public accept(opts?: any, next?: ActionCallback): void {
         this._log('error', 'Can not accept base sessions');
         this.end('unsupported-applications');
     }
@@ -266,12 +270,15 @@ export default class JingleSession extends WildEmitter {
             });
         }
 
-        this.emit('terminated', this, reason);
+        this.parent.emit('terminated', this, reason);
+        this.parent.forgetSession(this);
     }
 
     protected _log(level: string, message: string, ...data: any[]) {
-        message = this.sid + ': ' + message;
-        this.emit('log:' + level, message, ...data);
+        if (this.parent) {
+            message = this.sid + ': ' + message;
+            this.parent.emit('log:' + level, message, ...data);
+        }
     }
 
     protected onSessionInitiate(changes: Jingle, cb: ActionCallback) {

@@ -10,7 +10,8 @@ test('Reject content-add by default', function(t) {
 
     const sess = new GenericSession({
         peerID: 'peer@example.com',
-        sid: 'sid123'
+        sid: 'sid123',
+        parent: jingle
     });
     jingle.addSession(sess);
     sess.state = 'active';

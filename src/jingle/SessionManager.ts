@@ -1,9 +1,15 @@
-import WildEmitter from '../lib/WildEmitter';
+import { EventEmitter } from 'events';
+
+import {
+    IQ,
+    Jingle,
+    JingleReason,
+    NS_FILE_TRANSFER_5,
+    NS_JINGLE_RTP_1,
+    StanzaError
+} from '../protocol';
 import { octetCompare } from '../Utils';
 
-import { NS_JINGLE_RTP_1 } from '../protocol';
-
-import { IQ, Jingle, JingleReason, NS_FILE_TRANSFER_5, StanzaError } from '../protocol';
 import FileTransferSession from './FileTransferSession';
 import { Action, ReasonCondition } from './lib/JingleUtil';
 import MediaSession from './MediaSession';
@@ -28,7 +34,7 @@ export interface SessionManagerConfig {
     prepareSession?: (opts: any, req?: IQ & { jingle: Jingle }) => BaseSession | undefined;
 }
 
-export default class SessionManager extends WildEmitter {
+export default class SessionManager extends EventEmitter {
     public selfID?: string;
     public sessions: { [key: string]: BaseSession };
     public peers: { [key: string]: BaseSession[] };
@@ -103,6 +109,7 @@ export default class SessionManager extends WildEmitter {
     }
 
     public addSession<T extends BaseSession = BaseSession>(session: T): T {
+        session.parent = this;
         const sid = session.sid;
         const peer = session.peerID;
         this.sessions[sid] = session;
@@ -110,36 +117,16 @@ export default class SessionManager extends WildEmitter {
             this.peers[peer] = [];
         }
         this.peers[peer].push(session);
-        // Automatically clean up tracked sessions
-        session.on('terminated', () => {
-            const peers = this.peers[peer] || [];
-            if (peers.length) {
-                peers.splice(peers.indexOf(session), 1);
-            }
-            delete this.sessions[sid];
-        });
-        // Proxy session events
-        session.on('*', (name, data, ...extraData) => {
-            // Listen for when we actually try to start a session to
-            // trigger the outgoing event.
-            if (name === 'send') {
-                const action = data.jingle && data.jingle.action;
-                if (session.isInitiator && action === Action.SessionInitiate) {
-                    this.emit('outgoing', session);
-                }
-            }
-            if (this.config.debug && (name === 'log:debug' || name === 'log:error')) {
-                console.log('Jingle:', data, ...extraData);
-            }
-            // Don't proxy change:* events, since those don't apply to
-            // the session manager itself.
-            if (name.indexOf('change') === 0) {
-                return;
-            }
-            this.emit(name, data, ...extraData);
-        });
         this.emit('createdSession', session);
         return session;
+    }
+
+    public forgetSession(session: BaseSession): void {
+        const peers = this.peers[session.peerID] || [];
+        if (peers.length) {
+            peers.splice(peers.indexOf(session), 1);
+        }
+        delete this.sessions[session.sid];
     }
 
     public createMediaSession(peer: string, sid?: string, stream?: MediaStream): MediaSession {
@@ -210,7 +197,6 @@ export default class SessionManager extends WildEmitter {
                 if (session) {
                     session.pendingAction = undefined;
                 }
-                this.emit('error', req);
                 return;
             }
         }
@@ -359,6 +345,14 @@ export default class SessionManager extends WildEmitter {
                 }
             }
         });
+    }
+
+    public signal(session: BaseSession, data: IQ & { jingle: Jingle }): void {
+        const action = data.jingle && data.jingle.action;
+        if (session.isInitiator && action === Action.SessionInitiate) {
+            this.emit('outgoing', session);
+        }
+        this.emit('send', data);
     }
 
     private _createIncomingSession(meta: any, req: IQ & { jingle: Jingle }) {

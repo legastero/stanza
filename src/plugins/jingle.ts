@@ -34,15 +34,15 @@ declare module '../' {
 
     export interface AgentEvents {
         'iq:set:jingle': IQ & { jingle: JingleRequest };
-        'jingle:created': { session: Jingle.Session };
-        'jingle:outgoing': { session: Jingle.Session };
-        'jingle:incoming': { session: Jingle.Session };
-        'jingle:terminated': { session: Jingle.Session; data: JingleRequest['reason'] };
-        'jingle:mute': { session: Jingle.Session; data: JingleRequest['info'] };
-        'jingle:unmute': { session: Jingle.Session; data: JingleRequest['info'] };
-        'jingle:hold': { session: Jingle.Session; data: JingleRequest['info'] };
-        'jingle:resumed': { session: Jingle.Session; data: JingleRequest['info'] };
-        'jingle:ringing': { session: Jingle.Session };
+        'jingle:created': Jingle.Session;
+        'jingle:outgoing': Jingle.Session;
+        'jingle:incoming': Jingle.Session;
+        'jingle:terminated': (session: Jingle.Session, reason?: JingleRequest['reason']) => void;
+        'jingle:mute': (session: Jingle.Session, info: JingleRequest['info']) => void;
+        'jingle:unmute': (session: Jingle.Session, info: JingleRequest['info']) => void;
+        'jingle:hold': (session: Jingle.Session, info?: JingleRequest['info']) => void;
+        'jingle:resumed': (session: Jingle.Session, info?: JingleRequest['info']) => void;
+        'jingle:ringing': (session: Jingle.Session, info?: JingleRequest['info']) => void;
     }
 }
 
@@ -85,7 +85,7 @@ export default function(client: Agent) {
     ];
     for (const event of mappedEvents) {
         jingle.on(event, (session: Jingle.Session, data) => {
-            client.emit(('jingle:' + event) as any, { session, data });
+            client.emit(('jingle:' + event) as any, session, data);
         });
     }
 
@@ -119,15 +119,15 @@ export default function(client: Agent) {
         }
     });
 
-    client.on('session:bound', 'jingle', (jid: string) => {
+    client.on('session:bound', (jid: string) => {
         jingle.selfID = jid;
     });
 
-    client.on('iq:set:jingle', 'jingle', (data: IQ & { jingle: JingleRequest }) => {
+    client.on('iq:set:jingle', (data: IQ & { jingle: JingleRequest }) => {
         jingle.process(data);
     });
 
-    client.on('unavailable', 'jingle', (pres: Presence) => {
+    client.on('unavailable', (pres: Presence) => {
         jingle.endPeerSessions(pres.from!, undefined, true);
     });
 

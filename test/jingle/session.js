@@ -481,14 +481,20 @@ test('Test pending actions', function(t) {
 });
 
 test('Test connectionState', function(t) {
+    const jingle = new SessionManager({
+        selfID: 'zuser@example.com'
+    });
+
     const sess = new StubSession({
         initiator: true,
         peerID: 'peer@example.com',
-        sid: 'sid123'
+        sid: 'sid123',
+        parent: jingle
     });
 
-    sess.on('change:connectionState', function() {
-        t.ok(sess.connectionState);
+    jingle.on('connectionState', function(session, connectionState) {
+        t.equal(session.sid, sess.sid);
+        t.ok(connectionState);
     });
 
     t.equal(sess.connectionState, 'starting');

@@ -304,7 +304,7 @@ export default class ICESession extends BaseSession {
             await this.pc.setRemoteDescription({ type: 'answer', sdp });
             await this.processBufferedCandidates();
 
-            this.emit('accepted', this, undefined);
+            this.parent.emit('accepted', this, undefined);
             cb();
         } catch (err) {
             this._log('error', `Could not process WebRTC answer: ${err}`);

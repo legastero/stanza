@@ -1,9 +1,12 @@
+import { EventEmitter } from 'events';
+
 import Client from './Client';
+import * as RTT from './helpers/RTT';
 import * as JID from './JID';
 import * as Jingle from './jingle';
 import * as JXT from './jxt';
 import { Factory } from './lib/sasl';
-import WildEmitter from './lib/WildEmitter';
+import StrictEventEmitter from './lib/StrictEventEmitter';
 import * as Stanzas from './protocol';
 import {
     CSI,
@@ -17,9 +20,9 @@ import {
     StreamManagement
 } from './protocol';
 import SM from './StreamManagement';
-export * from './StreamManagement';
-import * as RTT from './helpers/RTT';
 import * as Utils from './Utils';
+
+export * from './StreamManagement';
 
 export interface TopLevelElements {
     message: Message;
@@ -37,8 +40,12 @@ export interface AgentEvents {
     presence: Stanzas.ReceivedPresence;
     iq: Stanzas.ReceivedIQ;
     features: Stanzas.StreamFeatures;
-    'stream:error': Stanzas.StreamError;
     stanza: Stanzas.Message | Stanzas.Presence | Stanzas.IQ;
+
+    'stream:start': Stanzas.Stream;
+    'stream:end': void;
+    'stream:error': (streamError: Stanzas.StreamError, error?: Error) => void;
+    'stream:data': (json: any, kind: string) => void;
 
     'message:sent': Stanzas.Message;
     'message:error': Stanzas.Message;
@@ -48,10 +55,9 @@ export interface AgentEvents {
     available: Stanzas.ReceivedPresence;
     unavailable: Stanzas.ReceivedPresence;
 
-    'session:started': string;
+    'session:started': string | void;
     'session:prebind': string;
     'session:bound': string;
-    'session:error': any;
     'session:end': undefined;
 
     'stanza:failed':
@@ -63,10 +69,15 @@ export interface AgentEvents {
         | { kind: 'presence'; stanza: Stanzas.Presence }
         | { kind: 'iq'; stanza: Stanzas.IQ };
 
+    raw: (direction: 'incoming' | 'outgoing', data: string) => void;
+
+    connected: void;
     disconnected: Error | undefined;
+
+    'bosh:terminate': any;
 }
 
-export interface Agent extends WildEmitter<AgentEvents> {
+export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
     jid: string;
     config: AgentConfig;
     transport?: Transport;
@@ -106,7 +117,7 @@ export interface AgentConfig {
     acceptLanguages?: string[];
 }
 
-export interface Transport extends WildEmitter {
+export interface Transport {
     hasStream?: boolean;
     stream?: Stream;
     authenticated?: boolean;

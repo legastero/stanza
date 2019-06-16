@@ -206,7 +206,7 @@ export default class FileTransferSession extends ICESession {
                 } as FileTransferInfo
             });
 
-            this.emit('sentFile', this, meta);
+            this.parent.emit('sentFile', this, meta);
         });
 
         this.channel = this.pc.createDataChannel('filetransfer', {
@@ -344,7 +344,7 @@ export default class FileTransferSession extends ICESession {
         for (const hash of this.receiver!.metadata.hashes || []) {
             if (hash.value && hash.value.toString('hex') === this.receiver!.metadata.actualhash) {
                 this._log('info', 'File hash matches');
-                this.emit('receivedFile', this, this.receivedFile, this.receiver!.metadata);
+                this.parent.emit('receivedFile', this, this.receivedFile, this.receiver!.metadata);
                 this.end('success');
                 return;
             }

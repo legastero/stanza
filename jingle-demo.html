@@ -136,7 +136,7 @@
                     }
                 });
 
-                client.on('jingle:incoming', function({ session }) {
+                client.on('jingle:incoming', function(session) {
                     if (session.addTrack) {
                         for (const stream of localMedia) {
                             for (const track of stream.getTracks()) {

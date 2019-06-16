@@ -42,7 +42,6 @@ export default function(client: Agent) {
                 case 'failed':
                     client.sm.failed(sm);
                     client.emit('session:end');
-                    client.releaseGroup('session');
                     client.off('sm', smHandler);
                     done();
             }

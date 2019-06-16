@@ -33,6 +33,7 @@
         "react-native-randombytes": "^3.5.3",
         "readable-stream": "^3.4.0",
         "sdp": "^2.9.0",
+        "strict-event-emitter-types": "^2.0.0",
         "tslib": "^1.9.3",
         "ws": "^7.0.0"
     },

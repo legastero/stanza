@@ -22,7 +22,6 @@ export default function(client: Agent) {
             return cb();
         } catch (err) {
             console.error(err);
-            client.emit('session:error', err);
             return cb('disconnect', 'JID binding failed');
         }
     });
