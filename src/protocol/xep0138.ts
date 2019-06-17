@@ -7,7 +7,7 @@
 
 import { childEnum, childText, DefinitionOptions, multipleChildText } from '../jxt';
 
-import { NS_COMPRESSION, NS_COMPRESSION_FEATURE } from './Namespaces';
+import { NS_COMPRESSION, NS_COMPRESSION_FEATURE } from '../Namespaces';
 
 declare module './' {
     export interface StreamFeatures {

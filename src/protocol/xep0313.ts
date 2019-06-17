@@ -7,7 +7,7 @@
 
 import { attribute, booleanAttribute, DefinitionOptions } from '../jxt';
 
-import { NS_DATAFORM, NS_FORWARD_0, NS_MAM_2, NS_RSM } from './Namespaces';
+import { NS_DATAFORM, NS_FORWARD_0, NS_MAM_2, NS_RSM } from '../Namespaces';
 
 import { DataForm, Forward, Paging } from './';
 import { addAlias, JID } from './util';

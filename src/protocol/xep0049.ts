@@ -7,7 +7,7 @@
 
 import { DefinitionOptions } from '../jxt';
 
-import { NS_PRIVATE } from './Namespaces';
+import { NS_PRIVATE } from '../Namespaces';
 
 declare module './' {
     export interface IQ {

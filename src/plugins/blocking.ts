@@ -1,5 +1,5 @@
 import { Agent } from '../';
-import { Blocking, IQ, ReceivedIQSet } from '../protocol';
+import { Blocking, ReceivedIQSet } from '../protocol';
 
 declare module '../' {
     export interface Agent {

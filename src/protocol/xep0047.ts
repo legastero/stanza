@@ -14,7 +14,7 @@ import {
     XMLElement
 } from '../jxt';
 
-import { NS_IBB } from './Namespaces';
+import { NS_IBB } from '../Namespaces';
 
 declare module './' {
     export interface Message {

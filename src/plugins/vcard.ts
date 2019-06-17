@@ -1,5 +1,6 @@
 import { Agent } from '../';
-import { NS_VCARD_TEMP, VCardTemp } from '../protocol';
+import { NS_VCARD_TEMP } from '../Namespaces';
+import { VCardTemp } from '../protocol';
 
 declare module '../' {
     export interface Agent {

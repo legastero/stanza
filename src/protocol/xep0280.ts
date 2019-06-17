@@ -7,7 +7,7 @@
 
 import { DefinitionOptions } from '../jxt';
 
-import { NS_CARBONS_2, NS_FORWARD_0 } from './Namespaces';
+import { NS_CARBONS_2, NS_FORWARD_0 } from '../Namespaces';
 
 import { Forward } from './';
 import { addAlias } from './util';

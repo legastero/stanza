@@ -1,16 +1,6 @@
 import { Agent } from '../';
-import {
-    AvatarMetaData,
-    AvatarPointer,
-    AvatarVersion,
-    Geolocation,
-    IQ,
-    Message,
-    NS_AVATAR_DATA,
-    NS_AVATAR_METADATA,
-    NS_PEP_NOTIFY,
-    ReceivedMessage
-} from '../protocol';
+import { NS_AVATAR_DATA, NS_AVATAR_METADATA, NS_PEP_NOTIFY } from '../Namespaces';
+import { AvatarMetaData, AvatarPointer, AvatarVersion, IQ } from '../protocol';
 
 declare module '../' {
     export interface Agent {

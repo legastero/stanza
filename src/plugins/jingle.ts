@@ -1,8 +1,6 @@
 import { Agent } from '../';
 import * as Jingle from '../jingle';
 import {
-    IQ,
-    Jingle as JingleRequest,
     NS_FILE_TRANSFER_3,
     NS_JINGLE_1,
     NS_JINGLE_DTLS_0,
@@ -14,9 +12,9 @@ import {
     NS_JINGLE_RTP_HDREXT_0,
     NS_JINGLE_RTP_RTCP_FB_0,
     NS_JINGLE_RTP_SSMA_0,
-    NS_JINGLE_RTP_VIDEO,
-    Presence
-} from '../protocol';
+    NS_JINGLE_RTP_VIDEO
+} from '../Namespaces';
+import { IQ, Jingle as JingleRequest, Presence } from '../protocol';
 
 let root: any;
 try {

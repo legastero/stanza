@@ -20,9 +20,9 @@ import {
     DefinitionOptions,
     languageAttribute
 } from '../jxt';
+import { NS_GEOLOC } from '../Namespaces';
 
 import { PubsubItemContent } from './';
-import { NS_GEOLOC } from './Namespaces';
 import { pubsubItemContentAliases } from './util';
 
 export interface Geolocation extends PubsubItemContent {

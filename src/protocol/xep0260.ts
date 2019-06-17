@@ -12,9 +12,9 @@ import {
     DefinitionOptions,
     integerAttribute
 } from '../jxt';
+import { NS_JINGLE_SOCKS5_1 } from '../Namespaces';
 
 import { JingleTransport } from './';
-import { NS_JINGLE_SOCKS5_1 } from './Namespaces';
 import { JIDAttribute } from './util';
 
 export interface JingleSocks5 extends JingleTransport {

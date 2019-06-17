@@ -13,7 +13,7 @@ import {
     LanguageSet
 } from '../jxt';
 
-import { NS_MOOD } from './Namespaces';
+import { NS_MOOD } from '../Namespaces';
 
 import { PubsubItemContent } from './';
 import { pubsubItemContentAliases } from './util';

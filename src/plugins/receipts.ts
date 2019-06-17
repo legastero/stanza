@@ -1,5 +1,6 @@
 import { Agent } from '../';
-import { MessageReceipt, NS_RECEIPTS, ReceivedMessage } from '../protocol';
+import { NS_RECEIPTS } from '../Namespaces';
+import { MessageReceipt, ReceivedMessage } from '../protocol';
 
 type ReceiptMessage = ReceivedMessage & {
     receipt: MessageReceipt;

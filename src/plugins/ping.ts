@@ -1,5 +1,6 @@
 import { Agent } from '../';
-import { IQ, NS_PING } from '../protocol';
+import { NS_PING } from '../Namespaces';
+import { IQ } from '../protocol';
 
 declare module '../' {
     export interface Agent {

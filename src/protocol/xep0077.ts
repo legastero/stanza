@@ -6,9 +6,9 @@
 // ====================================================================
 
 import { childBoolean, childDate, childText, DefinitionOptions } from '../jxt';
+import { NS_DATAFORM, NS_INBAND_REGISTRATION, NS_OOB, NS_REGISTER } from '../Namespaces';
 
 import { DataForm, Link } from './';
-import { NS_DATAFORM, NS_INBAND_REGISTRATION, NS_OOB, NS_REGISTER } from './Namespaces';
 import { addAlias, extendStreamFeatures } from './util';
 
 declare module './' {

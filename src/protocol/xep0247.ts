@@ -6,9 +6,9 @@
 // ====================================================================
 
 import { DefinitionOptions } from '../jxt';
+import { NS_JINGLE_XML_0 } from '../Namespaces';
 
 import { JingleApplication } from './';
-import { NS_JINGLE_XML_0 } from './Namespaces';
 
 export interface JingleXMLStreamDescription extends JingleApplication {
     applicationType: typeof NS_JINGLE_XML_0;

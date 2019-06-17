@@ -1,7 +1,7 @@
 import { Agent } from '../';
 import { mergeFields } from '../helpers/DataForms';
 import * as JID from '../JID';
-import { NS_MAM_2, ReceivedMessage } from '../protocol';
+import { NS_MAM_2 } from '../Namespaces';
 import {
     DataForm,
     DataFormField,
@@ -10,7 +10,8 @@ import {
     MAMPrefs,
     MAMQuery,
     MAMResult,
-    Message
+    Message,
+    ReceivedMessage
 } from '../protocol';
 
 declare module '../' {

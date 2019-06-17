@@ -18,8 +18,6 @@ import {
     multipleChildAttribute,
     splicePath
 } from '../jxt';
-
-import { DataForm, Paging } from './';
 import {
     NS_DATAFORM,
     NS_PUBSUB,
@@ -27,7 +25,9 @@ import {
     NS_PUBSUB_EVENT,
     NS_PUBSUB_OWNER,
     NS_RSM
-} from './Namespaces';
+} from '../Namespaces';
+
+import { DataForm, Paging } from './';
 import { addAlias, extendStanzaError, JID, JIDAttribute } from './util';
 
 declare module './' {

@@ -14,7 +14,7 @@ import {
     XMLElement
 } from '../jxt';
 
-import { NS_XHTML, NS_XHTML_IM } from './Namespaces';
+import { NS_XHTML, NS_XHTML_IM } from '../Namespaces';
 
 declare module './' {
     export interface Message {

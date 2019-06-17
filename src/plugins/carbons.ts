@@ -1,6 +1,6 @@
 import { Agent } from '../';
 import * as JID from '../JID';
-import { CarbonMessage, IQ, Message, ReceivedMessage } from '../protocol';
+import { CarbonMessage, Message, ReceivedMessage } from '../protocol';
 
 declare module '../' {
     export interface Agent {

@@ -1,15 +1,4 @@
-import { NS_JINGLE_ICE_UDP_1, NS_JINGLE_RTP_1 } from '../../protocol';
-
-import * as SDP from './SDP';
-
-import {
-    IntermediateCandidate,
-    IntermediateMediaDescription,
-    IntermediateSessionDescription
-} from './Intermediate';
-
-import { directionToSenders, sendersToDirection, SessionRole } from './JingleUtil';
-
+import { NS_JINGLE_ICE_UDP_1, NS_JINGLE_RTP_1 } from '../../Namespaces';
 import {
     Jingle,
     JingleContent,
@@ -19,6 +8,14 @@ import {
     JingleRtpCodec,
     JingleRtpDescription
 } from '../../protocol';
+
+import {
+    IntermediateCandidate,
+    IntermediateMediaDescription,
+    IntermediateSessionDescription
+} from './Intermediate';
+import { directionToSenders, sendersToDirection, SessionRole } from './JingleUtil';
+import * as SDP from './SDP';
 
 export function convertIntermediateToApplication(
     media: IntermediateMediaDescription,

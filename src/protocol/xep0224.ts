@@ -7,7 +7,7 @@
 
 import { childBoolean, DefinitionOptions } from '../jxt';
 
-import { NS_ATTENTION_0 } from './Namespaces';
+import { NS_ATTENTION_0 } from '../Namespaces';
 
 import { extendMessage } from './util';
 

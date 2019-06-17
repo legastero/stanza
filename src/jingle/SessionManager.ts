@@ -1,13 +1,7 @@
 import { EventEmitter } from 'events';
 
-import {
-    IQ,
-    Jingle,
-    JingleReason,
-    NS_FILE_TRANSFER_5,
-    NS_JINGLE_RTP_1,
-    StanzaError
-} from '../protocol';
+import { NS_FILE_TRANSFER_5, NS_JINGLE_RTP_1 } from '../Namespaces';
+import { IQ, Jingle, JingleReason, StanzaError } from '../protocol';
 import { octetCompare } from '../Utils';
 
 import FileTransferSession from './FileTransferSession';

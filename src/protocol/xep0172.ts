@@ -7,7 +7,7 @@
 
 import { childText, DefinitionOptions, text } from '../jxt';
 
-import { NS_NICK } from './Namespaces';
+import { NS_NICK } from '../Namespaces';
 
 import { PubsubItemContent } from './';
 import { extendMessage, extendPresence, pubsubItemContentAliases } from './util';

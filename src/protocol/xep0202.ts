@@ -7,7 +7,7 @@
 
 import { childDate, childTimezoneOffset, DefinitionOptions } from '../jxt';
 
-import { NS_TIME } from './Namespaces';
+import { NS_TIME } from '../Namespaces';
 
 declare module './' {
     export interface IQ {

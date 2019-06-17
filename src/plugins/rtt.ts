@@ -1,5 +1,5 @@
 import { Agent } from '../';
-import { NS_RTT_0 } from '../protocol';
+import { NS_RTT_0 } from '../Namespaces';
 import { Message, RTT } from '../protocol';
 
 export type RTTMessage = Message & { rtt: RTT };

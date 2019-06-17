@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, integerAttribute } from '../jxt';
 
-import { NS_BOB, NS_THUMBS_1 } from './Namespaces';
+import { NS_BOB, NS_THUMBS_1 } from '../Namespaces';
 
 import { Bits } from './';
 import { addAlias } from './util';

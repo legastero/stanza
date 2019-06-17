@@ -6,9 +6,9 @@
 // ====================================================================
 
 import { attribute, childText, DefinitionOptions } from '../jxt';
+import { NS_BOOKMARKS } from '../Namespaces';
 
 import { PubsubItemContent } from './';
-import { NS_BOOKMARKS } from './Namespaces';
 import { JID, JIDAttribute, pubsubItemContentAliases } from './util';
 
 declare module './' {

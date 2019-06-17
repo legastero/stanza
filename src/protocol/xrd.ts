@@ -7,7 +7,7 @@
 
 import { attribute, childText, DefinitionOptions } from '../jxt';
 
-import { NS_XRD } from './Namespaces';
+import { NS_XRD } from '../Namespaces';
 
 export interface XRD {
     subject?: string;

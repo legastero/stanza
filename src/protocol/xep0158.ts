@@ -6,9 +6,9 @@
 // ====================================================================
 
 import { DefinitionOptions, splicePath } from '../jxt';
+import { NS_CAPTCHA } from '../Namespaces';
 
 import { DataForm } from './';
-import { NS_CAPTCHA } from './Namespaces';
 import { extendIQ, extendMessage } from './util';
 
 declare module './' {
@@ -27,4 +27,4 @@ export default [
     extendIQ({
         captcha: splicePath(NS_CAPTCHA, 'captcha', 'dataform')
     })
-];
+] as DefinitionOptions[];

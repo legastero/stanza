@@ -7,7 +7,7 @@
 
 import { define, DefinitionOptions } from '../jxt';
 
-import { NS_DELAY, NS_FORWARD_0 } from './Namespaces';
+import { NS_DELAY, NS_FORWARD_0 } from '../Namespaces';
 
 import { Delay } from './';
 import { IQ, Message, Presence } from './';

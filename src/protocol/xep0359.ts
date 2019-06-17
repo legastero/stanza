@@ -7,7 +7,7 @@
 
 import { attribute, childAttribute, DefinitionOptions } from '../jxt';
 
-import { NS_SID_0 } from './Namespaces';
+import { NS_SID_0 } from '../Namespaces';
 
 import { extendMessage, JID, JIDAttribute } from './util';
 

@@ -1,6 +1,6 @@
 import { Agent } from '../';
 import * as JID from '../JID';
-import { BookmarkStorage, IQ, MUCBookmark } from '../protocol';
+import { IQ, MUCBookmark } from '../protocol';
 
 declare module '../' {
     export interface Agent {

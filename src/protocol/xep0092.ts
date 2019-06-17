@@ -7,7 +7,7 @@
 
 import { childText, DefinitionOptions } from '../jxt';
 
-import { NS_VERSION } from './Namespaces';
+import { NS_VERSION } from '../Namespaces';
 
 declare module './' {
     export interface IQ {

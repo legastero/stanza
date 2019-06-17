@@ -1,16 +1,13 @@
 import { Agent } from '../';
 import Disco, { DiscoNodeInfo } from '../DiscoManager';
 import * as JID from '../JID';
+import { NS_DISCO_INFO, NS_DISCO_ITEMS } from '../Namespaces';
 import {
     DiscoInfo,
     DiscoInfoResult,
     DiscoItems,
     DiscoItemsResult,
-    IQ,
     LegacyEntityCaps,
-    NS_DISCO_INFO,
-    NS_DISCO_ITEMS,
-    Presence,
     ReceivedIQGet
 } from '../protocol';
 

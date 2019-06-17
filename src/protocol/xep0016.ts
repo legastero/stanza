@@ -13,7 +13,7 @@ import {
     integerAttribute
 } from '../jxt';
 
-import { NS_PRIVACY } from './Namespaces';
+import { NS_PRIVACY } from '../Namespaces';
 
 declare module './' {
     export interface IQ {

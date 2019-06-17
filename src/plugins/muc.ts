@@ -1,14 +1,6 @@
 import { Agent } from '../';
 import * as JID from '../JID';
-import {
-    MUCPresence,
-    NS_HATS_0,
-    NS_MUC,
-    NS_MUC_DIRECT_INVITE,
-    ReceivedMessage,
-    ReceivedMUCPresence,
-    ReceivedPresence
-} from '../protocol';
+import { NS_HATS_0, NS_MUC, NS_MUC_DIRECT_INVITE } from '../Namespaces';
 import {
     DataForm,
     IQ,
@@ -17,11 +9,15 @@ import {
     MUCDestroy,
     MUCDirectInvite,
     MUCInvite,
+    MUCPresence,
     MUCRole,
     MUCUnique,
     MUCUserItem,
     MUCUserList,
-    Presence
+    Presence,
+    ReceivedMessage,
+    ReceivedMUCPresence,
+    ReceivedPresence
 } from '../protocol';
 
 declare module '../' {

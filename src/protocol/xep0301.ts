@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, integerAttribute, text } from '../jxt';
 
-import { NS_RTT_0 } from './Namespaces';
+import { NS_RTT_0 } from '../Namespaces';
 
 declare module './' {
     export interface Message {

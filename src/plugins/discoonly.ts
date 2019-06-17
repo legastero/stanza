@@ -14,7 +14,7 @@ import {
     NS_PSA,
     NS_REFERENCE_0,
     NS_SHIM
-} from '../protocol';
+} from '../Namespaces';
 
 export default function(client: Agent) {
     client.disco.addFeature('jid\\20escaping');

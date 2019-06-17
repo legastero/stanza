@@ -14,7 +14,7 @@ import {
     text
 } from '../jxt';
 
-import { NS_VCARD_TEMP } from './Namespaces';
+import { NS_VCARD_TEMP } from '../Namespaces';
 import { JID } from './util';
 
 declare module './' {

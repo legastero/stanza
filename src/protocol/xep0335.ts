@@ -7,7 +7,7 @@
 
 import { childJSON, DefinitionOptions } from '../jxt';
 
-import { NS_JSON_0 } from './Namespaces';
+import { NS_JSON_0 } from '../Namespaces';
 
 import { PubsubItemContent } from './';
 import { extendMessage, pubsubItemContentAliases } from './util';

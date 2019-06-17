@@ -16,7 +16,7 @@ import {
     XMLElement
 } from '../jxt';
 
-import { NS_DATAFORM } from './Namespaces';
+import { NS_DATAFORM } from '../Namespaces';
 import { JID } from './util';
 
 declare module './' {

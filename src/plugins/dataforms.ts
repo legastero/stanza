@@ -1,12 +1,12 @@
 import { Agent } from '../';
 import {
-    DataForm,
     NS_DATAFORM,
     NS_DATAFORM_LAYOUT,
     NS_DATAFORM_MEDIA,
-    NS_DATAFORM_VALIDATION,
-    ReceivedMessage
-} from '../protocol';
+    NS_DATAFORM_VALIDATION
+} from '../Namespaces';
+
+import { DataForm, ReceivedMessage } from '../protocol';
 
 type FormsMessage = ReceivedMessage & {
     forms: DataForm[];

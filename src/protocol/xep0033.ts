@@ -15,7 +15,7 @@ import {
     splicePath
 } from '../jxt';
 
-import { NS_ADDRESS } from './Namespaces';
+import { NS_ADDRESS } from '../Namespaces';
 import { extendMessage, extendPresence, JID, JIDAttribute } from './util';
 
 declare module './' {

@@ -7,7 +7,7 @@
 
 import { DefinitionOptions, findAll, findOrCreate } from '../jxt';
 
-import { NS_VCARD_TEMP_UPDATE } from './Namespaces';
+import { NS_VCARD_TEMP_UPDATE } from '../Namespaces';
 import { extendPresence } from './util';
 
 declare module './' {

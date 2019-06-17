@@ -1,5 +1,6 @@
 import { Agent } from '../';
-import { EntityTime, IQ, NS_TIME } from '../protocol';
+import { NS_TIME } from '../Namespaces';
+import { EntityTime, IQ } from '../protocol';
 
 declare module '../' {
     export interface Agent {

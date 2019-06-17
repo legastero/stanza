@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, languageAttribute } from '../jxt';
 
-import { NS_FRAMING } from './Namespaces';
+import { NS_FRAMING } from '../Namespaces';
 
 declare module './' {
     export interface Stream {

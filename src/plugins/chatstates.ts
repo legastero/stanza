@@ -1,6 +1,6 @@
 import { Agent } from '../';
-import { NS_CHAT_STATES, ReceivedMessage } from '../protocol';
-import { Message } from '../protocol';
+import { NS_CHAT_STATES } from '../Namespaces';
+import { Message, ReceivedMessage } from '../protocol';
 
 declare module '../' {
     export interface AgentEvents {

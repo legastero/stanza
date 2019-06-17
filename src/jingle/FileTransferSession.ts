@@ -1,15 +1,16 @@
 import { EventEmitter } from 'events';
-import * as Hashes from '../lib/crypto';
 
+import * as Hashes from '../lib/crypto';
+import { NS_FILE_TRANSFER_5 } from '../Namespaces';
 import {
     FileDescription,
     FileTransferDescription,
     FileTransferInfo,
     Hash,
     INFO_CHECKSUM_5,
-    Jingle,
-    NS_FILE_TRANSFER_5
+    Jingle
 } from '../protocol';
+
 import ICESession from './ICESession';
 import { exportToSDP, importFromSDP } from './lib/Intermediate';
 import { Action, SessionRole } from './lib/JingleUtil';

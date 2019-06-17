@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions } from '../jxt';
 
-import { NS_CHAT_MARKERS_0 } from './Namespaces';
+import { NS_CHAT_MARKERS_0 } from '../Namespaces';
 
 declare module './' {
     export interface Message {

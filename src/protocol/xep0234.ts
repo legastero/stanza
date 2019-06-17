@@ -13,9 +13,9 @@ import {
     DefinitionOptions,
     integerAttribute
 } from '../jxt';
+import { NS_FILE_TRANSFER_5, NS_HASHES_2, NS_THUMBS_1 } from '../Namespaces';
 
 import { Hash, HashUsed, JingleApplication, JingleInfo, Thumbnail } from './';
-import { NS_FILE_TRANSFER_5, NS_HASHES_2, NS_THUMBS_1 } from './Namespaces';
 import { addAlias } from './util';
 
 export const INFO_CHECKSUM_5 = `{${NS_FILE_TRANSFER_5}}checksum`;

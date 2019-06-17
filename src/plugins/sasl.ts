@@ -1,5 +1,5 @@
 import { Agent } from '../';
-import { Credentials, Mechanism } from '../lib/sasl';
+import { Credentials } from '../lib/sasl';
 import { SASL } from '../protocol';
 
 declare module '../' {

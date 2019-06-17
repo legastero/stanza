@@ -13,9 +13,9 @@
 // ====================================================================
 
 import { attribute, DefinitionOptions, languageAttribute, multipleChildAttribute } from '../jxt';
+import { NS_DATAFORM, NS_DISCO_INFO, NS_DISCO_ITEMS, NS_RSM } from '../Namespaces';
 
 import { DataForm } from './';
-import { NS_DATAFORM, NS_DISCO_INFO, NS_DISCO_ITEMS, NS_RSM } from './Namespaces';
 import { addAlias, JID, JIDAttribute } from './util';
 
 declare module './' {

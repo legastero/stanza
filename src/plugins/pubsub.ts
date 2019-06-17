@@ -1,6 +1,10 @@
 import { Agent } from '../';
+import { NS_SHIM } from '../Namespaces';
 import {
-    NS_SHIM,
+    DataForm,
+    IQ,
+    Paging,
+    PubsubAffiliation,
     PubsubEvent,
     PubsubEventConfiguration,
     PubsubEventDelete,
@@ -8,18 +12,12 @@ import {
     PubsubEventPurge,
     PubsubEventSubscription,
     PubsubItem,
-    ReceivedMessage
-} from '../protocol';
-import {
-    DataForm,
-    IQ,
-    Paging,
-    PubsubAffiliation,
     PubsubItemContent,
     PubsubSubscribe,
     PubsubSubscription,
     PubsubSubscriptions,
-    PubsubUnsubscribe
+    PubsubUnsubscribe,
+    ReceivedMessage
 } from '../protocol';
 
 declare module '../' {

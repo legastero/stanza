@@ -6,9 +6,9 @@
 // ====================================================================
 
 import { attribute, DefinitionOptions, integerAttribute, textBuffer } from '../jxt';
+import { NS_AVATAR_DATA, NS_AVATAR_METADATA } from '../Namespaces';
 
 import { PubsubItemContent } from './';
-import { NS_AVATAR_DATA, NS_AVATAR_METADATA } from './Namespaces';
 import { pubsubItemContentAliases } from './util';
 
 export interface AvatarData extends PubsubItemContent {

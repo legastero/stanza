@@ -16,9 +16,9 @@ import {
     DefinitionOptions,
     integerAttribute
 } from '../jxt';
+import { NS_DISCO_EXTERNAL_1 } from '../Namespaces';
 
 import { DataForm } from './';
-import { NS_DISCO_EXTERNAL_1 } from './Namespaces';
 
 export interface ExternalService {
     action?: 'add' | 'remove' | 'modify';

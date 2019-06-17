@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, splicePath, text } from '../jxt';
 
-import { NS_SHIM } from './Namespaces';
+import { NS_SHIM } from '../Namespaces';
 
 import { extendMessage, extendPresence } from './util';
 

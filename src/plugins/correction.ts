@@ -1,5 +1,6 @@
 import { Agent } from '../';
-import { NS_CORRECTION_0, ReceivedMessage } from '../protocol';
+import { NS_CORRECTION_0 } from '../Namespaces';
+import { ReceivedMessage } from '../protocol';
 
 type CorrectionMessage = ReceivedMessage & {
     replace: ReceivedMessage['replace'];

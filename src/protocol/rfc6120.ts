@@ -18,7 +18,7 @@ import {
     textBuffer
 } from '../jxt';
 
-import { NS_BIND, NS_CLIENT, NS_SASL, NS_STANZAS, NS_STARTTLS, NS_STREAM } from './Namespaces';
+import { NS_BIND, NS_CLIENT, NS_SASL, NS_STANZAS, NS_STARTTLS, NS_STREAM } from '../Namespaces';
 
 import { IQ } from './';
 import { JIDAttribute, STREAM_TYPES } from './util';

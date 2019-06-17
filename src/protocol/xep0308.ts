@@ -7,7 +7,7 @@
 
 import { childAttribute, DefinitionOptions } from '../jxt';
 
-import { NS_CORRECTION_0 } from './Namespaces';
+import { NS_CORRECTION_0 } from '../Namespaces';
 
 import { extendMessage } from './util';
 

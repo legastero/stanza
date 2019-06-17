@@ -1,5 +1,5 @@
 import { Agent } from '../';
-import { NS_NICK, NS_PEP_NOTIFY } from '../protocol';
+import { NS_NICK, NS_PEP_NOTIFY } from '../Namespaces';
 import { IQ, UserNick } from '../protocol';
 
 declare module '../' {

@@ -1,5 +1,6 @@
 import { Agent } from '../';
-import { Message, NS_ATTENTION_0, ReceivedMessage } from '../protocol';
+import { NS_ATTENTION_0 } from '../Namespaces';
+import { Message, ReceivedMessage } from '../protocol';
 
 declare module '../' {
     export interface Agent {

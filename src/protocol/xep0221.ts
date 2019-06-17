@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, integerAttribute, text } from '../jxt';
 
-import { NS_DATAFORM_MEDIA } from './Namespaces';
+import { NS_DATAFORM_MEDIA } from '../Namespaces';
 
 declare module './xep0004' {
     export interface DataFormFieldBase {

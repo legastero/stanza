@@ -7,7 +7,7 @@
 
 import { booleanAttribute, DefinitionOptions } from '../jxt';
 
-import { NS_INVISIBLE_0 } from './Namespaces';
+import { NS_INVISIBLE_0 } from '../Namespaces';
 
 declare module './' {
     export interface IQ {

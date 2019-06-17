@@ -14,7 +14,7 @@ import {
     DefinitionOptions
 } from '../jxt';
 
-import { NS_DATAFORM_VALIDATION } from './Namespaces';
+import { NS_DATAFORM_VALIDATION } from '../Namespaces';
 
 declare module './xep0004' {
     export interface DataFormFieldBase {

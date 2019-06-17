@@ -1,5 +1,6 @@
 import { Agent } from '../';
-import { NS_VERSION, ReceivedIQGet, SoftwareVersion } from '../protocol';
+import { NS_VERSION } from '../Namespaces';
+import { ReceivedIQGet, SoftwareVersion } from '../protocol';
 
 declare module '../' {
     export interface Agent {

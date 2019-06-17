@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, text } from '../jxt';
 
-import { NS_DATAFORM_LAYOUT } from './Namespaces';
+import { NS_DATAFORM_LAYOUT } from '../Namespaces';
 
 declare module './xep0004' {
     export interface DataForm {

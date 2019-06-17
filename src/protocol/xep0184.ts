@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions } from '../jxt';
 
-import { NS_RECEIPTS } from './Namespaces';
+import { NS_RECEIPTS } from '../Namespaces';
 
 declare module './' {
     export interface Message {

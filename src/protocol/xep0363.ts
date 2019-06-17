@@ -16,7 +16,7 @@ import {
     text
 } from '../jxt';
 
-import { NS_HTTP_UPLOAD_0 } from './Namespaces';
+import { NS_HTTP_UPLOAD_0 } from '../Namespaces';
 
 import { extendStanzaError } from './util';
 

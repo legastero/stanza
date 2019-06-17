@@ -6,9 +6,9 @@
 // ====================================================================
 
 import { attribute, childBoolean, childEnum, DefinitionOptions, text } from '../jxt';
+import { NS_ADHOC_COMMANDS, NS_DATAFORM } from '../Namespaces';
 
 import { DataForm } from './';
-import { NS_ADHOC_COMMANDS, NS_DATAFORM } from './Namespaces';
 import { addAlias, extendStanzaError } from './util';
 
 declare module './' {

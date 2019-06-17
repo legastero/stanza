@@ -14,7 +14,7 @@ import {
     splicePath
 } from '../jxt';
 
-import { NS_REACH_0 } from './Namespaces';
+import { NS_REACH_0 } from '../Namespaces';
 import { extendPresence, pubsubItemContentAliases } from './util';
 
 declare module './' {

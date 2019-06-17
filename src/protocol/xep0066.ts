@@ -7,7 +7,7 @@
 
 import { childText, DefinitionOptions } from '../jxt';
 
-import { NS_OOB, NS_OOB_TRANSFER } from './Namespaces';
+import { NS_OOB, NS_OOB_TRANSFER } from '../Namespaces';
 
 declare module './' {
     export interface Message {

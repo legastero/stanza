@@ -13,7 +13,7 @@ import {
     LanguageSet
 } from '../jxt';
 
-import { NS_ACTIVITY } from './Namespaces';
+import { NS_ACTIVITY } from '../Namespaces';
 
 import { PubsubItemContent } from './';
 import { pubsubItemContentAliases } from './util';

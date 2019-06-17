@@ -11,7 +11,7 @@ import {
     XMLElement
 } from '../jxt';
 
-import { NS_BOSH, NS_CLIENT, NS_COMPONENT, NS_SERVER, NS_STANZAS, NS_STREAM } from './Namespaces';
+import { NS_BOSH, NS_CLIENT, NS_COMPONENT, NS_SERVER, NS_STANZAS, NS_STREAM } from '../Namespaces';
 
 export const STREAM_TYPES = [
     [NS_CLIENT, NS_CLIENT], // RFC6120

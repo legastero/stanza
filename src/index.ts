@@ -7,6 +7,7 @@ import * as Jingle from './jingle';
 import * as JXT from './jxt';
 import { Factory } from './lib/sasl';
 import StrictEventEmitter from './lib/StrictEventEmitter';
+import * as Namespaces from './Namespaces';
 import * as Stanzas from './protocol';
 import {
     CSI,
@@ -142,7 +143,7 @@ export interface TransportConfig {
     wait?: number;
 }
 
-export { Client, JXT, JID, Stanzas, Jingle, Utils, RTT };
+export { Client, JXT, JID, Namespaces, Stanzas, Jingle, Utils, RTT };
 
 export const VERSION = '__STANZAJS_VERSION__';
 

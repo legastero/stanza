@@ -33,8 +33,6 @@ import {
     staticValue,
     text
 } from '../jxt';
-
-import { DataForm, Presence, ReceivedPresence } from './';
 import {
     NS_DATAFORM,
     NS_MUC,
@@ -43,7 +41,9 @@ import {
     NS_MUC_OWNER,
     NS_MUC_UNIQUE,
     NS_MUC_USER
-} from './Namespaces';
+} from '../Namespaces';
+
+import { DataForm, Presence, ReceivedPresence } from './';
 import { addAlias, childJIDAttribute, JID, JIDAttribute } from './util';
 
 declare module './' {

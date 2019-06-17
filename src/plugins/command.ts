@@ -1,5 +1,5 @@
 import { Agent } from '../';
-import { NS_ADHOC_COMMANDS } from '../protocol';
+import { NS_ADHOC_COMMANDS } from '../Namespaces';
 import { IQ } from '../protocol';
 
 declare module '../' {

@@ -1,7 +1,6 @@
-import * as SDPUtils from './lib/SDP';
-
-import { NS_JINGLE_ICE_UDP_1 } from '../protocol';
+import { NS_JINGLE_ICE_UDP_1 } from '../Namespaces';
 import { Jingle, JingleContent, JingleIceUdp, JingleReason } from '../protocol';
+
 import { exportToSDP, importFromSDP } from './lib/Intermediate';
 import { Action, ReasonCondition, SessionRole } from './lib/JingleUtil';
 import {
@@ -10,6 +9,7 @@ import {
     convertIntermediateToTransportInfo,
     convertRequestToIntermediate
 } from './lib/Protocol';
+import * as SDPUtils from './lib/SDP';
 import BaseSession, { ActionCallback } from './Session';
 
 export default class ICESession extends BaseSession {

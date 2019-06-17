@@ -1,6 +1,6 @@
 import { Agent } from '../';
-import { NS_MOOD, NS_PEP_NOTIFY } from '../protocol';
-import { IQ, Message, UserMood } from '../protocol';
+import { NS_MOOD, NS_PEP_NOTIFY } from '../Namespaces';
+import { IQ, UserMood } from '../protocol';
 
 declare module '../' {
     export interface Agent {

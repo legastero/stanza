@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, integerAttribute, textBuffer } from '../jxt';
 
-import { NS_BOB } from './Namespaces';
+import { NS_BOB } from '../Namespaces';
 
 declare module './' {
     export interface Message {

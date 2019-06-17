@@ -7,7 +7,7 @@
 
 import { childDate, DefinitionOptions } from '../jxt';
 
-import { NS_IDLE_1 } from './Namespaces';
+import { NS_IDLE_1 } from '../Namespaces';
 
 import { extendPresence } from './util';
 

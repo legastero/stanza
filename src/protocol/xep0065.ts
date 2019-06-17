@@ -7,7 +7,7 @@
 
 import { attribute, childAttribute, childText, DefinitionOptions, integerAttribute } from '../jxt';
 
-import { NS_SOCKS5 } from './Namespaces';
+import { NS_SOCKS5 } from '../Namespaces';
 import { childJIDAttribute, JID, JIDAttribute } from './util';
 
 declare module './' {

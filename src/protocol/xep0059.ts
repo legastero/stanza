@@ -14,7 +14,7 @@ import {
     integerAttribute
 } from '../jxt';
 
-import { NS_RSM } from './Namespaces';
+import { NS_RSM } from '../Namespaces';
 
 export interface Paging {
     max?: number;

@@ -48,8 +48,6 @@ import {
     TranslationContext,
     XMLElement
 } from '../jxt';
-
-import { JingleApplication, JingleDtlsFingerprint, Thumbnail } from './';
 import {
     NS_JINGLE_RTP_1,
     NS_JINGLE_RTP_HDREXT_0,
@@ -57,7 +55,9 @@ import {
     NS_JINGLE_RTP_MSID_0,
     NS_JINGLE_RTP_RTCP_FB_0,
     NS_JINGLE_RTP_SSMA_0
-} from './Namespaces';
+} from '../Namespaces';
+
+import { JingleApplication, JingleDtlsFingerprint, Thumbnail } from './';
 import { parameterMap } from './util';
 
 declare module './xep0166' {

@@ -1,6 +1,7 @@
 import { Agent } from '../';
 import * as JID from '../JID';
-import { HTTPUploadRequest, HTTPUploadSlot, IQ, NS_HTTP_UPLOAD_0 } from '../protocol';
+import { NS_HTTP_UPLOAD_0 } from '../Namespaces';
+import { HTTPUploadRequest, HTTPUploadSlot } from '../protocol';
 
 declare module '../' {
     export interface Agent {

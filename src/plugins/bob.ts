@@ -1,5 +1,6 @@
 import { Agent } from '../';
-import { Bits, IQ, NS_BOB } from '../protocol';
+import { NS_BOB } from '../Namespaces';
+import { Bits } from '../protocol';
 
 declare module '../' {
     export interface Agent {

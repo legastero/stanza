@@ -1,7 +1,7 @@
 import { Agent } from '../';
 import * as JXT from '../jxt';
 import fetch from '../lib/fetch';
-import { NS_ALT_CONNECTIONS_WEBSOCKET, NS_ALT_CONNECTIONS_XBOSH } from '../protocol';
+import { NS_ALT_CONNECTIONS_WEBSOCKET, NS_ALT_CONNECTIONS_XBOSH } from '../Namespaces';
 
 declare module '../' {
     export interface Agent {

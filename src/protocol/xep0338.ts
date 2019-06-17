@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, multipleChildAttribute } from '../jxt';
 
-import { NS_JINGLE_GROUPING_0 } from './Namespaces';
+import { NS_JINGLE_GROUPING_0 } from '../Namespaces';
 
 declare module './xep0166' {
     export interface Jingle {

@@ -1,7 +1,5 @@
 import { DefinitionOptions } from '../jxt';
 
-export * from './Namespaces';
-
 export * from './rfc3921';
 export * from './rfc6120';
 export * from './rfc6121';

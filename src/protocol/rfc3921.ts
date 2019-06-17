@@ -13,7 +13,7 @@
 
 import { childBoolean, DefinitionOptions } from '../jxt';
 
-import { NS_SESSION } from './Namespaces';
+import { NS_SESSION } from '../Namespaces';
 
 declare module './' {
     export interface StreamFeatures {

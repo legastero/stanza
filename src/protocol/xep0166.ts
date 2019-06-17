@@ -10,7 +10,7 @@
 
 import { attribute, childEnum, childText, DefinitionOptions } from '../jxt';
 
-import { NS_JINGLE_1, NS_JINGLE_ERRORS_1 } from './Namespaces';
+import { NS_JINGLE_1, NS_JINGLE_ERRORS_1 } from '../Namespaces';
 import { extendStanzaError, JID, JIDAttribute } from './util';
 
 declare module './' {

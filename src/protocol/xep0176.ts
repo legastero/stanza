@@ -10,9 +10,9 @@
 // ====================================================================
 
 import { attribute, childBoolean, DefinitionOptions, integerAttribute } from '../jxt';
+import { NS_JINGLE_ICE_UDP_1 } from '../Namespaces';
 
 import { JingleTransport } from './';
-import { NS_JINGLE_ICE_UDP_1 } from './Namespaces';
 
 export interface JingleIceUdp extends JingleTransport {
     transportType: typeof NS_JINGLE_ICE_UDP_1;

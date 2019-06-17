@@ -7,7 +7,7 @@
 
 import { attribute, DefinitionOptions, text } from '../jxt';
 
-import { NS_JINGLE_DTLS_0, NS_JINGLE_ICE_UDP_1, NS_JINGLE_RTP_1 } from './Namespaces';
+import { NS_JINGLE_DTLS_0, NS_JINGLE_ICE_UDP_1, NS_JINGLE_RTP_1 } from '../Namespaces';
 
 export interface JingleDtlsFingerprint {
     algorithm?: string;
