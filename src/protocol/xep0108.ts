@@ -5,6 +5,7 @@
 // Version: 1.3 (2008-10-29)
 // ====================================================================
 
+import { USER_ACTIVITY_GENERAL, USER_ACTIVITY_SPECIFIC } from '../Constants';
 import {
     childAlternateLanguageText,
     childDoubleEnum,
@@ -12,96 +13,10 @@ import {
     DefinitionOptions,
     LanguageSet
 } from '../jxt';
-
 import { NS_ACTIVITY } from '../Namespaces';
 
 import { PubsubItemContent } from './';
 import { pubsubItemContentAliases } from './util';
-
-const GENERAL = [
-    'doing_chores',
-    'drinking',
-    'eating',
-    'exercising',
-    'grooming',
-    'having_appointment',
-    'inactive',
-    'relaxing',
-    'talking',
-    'traveling',
-    'undefined',
-    'working'
-];
-const SPECIFIC = [
-    'at_the_spa',
-    'brushing_teeth',
-    'buying_groceries',
-    'cleaning',
-    'coding',
-    'commuting',
-    'cooking',
-    'cycling',
-    'cycling',
-    'dancing',
-    'day_off',
-    'doing_maintenance',
-    'doing_the_dishes',
-    'doing_the_laundry',
-    'driving',
-    'fishing',
-    'gaming',
-    'gardening',
-    'getting_a_haircut',
-    'going_out',
-    'hanging_out',
-    'having_a_beer',
-    'having_a_snack',
-    'having_breakfast',
-    'having_coffee',
-    'having_dinner',
-    'having_lunch',
-    'having_tea',
-    'hiding',
-    'hiking',
-    'in_a_car',
-    'in_a_meeting',
-    'in_real_life',
-    'jogging',
-    'on_a_bus',
-    'on_a_plane',
-    'on_a_train',
-    'on_a_trip',
-    'on_the_phone',
-    'on_vacation',
-    'on_video_phone',
-    'other',
-    'partying',
-    'playing_sports',
-    'praying',
-    'reading',
-    'rehearsing',
-    'running',
-    'running_an_errand',
-    'scheduled_holiday',
-    'shaving',
-    'shopping',
-    'skiing',
-    'sleeping',
-    'smoking',
-    'socializing',
-    'studying',
-    'sunbathing',
-    'swimming',
-    'taking_a_bath',
-    'taking_a_shower',
-    'thinking',
-    'walking',
-    'walking_the_dog',
-    'watching_a_movie',
-    'watching_tv',
-    'working_out',
-    'writing'
-];
 
 export interface UserActivity extends PubsubItemContent {
     itemType?: typeof NS_ACTIVITY;
@@ -114,7 +29,7 @@ export default {
     aliases: [{ path: 'activity', impliedType: true }, ...pubsubItemContentAliases()],
     element: 'activity',
     fields: {
-        activity: childDoubleEnum(null, GENERAL, SPECIFIC),
+        activity: childDoubleEnum(null, USER_ACTIVITY_GENERAL, USER_ACTIVITY_SPECIFIC),
         alternateLanguageText: childAlternateLanguageText(null, 'text'),
         text: childText(null, 'text')
     },

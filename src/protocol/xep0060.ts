@@ -5,6 +5,7 @@
 // Version: 1.15.1 (2018-02-02)
 // ====================================================================
 
+import { PubsubErrorCondition, toList } from '../Constants';
 import {
     attribute,
     booleanAttribute,
@@ -40,29 +41,7 @@ declare module './' {
     }
 
     export interface StanzaError {
-        pubsubError?:
-            | 'closed-node'
-            | 'configuration-required'
-            | 'invalid-jid'
-            | 'invalid-options'
-            | 'invalid-payload'
-            | 'invalid-subid'
-            | 'item-forbidden'
-            | 'item-required'
-            | 'jid-required'
-            | 'max-items-exceeded'
-            | 'max-nodes-exceeded'
-            | 'nodeid-required'
-            | 'not-in-roster-group'
-            | 'not-subscribed'
-            | 'payload-too-big'
-            | 'payload-required'
-            | 'pending-subscription'
-            | 'presence-subscription-required'
-            | 'subid-required'
-            | 'too-many-subscriptions'
-            | 'unsupported'
-            | 'unsupported-access-model';
+        pubsubError?: PubsubErrorCondition;
         pubsubUnsupportedFeature?: string;
     }
 }
@@ -259,30 +238,7 @@ export default [
     ]),
     addAlias(NS_RSM, 'set', ['iq.pubsub.fetch']),
     extendStanzaError({
-        pubsubError: childEnum(NS_PUBSUB_ERRORS, [
-            'closed-node',
-            'configuration-required',
-            'invalid-jid',
-            'invalid-options',
-            'invalid-payload',
-            'invalid-subid',
-            'item-forbidden',
-            'item-required',
-            'jid-required',
-            'max-items-exceeded',
-            'max-nodes-exceeded',
-            'nodeid-required',
-            'not-in-roster-group',
-            'not-subscribed',
-            'payload-too-big',
-            'payload-required',
-            'pending-subscription',
-            'presence-subscription-required',
-            'subid-required',
-            'too-many-subscriptions',
-            'unsupported',
-            'unsupported-access-model'
-        ]),
+        pubsubError: childEnum(NS_PUBSUB_ERRORS, toList(PubsubErrorCondition)),
         pubsubUnsupportedFeature: childAttribute(NS_PUBSUB_ERRORS, 'unsupported', 'feature')
     }),
     {

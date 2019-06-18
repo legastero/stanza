@@ -5,6 +5,15 @@
 // ====================================================================
 
 import {
+    IQType,
+    MessageType,
+    PresenceType,
+    SASLFailureCondition,
+    StanzaErrorCondition,
+    StreamErrorCondition,
+    toList
+} from '../Constants';
+import {
     attribute,
     childAlternateLanguageText,
     childBoolean,
@@ -17,7 +26,6 @@ import {
     multipleChildText,
     textBuffer
 } from '../jxt';
-
 import { NS_BIND, NS_CLIENT, NS_SASL, NS_STANZAS, NS_STARTTLS, NS_STREAM } from '../Namespaces';
 
 import { IQ } from './';
@@ -40,7 +48,7 @@ declare module './' {
     }
 
     export interface StreamError {
-        condition: string;
+        condition: StreamErrorCondition;
         text?: string;
         alternateLanguageText?: LanguageSet<string>;
         seeOtherHost?: string;
@@ -49,7 +57,7 @@ declare module './' {
     export interface StanzaError {
         by?: string;
         type?: string;
-        condition: string;
+        condition: StanzaErrorCondition;
         text?: string;
         alternateLanguageText?: LanguageSet<string>;
         redirect?: string;
@@ -60,7 +68,7 @@ declare module './' {
         to?: string;
         from?: string;
         id?: string;
-        type: string;
+        type: IQType;
         lang?: string;
         streamType?: string;
         error?: StanzaError;
@@ -75,11 +83,11 @@ declare module './' {
     }
 
     export interface ReceivedIQGet extends ReceivedIQ {
-        type: 'get';
+        type: typeof IQType.Get;
     }
 
     export interface ReceivedIQSet extends ReceivedIQ {
-        type: 'set';
+        type: typeof IQType.Set;
     }
 
     export interface Message {
@@ -88,6 +96,7 @@ declare module './' {
         id?: string;
         lang?: string;
         streamType?: string;
+        type?: MessageType;
         error?: StanzaError;
     }
 
@@ -102,6 +111,7 @@ declare module './' {
         id?: string;
         lang?: string;
         streamType?: string;
+        type?: PresenceType;
         error?: StanzaError;
     }
 
@@ -131,18 +141,7 @@ declare module './' {
     }
     export interface SASLFailure {
         type: 'failure';
-        condition:
-            | 'aborted'
-            | 'account-disabled'
-            | 'credentials-expired'
-            | 'encryption-required'
-            | 'incorrect-encoding'
-            | 'invalid-authzid'
-            | 'invalid-mechanism'
-            | 'malformed-request'
-            | 'mechanism-too-weak'
-            | 'not-authorized'
-            | 'temporary-auth-failure';
+        condition: SASLFailureCondition;
         text?: string;
         alternateLanguageText?: LanguageSet<string>;
     }
@@ -187,36 +186,10 @@ const _StreamError: DefinitionOptions = {
         alternateLanguageText: childAlternateLanguageText(NS_STANZAS, 'text'),
         condition: childEnum(
             NS_STREAM,
-            [
-                'bad-format',
-                'bad-namespace-prefix',
-                'conflict',
-                'connection-timeout',
-                'host-gone',
-                'host-unknown',
-                'improper-addressing',
-                'internal-server-error',
-                'invalid-from',
-                'invalid-id',
-                'invalid-namespace',
-                'invalid-xml',
-                'not-authorized',
-                'not-well-formed',
-                'policy-violation',
-                'remote-connection-failed',
-                'reset',
-                'resource-constraint',
-                'restricted-xml',
-                'see-other-host',
-                'system-shutdown',
-                'undefined-condition',
-                'unsupported-encoding',
-                'unsupported-stanza-type',
-                'unsupported-version'
-            ],
-            'undefined-condition'
+            toList(StreamErrorCondition),
+            StreamErrorCondition.UndefinedCondition
         ),
-        seeOtherHost: childText(NS_STREAM, 'see-other-host'),
+        seeOtherHost: childText(NS_STREAM, StreamErrorCondition.SeeOtherHost),
         text: childText(NS_STANZAS, 'text')
     },
     namespace: NS_STREAM,
@@ -234,34 +207,11 @@ const _StanzaError: DefinitionOptions[] = STREAM_TYPES.map(([streamType, streamN
         by: JIDAttribute('by'),
         condition: childEnum(
             NS_STANZAS,
-            [
-                'bad-request',
-                'conflict',
-                'feature-not-implemented',
-                'forbidden',
-                'gone',
-                'internal-server-error',
-                'item-not-found',
-                'jid-malformed',
-                'not-acceptable',
-                'not-allowed',
-                'not-authorized',
-                'policy-violation',
-                'recipient-unavailable',
-                'redirect',
-                'registration-required',
-                'remote-server-not-found',
-                'remote-server-timeout',
-                'resource-constraint',
-                'service-unavailable',
-                'subscription-required',
-                'undefined-condition',
-                'unexpected-request'
-            ],
-            'undefined-condition'
+            toList(StanzaErrorCondition),
+            StanzaErrorCondition.UndefinedCondition
         ),
-        gone: childText(NS_STANZAS, 'gone'),
-        redirect: childText(NS_STANZAS, 'redirect'),
+        gone: childText(NS_STANZAS, StanzaErrorCondition.Gone),
+        redirect: childText(NS_STANZAS, StanzaErrorCondition.Redirect),
         text: childText(NS_STANZAS, 'text'),
         type: attribute('type')
     },
@@ -403,19 +353,7 @@ const _SASL: DefinitionOptions[] = [
         element: 'failure',
         fields: {
             alternateLanguageText: childAlternateLanguageText(NS_SASL, 'text'),
-            condition: childEnum(NS_SASL, [
-                'aborted',
-                'account-disabled',
-                'credentials-expired',
-                'encryption-required',
-                'incorrect-encoding',
-                'invalid-authzid',
-                'invalid-mechanism',
-                'malformed-request',
-                'mechanism-too-weak',
-                'not-authorized',
-                'temporary-auth-failure'
-            ]),
+            condition: childEnum(NS_SASL, toList(SASLFailureCondition)),
             text: childText(NS_SASL, 'text')
         },
         namespace: NS_SASL,

@@ -56,7 +56,6 @@
 | [XEP-0138](https://xmpp.org/extensions/xep-0138.html) | Stream Compression                                 | 2.0     | [Source](../src/protocol/stanzas/xep0138.ts) |
 | [XEP-0141](https://xmpp.org/extensions/xep-0141.html) | Data Forms Layout                                  | 1.0     | [Source](../src/protocol/stanzas/xep0141.ts) |
 | [XEP-0144](https://xmpp.org/extensions/xep-0144.html) | Roster Item Exchange                               | 1.1.1   | [Source](../src/protocol/stanzas/xep0144.ts) |
-| [XEP-0152](https://xmpp.org/extensions/xep-0152.html) | Reachability Addresses                             | 1.0     | [Source](../src/protocol/stanzas/xep0152.ts) |
 | [XEP-0153](https://xmpp.org/extensions/xep-0153.html) | vCard-Based Avatars                                | 1.1     | [Source](../src/protocol/stanzas/xep0153.ts) |
 | [XEP-0166](https://xmpp.org/extensions/xep-0166.html) | Jingle                                             | 1.1.1   | [Source](../src/protocol/stanzas/xep0166.ts) |
 | [XEP-0167](https://xmpp.org/extensions/xep-0167.html) | Jingle RTP Sessions                                | 1.1.1   | [Source](../src/protocol/stanzas/xep0167.ts) |

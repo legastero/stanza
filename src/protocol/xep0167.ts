@@ -35,6 +35,15 @@
 // ====================================================================
 
 import {
+    JINGLE_INFO_ACTIVE,
+    JINGLE_INFO_HOLD,
+    JINGLE_INFO_MUTE,
+    JINGLE_INFO_RINGING,
+    JINGLE_INFO_UNHOLD,
+    JINGLE_INFO_UNMUTE,
+    JingleContentSenders
+} from '../Constants';
+import {
     attribute,
     booleanAttribute,
     childBoolean,
@@ -111,7 +120,7 @@ export interface JingleRtpMediaStream {
 export interface JingleRtpHeaderExtension {
     id: number;
     uri: string;
-    senders?: 'initiator' | 'responder' | 'both' | 'none';
+    senders?: JingleContentSenders;
 }
 
 export interface JingleRtpSourceGroup {
@@ -137,13 +146,6 @@ export interface JingleRtpZrtp {
     version?: string;
     value?: Buffer;
 }
-
-export const INFO_MUTE = `{${NS_JINGLE_RTP_INFO_1}}mute`;
-export const INFO_UNMUTE = `{${NS_JINGLE_RTP_INFO_1}}unmute`;
-export const INFO_HOLD = `{${NS_JINGLE_RTP_INFO_1}}hold`;
-export const INFO_UNHOLD = `{${NS_JINGLE_RTP_INFO_1}}unhold`;
-export const INFO_ACTIVE = `{${NS_JINGLE_RTP_INFO_1}}active`;
-export const INFO_RINGING = `{${NS_JINGLE_RTP_INFO_1}}ringing`;
 
 function rtcpFeedback(): FieldDefinition {
     return {
@@ -347,7 +349,7 @@ export default [
         },
         namespace: NS_JINGLE_RTP_INFO_1,
         path: 'iq.jingle.info',
-        type: INFO_MUTE
+        type: JINGLE_INFO_MUTE
     },
     {
         element: 'unmute',
@@ -357,30 +359,30 @@ export default [
         },
         namespace: NS_JINGLE_RTP_INFO_1,
         path: 'iq.jingle.info',
-        type: INFO_UNMUTE
+        type: JINGLE_INFO_UNMUTE
     },
     {
         element: 'hold',
         namespace: NS_JINGLE_RTP_INFO_1,
         path: 'iq.jingle.info',
-        type: INFO_HOLD
+        type: JINGLE_INFO_HOLD
     },
     {
         element: 'unhold',
         namespace: NS_JINGLE_RTP_INFO_1,
         path: 'iq.jingle.info',
-        type: INFO_UNHOLD
+        type: JINGLE_INFO_UNHOLD
     },
     {
         element: 'active',
         namespace: NS_JINGLE_RTP_INFO_1,
         path: 'iq.jingle.info',
-        type: INFO_ACTIVE
+        type: JINGLE_INFO_ACTIVE
     },
     {
         element: 'ringing',
         namespace: NS_JINGLE_RTP_INFO_1,
         path: 'iq.jingle.info',
-        type: INFO_RINGING
+        type: JINGLE_INFO_RINGING
     }
 ] as DefinitionOptions[];

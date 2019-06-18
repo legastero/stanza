@@ -5,6 +5,7 @@
 // Version: Version 0.18.3 (2017-08-24)
 // ====================================================================
 
+import { JINGLE_INFO_CHECKSUM_5, JINGLE_INFO_RECEIVED_5, JingleSessionRole } from '../Constants';
 import {
     attribute,
     childDate,
@@ -13,16 +14,13 @@ import {
     DefinitionOptions,
     integerAttribute
 } from '../jxt';
-import { NS_FILE_TRANSFER_5, NS_HASHES_2, NS_THUMBS_1 } from '../Namespaces';
+import { NS_HASHES_2, NS_JINGLE_FILE_TRANSFER_5, NS_THUMBS_1 } from '../Namespaces';
 
 import { Hash, HashUsed, JingleApplication, JingleInfo, Thumbnail } from './';
 import { addAlias } from './util';
 
-export const INFO_CHECKSUM_5 = `{${NS_FILE_TRANSFER_5}}checksum`;
-export const INFO_RECEIVED_5 = `{${NS_FILE_TRANSFER_5}}received`;
-
 export interface FileTransferDescription extends JingleApplication {
-    applicationType: typeof NS_FILE_TRANSFER_5;
+    applicationType: typeof NS_JINGLE_FILE_TRANSFER_5;
     file: FileDescription;
 }
 
@@ -44,8 +42,8 @@ export interface FileRange {
 }
 
 export interface FileTransferInfo extends JingleInfo {
-    infoType: typeof INFO_CHECKSUM_5 | typeof INFO_RECEIVED_5;
-    creator?: 'initiator' | 'responder';
+    infoType: typeof JINGLE_INFO_CHECKSUM_5 | typeof JINGLE_INFO_RECEIVED_5;
+    creator?: JingleSessionRole;
     name: string;
     file?: FileDescription;
 }
@@ -59,11 +57,11 @@ export default [
             'file',
             {
                 path: 'iq.jingle.contents.application.file',
-                selector: NS_FILE_TRANSFER_5
+                selector: NS_JINGLE_FILE_TRANSFER_5
             },
             {
                 path: 'iq.jingle.info.file',
-                selector: `{${NS_FILE_TRANSFER_5}}checksum`
+                selector: `{${NS_JINGLE_FILE_TRANSFER_5}}checksum`
             }
         ],
         element: 'file',
@@ -74,7 +72,7 @@ export default [
             name: childText(null, 'name'),
             size: childInteger(null, 'size')
         },
-        namespace: NS_FILE_TRANSFER_5
+        namespace: NS_JINGLE_FILE_TRANSFER_5
     },
     {
         element: 'range',
@@ -82,14 +80,14 @@ export default [
             length: integerAttribute('length'),
             offset: integerAttribute('offset', 0)
         },
-        namespace: NS_FILE_TRANSFER_5,
+        namespace: NS_JINGLE_FILE_TRANSFER_5,
         path: 'file.range'
     },
     {
         element: 'description',
-        namespace: NS_FILE_TRANSFER_5,
+        namespace: NS_JINGLE_FILE_TRANSFER_5,
         path: 'iq.jingle.contents.application',
-        type: NS_FILE_TRANSFER_5,
+        type: NS_JINGLE_FILE_TRANSFER_5,
         typeField: 'applicationType'
     },
     {
@@ -98,9 +96,9 @@ export default [
             creator: attribute('creator'),
             name: attribute('name')
         },
-        namespace: NS_FILE_TRANSFER_5,
+        namespace: NS_JINGLE_FILE_TRANSFER_5,
         path: 'iq.jingle.info',
-        type: `{${NS_FILE_TRANSFER_5}}received`,
+        type: `{${NS_JINGLE_FILE_TRANSFER_5}}received`,
         typeField: 'infoType'
     },
     {
@@ -109,9 +107,9 @@ export default [
             creator: attribute('creator'),
             name: attribute('name')
         },
-        namespace: NS_FILE_TRANSFER_5,
+        namespace: NS_JINGLE_FILE_TRANSFER_5,
         path: 'iq.jingle.info',
-        type: `{${NS_FILE_TRANSFER_5}}checksum`,
+        type: `{${NS_JINGLE_FILE_TRANSFER_5}}checksum`,
         typeField: 'infoType'
     }
 ] as DefinitionOptions[];

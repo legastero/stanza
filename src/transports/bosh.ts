@@ -1,4 +1,5 @@
 import { Agent, Transport, TransportConfig } from '../';
+import { StreamErrorCondition } from '../Constants';
 import { ParsedData, Registry, StreamParser } from '../jxt';
 import fetch from '../lib/fetch';
 import { BOSH, Stream } from '../protocol';
@@ -211,7 +212,7 @@ export default class BOSHConnection implements Transport {
 
                 parser.on('error', (err: any) => {
                     const streamError = {
-                        condition: 'invalid-xml'
+                        condition: StreamErrorCondition.InvalidXML
                     };
                     this.client.emit('stream:error', streamError, err);
                     this.send('error', streamError);

@@ -8,9 +8,17 @@
 // - Added unknown-content error
 // ====================================================================
 
+import {
+    JingleAction,
+    JingleContentSenders,
+    JingleErrorCondition,
+    JingleReasonCondition,
+    JingleSessionRole,
+    toList
+} from '../Constants';
 import { attribute, childEnum, childText, DefinitionOptions } from '../jxt';
-
 import { NS_JINGLE_1, NS_JINGLE_ERRORS_1 } from '../Namespaces';
+
 import { extendStanzaError, JID, JIDAttribute } from './util';
 
 declare module './' {
@@ -19,32 +27,12 @@ declare module './' {
     }
 
     export interface StanzaError {
-        jingleError?:
-            | 'out-of-order'
-            | 'tie-break'
-            | 'unknown-session'
-            | 'unknown-content'
-            | 'unsupported-info';
+        jingleError?: JingleErrorCondition;
     }
 }
 
 export interface Jingle {
-    action:
-        | 'session-initiate'
-        | 'session-accept'
-        | 'session-terminate'
-        | 'content-add'
-        | 'content-accept'
-        | 'content-reject'
-        | 'content-remove'
-        | 'content-modify'
-        | 'transport-replace'
-        | 'transport-accept'
-        | 'transport-reject'
-        | 'transport-info'
-        | 'description-info'
-        | 'security-info'
-        | 'session-info';
+    action: JingleAction;
     initiator?: JID;
     responder?: JID;
     sid: string;
@@ -54,34 +42,17 @@ export interface Jingle {
 }
 
 export interface JingleContent {
-    creator: 'initiator' | 'responder';
+    creator: JingleSessionRole;
     name: string;
     disposition?: string;
-    senders?: 'initiator' | 'responder' | 'both' | 'none';
+    senders?: JingleContentSenders;
     application?: JingleApplication;
     transport?: JingleTransport;
     security?: JingleSecurity;
 }
 
 export interface JingleReason {
-    condition:
-        | 'alternative-session'
-        | 'busy'
-        | 'cancel'
-        | 'connectivity-error'
-        | 'decline'
-        | 'expired'
-        | 'failed-application'
-        | 'failed-transport'
-        | 'general-error'
-        | 'gone'
-        | 'incompatible-parameters'
-        | 'media-error'
-        | 'security-error'
-        | 'success'
-        | 'timeout'
-        | 'unsupported-applications'
-        | 'unsupported-transports';
+    condition: JingleReasonCondition;
     alternativeSession?: string;
     text?: string;
 }
@@ -100,19 +71,13 @@ export interface JingleSecurity {
 
 export interface JingleInfo {
     infoType: string;
-    creator?: 'initiator' | 'responder';
+    creator?: JingleSessionRole;
     name?: string;
 }
 
 export default [
     extendStanzaError({
-        jingleError: childEnum(NS_JINGLE_ERRORS_1, [
-            'out-of-order',
-            'tie-break',
-            'unknown-session',
-            'unknown-content',
-            'unsupported-info'
-        ])
+        jingleError: childEnum(NS_JINGLE_ERRORS_1, toList(JingleErrorCondition))
     }),
     {
         element: 'jingle',
@@ -145,25 +110,7 @@ export default [
         element: 'reason',
         fields: {
             alternativeSession: childText(null, 'alternative-session'),
-            condition: childEnum(null, [
-                'alternative-session',
-                'busy',
-                'cancel',
-                'connectivity-error',
-                'decline',
-                'expired',
-                'failed-application',
-                'failed-transport',
-                'general-error',
-                'gone',
-                'incompatible-parameters',
-                'media-error',
-                'security-error',
-                'success',
-                'timeout',
-                'unsupported-applications',
-                'unsupported-transports'
-            ]),
+            condition: childEnum(null, toList(JingleReasonCondition)),
             text: childText(null, 'text')
         },
         namespace: NS_JINGLE_1,

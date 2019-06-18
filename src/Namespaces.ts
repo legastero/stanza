@@ -235,9 +235,9 @@ export const NS_BOB = 'urn:xmpp:bob';
 export const NS_SOFTWARE_INFO = 'urn:xmpp:dataforms:softwareinfo';
 
 // XEP-0234
-export const NS_FILE_TRANSFER_3 = 'urn:xmpp:jingle:apps:file-transfer:3';
-export const NS_FILE_TRANSFER_4 = 'urn:xmpp:jingle:apps:file-transfer:4';
-export const NS_FILE_TRANSFER_5 = 'urn:xmpp:jingle:apps:file-transfer:5';
+export const NS_JINGLE_FILE_TRANSFER_3 = 'urn:xmpp:jingle:apps:file-transfer:3';
+export const NS_JINGLE_FILE_TRANSFER_4 = 'urn:xmpp:jingle:apps:file-transfer:4';
+export const NS_JINGLE_FILE_TRANSFER_5 = 'urn:xmpp:jingle:apps:file-transfer:5';
 
 // XEP-0247
 export const NS_JINGLE_XML_0 = 'urn:xmpp:jingle:apps:xmlstream:0';

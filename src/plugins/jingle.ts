@@ -1,10 +1,10 @@
 import { Agent } from '../';
 import * as Jingle from '../jingle';
 import {
-    NS_FILE_TRANSFER_3,
     NS_JINGLE_1,
     NS_JINGLE_DTLS_0,
     NS_JINGLE_DTLS_SCTP_1,
+    NS_JINGLE_FILE_TRANSFER_3,
     NS_JINGLE_GROUPING_0,
     NS_JINGLE_ICE_UDP_1,
     NS_JINGLE_RTP_1,
@@ -56,10 +56,10 @@ export default function(client: Agent) {
             NS_JINGLE_RTP_SSMA_0,
             NS_JINGLE_DTLS_0,
             NS_JINGLE_GROUPING_0,
-            NS_FILE_TRANSFER_3,
             NS_JINGLE_ICE_UDP_1,
             NS_JINGLE_RTP_AUDIO,
             NS_JINGLE_RTP_VIDEO,
+            NS_JINGLE_FILE_TRANSFER_3,
             NS_JINGLE_DTLS_SCTP_1,
             'urn:ietf:rfc:3264',
             'urn:ietf:rfc:5576',

@@ -18,6 +18,7 @@
 // Version: 0.1 (2011-11-10)
 // ====================================================================
 
+import { MUCAffiliation, MUCRole, MUCStatusCode } from '../Constants';
 import {
     attribute,
     childAttribute,
@@ -78,14 +79,11 @@ export interface MUCInfo extends MUCUserItem {
     type: 'info';
     action?: 'invite' | 'decline' | 'destroy';
     password?: string;
-    statusCodes?: string[];
+    statusCodes?: Array<MUCStatusCode | string>;
     destroy?: MUCDestroy;
     invite?: MUCInvite[];
     decline?: MUCDecline;
 }
-
-export type MUCAffiliation = 'owner' | 'admin' | 'member' | 'outcast' | 'none';
-export type MUCRole = 'moderator' | 'participant' | 'visitor' | 'none';
 
 export interface MUCUserItem {
     affiliation?: MUCAffiliation;

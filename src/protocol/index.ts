@@ -35,7 +35,6 @@ export * from './xep0131';
 export * from './xep0138';
 export * from './xep0122';
 export * from './xep0144';
-export * from './xep0152';
 export * from './xep0153';
 export * from './xep0158';
 export * from './xep0166';
@@ -111,7 +110,6 @@ import XEP0131 from './xep0131';
 import XEP0138 from './xep0138';
 import XEP0141 from './xep0141';
 import XEP0144 from './xep0144';
-import XEP0152 from './xep0152';
 import XEP0153 from './xep0153';
 import XEP0158 from './xep0158';
 import XEP0166 from './xep0166';
@@ -188,7 +186,6 @@ export default [
     XEP0138,
     XEP0141,
     XEP0144,
-    XEP0152,
     XEP0153,
     XEP0158,
     XEP0166,

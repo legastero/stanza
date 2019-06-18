@@ -1,15 +1,15 @@
+import { JingleAction, JingleReasonCondition, JingleSessionRole } from '../Constants';
+import * as SDPUtils from '../lib/SDP';
 import { NS_JINGLE_ICE_UDP_1 } from '../Namespaces';
 import { Jingle, JingleContent, JingleIceUdp, JingleReason } from '../protocol';
 
 import { exportToSDP, importFromSDP } from './lib/Intermediate';
-import { Action, ReasonCondition, SessionRole } from './lib/JingleUtil';
 import {
     convertCandidateToIntermediate,
     convertIntermediateToTransport,
     convertIntermediateToTransportInfo,
     convertRequestToIntermediate
 } from './lib/Protocol';
-import * as SDPUtils from './lib/SDP';
 import BaseSession, { ActionCallback } from './Session';
 
 export default class ICESession extends BaseSession {
@@ -57,7 +57,7 @@ export default class ICESession extends BaseSession {
         this.candidateBuffer = [];
     }
 
-    public end(reason: ReasonCondition | JingleReason = 'success', silent: boolean = false) {
+    public end(reason: JingleReasonCondition | JingleReason = 'success', silent: boolean = false) {
         this.pc.close();
         super.end(reason, silent);
     }
@@ -78,9 +78,9 @@ export default class ICESession extends BaseSession {
 
                 // extract new ufrag / pwd, send transport-info with just that.
                 const json = importFromSDP(offer.sdp!);
-                this.send(Action.TransportInfo, {
+                this.send(JingleAction.TransportInfo, {
                     contents: json.media.map<JingleContent>(media => ({
-                        creator: SessionRole.Initiator,
+                        creator: JingleSessionRole.Initiator,
                         name: media.mid,
                         transport: convertIntermediateToTransport(media)
                     })),
@@ -91,7 +91,7 @@ export default class ICESession extends BaseSession {
             });
         } catch (err) {
             this._log('error', 'Could not create WebRTC offer', err);
-            this.end(ReasonCondition.FailedApplication, true);
+            this.end(JingleReasonCondition.FailedApplication, true);
         }
     }
 
@@ -223,9 +223,9 @@ export default class ICESession extends BaseSession {
 
                         const answer = await this.pc.createAnswer();
                         const json = importFromSDP(answer.sdp!);
-                        this.send(Action.TransportInfo, {
+                        this.send(JingleAction.TransportInfo, {
                             contents: json.media.map(media => ({
-                                creator: SessionRole.Initiator,
+                                creator: JingleSessionRole.Initiator,
                                 name: media.mid,
                                 transport: convertIntermediateToTransport(media)
                             })),
@@ -336,7 +336,7 @@ export default class ICESession extends BaseSession {
         });
 
         this._log('info', 'Discovered new ICE candidate', jingle);
-        this.send(Action.TransportInfo, jingle);
+        this.send(JingleAction.TransportInfo, jingle);
     }
 
     protected onIceEndOfCandidates() {
@@ -344,10 +344,10 @@ export default class ICESession extends BaseSession {
         const json = importFromSDP(this.pc.localDescription!.sdp);
         const firstMedia = json.media[0];
         // signal end-of-candidates with our first media mid/ufrag
-        this.send(Action.TransportInfo, {
+        this.send(JingleAction.TransportInfo, {
             contents: [
                 {
-                    creator: SessionRole.Initiator,
+                    creator: JingleSessionRole.Initiator,
                     name: firstMedia.mid,
                     transport: {
                         gatheringComplete: true,

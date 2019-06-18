@@ -1,6 +1,7 @@
 import { AsyncPriorityQueue, priorityQueue } from 'async';
 
 import { Agent, Transport, TransportConfig } from '../';
+import { StreamErrorCondition } from '../Constants';
 import { ParsedData, Registry, StreamParser } from '../jxt';
 import WS from '../lib/ws';
 import { Stream } from '../protocol';
@@ -72,7 +73,7 @@ export default class WSConnection implements Transport {
 
         this.parser.on('error', (err: any) => {
             const streamError = {
-                condition: 'invalid-xml'
+                condition: StreamErrorCondition.InvalidXML
             };
             this.client.emit('stream:error', streamError, err);
             this.send(this.stanzas.export('error', streamError)!.toString());

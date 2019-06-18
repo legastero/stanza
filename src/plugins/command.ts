@@ -1,10 +1,10 @@
 import { Agent } from '../';
 import { NS_ADHOC_COMMANDS } from '../Namespaces';
-import { IQ } from '../protocol';
+import { DiscoItemsResult } from '../protocol';
 
 declare module '../' {
     export interface Agent {
-        getCommands(jid?: string): Promise<IQ>;
+        getCommands(jid?: string): Promise<DiscoItemsResult>;
     }
 }
 

@@ -5,6 +5,7 @@
 // Source: https://tools.ietf.org/html/rfc6121
 // ====================================================================
 
+import { MessageType, PresenceShow, PresenceType, RosterSubscription } from '../Constants';
 import {
     attribute,
     booleanAttribute,
@@ -17,7 +18,6 @@ import {
     LanguageSet,
     multipleChildText
 } from '../jxt';
-
 import { NS_ROSTER, NS_ROSTER_VERSIONING, NS_SUBSCRIPTION_PREAPPROVAL } from '../Namespaces';
 
 import { extendMessage, extendPresence, extendStreamFeatures, JIDAttribute } from './util';
@@ -29,7 +29,7 @@ declare module './' {
     }
 
     export interface Message {
-        type?: 'normal' | 'chat' | 'groupchat' | 'headline' | 'error';
+        type?: MessageType;
         body?: string;
         alternateLanguageBodies?: LanguageSet<string>;
         alternateLanguageSubjects?: LanguageSet<string>;
@@ -40,15 +40,8 @@ declare module './' {
     }
 
     export interface Presence {
-        type?:
-            | 'error'
-            | 'probe'
-            | 'subscribe'
-            | 'subscribed'
-            | 'unavailable'
-            | 'unsubscribe'
-            | 'unsubscribed';
-        show?: 'away' | 'chat' | 'dnd' | 'xa';
+        type?: PresenceType;
+        show?: PresenceShow;
         status?: string;
         alternateLanguageStatuses?: LanguageSet<string>;
         priority?: number;
@@ -69,7 +62,7 @@ export interface RosterResult extends Roster {
 export interface RosterItem {
     jid: string;
     name?: string;
-    subscription: 'to' | 'from' | 'both' | 'none' | 'remove';
+    subscription: RosterSubscription;
     approved?: boolean;
     ask?: boolean;
     groups?: string[];

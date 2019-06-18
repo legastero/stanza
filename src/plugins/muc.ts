@@ -1,16 +1,15 @@
 import { Agent } from '../';
+import { MUCAffiliation, MUCRole, MUCStatusCode } from '../Constants';
 import * as JID from '../JID';
 import { NS_HATS_0, NS_MUC, NS_MUC_DIRECT_INVITE } from '../Namespaces';
 import {
     DataForm,
     IQ,
-    MUCAffiliation,
     MUCConfigure,
     MUCDestroy,
     MUCDirectInvite,
     MUCInvite,
     MUCPresence,
-    MUCRole,
     MUCUnique,
     MUCUserItem,
     MUCUserList,
@@ -187,7 +186,8 @@ export default function(client: Agent) {
             return;
         }
 
-        const isSelf = pres.muc.statusCodes && pres.muc.statusCodes.indexOf('110') >= 0;
+        const isSelf =
+            pres.muc.statusCodes && pres.muc.statusCodes.indexOf(MUCStatusCode.SelfPresence) >= 0;
         if (pres.type === 'error') {
             client.emit('muc:error', pres);
             return;

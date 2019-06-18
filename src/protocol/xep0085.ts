@@ -5,18 +5,18 @@
 // Version: 2.1 (2009-09-23)
 // ====================================================================
 
-import { childEnum, DefinitionOptions } from '../jxt';
-
+import { ChatState, toList } from '../Constants';
+import { childEnum } from '../jxt';
 import { NS_CHAT_STATES } from '../Namespaces';
 
 import { extendMessage } from './util';
 
 declare module './' {
     export interface Message {
-        chatState?: 'active' | 'composing' | 'paused' | 'inactive' | 'gone';
+        chatState?: ChatState;
     }
 }
 
 export default extendMessage({
-    chatState: childEnum(NS_CHAT_STATES, ['active', 'composing', 'paused', 'inactive', 'gone'])
+    chatState: childEnum(NS_CHAT_STATES, toList(ChatState))
 });

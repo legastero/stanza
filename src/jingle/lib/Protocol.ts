@@ -1,3 +1,5 @@
+import { directionToSenders, JingleSessionRole, sendersToDirection } from '../../Constants';
+import * as SDP from '../../lib/SDP';
 import { NS_JINGLE_ICE_UDP_1, NS_JINGLE_RTP_1 } from '../../Namespaces';
 import {
     Jingle,
@@ -14,12 +16,10 @@ import {
     IntermediateMediaDescription,
     IntermediateSessionDescription
 } from './Intermediate';
-import { directionToSenders, sendersToDirection, SessionRole } from './JingleUtil';
-import * as SDP from './SDP';
 
 export function convertIntermediateToApplication(
     media: IntermediateMediaDescription,
-    role: SessionRole
+    role: JingleSessionRole
 ): JingleRtpDescription {
     const rtp = media.rtpParameters!;
     const rtcp = media.rtcpParameters || {};
@@ -178,7 +178,7 @@ export function convertIntermediateToTransport(media: IntermediateMediaDescripti
 
 export function convertIntermediateToRequest(
     session: IntermediateSessionDescription,
-    role: SessionRole
+    role: JingleSessionRole
 ): Partial<Jingle> {
     return {
         contents: session.media.map<JingleContent>(media => {
@@ -190,7 +190,7 @@ export function convertIntermediateToRequest(
                           applicationType: 'datachannel',
                           protocol: media.protocol
                       },
-                creator: SessionRole.Initiator,
+                creator: JingleSessionRole.Initiator,
                 name: media.mid,
                 senders: directionToSenders(role, media.direction),
                 transport: convertIntermediateToTransport(media)
@@ -207,7 +207,7 @@ export function convertIntermediateToRequest(
 
 export function convertContentToIntermediate(
     content: JingleContent,
-    role: SessionRole
+    role: JingleSessionRole
 ): IntermediateMediaDescription {
     const application = (content.application! as JingleRtpDescription) || {};
     const transport = content.transport as JingleIceUdp;
@@ -335,7 +335,7 @@ export function convertContentToIntermediate(
 
 export function convertRequestToIntermediate(
     jingle: Jingle,
-    role: SessionRole
+    role: JingleSessionRole
 ): IntermediateSessionDescription {
     const session: IntermediateSessionDescription = {
         groups: [],
@@ -363,7 +363,7 @@ export function convertIntermediateToTransportInfo(
     return {
         contents: [
             {
-                creator: SessionRole.Initiator,
+                creator: JingleSessionRole.Initiator,
                 name: mid,
                 transport: {
                     candidates: [convertIntermediateToCandidate(candidate)],

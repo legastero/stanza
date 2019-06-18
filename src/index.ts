@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 
 import Client from './Client';
+import * as Constants from './Constants';
 import * as RTT from './helpers/RTT';
 import * as JID from './JID';
 import * as Jingle from './jingle';
@@ -73,7 +74,7 @@ export interface AgentEvents {
     raw: (direction: 'incoming' | 'outgoing', data: string) => void;
 
     connected: void;
-    disconnected: Error | undefined;
+    disconnected?: Error;
 
     'bosh:terminate': any;
 }
@@ -143,7 +144,7 @@ export interface TransportConfig {
     wait?: number;
 }
 
-export { Client, JXT, JID, Namespaces, Stanzas, Jingle, Utils, RTT };
+export { Client, Constants, JXT, JID, Namespaces, Stanzas, Jingle, Utils, RTT };
 
 export const VERSION = '__STANZAJS_VERSION__';
 

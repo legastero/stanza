@@ -1,11 +1,11 @@
 import { EventEmitter } from 'events';
 
-import { NS_FILE_TRANSFER_5, NS_JINGLE_RTP_1 } from '../Namespaces';
+import { JingleAction, JingleReasonCondition } from '../Constants';
+import { NS_JINGLE_FILE_TRANSFER_5, NS_JINGLE_RTP_1 } from '../Namespaces';
 import { IQ, Jingle, JingleReason, StanzaError } from '../protocol';
 import { octetCompare } from '../Utils';
 
 import FileTransferSession from './FileTransferSession';
-import { Action, ReasonCondition } from './lib/JingleUtil';
 import MediaSession from './MediaSession';
 import BaseSession from './Session';
 
@@ -53,7 +53,7 @@ export default class SessionManager extends EventEmitter {
                 if (opts.applicationTypes.indexOf(NS_JINGLE_RTP_1) >= 0) {
                     return new MediaSession(opts);
                 }
-                if (opts.applicationTypes.indexOf(NS_FILE_TRANSFER_5) >= 0) {
+                if (opts.applicationTypes.indexOf(NS_JINGLE_FILE_TRANSFER_5) >= 0) {
                     return new FileTransferSession(opts);
                 }
             });
@@ -156,7 +156,7 @@ export default class SessionManager extends EventEmitter {
 
     public endPeerSessions(
         peer: string,
-        reason?: ReasonCondition | JingleReason,
+        reason?: JingleReasonCondition | JingleReason,
         silent: boolean = false
     ) {
         const sessions = this.peers[peer] || [];
@@ -166,7 +166,7 @@ export default class SessionManager extends EventEmitter {
         });
     }
 
-    public endAllSessions(reason?: ReasonCondition | JingleReason, silent: boolean = false) {
+    public endAllSessions(reason?: JingleReasonCondition | JingleReason, silent: boolean = false) {
         Object.keys(this.peers).forEach(peer => {
             this.endPeerSessions(peer, reason, silent);
         });
@@ -214,7 +214,7 @@ export default class SessionManager extends EventEmitter {
         });
         // Now verify that we are allowed to actually process the
         // requested action
-        if (action !== Action.SessionInitiate) {
+        if (action !== JingleAction.SessionInitiate) {
             // Can't modify a session that we don't have.
             if (!session) {
                 this._log('error', 'Unknown session', sid);
@@ -343,7 +343,7 @@ export default class SessionManager extends EventEmitter {
 
     public signal(session: BaseSession, data: IQ & { jingle: Jingle }): void {
         const action = data.jingle && data.jingle.action;
-        if (session.isInitiator && action === Action.SessionInitiate) {
+        if (session.isInitiator && action === JingleAction.SessionInitiate) {
             this.emit('outgoing', session);
         }
         this.emit('send', data);

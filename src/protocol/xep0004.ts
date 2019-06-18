@@ -5,6 +5,7 @@
 // Version: 2.9 (2007-08-13)
 // ====================================================================
 
+import { DataFormFieldType, DataFormType } from '../Constants';
 import {
     attribute,
     childBoolean,
@@ -15,8 +16,8 @@ import {
     TranslationContext,
     XMLElement
 } from '../jxt';
-
 import { NS_DATAFORM } from '../Namespaces';
+
 import { JID } from './util';
 
 declare module './' {
@@ -26,7 +27,7 @@ declare module './' {
 }
 
 export interface DataForm {
-    type?: 'form' | 'submit' | 'cancel' | 'result';
+    type?: DataFormType;
     title?: string;
     instructions?: string | string[];
     reported?: DataFormField[];
@@ -38,7 +39,10 @@ export interface DataFormItem {
     fields: DataFormField[];
 }
 
+type DataFormFieldValueType = boolean | string | string[] | JID | JID[];
+
 export interface DataFormFieldBase {
+    type?: DataFormFieldType;
     name?: string;
     label?: string;
     description?: string;
@@ -52,42 +56,46 @@ export interface DataFormFieldBoolean extends DataFormFieldBase {
 }
 
 export interface DataFormFieldText extends DataFormFieldBase {
-    type: 'fixed' | 'hidden' | 'text-private' | 'text-single';
+    type:
+        | typeof DataFormFieldType.Fixed
+        | typeof DataFormFieldType.Hidden
+        | typeof DataFormFieldType.TextPrivate
+        | typeof DataFormFieldType.Text;
     value?: string;
 }
 
 export interface DataFormFieldTextMulti extends DataFormFieldBase {
-    type: 'text-multi';
+    type: typeof DataFormFieldType.TextMultiple;
     value?: string[];
 }
 
 export interface DataFormFieldList extends DataFormFieldBase {
-    type: 'list-single';
+    type: typeof DataFormFieldType.List;
     value?: string;
     options?: Array<DataFormFieldOption<string>>;
 }
 
 export interface DataFormFieldListMulti extends DataFormFieldBase {
-    type: 'list-multi';
+    type: typeof DataFormFieldType.ListMultiple;
     value?: string[];
     options?: Array<DataFormFieldOption<string>>;
 }
 
 export interface DataFormFieldJID extends DataFormFieldBase {
-    type: 'jid-single';
+    type: typeof DataFormFieldType.JID;
     value?: JID;
     options?: Array<DataFormFieldOption<JID>>;
 }
 
 export interface DataFormFieldJIDMulti extends DataFormFieldBase {
-    type: 'jid-multi';
+    type: typeof DataFormFieldType.JIDMultiple;
     value?: JID[];
     options?: Array<DataFormFieldOption<JID>>;
 }
 
 export interface DataFormFieldAny extends DataFormFieldBase {
     type?: undefined;
-    value?: boolean | string | string[] | JID | JID[];
+    value?: DataFormFieldValueType;
 }
 
 export interface DataFormFieldOption<T> {
@@ -147,33 +155,29 @@ export default [
                 importer(
                     xml: XMLElement,
                     context: TranslationContext
-                ): boolean | string | string[] | JID | JID[] | undefined {
-                    const fieldType = xml.getAttribute('type');
+                ): DataFormFieldValueType | undefined {
+                    const fieldType = xml.getAttribute('type') as DataFormFieldType;
                     const converter = multipleChildText(NS_DATAFORM, 'value');
                     const rawValues: string[] = converter.importer(xml, context) || [];
                     const singleValue = rawValues[0];
 
                     switch (fieldType) {
-                        case 'text-multi':
+                        case DataFormFieldType.TextMultiple:
+                        case DataFormFieldType.ListMultiple:
+                        case DataFormFieldType.JIDMultiple:
                             return rawValues;
-                        case 'list-multi':
-                            return rawValues;
-                        case 'hidden':
-                        case 'fixed':
+                        case DataFormFieldType.Hidden:
+                        case DataFormFieldType.Fixed:
                             if (rawValues.length === 1) {
                                 return singleValue;
                             }
                             return rawValues;
-                        case 'jid-multi':
-                            return rawValues.map(value => {
-                                return value;
-                            });
-                        case 'jid':
+                        case DataFormFieldType.JID:
                             if (singleValue) {
                                 return singleValue;
                             }
                             break;
-                        case 'boolean':
+                        case DataFormFieldType.Boolean:
                             if (singleValue) {
                                 return singleValue === '1' || singleValue === 'true';
                             }
@@ -184,7 +188,7 @@ export default [
                 },
                 exporter(
                     xml: XMLElement,
-                    data: boolean | string | JID | string[] | JID[],
+                    data: DataFormFieldValueType,
                     context: TranslationContext
                 ) {
                     const converter = multipleChildText(null, 'value');

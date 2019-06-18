@@ -1,19 +1,18 @@
 import { EventEmitter } from 'events';
 
+import { JINGLE_INFO_CHECKSUM_5, JingleAction, JingleSessionRole } from '../Constants';
 import * as Hashes from '../lib/crypto';
-import { NS_FILE_TRANSFER_5 } from '../Namespaces';
+import { NS_JINGLE_FILE_TRANSFER_5 } from '../Namespaces';
 import {
     FileDescription,
     FileTransferDescription,
     FileTransferInfo,
     Hash,
-    INFO_CHECKSUM_5,
     Jingle
 } from '../protocol';
 
 import ICESession from './ICESession';
 import { exportToSDP, importFromSDP } from './lib/Intermediate';
-import { Action, SessionRole } from './lib/JingleUtil';
 import { convertIntermediateToRequest, convertRequestToIntermediate } from './lib/Protocol';
 import { ActionCallback } from './Session';
 
@@ -191,9 +190,9 @@ export default class FileTransferSession extends ICESession {
         this.sender.on('sentFile', meta => {
             this._log('info', 'Sent file', meta.name);
 
-            this.send(Action.SessionInfo, {
+            this.send(JingleAction.SessionInfo, {
                 info: {
-                    creator: SessionRole.Initiator,
+                    creator: JingleSessionRole.Initiator,
                     file: {
                         hashes: [
                             {
@@ -202,7 +201,7 @@ export default class FileTransferSession extends ICESession {
                             }
                         ]
                     },
-                    infoType: INFO_CHECKSUM_5,
+                    infoType: JINGLE_INFO_CHECKSUM_5,
                     name: this.contentName
                 } as FileTransferInfo
             });
@@ -218,7 +217,7 @@ export default class FileTransferSession extends ICESession {
         };
 
         try {
-            await this.processLocal(Action.SessionInitiate, async () => {
+            await this.processLocal(JingleAction.SessionInitiate, async () => {
                 const offer = await this.pc.createOffer({
                     offerToReceiveAudio: false,
                     offerToReceiveVideo: false
@@ -230,9 +229,9 @@ export default class FileTransferSession extends ICESession {
                 this.contentName = jingle.contents![0].name;
 
                 jingle.sid = this.sid;
-                jingle.action = Action.SessionInitiate;
+                jingle.action = JingleAction.SessionInitiate;
                 jingle.contents![0].application = {
-                    applicationType: NS_FILE_TRANSFER_5,
+                    applicationType: NS_JINGLE_FILE_TRANSFER_5,
                     file: {
                         date: new Date(file.lastModified),
                         hashesUsed: [
@@ -266,7 +265,7 @@ export default class FileTransferSession extends ICESession {
         next = next || (() => undefined);
 
         try {
-            await this.processLocal(Action.SessionAccept, async () => {
+            await this.processLocal(JingleAction.SessionAccept, async () => {
                 const answer = await this.pc.createAnswer();
 
                 const json = importFromSDP(answer.sdp!);

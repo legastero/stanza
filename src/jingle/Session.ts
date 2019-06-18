@@ -1,9 +1,9 @@
 import { priorityQueue } from 'async';
 
+import { JingleAction, JingleReasonCondition, JingleSessionRole } from '../Constants';
 import { Jingle, JingleReason } from '../protocol';
 import { uuid } from '../Utils';
 
-import { Action, ReasonCondition, SessionRole } from './lib/JingleUtil';
 import SessionManager from './SessionManager';
 
 export type ActionCallback = (err?: any, res?: any) => void;
@@ -18,7 +18,7 @@ export interface LocalProcessingTask {
 
 export interface RemoteProcessingTask {
     type: 'remote';
-    action: Action;
+    action: JingleAction;
     changes: Jingle;
     cb: ActionCallback;
 }
@@ -35,9 +35,9 @@ export default class JingleSession {
     public parent: SessionManager;
     public sid: string;
     public peerID: string;
-    public role: SessionRole;
+    public role: JingleSessionRole;
     public pendingApplicationTypes?: string[];
-    public pendingAction?: Action;
+    public pendingAction?: JingleAction;
 
     public processingQueue: async.AsyncPriorityQueue<any>;
 
@@ -48,7 +48,7 @@ export default class JingleSession {
         this.parent = opts.parent;
         this.sid = opts.sid || uuid();
         this.peerID = opts.peerID;
-        this.role = opts.initiator ? 'initiator' : 'responder';
+        this.role = opts.initiator ? JingleSessionRole.Initiator : JingleSessionRole.Responder;
 
         this._sessionState = 'starting';
         this._connectionState = 'starting';
@@ -100,35 +100,35 @@ export default class JingleSession {
                     };
 
                     switch (action) {
-                        case Action.ContentAccept:
+                        case JingleAction.ContentAccept:
                             return this.onContentAccept(changes, done);
-                        case Action.ContentAdd:
+                        case JingleAction.ContentAdd:
                             return this.onContentAdd(changes, done);
-                        case Action.ContentModify:
+                        case JingleAction.ContentModify:
                             return this.onContentModify(changes, done);
-                        case Action.ContentReject:
+                        case JingleAction.ContentReject:
                             return this.onContentReject(changes, done);
-                        case Action.ContentRemove:
+                        case JingleAction.ContentRemove:
                             return this.onContentRemove(changes, done);
-                        case Action.DescriptionInfo:
+                        case JingleAction.DescriptionInfo:
                             return this.onDescriptionInfo(changes, done);
-                        case Action.SecurityInfo:
+                        case JingleAction.SecurityInfo:
                             return this.onSecurityInfo(changes, done);
-                        case Action.SessionAccept:
+                        case JingleAction.SessionAccept:
                             return this.onSessionAccept(changes, done);
-                        case Action.SessionInfo:
+                        case JingleAction.SessionInfo:
                             return this.onSessionInfo(changes, done);
-                        case Action.SessionInitiate:
+                        case JingleAction.SessionInitiate:
                             return this.onSessionInitiate(changes, done);
-                        case Action.SessionTerminate:
+                        case JingleAction.SessionTerminate:
                             return this.onSessionTerminate(changes, done);
-                        case Action.TransportAccept:
+                        case JingleAction.TransportAccept:
                             return this.onTransportAccept(changes, done);
-                        case Action.TransportInfo:
+                        case JingleAction.TransportInfo:
                             return this.onTransportInfo(changes, done);
-                        case Action.TransportReject:
+                        case JingleAction.TransportReject:
                             return this.onTransportReject(changes, done);
-                        case Action.TransportReplace:
+                        case JingleAction.TransportReplace:
                             return this.onTransportReplace(changes, done);
                         default:
                             this._log('error', 'Invalid or unsupported action: ' + action);
@@ -141,11 +141,11 @@ export default class JingleSession {
     }
 
     public get isInitiator(): boolean {
-        return this.role === SessionRole.Initiator;
+        return this.role === JingleSessionRole.Initiator;
     }
 
-    public get peerRole(): SessionRole {
-        return this.isInitiator ? SessionRole.Responder : SessionRole.Initiator;
+    public get peerRole(): JingleSessionRole {
+        return this.isInitiator ? JingleSessionRole.Responder : JingleSessionRole.Initiator;
     }
 
     public get state(): string {
@@ -174,22 +174,22 @@ export default class JingleSession {
         }
     }
 
-    public send(action: Action, data: Partial<Jingle>) {
+    public send(action: JingleAction, data: Partial<Jingle>) {
         data = data || {};
         data.sid = this.sid;
         data.action = action;
 
-        const requirePending: Set<Action> = new Set([
-            Action.ContentAccept,
-            Action.ContentAdd,
-            Action.ContentModify,
-            Action.ContentReject,
-            Action.ContentRemove,
-            Action.SessionAccept,
-            Action.SessionInitiate,
-            Action.TransportAccept,
-            Action.TransportReject,
-            Action.TransportReplace
+        const requirePending: Set<JingleAction> = new Set([
+            JingleAction.ContentAccept,
+            JingleAction.ContentAdd,
+            JingleAction.ContentModify,
+            JingleAction.ContentReject,
+            JingleAction.ContentRemove,
+            JingleAction.SessionAccept,
+            JingleAction.SessionInitiate,
+            JingleAction.TransportAccept,
+            JingleAction.TransportReject,
+            JingleAction.TransportReplace
         ]);
 
         if (requirePending.has(action)) {
@@ -221,7 +221,7 @@ export default class JingleSession {
         });
     }
 
-    public process(action: Action, changes: Jingle, cb: ActionCallback) {
+    public process(action: JingleAction, changes: Jingle, cb: ActionCallback) {
         this.processingQueue.push(
             {
                 action,
@@ -253,7 +253,7 @@ export default class JingleSession {
         this.end('decline');
     }
 
-    public end(reason: ReasonCondition | JingleReason = 'success', silent: boolean = false) {
+    public end(reason: JingleReasonCondition | JingleReason = 'success', silent: boolean = false) {
         this.state = 'ended';
 
         this.processingQueue.kill();
@@ -347,7 +347,7 @@ export default class JingleSession {
         // Allow ack for the content-add to be sent.
         cb();
 
-        this.send(Action.ContentReject, {
+        this.send(JingleAction.ContentReject, {
             reason: {
                 condition: 'failed-application',
                 text: 'content-add is not supported'
@@ -377,7 +377,7 @@ export default class JingleSession {
         // Allow ack for the transport-replace be sent.
         cb();
 
-        this.send(Action.TransportReject, {
+        this.send(JingleAction.TransportReject, {
             reason: {
                 condition: 'failed-application',
                 text: 'transport-replace is not supported'

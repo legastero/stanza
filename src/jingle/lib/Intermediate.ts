@@ -1,4 +1,4 @@
-import * as SDP from './SDP';
+import * as SDP from '../../lib/SDP';
 
 // ====================================================================
 // Intermediate Object Descriptions

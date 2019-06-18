@@ -1,19 +1,18 @@
 import {
-    INFO_ACTIVE,
-    INFO_HOLD,
-    INFO_MUTE,
-    INFO_RINGING,
-    INFO_UNHOLD,
-    INFO_UNMUTE,
-    Jingle,
-    JingleContent,
-    JingleInfo,
-    JingleReason,
-    JingleRtpDescription
-} from '../protocol';
+    JINGLE_INFO_ACTIVE,
+    JINGLE_INFO_HOLD,
+    JINGLE_INFO_MUTE,
+    JINGLE_INFO_RINGING,
+    JINGLE_INFO_UNHOLD,
+    JINGLE_INFO_UNMUTE,
+    JingleAction,
+    JingleReasonCondition,
+    JingleSessionRole
+} from '../Constants';
+import { Jingle, JingleContent, JingleInfo, JingleReason, JingleRtpDescription } from '../protocol';
+
 import ICESession from './ICESession';
 import { exportToSDP, importFromSDP } from './lib/Intermediate';
-import { Action, ReasonCondition, SessionRole } from './lib/JingleUtil';
 import { convertIntermediateToRequest, convertRequestToIntermediate } from './lib/Protocol';
 import { ActionCallback } from './Session';
 
@@ -93,12 +92,12 @@ export default class MediaSession extends ICESession {
         this.offerOptions = opts;
 
         try {
-            await this.processLocal(Action.SessionInitiate, async () => {
+            await this.processLocal(JingleAction.SessionInitiate, async () => {
                 const offer = await this.pc.createOffer(opts as RTCOfferOptions);
                 const json = importFromSDP(offer.sdp!);
                 const jingle = convertIntermediateToRequest(json, this.role);
                 jingle.sid = this.sid;
-                jingle.action = Action.SessionInitiate;
+                jingle.action = JingleAction.SessionInitiate;
                 for (const content of jingle.contents || []) {
                     content.creator = 'initiator';
                     applyStreamsCompatibility(content);
@@ -130,13 +129,13 @@ export default class MediaSession extends ICESession {
         this.role = 'responder';
 
         try {
-            await this.processLocal(Action.SessionAccept, async () => {
+            await this.processLocal(JingleAction.SessionAccept, async () => {
                 const answer = await this.pc.createAnswer(opts as RTCAnswerOptions);
 
                 const json = importFromSDP(answer.sdp!);
                 const jingle = convertIntermediateToRequest(json, this.role);
                 jingle.sid = this.sid;
-                jingle.action = Action.SessionAccept;
+                jingle.action = JingleAction.SessionAccept;
                 for (const content of jingle.contents || []) {
                     content.creator = 'initiator';
                 }
@@ -152,7 +151,7 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    public end(reason: ReasonCondition | JingleReason = 'success', silent: boolean = false) {
+    public end(reason: JingleReasonCondition | JingleReason = 'success', silent: boolean = false) {
         for (const receiver of this.pc.getReceivers()) {
             this.onRemoveTrack(receiver.track);
         }
@@ -163,35 +162,35 @@ export default class MediaSession extends ICESession {
         return this.processLocal('ring', async () => {
             this._log('info', 'Ringing on incoming session');
             this.ringing = true;
-            this.send(Action.SessionInfo, {
+            this.send(JingleAction.SessionInfo, {
                 info: {
-                    infoType: INFO_RINGING
+                    infoType: JINGLE_INFO_RINGING
                 }
             });
         });
     }
 
-    public mute(creator: SessionRole, name: string): Promise<void> {
+    public mute(creator: JingleSessionRole, name: string): Promise<void> {
         return this.processLocal('mute', async () => {
             this._log('info', 'Muting', name);
 
-            this.send(Action.SessionInfo, {
+            this.send(JingleAction.SessionInfo, {
                 info: {
                     creator,
-                    infoType: INFO_MUTE,
+                    infoType: JINGLE_INFO_MUTE,
                     name
                 }
             });
         });
     }
 
-    public unmute(creator: SessionRole, name: string): Promise<void> {
+    public unmute(creator: JingleSessionRole, name: string): Promise<void> {
         return this.processLocal('unmute', async () => {
             this._log('info', 'Unmuting', name);
-            this.send(Action.SessionInfo, {
+            this.send(JingleAction.SessionInfo, {
                 info: {
                     creator,
-                    infoType: INFO_UNMUTE,
+                    infoType: JINGLE_INFO_UNMUTE,
                     name
                 }
             });
@@ -203,7 +202,7 @@ export default class MediaSession extends ICESession {
             this._log('info', 'Placing on hold');
             this.send('session-info', {
                 info: {
-                    infoType: INFO_HOLD
+                    infoType: JINGLE_INFO_HOLD
                 }
             });
         });
@@ -214,7 +213,7 @@ export default class MediaSession extends ICESession {
             this._log('info', 'Resuming from hold');
             this.send('session-info', {
                 info: {
-                    infoType: INFO_ACTIVE
+                    infoType: JINGLE_INFO_ACTIVE
                 }
             });
         });
@@ -299,25 +298,25 @@ export default class MediaSession extends ICESession {
         const info: JingleInfo = changes.info || { infoType: '' };
 
         switch (info.infoType) {
-            case INFO_RINGING:
+            case JINGLE_INFO_RINGING:
                 this._log('info', 'Outgoing session is ringing');
                 this.ringing = true;
                 this.parent.emit('ringing', this);
                 return cb();
-            case INFO_HOLD:
+            case JINGLE_INFO_HOLD:
                 this._log('info', 'On hold');
                 this.parent.emit('hold', this);
                 return cb();
-            case INFO_UNHOLD:
-            case INFO_ACTIVE:
+            case JINGLE_INFO_UNHOLD:
+            case JINGLE_INFO_ACTIVE:
                 this._log('info', 'Resuming from hold');
                 this.parent.emit('resumed', this);
                 return cb();
-            case INFO_MUTE:
+            case JINGLE_INFO_MUTE:
                 this._log('info', 'Muting', info);
                 this.parent.emit('mute', this, info);
                 return cb();
-            case INFO_UNMUTE:
+            case JINGLE_INFO_UNMUTE:
                 this._log('info', 'Unmuting', info);
                 this.parent.emit('unmute', this, info);
                 return cb();

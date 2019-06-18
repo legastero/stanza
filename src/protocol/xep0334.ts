@@ -5,7 +5,7 @@
 // Version: 0.3.0 (2018-01-25)
 // ====================================================================
 
-import { createElement, DefinitionOptions, FieldDefinition } from '../jxt';
+import { createElement, FieldDefinition } from '../jxt';
 
 import { NS_HINTS } from '../Namespaces';
 
