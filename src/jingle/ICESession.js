@@ -37,6 +37,7 @@ export default class ICESession extends BaseSession {
         this.bitrateLimit = 0;
         this.maxRelayBandwidth = opts.maxRelayBandwidth;
         this.candidateBuffer = [];
+        this.restartingIce = false;
     }
 
     end(reason, silent) {
@@ -104,7 +105,7 @@ export default class ICESession extends BaseSession {
                         this._log('error', 'Could not do remote ICE restart', err);
                         cb(err);
 
-                        this.end('failed-application', true);
+                        this.end('failed-transport');
                     }
                     return;
                 }
@@ -118,7 +119,7 @@ export default class ICESession extends BaseSession {
                     this._log('error', 'Could not do local ICE restart', err);
                     cb(err);
 
-                    this.end('failed-application', true);
+                    this.end('failed-transport');
                 }
             }
         }
@@ -233,6 +234,7 @@ export default class ICESession extends BaseSession {
             case 'completed':
             case 'connected':
                 this.connectionState = 'connected';
+                this.restartingIce = false;
                 break;
             case 'disconnected':
                 if (this.pc.signalingState === 'stable') {
@@ -240,18 +242,27 @@ export default class ICESession extends BaseSession {
                 } else {
                     this.connectionState = 'disconnected';
                 }
+                if (this.restartingIce) {
+                    this.end('failed-transport');
+                    return;
+                }
                 this.maybeRestartIce();
                 break;
             case 'failed':
-                if (this.connectionState === 'failed') {
-                    this.connectionState = 'failed';
+                if (this.connectionState === 'failed' || this.restartingIce) {
                     this.end('failed-transport');
-                } else {
-                    this.restartIce();
+                    return;
                 }
+                this.connectionState = 'failed';
+                this.restartIce();
                 break;
             case 'closed':
                 this.connectionState = 'disconnected';
+                if (this.restartingIce) {
+                    this.end('failed-transport');
+                } else {
+                    this.end();
+                }
                 break;
         }
     }
@@ -361,6 +372,7 @@ export default class ICESession extends BaseSession {
             clearTimeout(this._maybeRestartingIce);
         }
 
+        this.restartingIce = true;
         try {
             await this.processLocal('restart-ice', async () => {
                 const offer = await this.pc.createOffer({ iceRestart: true });
@@ -384,7 +396,7 @@ export default class ICESession extends BaseSession {
             });
         } catch (err) {
             this._log('error', 'Could not create WebRTC offer', err);
-            this.end('failed-application', true);
+            this.end('failed-transport');
         }
     }
 

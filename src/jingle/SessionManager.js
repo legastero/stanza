@@ -229,6 +229,13 @@ export default class SessionManager extends WildEmitter {
         if (action !== 'session-initiate') {
             // Can't modify a session that we don't have.
             if (!session) {
+                if (action === 'session-terminate') {
+                    return this.emit('send', {
+                        id: rid,
+                        to: sender,
+                        type: 'result'
+                    });
+                }
                 this._log('error', 'Unknown session', sid);
                 return this._sendError(sender, rid, {
                     condition: 'item-not-found',

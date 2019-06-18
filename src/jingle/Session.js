@@ -206,6 +206,10 @@ export default class JingleSession extends WildEmitter {
     }
 
     end(reason, silent) {
+        if (this.state === 'ended') {
+            return;
+        }
+
         this.state = 'ended';
 
         this.processingQueue.kill();
