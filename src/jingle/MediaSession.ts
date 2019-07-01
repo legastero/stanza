@@ -9,7 +9,14 @@ import {
     JingleReasonCondition,
     JingleSessionRole
 } from '../Constants';
-import { Jingle, JingleContent, JingleInfo, JingleReason, JingleRtpDescription } from '../protocol';
+import {
+    Jingle,
+    JingleContent,
+    JingleIce,
+    JingleInfo,
+    JingleReason,
+    JingleRtpDescription
+} from '../protocol';
 
 import ICESession from './ICESession';
 import { exportToSDP, importFromSDP } from './lib/Intermediate';
@@ -95,7 +102,7 @@ export default class MediaSession extends ICESession {
             await this.processLocal(JingleAction.SessionInitiate, async () => {
                 const offer = await this.pc.createOffer(opts as RTCOfferOptions);
                 const json = importFromSDP(offer.sdp!);
-                const jingle = convertIntermediateToRequest(json, this.role);
+                const jingle = convertIntermediateToRequest(json, this.role, this.transportType);
                 jingle.sid = this.sid;
                 jingle.action = JingleAction.SessionInitiate;
                 for (const content of jingle.contents || []) {
@@ -133,7 +140,7 @@ export default class MediaSession extends ICESession {
                 const answer = await this.pc.createAnswer(opts as RTCAnswerOptions);
 
                 const json = importFromSDP(answer.sdp!);
-                const jingle = convertIntermediateToRequest(json, this.role);
+                const jingle = convertIntermediateToRequest(json, this.role, this.transportType);
                 jingle.sid = this.sid;
                 jingle.action = JingleAction.SessionAccept;
                 for (const content of jingle.contents || []) {
@@ -268,6 +275,8 @@ export default class MediaSession extends ICESession {
 
         this.state = 'pending';
         this.role = 'responder';
+
+        this.transportType = (changes.contents![0].transport! as JingleIce).transportType;
 
         const json = convertRequestToIntermediate(changes, this.peerRole);
         json.media.forEach(media => {

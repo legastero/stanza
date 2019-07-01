@@ -1,12 +1,12 @@
 import { directionToSenders, JingleSessionRole, sendersToDirection } from '../../Constants';
 import * as SDP from '../../lib/SDP';
-import { NS_JINGLE_ICE_UDP_1, NS_JINGLE_RTP_1 } from '../../Namespaces';
+import { NS_JINGLE_RTP_1 } from '../../Namespaces';
 import {
     Jingle,
     JingleContent,
     JingleContentGroup,
-    JingleIceUdp,
-    JingleIceUdpCandidate,
+    JingleIce,
+    JingleIceCandidate,
     JingleRtpCodec,
     JingleRtpDescription
 } from '../../protocol';
@@ -107,7 +107,7 @@ export function convertIntermediateToApplication(
     return application;
 }
 
-function convertIntermediateToCandidate(candidate: IntermediateCandidate): JingleIceUdpCandidate {
+function convertIntermediateToCandidate(candidate: IntermediateCandidate): JingleIceCandidate {
     return {
         component: candidate.component,
         foundation: candidate.foundation,
@@ -126,7 +126,7 @@ function convertIntermediateToCandidate(candidate: IntermediateCandidate): Jingl
 }
 
 export function convertCandidateToIntermediate(
-    candidate: JingleIceUdpCandidate
+    candidate: JingleIceCandidate
 ): IntermediateCandidate {
     return {
         address: candidate.ip,
@@ -143,13 +143,16 @@ export function convertCandidateToIntermediate(
     };
 }
 
-export function convertIntermediateToTransport(media: IntermediateMediaDescription): JingleIceUdp {
+export function convertIntermediateToTransport(
+    media: IntermediateMediaDescription,
+    transportType: JingleIce['transportType']
+): JingleIce {
     const ice = media.iceParameters;
     const dtls = media.dtlsParameters;
 
-    const transport: JingleIceUdp = {
+    const transport: JingleIce = {
         candidates: [],
-        transportType: NS_JINGLE_ICE_UDP_1
+        transportType
     };
 
     if (ice) {
@@ -178,7 +181,8 @@ export function convertIntermediateToTransport(media: IntermediateMediaDescripti
 
 export function convertIntermediateToRequest(
     session: IntermediateSessionDescription,
-    role: JingleSessionRole
+    role: JingleSessionRole,
+    transportType: JingleIce['transportType']
 ): Partial<Jingle> {
     return {
         contents: session.media.map<JingleContent>(media => {
@@ -193,7 +197,7 @@ export function convertIntermediateToRequest(
                 creator: JingleSessionRole.Initiator,
                 name: media.mid,
                 senders: directionToSenders(role, media.direction),
-                transport: convertIntermediateToTransport(media)
+                transport: convertIntermediateToTransport(media, transportType)
             };
         }),
         groups: session.groups
@@ -210,7 +214,7 @@ export function convertContentToIntermediate(
     role: JingleSessionRole
 ): IntermediateMediaDescription {
     const application = (content.application! as JingleRtpDescription) || {};
-    const transport = content.transport as JingleIceUdp;
+    const transport = content.transport as JingleIce;
 
     const isRTP = application && application.applicationType === NS_JINGLE_RTP_1;
 
@@ -358,7 +362,8 @@ export function convertRequestToIntermediate(
 
 export function convertIntermediateToTransportInfo(
     mid: string,
-    candidate: IntermediateCandidate
+    candidate: IntermediateCandidate,
+    transportType: JingleIce['transportType']
 ): Partial<Jingle> {
     return {
         contents: [
@@ -367,9 +372,9 @@ export function convertIntermediateToTransportInfo(
                 name: mid,
                 transport: {
                     candidates: [convertIntermediateToCandidate(candidate)],
-                    transportType: NS_JINGLE_ICE_UDP_1,
+                    transportType,
                     usernameFragment: candidate.usernameFragment || undefined
-                } as JingleIceUdp
+                } as JingleIce
             }
         ]
     };

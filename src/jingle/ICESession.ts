@@ -1,7 +1,7 @@
 import { JingleAction, JingleReasonCondition, JingleSessionRole } from '../Constants';
 import * as SDPUtils from '../lib/SDP';
 import { NS_JINGLE_ICE_UDP_1 } from '../Namespaces';
-import { Jingle, JingleContent, JingleIceUdp, JingleReason } from '../protocol';
+import { Jingle, JingleContent, JingleIce, JingleReason } from '../protocol';
 
 import { exportToSDP, importFromSDP } from './lib/Intermediate';
 import {
@@ -23,6 +23,7 @@ export default class ICESession extends BaseSession {
         sdpMid: string;
         candidate: string;
     } | null>;
+    public transportType: JingleIce['transportType'] = NS_JINGLE_ICE_UDP_1;
 
     private _maybeRestartingIce: any;
     private _firstTimeConnected?: boolean;
@@ -82,7 +83,7 @@ export default class ICESession extends BaseSession {
                     contents: json.media.map<JingleContent>(media => ({
                         creator: JingleSessionRole.Initiator,
                         name: media.mid,
-                        transport: convertIntermediateToTransport(media)
+                        transport: convertIntermediateToTransport(media, this.transportType)
                     })),
                     sid: this.sid
                 });
@@ -183,7 +184,7 @@ export default class ICESession extends BaseSession {
         if (
             changes.contents &&
             changes.contents[0] &&
-            (changes.contents[0].transport! as JingleIceUdp).gatheringComplete
+            (changes.contents[0].transport! as JingleIce).gatheringComplete
         ) {
             try {
                 if (this.pc.signalingState === 'stable') {
@@ -205,11 +206,11 @@ export default class ICESession extends BaseSession {
             const remoteJSON = importFromSDP(remoteDescription.sdp);
             const remoteMedia = remoteJSON.media.find(m => m.mid === changes.contents![0].name);
             const currentUsernameFragment = remoteMedia!.iceParameters!.usernameFragment;
-            const remoteUsernameFragment = (changes.contents![0].transport! as JingleIceUdp)
+            const remoteUsernameFragment = (changes.contents![0].transport! as JingleIce)
                 .usernameFragment;
             if (remoteUsernameFragment && currentUsernameFragment !== remoteUsernameFragment) {
                 changes.contents!.forEach((content, idx) => {
-                    const transport = content.transport! as JingleIceUdp;
+                    const transport = content.transport! as JingleIce;
                     remoteJSON.media[idx].iceParameters = {
                         password: transport.password!,
                         usernameFragment: transport.usernameFragment!
@@ -227,7 +228,7 @@ export default class ICESession extends BaseSession {
                             contents: json.media.map(media => ({
                                 creator: JingleSessionRole.Initiator,
                                 name: media.mid,
-                                transport: convertIntermediateToTransport(media)
+                                transport: convertIntermediateToTransport(media, this.transportType)
                             })),
                             sid: this.sid
                         });
@@ -258,32 +259,30 @@ export default class ICESession extends BaseSession {
 
         const all = (changes.contents || []).map(content => {
             const sdpMid = content.name;
-            const results = ((content.transport! as JingleIceUdp).candidates || []).map(
-                async json => {
-                    const candidate = SDPUtils.writeCandidate(convertCandidateToIntermediate(json));
+            const results = ((content.transport! as JingleIce).candidates || []).map(async json => {
+                const candidate = SDPUtils.writeCandidate(convertCandidateToIntermediate(json));
 
-                    let sdpMLineIndex!: number;
-                    // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1456417
-                    const remoteSDP = this.pc.remoteDescription!.sdp;
-                    const mediaSections = SDPUtils.getMediaSections(remoteSDP);
-                    for (let i = 0; i < mediaSections.length; i++) {
-                        if (SDPUtils.getMid(mediaSections[i]) === sdpMid) {
-                            sdpMLineIndex = i;
-                            break;
-                        }
-                    }
-
-                    if (this.pc.signalingState === 'stable') {
-                        try {
-                            await this.pc.addIceCandidate({ sdpMid, sdpMLineIndex, candidate });
-                        } catch (err) {
-                            this._log('error', 'Could not add ICE candidate', err);
-                        }
-                    } else {
-                        this.candidateBuffer.push({ sdpMid, sdpMLineIndex, candidate });
+                let sdpMLineIndex!: number;
+                // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1456417
+                const remoteSDP = this.pc.remoteDescription!.sdp;
+                const mediaSections = SDPUtils.getMediaSections(remoteSDP);
+                for (let i = 0; i < mediaSections.length; i++) {
+                    if (SDPUtils.getMid(mediaSections[i]) === sdpMid) {
+                        sdpMLineIndex = i;
+                        break;
                     }
                 }
-            );
+
+                if (this.pc.signalingState === 'stable') {
+                    try {
+                        await this.pc.addIceCandidate({ sdpMid, sdpMLineIndex, candidate });
+                    } catch (err) {
+                        this._log('error', 'Could not add ICE candidate', err);
+                    }
+                } else {
+                    this.candidateBuffer.push({ sdpMid, sdpMLineIndex, candidate });
+                }
+            });
             return Promise.all(results);
         });
 
@@ -325,10 +324,14 @@ export default class ICESession extends BaseSession {
 
     protected onIceCandidate(e: RTCPeerConnectionIceEvent) {
         const candidate = SDPUtils.parseCandidate(e.candidate!.candidate);
-        const jingle = convertIntermediateToTransportInfo(e.candidate!.sdpMid!, candidate);
+        const jingle = convertIntermediateToTransportInfo(
+            e.candidate!.sdpMid!,
+            candidate,
+            this.transportType
+        );
         /* monkeypatch ufrag in Firefox */
         jingle.contents!.forEach((content, idx) => {
-            const transport = content.transport as JingleIceUdp;
+            const transport = content.transport as JingleIce;
             if (!transport.usernameFragment) {
                 const json = importFromSDP(this.pc.localDescription!.sdp);
                 transport.usernameFragment = json.media[idx].iceParameters!.usernameFragment;
@@ -351,9 +354,9 @@ export default class ICESession extends BaseSession {
                     name: firstMedia.mid,
                     transport: {
                         gatheringComplete: true,
-                        transportType: NS_JINGLE_ICE_UDP_1,
+                        transportType: this.transportType,
                         usernameFragment: firstMedia.iceParameters!.usernameFragment
-                    } as JingleIceUdp
+                    } as JingleIce
                 }
             ]
         });

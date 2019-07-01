@@ -7,23 +7,29 @@
 // Additional:
 // - tcpType candidate attribute (matching XEP-0371)
 // - gatheringComplete flag (matching XEP-0371)
+//
+// --------------------------------------------------------------------
+// XEP-0371: Jingle ICE-UDP Transport Method
+// --------------------------------------------------------------------
+// Source: https://xmpp.org/extensions/xep-0371.html
+// Version: 0.2 (2017-09-11)
 // ====================================================================
 
 import { attribute, childBoolean, DefinitionOptions, integerAttribute } from '../jxt';
-import { NS_JINGLE_ICE_UDP_1 } from '../Namespaces';
+import { NS_JINGLE_ICE_0, NS_JINGLE_ICE_UDP_1 } from '../Namespaces';
 
 import { JingleTransport } from './';
 
-export interface JingleIceUdp extends JingleTransport {
-    transportType: typeof NS_JINGLE_ICE_UDP_1;
+export interface JingleIce extends JingleTransport {
+    transportType: typeof NS_JINGLE_ICE_0 | typeof NS_JINGLE_ICE_UDP_1;
     password?: string;
     usernameFragment?: string;
     gatheringComplete?: boolean;
-    remoteCandidate?: JingleIceUdpRemoteCandidate;
-    candidates?: JingleIceUdpCandidate[];
+    remoteCandidate?: JingleIceRemoteCandidate;
+    candidates?: JingleIceCandidate[];
 }
 
-export interface JingleIceUdpCandidate {
+export interface JingleIceCandidate {
     component: number;
     generation?: number;
     foundation: string;
@@ -39,13 +45,13 @@ export interface JingleIceUdpCandidate {
     type: 'host' | 'prflx' | 'srflx' | 'relay';
 }
 
-export interface JingleIceUdpRemoteCandidate {
+export interface JingleIceRemoteCandidate {
     component: number;
     ip: string;
     port: number;
 }
 
-export default [
+const ice = (transportType: string): DefinitionOptions[] => [
     {
         element: 'transport',
         fields: {
@@ -53,16 +59,16 @@ export default [
             password: attribute('pwd'),
             usernameFragment: attribute('ufrag')
         },
-        namespace: NS_JINGLE_ICE_UDP_1,
+        namespace: transportType,
         path: 'iq.jingle.contents.transport',
-        type: NS_JINGLE_ICE_UDP_1,
+        type: transportType,
         typeField: 'transportType'
     },
     {
         aliases: [
             {
                 path: 'iq.jingle.contents.transport.remoteCandidate',
-                selector: NS_JINGLE_ICE_UDP_1
+                selector: transportType
             }
         ],
         element: 'remote-candidate',
@@ -71,14 +77,14 @@ export default [
             ip: attribute('ip'),
             port: integerAttribute('port')
         },
-        namespace: NS_JINGLE_ICE_UDP_1
+        namespace: transportType
     },
     {
         aliases: [
             {
                 multiple: true,
                 path: 'iq.jingle.contents.transport.candidates',
-                selector: NS_JINGLE_ICE_UDP_1
+                selector: transportType
             }
         ],
         element: 'candidate',
@@ -97,6 +103,8 @@ export default [
             tcpType: attribute('tcptype'),
             type: attribute('type')
         },
-        namespace: NS_JINGLE_ICE_UDP_1
+        namespace: transportType
     }
-] as DefinitionOptions[];
+];
+
+export default [...ice(NS_JINGLE_ICE_0), ...ice(NS_JINGLE_ICE_UDP_1)] as DefinitionOptions[];

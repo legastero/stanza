@@ -8,7 +8,8 @@ import {
     FileTransferDescription,
     FileTransferInfo,
     Hash,
-    Jingle
+    Jingle,
+    JingleIce
 } from '../protocol';
 
 import ICESession from './ICESession';
@@ -224,7 +225,7 @@ export default class FileTransferSession extends ICESession {
                 });
 
                 const json = importFromSDP(offer.sdp!);
-                const jingle = convertIntermediateToRequest(json, this.role);
+                const jingle = convertIntermediateToRequest(json, this.role, this.transportType);
 
                 this.contentName = jingle.contents![0].name;
 
@@ -269,7 +270,7 @@ export default class FileTransferSession extends ICESession {
                 const answer = await this.pc.createAnswer();
 
                 const json = importFromSDP(answer.sdp!);
-                const jingle = convertIntermediateToRequest(json, this.role);
+                const jingle = convertIntermediateToRequest(json, this.role, this.transportType);
                 jingle.sid = this.sid;
                 jingle.action = 'session-accept';
                 jingle.contents!.forEach(content => {
@@ -293,6 +294,8 @@ export default class FileTransferSession extends ICESession {
 
         this.role = 'responder';
         this.state = 'pending';
+
+        this.transportType = (changes.contents![0].transport! as JingleIce).transportType;
 
         const json = convertRequestToIntermediate(changes, this.peerRole);
         const sdp = exportToSDP(json);

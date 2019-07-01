@@ -7,7 +7,12 @@
 
 import { attribute, DefinitionOptions, text } from '../jxt';
 
-import { NS_JINGLE_DTLS_0, NS_JINGLE_ICE_UDP_1, NS_JINGLE_RTP_1 } from '../Namespaces';
+import {
+    NS_JINGLE_DTLS_0,
+    NS_JINGLE_ICE_0,
+    NS_JINGLE_ICE_UDP_1,
+    NS_JINGLE_RTP_1
+} from '../Namespaces';
 
 export interface JingleDtlsFingerprint {
     algorithm?: string;
@@ -16,7 +21,7 @@ export interface JingleDtlsFingerprint {
 }
 
 declare module './xep0176' {
-    export interface JingleIceUdp {
+    export interface JingleIce {
         fingerprints?: JingleDtlsFingerprint[];
     }
 }
@@ -27,6 +32,11 @@ export default {
             multiple: true,
             path: 'iq.jingle.contents.transport.fingerprints',
             selector: NS_JINGLE_ICE_UDP_1
+        },
+        {
+            multiple: true,
+            path: 'iq.jingle.contents.transport.fingerprints',
+            selector: NS_JINGLE_ICE_0
         },
         {
             multiple: true,

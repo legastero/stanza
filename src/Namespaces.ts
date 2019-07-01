@@ -362,6 +362,9 @@ export const NS_HTTP_UPLOAD_0 = 'urn:xmpp:http:upload:0';
 export const NS_JINGLE_HTTP_0 = 'urn:xmpp:jingle:transports:http:0';
 export const NS_JINGLE_HTTP_UPLOAD_0 = 'urn:xmpp:jingle:transports:http:upload:0';
 
+// XEP-0371
+export const NS_JINGLE_ICE_0 = 'urn:xmpp:jingle:transports:ice:0';
+
 // XEP-0372
 export const NS_REFERENCE_0 = 'urn:xmpp:reference:0';
 
