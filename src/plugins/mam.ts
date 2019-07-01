@@ -16,11 +16,11 @@ import {
 
 declare module '../' {
     export interface Agent {
-        getHistorySearchForm(jid: string): Promise<IQ>;
-        getHistoryPreferences(): Promise<IQ>;
+        getHistorySearchForm(jid: string): Promise<DataForm>;
+        getHistoryPreferences(): Promise<MAMPrefs>;
         setHistoryPreferences(opts: Partial<MAMPrefs>): Promise<IQ>;
-        searchHistory(opts: Partial<MAMQueryOptions>): Promise<IQ>;
-        searchHistory(jid: string, opts: MAMQuery): Promise<IQ>;
+        searchHistory(opts: Partial<MAMQueryOptions>): Promise<MAMFin>;
+        searchHistory(jid: string, opts: MAMQuery): Promise<MAMFin>;
     }
 
     export interface AgentEvents {
@@ -35,14 +35,15 @@ export interface MAMQueryOptions extends MAMQuery {
 }
 
 export default function(client: Agent) {
-    client.getHistorySearchForm = (jid: string) => {
-        return client.sendIQ({
+    client.getHistorySearchForm = async (jid: string) => {
+        const res = await client.sendIQ<{ archive: MAMQuery }>({
             archive: {
                 type: 'query'
             },
             to: jid,
             type: 'get'
         });
+        return res.archive.form!;
     };
 
     client.searchHistory = async (
@@ -114,22 +115,24 @@ export default function(client: Agent) {
                 to: jid,
                 type: 'set'
             });
-            if (resp.archive && resp.archive.type === 'result') {
-                resp.archive.results = results;
-            }
-            return resp;
+
+            return {
+                ...resp.archive,
+                results
+            };
         } finally {
             client.off('mam:item', collector);
         }
     };
 
-    client.getHistoryPreferences = () => {
-        return client.sendIQ({
+    client.getHistoryPreferences = async () => {
+        const resp = await client.sendIQ({
             archive: {
                 type: 'preferences'
             },
             type: 'get'
         });
+        return resp.archive;
     };
 
     client.setHistoryPreferences = (opts: Partial<MAMPrefs>) => {
