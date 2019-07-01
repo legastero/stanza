@@ -10,25 +10,29 @@ export interface MyStanza {
     value: string;
 }
 
-// 2. Declare a new method for the StanzaJS agent
+// 2. Begin injecting our plugin's type information into stanza.
 declare module 'stanza' {
+
+    // 3. Declare a new method for the StanzaJS agent
     export interface Agent {
         sendMyStanza(jid: string, data: string): void;
     }
-}
 
-// 3. Attach our new definition to message stanzas
-declare module 'stanza/protocol' {
-    export interface Message {
-        mystanza?: MyStanza;
+    // 4. Stanza definitions MUST be placed in the Stanzas namespace
+    namespace Stanzas {
+
+        // 5. Attach our new definition to Message stanzas
+        export interface Message {
+            mystanza?: MyStanza;
+        }
     }
 }
 
 
-// 4. Create a plugin function
+// 6. Create a plugin function
 export default function (client: Agent, stanzas: jxt.Registry) {
 
-    // 5. Create and register our custom `mystanza` stanza definition
+    // 7. Create and register our custom `mystanza` stanza definition
     stanzas.define({
         element: 'foo',
         fields: {
@@ -39,7 +43,7 @@ export default function (client: Agent, stanzas: jxt.Registry) {
         path: 'message.mystanza'
     });
 
-    // 6. Add API to the StanzaJS agent for sending `mystanza` data
+    // 8. Add API to the StanzaJS agent for sending `mystanza` data
     client.sendMyStanza = (jid: string, data: string): void {
         client.sendMessage({
             to: jid,
@@ -50,7 +54,7 @@ export default function (client: Agent, stanzas: jxt.Registry) {
         });
     };
 
-    // 7. Listen for incoming `mystanza` data and emit our own event
+    // 9. Listen for incoming `mystanza` data and emit our own event
     client.on('message', (msg: Message) => {
         if (msg.mystanza) {
             client.emit('mystanza', msg);
@@ -60,7 +64,7 @@ export default function (client: Agent, stanzas: jxt.Registry) {
 ```
 
 ```javascript
-// 8. Load our plugin
+// 10. Load our plugin
 import MyStanzaPlugin from 'path/to/plugin';
 
 client.use(MyStanzaPlugin);
