@@ -53,7 +53,7 @@ export default [
     },
     {
         aliases: pubsubItemContentAliases(),
-        element: 'data',
+        element: 'metadata',
         namespace: NS_AVATAR_METADATA,
         path: 'avatar',
         type: NS_AVATAR_METADATA,
@@ -64,7 +64,7 @@ export default [
             {
                 multiple: true,
                 path: 'avatar.versions',
-                selector: 'metadata'
+                selector: NS_AVATAR_METADATA
             }
         ],
         element: 'info',
@@ -83,7 +83,7 @@ export default [
             {
                 multiple: true,
                 path: 'avatar.pointers',
-                selector: 'metadata'
+                selector: NS_AVATAR_METADATA
             }
         ],
         element: 'pointer',
