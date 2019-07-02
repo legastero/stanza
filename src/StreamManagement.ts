@@ -15,6 +15,7 @@ const mod = (v: number, n: number) => ((v % n) + n) % n;
 interface SMState {
     handled: number;
     id?: string;
+    jid?: string;
     lastAck: number;
     unacked: Array<['message' | 'presence' | 'iq', Message | Presence | IQ]>;
 }
@@ -65,6 +66,10 @@ export default class StreamManagement {
         this.handled = opts.handled;
         this.lastAck = opts.lastAck;
         this.unacked = opts.unacked;
+        if (opts.jid) {
+            this.client.jid = opts.jid;
+            this.client.emit('session:bound', opts.jid);
+        }
     }
 
     public cache(handler: (data: SMState) => void) {
@@ -205,6 +210,7 @@ export default class StreamManagement {
         this.cacheHandler({
             handled: this.handled,
             id: this.id,
+            jid: this.client.jid,
             lastAck: this.lastAck,
             unacked: this.unacked
         });
