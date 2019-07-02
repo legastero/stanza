@@ -77,6 +77,7 @@ export interface DefinitionOptions {
     fields?: { [key: string]: FieldDefinition };
     path?: string;
     aliases?: Array<string | LinkPath>;
+    childrenExportOrder?: { [key: string]: number };
 }
 
 export interface LinkPath {

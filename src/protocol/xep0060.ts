@@ -71,6 +71,7 @@ export interface PubsubCreate {
 
 export interface PubsubDestroy {
     node: string;
+    redirect?: string;
 }
 
 export interface PubsubConfigure {
@@ -210,6 +211,9 @@ const dateOrPresenceAttribute = (name: string): FieldDefinition<Date | 'presence
 export default [
     {
         aliases: ['pubsub', 'iq.pubsub', 'message.pubsub'],
+        childrenExportOrder: {
+            create: 100
+        },
         defaultType: 'user',
         element: 'pubsub',
         fields: {
@@ -338,7 +342,8 @@ export default [
         aliases: [{ path: 'iq.pubsub.destroy', selector: 'owner' }],
         element: 'delete',
         fields: {
-            node: attribute('node')
+            node: attribute('node'),
+            redirect: childAttribute(null, 'redirect', 'uri')
         },
         namespace: NS_PUBSUB_OWNER
     },

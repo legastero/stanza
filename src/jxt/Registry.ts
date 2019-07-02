@@ -194,6 +194,12 @@ export default class Registry {
             exporterOrdering.set(key, field.exportOrder || field.order || 0);
         }
 
+        if (definition.childrenExportOrder) {
+            for (const [key, order] of Object.entries(definition.childrenExportOrder)) {
+                exporterOrdering.set(key, order || 0);
+            }
+        }
+
         translator.updateDefinition({
             contexts: new Map(),
             element: definition.element,
