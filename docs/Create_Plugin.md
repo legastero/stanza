@@ -18,10 +18,15 @@ declare module 'stanza' {
         sendMyStanza(jid: string, data: string): void;
     }
 
-    // 4. Stanza definitions MUST be placed in the Stanzas namespace
+    // 4. Declare our event types. (Event names are the fields in AgentEvents.)
+    export interface AgentEvents {
+        mystanza: Message & { mystanza: MyStanza };
+    }
+
+    // 5. Stanza definitions MUST be placed in the Stanzas namespace
     namespace Stanzas {
 
-        // 5. Attach our new definition to Message stanzas
+        // 6. Attach our new definition to Message stanzas
         export interface Message {
             mystanza?: MyStanza;
         }
@@ -29,10 +34,10 @@ declare module 'stanza' {
 }
 
 
-// 6. Create a plugin function
+// 7. Create a plugin function
 export default function (client: Agent, stanzas: jxt.Registry) {
 
-    // 7. Create and register our custom `mystanza` stanza definition
+    // 8. Create and register our custom `mystanza` stanza definition
     stanzas.define({
         element: 'foo',
         fields: {
@@ -43,7 +48,7 @@ export default function (client: Agent, stanzas: jxt.Registry) {
         path: 'message.mystanza'
     });
 
-    // 8. Add API to the StanzaJS agent for sending `mystanza` data
+    // 9. Add API to the StanzaJS agent for sending `mystanza` data
     client.sendMyStanza = (jid: string, data: string): void {
         client.sendMessage({
             to: jid,
@@ -54,7 +59,7 @@ export default function (client: Agent, stanzas: jxt.Registry) {
         });
     };
 
-    // 9. Listen for incoming `mystanza` data and emit our own event
+    // 10. Listen for incoming `mystanza` data and emit our own event
     client.on('message', (msg: Message) => {
         if (msg.mystanza) {
             client.emit('mystanza', msg);
@@ -64,7 +69,7 @@ export default function (client: Agent, stanzas: jxt.Registry) {
 ```
 
 ```javascript
-// 10. Load our plugin
+// 11. Load our plugin
 import MyStanzaPlugin from 'path/to/plugin';
 
 client.use(MyStanzaPlugin);
