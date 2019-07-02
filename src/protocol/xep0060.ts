@@ -236,7 +236,7 @@ export default [
         'iq.pubsub.defaultConfiguration.form',
         'message.pubsub.configuration.form'
     ]),
-    addAlias(NS_RSM, 'set', ['iq.pubsub.fetch']),
+    addAlias(NS_RSM, 'set', ['iq.pubsub.fetch.paging']),
     extendStanzaError({
         pubsubError: childEnum(NS_PUBSUB_ERRORS, toList(PubsubErrorCondition)),
         pubsubUnsupportedFeature: childAttribute(NS_PUBSUB_ERRORS, 'unsupported', 'feature')
