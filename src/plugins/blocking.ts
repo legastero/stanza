@@ -1,11 +1,11 @@
 import { Agent } from '../';
-import { Blocking, ReceivedIQSet } from '../protocol';
+import { Blocking, BlockingList, ReceivedIQSet } from '../protocol';
 
 declare module '../' {
     export interface Agent {
         block(jid: string): Promise<void>;
         unblock(jid: string): Promise<void>;
-        getBlocked(): Promise<string[]>;
+        getBlocked(): Promise<BlockingList>;
     }
 
     export interface AgentEvents {
@@ -50,7 +50,10 @@ export default function(client: Agent) {
             type: 'get'
         });
 
-        return result.blockList.jids || [];
+        return {
+            jids: [],
+            ...result.blockList
+        };
     };
 
     client.on('iq:set:blockList', iq => {

@@ -61,6 +61,8 @@ export interface Pubsub {
     create?: PubsubCreate | boolean;
     destroy?: PubsubDestroy;
     configure?: PubsubConfigure;
+    defaultConfiguration?: PubsubDefaultConfiguration;
+    defaultSubscriptionOptions?: PubsubDefaultSubscriptionOptions;
     subscriptionOptions?: PubsubSubscriptionOptions;
     paging?: Paging;
 }
@@ -79,9 +81,23 @@ export interface PubsubConfigure {
     form?: DataForm;
 }
 
+export interface PubsubDefaultConfiguration {
+    form?: DataForm;
+}
+
+export interface PubsubDefaultSubscriptionOptions {
+    form?: DataForm;
+}
+
 export interface PubsubSubscribe {
     node?: string;
     jid?: JID;
+}
+
+export interface PubsubSubscribeWithOptions {
+    node?: string;
+    jid?: JID;
+    options?: DataForm;
 }
 
 export interface PubsubUnsubscribe {
@@ -97,6 +113,10 @@ export interface PubsubSubscription {
     state?: 'subscribed' | 'pending' | 'unconfigured' | 'none';
     configurable?: boolean;
     configurationRequired?: boolean;
+}
+
+export interface PubsubSubscriptionWithOptions extends PubsubSubscription {
+    options?: DataForm;
 }
 
 export interface PubsubSubscriptions {
@@ -147,7 +167,7 @@ export interface PubsubSubscriptionOptions {
     node?: string;
     jid?: JID;
     subid?: string;
-    config?: DataForm;
+    form?: DataForm;
 }
 
 export interface PubsubEvent {
@@ -212,7 +232,11 @@ export default [
     {
         aliases: ['pubsub', 'iq.pubsub', 'message.pubsub'],
         childrenExportOrder: {
-            create: 100
+            configure: 0,
+            create: 100,
+            publish: 100,
+            subscribe: 100,
+            subscriptionOptions: 0
         },
         defaultType: 'user',
         element: 'pubsub',
@@ -238,6 +262,8 @@ export default [
     addAlias(NS_DATAFORM, 'x', [
         'iq.pubsub.configure.form',
         'iq.pubsub.defaultConfiguration.form',
+        'iq.pubsub.defaultSubscriptionOptions.form',
+        'iq.pubsub.subscriptionOptions.forms',
         'message.pubsub.configuration.form'
     ]),
     addAlias(NS_RSM, 'set', ['iq.pubsub.fetch.paging']),
@@ -265,18 +291,44 @@ export default [
         path: 'iq.pubsub.unsubscribe'
     },
     {
+        element: 'options',
+        fields: {
+            jid: JIDAttribute('jid'),
+            node: attribute('node'),
+            subid: attribute('subid')
+        },
+        namespace: NS_PUBSUB,
+        path: 'iq.pubsub.subscriptionOptions'
+    },
+    {
+        aliases: [{ path: 'iq.pubsub.subscriptions', selector: 'user', impliedType: true }],
         element: 'subscriptions',
         fields: {
             jid: JIDAttribute('jid'),
             node: attribute('node')
         },
         namespace: NS_PUBSUB,
-        path: 'iq.pubsub.subscriptions'
+        type: 'user'
+    },
+    {
+        aliases: [{ path: 'iq.pubsub.subscriptions', selector: 'owner', impliedType: true }],
+        element: 'subscriptions',
+        fields: {
+            jid: JIDAttribute('jid'),
+            node: attribute('node')
+        },
+        namespace: NS_PUBSUB_OWNER,
+        type: 'owner'
     },
     {
         aliases: [
             'iq.pubsub.subscription',
-            { path: 'iq.pubsub.subscriptions.items', multiple: true }
+            {
+                impliedType: true,
+                multiple: true,
+                path: 'iq.pubsub.subscriptions.items',
+                selector: 'user'
+            }
         ],
         element: 'subscription',
         fields: {
@@ -293,7 +345,30 @@ export default [
         namespace: NS_PUBSUB
     },
     {
-        aliases: [{ path: 'iq.pubsub.affiliations', selector: NS_PUBSUB }],
+        aliases: [
+            {
+                impliedType: true,
+                multiple: true,
+                path: 'iq.pubsub.subscriptions.items',
+                selector: 'owner'
+            }
+        ],
+        element: 'subscription',
+        fields: {
+            configurable: childBoolean(null, 'subscribe-options'),
+            configurationRequired: deepChildBoolean([
+                { namespace: null, element: 'subscribe-options' },
+                { namespace: null, element: 'required' }
+            ]),
+            jid: JIDAttribute('jid'),
+            node: attribute('node'),
+            state: attribute('subscription'),
+            subid: attribute('subid')
+        },
+        namespace: NS_PUBSUB_OWNER
+    },
+    {
+        aliases: [{ path: 'iq.pubsub.affiliations', selector: 'user' }],
         element: 'affiliations',
         fields: {
             node: attribute('node')
@@ -301,7 +376,7 @@ export default [
         namespace: NS_PUBSUB
     },
     {
-        aliases: [{ path: 'iq.pubsub.affiliations', selector: NS_PUBSUB_OWNER }],
+        aliases: [{ path: 'iq.pubsub.affiliations', selector: 'owner' }],
         element: 'affiliations',
         fields: {
             node: attribute('node')
@@ -309,7 +384,7 @@ export default [
         namespace: NS_PUBSUB_OWNER
     },
     {
-        aliases: [{ path: 'iq.pubsub.affiliations.items', selector: NS_PUBSUB, multiple: true }],
+        aliases: [{ path: 'iq.pubsub.affiliations.items', selector: 'user', multiple: true }],
         element: 'affiliation',
         fields: {
             affiliation: attribute('affiliation'),
@@ -319,9 +394,7 @@ export default [
         namespace: NS_PUBSUB
     },
     {
-        aliases: [
-            { path: 'iq.pubsub.affiliations.items', selector: NS_PUBSUB_OWNER, multiple: true }
-        ],
+        aliases: [{ path: 'iq.pubsub.affiliations.items', selector: 'owner', multiple: true }],
         element: 'affiliation',
         fields: {
             affiliation: attribute('affiliation'),
@@ -364,6 +437,18 @@ export default [
         },
         namespace: NS_PUBSUB,
         type: 'user'
+    },
+    {
+        element: 'default',
+        fields: {},
+        namespace: NS_PUBSUB,
+        path: 'iq.pubsub.defaultSubscriptionOptions'
+    },
+    {
+        element: 'default',
+        fields: {},
+        namespace: NS_PUBSUB_OWNER,
+        path: 'iq.pubsub.defaultConfiguration'
     },
     {
         element: 'publish',

@@ -1,12 +1,19 @@
 import { Agent } from '../';
 import { NS_AVATAR_DATA, NS_AVATAR_METADATA, NS_PEP_NOTIFY } from '../Namespaces';
-import { AvatarMetaData, AvatarPointer, AvatarVersion, IQ } from '../protocol';
+import {
+    AvatarData,
+    AvatarMetaData,
+    AvatarPointer,
+    AvatarVersion,
+    IQ,
+    PubsubItem
+} from '../protocol';
 
 declare module '../' {
     export interface Agent {
         publishAvatar(id: string, data: Buffer): Promise<IQ>;
         useAvatars(versions: AvatarVersion[], pointers?: AvatarPointer[]): Promise<IQ>;
-        getAvatar(jid: string, id: string): Promise<IQ>;
+        getAvatar(jid: string, id: string): Promise<PubsubItem<AvatarData>>;
     }
 
     export interface AgentEvents {
@@ -77,6 +84,6 @@ export default function(client: Agent) {
     };
 
     client.getAvatar = (jid: string, id: string) => {
-        return client.getItem(jid, NS_AVATAR_DATA, id);
+        return client.getItem<AvatarData>(jid, NS_AVATAR_DATA, id);
     };
 }
