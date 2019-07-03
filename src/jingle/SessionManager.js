@@ -113,6 +113,7 @@ export default class SessionManager extends WildEmitter {
     }
 
     createMediaSession(peer, sid, stream) {
+        peer = peer.full || peer;
         const session = new MediaSession({
             config: this.config.peerConnectionConfig,
             constraints: this.config.peerConnectionConstraints,
@@ -129,6 +130,7 @@ export default class SessionManager extends WildEmitter {
     }
 
     createFileTransferSession(peer, sid) {
+        peer = peer.full || peer;
         const session = new FileSession({
             config: this.config.peerConnectionConfig,
             constraints: this.config.peerConnectionConstraints,
