@@ -16,7 +16,7 @@ declare module './' {
         inbandRegistration?: boolean;
     }
 
-    export interface IQ {
+    export interface IQPayload {
         account?: AccountManagement;
     }
 }

@@ -11,14 +11,7 @@ import {
     XMLElement
 } from '../jxt';
 
-import { NS_BOSH, NS_CLIENT, NS_COMPONENT, NS_SERVER, NS_STANZAS, NS_STREAM } from '../Namespaces';
-
-export const STREAM_TYPES = [
-    [NS_CLIENT, NS_CLIENT], // RFC6120
-    [NS_SERVER, NS_SERVER], // RFC6120
-    [NS_COMPONENT, NS_COMPONENT], // XEP-0114,
-    [NS_BOSH, NS_BOSH] // XEP-0124 (Compatibility)
-];
+import { NS_CLIENT, NS_STANZAS, NS_STREAM } from '../Namespaces';
 
 export type JID = string;
 export const JIDAttribute = attribute;

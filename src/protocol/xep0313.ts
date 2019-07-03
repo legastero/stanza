@@ -17,7 +17,7 @@ declare module './' {
         archive?: MAMResult;
     }
 
-    export interface IQ {
+    export interface IQPayload {
         archive?: MAMQuery | MAMFin | MAMPrefs;
     }
 }

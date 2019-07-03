@@ -18,7 +18,7 @@ declare module './' {
         bits?: Bits[];
     }
 
-    export interface IQ {
+    export interface IQPayload {
         bits?: Bits;
     }
 }

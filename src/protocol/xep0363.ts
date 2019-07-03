@@ -21,7 +21,7 @@ import { NS_HTTP_UPLOAD_0 } from '../Namespaces';
 import { extendStanzaError } from './util';
 
 declare module './' {
-    export interface IQ {
+    export interface IQPayload {
         httpUpload?: HTTPUploadRequest | HTTPUploadSlot;
     }
 

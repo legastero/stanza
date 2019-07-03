@@ -12,7 +12,7 @@ import { NS_PING } from '../Namespaces';
 import { extendIQ } from './util';
 
 declare module './' {
-    export interface IQ {
+    export interface IQPayload {
         ping?: boolean;
     }
 }

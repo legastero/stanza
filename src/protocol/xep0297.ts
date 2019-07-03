@@ -7,11 +7,11 @@
 
 import { define, DefinitionOptions } from '../jxt';
 
+import { StreamType } from '../Constants';
 import { NS_DELAY, NS_FORWARD_0 } from '../Namespaces';
 
-import { Delay } from './';
-import { IQ, Message, Presence } from './';
-import { addAlias, STREAM_TYPES } from './util';
+import { Delay, IQ, Message, Presence } from './';
+import { addAlias } from './util';
 
 declare module './' {
     export interface Message {
@@ -27,13 +27,13 @@ export interface Forward {
 }
 
 export default [
-    define(STREAM_TYPES.map(([streamType, streamNS]) =>
+    define(Object.values(StreamType).map(streamNS =>
         addAlias(streamNS, 'message', ['forward.message'])
     )),
-    define(STREAM_TYPES.map(([streamType, streamNS]) =>
+    define(Object.values(StreamType).map(streamNS =>
         addAlias(streamNS, 'presence', ['forward.presence'])
     )),
-    define(STREAM_TYPES.map(([streamType, streamNS]) => addAlias(streamNS, 'iq', ['forward.iq']))),
+    define(Object.values(StreamType).map(streamNS => addAlias(streamNS, 'iq', ['forward.iq']))),
     addAlias(NS_DELAY, 'delay', ['forward.delay']),
     {
         aliases: ['message.forward'],

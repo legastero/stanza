@@ -16,7 +16,7 @@ import {
 import { NS_PRIVACY } from '../Namespaces';
 
 declare module './' {
-    export interface IQ {
+    export interface IQPayload {
         privacy?: PrivacyList;
     }
 }

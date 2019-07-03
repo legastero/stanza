@@ -18,7 +18,7 @@ import { NS_VCARD_TEMP } from '../Namespaces';
 import { JID } from './util';
 
 declare module './' {
-    export interface IQ {
+    export interface IQPayload {
         vcard?: VCardTemp;
     }
 }

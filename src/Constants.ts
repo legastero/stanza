@@ -1,8 +1,23 @@
-import { NS_JINGLE_FILE_TRANSFER_5, NS_JINGLE_RTP_INFO_1 } from './Namespaces';
+import {
+    NS_BOSH,
+    NS_CLIENT,
+    NS_COMPONENT,
+    NS_JINGLE_FILE_TRANSFER_5,
+    NS_JINGLE_RTP_INFO_1,
+    NS_SERVER
+} from './Namespaces';
 
 // ====================================================================
 // Named Enum Constants
 // ====================================================================
+
+export const StreamType = {
+    Bosh: NS_BOSH,
+    Client: NS_CLIENT,
+    Component: NS_COMPONENT,
+    Server: NS_SERVER
+} as const;
+export type StreamType = (typeof SASLFailureCondition)[keyof typeof SASLFailureCondition];
 
 export const SASLFailureCondition = {
     AccountDisabled: 'account-disabled',

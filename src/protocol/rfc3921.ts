@@ -20,7 +20,7 @@ declare module './' {
         legacySession?: SessionFeature;
     }
 
-    export interface IQ {
+    export interface IQPayload {
         legacySession?: boolean;
     }
 }

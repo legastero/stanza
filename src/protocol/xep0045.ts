@@ -56,7 +56,7 @@ declare module './' {
         muc?: MUCInfo | MUCDirectInvite;
     }
 
-    export interface IQ {
+    export interface IQPayload {
         muc?: MUCConfigure | MUCUserList | MUCUnique;
     }
 }

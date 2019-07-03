@@ -10,7 +10,7 @@ import { childDate, childTimezoneOffset, DefinitionOptions } from '../jxt';
 import { NS_TIME } from '../Namespaces';
 
 declare module './' {
-    export interface IQ {
+    export interface IQPayload {
         time?: EntityTime;
     }
 }

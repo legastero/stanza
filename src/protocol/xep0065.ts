@@ -11,7 +11,7 @@ import { NS_SOCKS5 } from '../Namespaces';
 import { childJIDAttribute, JID, JIDAttribute } from './util';
 
 declare module './' {
-    export interface IQ {
+    export interface IQPayload {
         socks5?: SOCKS5;
     }
 }

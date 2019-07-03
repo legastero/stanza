@@ -11,6 +11,7 @@ import {
     SASLFailureCondition,
     StanzaErrorCondition,
     StreamErrorCondition,
+    StreamType,
     toList
 } from '../Constants';
 import {
@@ -29,7 +30,7 @@ import {
 import { NS_BIND, NS_CLIENT, NS_SASL, NS_STANZAS, NS_STARTTLS, NS_STREAM } from '../Namespaces';
 
 import { IQ } from './';
-import { JIDAttribute, STREAM_TYPES } from './util';
+import { JIDAttribute } from './util';
 
 declare module './' {
     export interface Stream {
@@ -64,17 +65,22 @@ declare module './' {
         gone?: string;
     }
 
-    export interface IQ {
+    export interface IQPayload {
+        bind?: Bind;
+    }
+
+    export interface IQBase {
         to?: string;
         from?: string;
         id?: string;
         type: IQType;
         lang?: string;
-        streamType?: string;
+        streamType?: StreamType;
         error?: StanzaError;
-        payloadType?: string;
-        bind?: Bind;
+        payloadType?: keyof IQPayload | 'invalid-payload-count' | 'unknown-payload';
     }
+
+    export interface IQ extends IQBase, IQPayload {}
 
     export interface ReceivedIQ extends IQ {
         to: string;
@@ -95,7 +101,7 @@ declare module './' {
         from?: string;
         id?: string;
         lang?: string;
-        streamType?: string;
+        streamType?: StreamType;
         type?: MessageType;
         error?: StanzaError;
     }
@@ -110,7 +116,7 @@ declare module './' {
         from?: string;
         id?: string;
         lang?: string;
-        streamType?: string;
+        streamType?: StreamType;
         type?: PresenceType;
         error?: StanzaError;
     }
@@ -198,7 +204,7 @@ const _StreamError: DefinitionOptions = {
 
 // --------------------------------------------------------------------
 
-const _StanzaError: DefinitionOptions[] = STREAM_TYPES.map(([streamType, streamNS]) => ({
+const _StanzaError: DefinitionOptions[] = Object.values(StreamType).map(streamNS => ({
     aliases: ['stanzaError', 'message.error', 'presence.error', 'iq.error'],
     defaultType: NS_CLIENT,
     element: 'error',
@@ -216,14 +222,14 @@ const _StanzaError: DefinitionOptions[] = STREAM_TYPES.map(([streamType, streamN
         type: attribute('type')
     },
     namespace: streamNS,
-    type: streamType,
+    type: streamNS,
     typeField: 'streamType'
 }));
 
 // --------------------------------------------------------------------
 
 const baseIQFields = new Set(['from', 'id', 'lang', 'to', 'type', 'payloadType', 'error']);
-const _IQ: DefinitionOptions[] = STREAM_TYPES.map(([streamType, streamNS]) => ({
+const _IQ: DefinitionOptions[] = Object.values(StreamType).map(streamNS => ({
     defaultType: NS_CLIENT,
     element: 'iq',
     fields: {
@@ -252,13 +258,13 @@ const _IQ: DefinitionOptions[] = STREAM_TYPES.map(([streamType, streamNS]) => ({
     },
     namespace: streamNS,
     path: 'iq',
-    type: streamType,
+    type: streamNS,
     typeField: 'streamType'
 }));
 
 // --------------------------------------------------------------------
 
-const _Message: DefinitionOptions[] = STREAM_TYPES.map(([streamType, streamNS]) => ({
+const _Message: DefinitionOptions[] = Object.values(StreamType).map(streamNS => ({
     defaultType: NS_CLIENT,
     element: 'message',
     fields: {
@@ -269,13 +275,13 @@ const _Message: DefinitionOptions[] = STREAM_TYPES.map(([streamType, streamNS]) 
     },
     namespace: streamNS,
     path: 'message',
-    type: streamType,
+    type: streamNS,
     typeField: 'streamType'
 }));
 
 // --------------------------------------------------------------------
 
-const _Presence = STREAM_TYPES.map(([streamType, streamNS]) => ({
+const _Presence = Object.values(StreamType).map(streamNS => ({
     defaultType: NS_CLIENT,
     element: 'presence',
     fields: {
@@ -286,7 +292,7 @@ const _Presence = STREAM_TYPES.map(([streamType, streamNS]) => ({
     },
     namespace: streamNS,
     path: 'presence',
-    type: streamType,
+    type: streamNS,
     typeField: 'streamType'
 }));
 

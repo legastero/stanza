@@ -12,7 +12,7 @@ import { DataForm } from './';
 import { addAlias, extendStanzaError } from './util';
 
 declare module './' {
-    export interface IQ {
+    export interface IQPayload {
         command?: AdHocCommand;
     }
     export interface StanzaError {

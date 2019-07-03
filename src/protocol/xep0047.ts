@@ -21,7 +21,7 @@ declare module './' {
         ibb?: IBBData;
     }
 
-    export interface IQ {
+    export interface IQPayload {
         ibb?: IBB;
     }
 }

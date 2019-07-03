@@ -12,7 +12,7 @@ import { DataForm } from './';
 import { addAlias, JID, JIDAttribute } from './util';
 
 declare module './' {
-    export interface IQ {
+    export interface IQPayload {
         search?: Search;
     }
 }

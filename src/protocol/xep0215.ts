@@ -45,7 +45,7 @@ export interface ExternalServiceCredentials extends ExternalService {
 }
 
 declare module './' {
-    export interface IQ {
+    export interface IQPayload {
         externalServices?: ExternalServiceList;
         externalServiceCredentials?: ExternalServiceCredentials;
     }

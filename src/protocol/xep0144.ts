@@ -16,7 +16,7 @@ declare module './' {
         rosterExchange?: RosterExchange[];
     }
 
-    export interface IQ {
+    export interface IQPayload {
         rosterExchange?: RosterExchange[];
     }
 }

@@ -10,7 +10,7 @@ import { DefinitionOptions } from '../jxt';
 import { NS_PRIVATE } from '../Namespaces';
 
 declare module './' {
-    export interface IQ {
+    export interface IQPayload {
         privateStorage?: PrivateStorage;
     }
 }

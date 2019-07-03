@@ -12,7 +12,7 @@ import { NS_BLOCKING, NS_BLOCKING_ERRORS } from '../Namespaces';
 import { extendStanzaError, JID } from './util';
 
 declare module './' {
-    export interface IQ {
+    export interface IQPayload {
         blockList?: Blocking;
     }
 

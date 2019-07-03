@@ -15,7 +15,7 @@ declare module './' {
     export interface Message {
         captcha?: DataForm;
     }
-    export interface IQ {
+    export interface IQPayload {
         captcha?: DataForm;
     }
 }

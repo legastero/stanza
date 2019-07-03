@@ -14,7 +14,7 @@ declare module './' {
         links?: Link[];
     }
 
-    export interface IQ {
+    export interface IQPayload {
         transferLink?: Link;
     }
 }

@@ -47,7 +47,7 @@ declare module './' {
         priority?: number;
     }
 
-    export interface IQ {
+    export interface IQPayload {
         roster?: Roster;
     }
 }

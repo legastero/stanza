@@ -17,7 +17,7 @@ declare module './' {
         carbon?: CarbonMessage | CarbonPrivate;
     }
 
-    export interface IQ {
+    export interface IQPayload {
         carbons?: CarbonControl;
     }
 }

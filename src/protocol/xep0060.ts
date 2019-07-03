@@ -36,7 +36,7 @@ declare module './' {
         pubsub?: PubsubEvent;
     }
 
-    export interface IQ {
+    export interface IQPayload {
         pubsub?: Pubsub;
     }
 
