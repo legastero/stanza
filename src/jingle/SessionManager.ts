@@ -217,6 +217,14 @@ export default class SessionManager extends EventEmitter {
         if (action !== JingleAction.SessionInitiate) {
             // Can't modify a session that we don't have.
             if (!session) {
+                if (action === 'session-terminate') {
+                    this.emit('send', {
+                        id: rid,
+                        to: sender,
+                        type: 'result'
+                    });
+                    return;
+                }
                 this._log('error', 'Unknown session', sid);
                 return this._sendError(sender, rid, {
                     condition: 'item-not-found',

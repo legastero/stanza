@@ -24,6 +24,7 @@ export default class ICESession extends BaseSession {
         candidate: string;
     } | null>;
     public transportType: JingleIce['transportType'] = NS_JINGLE_ICE_UDP_1;
+    public restartingIce: boolean;
 
     private _maybeRestartingIce: any;
     private _firstTimeConnected?: boolean;
@@ -56,6 +57,7 @@ export default class ICESession extends BaseSession {
         this.bitrateLimit = 0;
         this.maxRelayBandwidth = opts.maxRelayBandwidth;
         this.candidateBuffer = [];
+        this.restartingIce = false;
     }
 
     public end(reason: JingleReasonCondition | JingleReason = 'success', silent: boolean = false) {
@@ -73,6 +75,7 @@ export default class ICESession extends BaseSession {
             clearTimeout(this._maybeRestartingIce);
         }
 
+        this.restartingIce = true;
         try {
             await this.processLocal('restart-ice', async () => {
                 const offer = await this.pc.createOffer({ iceRestart: true });
@@ -92,7 +95,7 @@ export default class ICESession extends BaseSession {
             });
         } catch (err) {
             this._log('error', 'Could not create WebRTC offer', err);
-            this.end(JingleReasonCondition.FailedApplication, true);
+            this.end(JingleReasonCondition.FailedTransport, true);
         }
     }
 
@@ -238,7 +241,7 @@ export default class ICESession extends BaseSession {
                         this._log('error', 'Could not do remote ICE restart', err);
                         cb(err);
 
-                        this.end('failed-application', true);
+                        this.end(JingleReasonCondition.FailedTransport);
                     }
                     return;
                 }
@@ -252,7 +255,7 @@ export default class ICESession extends BaseSession {
                     this._log('error', 'Could not do local ICE restart', err);
                     cb(err);
 
-                    this.end('failed-application', true);
+                    this.end(JingleReasonCondition.FailedTransport);
                 }
             }
         }
@@ -370,6 +373,7 @@ export default class ICESession extends BaseSession {
             case 'completed':
             case 'connected':
                 this.connectionState = 'connected';
+                this.restartingIce = false;
                 break;
             case 'disconnected':
                 if (this.pc.signalingState === 'stable') {
@@ -377,18 +381,27 @@ export default class ICESession extends BaseSession {
                 } else {
                     this.connectionState = 'disconnected';
                 }
+                if (this.restartingIce) {
+                    this.end(JingleReasonCondition.FailedTransport);
+                    return;
+                }
                 this.maybeRestartIce();
                 break;
             case 'failed':
-                if (this.connectionState === 'failed') {
-                    this.connectionState = 'failed';
-                    this.end('failed-transport');
-                } else {
-                    this.restartIce();
+                if (this.connectionState === 'failed' || this.restartingIce) {
+                    this.end(JingleReasonCondition.FailedTransport);
+                    return;
                 }
+                this.connectionState = 'failed';
+                this.restartIce();
                 break;
             case 'closed':
                 this.connectionState = 'disconnected';
+                if (this.restartingIce) {
+                    this.end(JingleReasonCondition.FailedTransport);
+                } else {
+                    this.end();
+                }
                 break;
         }
     }
