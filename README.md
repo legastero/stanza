@@ -8,31 +8,20 @@
 
 ## What is this?
 
-StanzaJS is a library for using modern XMPP, and it does that by exposing everything as JSON. Unless you insist, you
-have no need to ever see or touch any XML when using StanzaJS.
+StanzaJS is a library for using modern XMPP, and it does that by exposing everything as JSON. Unless you insist, you have no need to ever see or touch any XML when using StanzaJS.
 
 ## Installing
 
 ```sh
-$ npm install stanza
+npm install stanza
 ```
-
-## Getting Started
-
-1. Find or install a server which supports XMPP over WebSocket (Prosody recommended).
-2. Clone this repo with `git clone https://github.com/legastero/stanza.io.git`
-3. Run `npm install` in the new `stanza.io` directory.
-4. Run `npm run build` to create `dist/stanza.browser.js`.
-5. Open `demo.html` in your browser.
-6. Enter your connection info, click connect.
-7. Use the JS console to play with the XMPP client (`var client`).
 
 ## Echo Client Demo
 
 ```javascript
-var XMPP = require('stanza');
+import * as XMPP from 'stanza';
 
-var client = XMPP.createClient({
+const client = XMPP.createClient({
     jid: 'echobot@example.com',
     password: 'hunter2',
 
@@ -44,12 +33,12 @@ var client = XMPP.createClient({
     // (or `boshURL` if using 'bosh' as the transport)
 });
 
-client.on('session:started', function() {
+client.on('session:started', () => {
     client.getRoster();
     client.sendPresence();
 });
 
-client.on('chat', function(msg) {
+client.on('chat', msg => {
     client.sendMessage({
         to: msg.from,
         body: 'You sent: ' + msg.body
@@ -61,11 +50,8 @@ client.connect();
 
 ## Documentation
 
--   [API Reference](docs/Reference.md)
--   [JIDs](docs/JID.md)
--   [Supported XEPs](docs/Supported_XEPs.md)
+-   [Supported XEP Formats](docs/Supported_XEP_Formats.md)
 -   [Creating Plugins](docs/Create_Plugin.md)
--   [Using PubSub](docs/Using_Pubsub.md)
 
 ## Discussion
 
@@ -77,4 +63,4 @@ MUC Room: [discuss@stanzajs.org](https://stanzajs.org/discuss/logs) / [Logs](htt
 
 ## Created By
 
-If you like this, follow [@lancestout](http://twitter.com/lancestout) on twitter.
+If you like this, follow [@lancestout](http://twitter.com/lancestout) on Twitter.

@@ -1,5 +1,20 @@
 # Change Log
 
+## 12.0.0
+
+**WARNING:** Unlike many previous major version bumps that were almost entirely backwards compatible, v12 is _not_ backwards compatible. Upgrading to v12 _will_ require modifications in existing code.
+
+-   Complete TypeScript support
+-   Changed JXT implementation (**old JXT definitions will not work**)
+-   **Changed structure/names of JXT definitions for supported XEPs.** See [Supported XEP Formats]('./docs/Supported_XEP_Formats.md) for links to the type definitions of each XEP supported by StanzaJS.
+-   **Removed support for callbacks.** All methods now support Promises only.
+-   Methods using IQ stanzas now return the requested data instead of the full IQ stanza data.
+-   Changed SASL implementation. Old, custom SASL mechanisms will not work.
+-   **Removed JID objects.** JIDs are now treated as strings only. [See src/JID.ts for helper functions.]('./src/JID.ts)
+-   Implemented Stringprep (not PRECIS, yet).
+-   **Removed WildEmitter.** Now using standard EventEmitter. Event handlers using `*` wildcards will need to be changed.
+-   Added input/display helpers for Realtime Text.
+
 ## 11.1.0
 
 -   Jingle sessions now queue local actions to allow safer handling of WebRTC peer connection objects.
