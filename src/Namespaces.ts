@@ -319,17 +319,11 @@ export const NS_HINTS = 'urn:xmpp:hints';
 // XEP-0335
 export const NS_JSON_0 = 'urn:xmpp:json:0';
 
-// XEP-0337
-export const NS_EVENTLOG = 'urn:xmpp:eventlog';
-
 // XEP-0338
 export const NS_JINGLE_GROUPING_0 = 'urn:xmpp:jingle:apps:grouping:0';
 
 // XEP-0339
 export const NS_JINGLE_RTP_SSMA_0 = 'urn:xmpp:jingle:apps:rtp:ssma:0';
-
-// XEP-0340
-export const NS_COLIBRI = 'http://jitsi.org/protocol/colibri';
 
 // XEP-0343
 export const NS_JINGLE_DTLS_SCTP_1 = 'urn:xmpp:jingle:transports:dtls-sctp:1';
