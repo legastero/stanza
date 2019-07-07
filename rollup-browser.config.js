@@ -14,8 +14,9 @@ export default {
             browser: true
         }),
         visualizer({
-            sourcemaps: true,
+            filename: './dist/rollup-stats.html',
             open: true,
+            sourcemaps: true,
             template: 'treemap'
         })
     ]

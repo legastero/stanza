@@ -7,5 +7,4 @@ package-lock.json
 coverage
 .nyc_output
 .vscode
-stats.html
 

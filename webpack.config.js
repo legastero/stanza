@@ -16,7 +16,7 @@ module.exports = {
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',
             defaultSizes: 'gzip',
-            reportFilename: 'bundle-stats.html'
+            reportFilename: 'webpack-stats.html'
         })
     ]
 };
