@@ -1,4 +1,5 @@
 import resolve from 'rollup-plugin-node-resolve';
+import visualizer from 'rollup-plugin-visualizer';
 
 export default {
     external: [
@@ -18,5 +19,12 @@ export default {
         file: 'dist/es/index.module.js',
         format: 'es'
     },
-    plugins: [resolve()]
+    plugins: [
+        resolve(),
+        visualizer({
+            sourcemaps: true,
+            open: true,
+            template: 'treemap'
+        })
+    ]
 };
