@@ -148,6 +148,19 @@ export default class Client extends EventEmitter {
         return this.transport ? this.transport.stream : undefined;
     }
 
+    public emit(name: string, ...args: any[]): boolean {
+        // Continue supporting the most common and useful wildcard events
+        const res = super.emit(name, ...args);
+        if (name === 'raw') {
+            super.emit(`raw:${args[0]}`, args[1]);
+            super.emit('raw:*', `raw:${args[0]}`, args[1]);
+            super.emit('*', `raw:${args[0]}`, args[1]);
+        } else {
+            super.emit('*', name, ...args);
+        }
+        return res;
+    }
+
     public use(
         pluginInit: boolean | ((agent: Agent, registry: JXT.Registry, config: AgentConfig) => void)
     ) {
