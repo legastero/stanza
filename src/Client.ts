@@ -31,6 +31,8 @@ export default class Client extends EventEmitter {
     constructor(opts: AgentConfig = {}) {
         super();
         this.setMaxListeners(100);
+        // Some EventEmitter shims don't include off()
+        this.off = this.removeListener;
 
         this._initConfig(opts);
 
