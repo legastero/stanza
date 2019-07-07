@@ -310,9 +310,6 @@ export const NS_IDLE_1 = 'urn:xmpp:idle:1';
 // XEP-0320
 export const NS_JINGLE_DTLS_0 = 'urn:xmpp:jingle:apps:dtls:0';
 
-// XEP-0328
-export const NS_JID_PREP_0 = 'urn:xmpp:jidprep:0';
-
 // XEP-0333
 export const NS_CHAT_MARKERS_0 = 'urn:xmpp:chat-markers:0';
 

@@ -92,7 +92,6 @@
 | [XEP-0317](https://xmpp.org/extensions/xep-0317.html) | Hats                                               | 0.1     | [Source](../src/protocol/stanzas/xep0317.ts) |
 | [XEP-0319](https://xmpp.org/extensions/xep-0319.html) | Last User Interaction in Presence                  | 1.0.2   | [Source](../src/protocol/stanzas/xep0319.ts) |
 | [XEP-0320](https://xmpp.org/extensions/xep-0320.html) | Use of DTLS-SRTP in Jingle Sessions                | 0.3.1   | [Source](../src/protocol/stanzas/xep0320.ts) |
-| [XEP-0328](https://xmpp.org/extensions/xep-0328.html) | JID Prep                                           | 0.1     | [Source](../src/protocol/stanzas/xep0328.ts) |
 | [XEP-0333](https://xmpp.org/extensions/xep-0333.html) | Chat Markers                                       | 0.3.0   | [Source](../src/protocol/stanzas/xep0333.ts) |
 | [XEP-0334](https://xmpp.org/extensions/xep-0334.html) | Message Processing Hints                           | 0.3.0   | [Source](../src/protocol/stanzas/xep0334.ts) |
 | [XEP-0335](https://xmpp.org/extensions/xep-0335.html) | JSON Containers                                    | 0.1     | [Source](../src/protocol/stanzas/xep0335.ts) |
