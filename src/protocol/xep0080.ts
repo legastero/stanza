@@ -18,12 +18,12 @@ import {
     childText,
     childTimezoneOffset,
     DefinitionOptions,
-    languageAttribute
+    languageAttribute,
+    pubsubItemContentAliases
 } from '../jxt';
 import { NS_GEOLOC } from '../Namespaces';
 
 import { PubsubItemContent } from './';
-import { pubsubItemContentAliases } from './util';
 
 export interface Geolocation extends PubsubItemContent {
     itemType?: typeof NS_GEOLOC;

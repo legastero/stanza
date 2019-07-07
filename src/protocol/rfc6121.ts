@@ -15,12 +15,14 @@ import {
     childInteger,
     childText,
     DefinitionOptions,
+    extendMessage,
+    extendPresence,
+    extendStreamFeatures,
+    JIDAttribute,
     LanguageSet,
     multipleChildText
 } from '../jxt';
 import { NS_ROSTER, NS_ROSTER_VERSIONING, NS_SUBSCRIPTION_PREAPPROVAL } from '../Namespaces';
-
-import { extendMessage, extendPresence, extendStreamFeatures, JIDAttribute } from './util';
 
 declare module './' {
     export interface StreamFeatures {

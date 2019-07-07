@@ -5,10 +5,8 @@
 // Version: 0.1 (2013-01-03)
 // ====================================================================
 
-import { attribute, DefinitionOptions, splicePath } from '../jxt';
+import { attribute, DefinitionOptions, extendPresence, splicePath } from '../jxt';
 import { NS_HATS_0 } from '../Namespaces';
-
-import { extendPresence } from './util';
 
 declare module './' {
     export interface Presence {

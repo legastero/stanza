@@ -5,11 +5,16 @@
 // Version: 1.1.1 (2016-07-09)
 // ====================================================================
 
-import { attribute, DefinitionOptions, integerAttribute, textBuffer } from '../jxt';
+import {
+    attribute,
+    DefinitionOptions,
+    integerAttribute,
+    pubsubItemContentAliases,
+    textBuffer
+} from '../jxt';
 import { NS_AVATAR_DATA, NS_AVATAR_METADATA } from '../Namespaces';
 
 import { PubsubItemContent } from './';
-import { pubsubItemContentAliases } from './util';
 
 export interface AvatarData extends PubsubItemContent {
     itemType?: typeof NS_AVATAR_DATA;

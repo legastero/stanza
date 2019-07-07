@@ -12,19 +12,18 @@
 // Version: 1.4 (2014-04-09)
 // ====================================================================
 
+import { JID } from '../JID';
 import {
     attribute,
     childText,
     DefinitionOptions,
     integerAttribute,
+    JIDAttribute,
     languageAttribute,
     namespacedAttribute,
     namespacedBooleanAttribute
 } from '../jxt';
-
 import { NS_BOSH, NS_BOSH_XMPP } from '../Namespaces';
-
-import { JID, JIDAttribute } from './util';
 
 export interface BOSH {
     seeOtherURI?: string;

@@ -16,10 +16,16 @@ import {
     JingleSessionRole,
     toList
 } from '../Constants';
-import { attribute, childEnum, childText, DefinitionOptions } from '../jxt';
+import { JID } from '../JID';
+import {
+    attribute,
+    childEnum,
+    childText,
+    DefinitionOptions,
+    extendStanzaError,
+    JIDAttribute
+} from '../jxt';
 import { NS_JINGLE_1, NS_JINGLE_ERRORS_1 } from '../Namespaces';
-
-import { extendStanzaError, JID, JIDAttribute } from './util';
 
 declare module './' {
     export interface IQPayload {

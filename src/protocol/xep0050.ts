@@ -5,11 +5,18 @@
 // Version: 1.2.2 (2016-12-03)
 // ====================================================================
 
-import { attribute, childBoolean, childEnum, DefinitionOptions, text } from '../jxt';
+import {
+    addAlias,
+    attribute,
+    childBoolean,
+    childEnum,
+    DefinitionOptions,
+    extendStanzaError,
+    text
+} from '../jxt';
 import { NS_ADHOC_COMMANDS, NS_DATAFORM } from '../Namespaces';
 
 import { DataForm } from './';
-import { addAlias, extendStanzaError } from './util';
 
 declare module './' {
     export interface IQPayload {

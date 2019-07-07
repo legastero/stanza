@@ -5,11 +5,17 @@
 // Version: 2.4 (2012-01-253)
 // ====================================================================
 
-import { childBoolean, childDate, childText, DefinitionOptions } from '../jxt';
+import {
+    addAlias,
+    childBoolean,
+    childDate,
+    childText,
+    DefinitionOptions,
+    extendStreamFeatures
+} from '../jxt';
 import { NS_DATAFORM, NS_INBAND_REGISTRATION, NS_OOB, NS_REGISTER } from '../Namespaces';
 
 import { DataForm, Link } from './';
-import { addAlias, extendStreamFeatures } from './util';
 
 declare module './' {
     export interface StreamFeatures {

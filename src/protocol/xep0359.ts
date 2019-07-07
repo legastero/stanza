@@ -5,11 +5,9 @@
 // Version: 0.5.0 (2017-08-23)
 // ====================================================================
 
-import { attribute, childAttribute, DefinitionOptions } from '../jxt';
-
+import { JID } from '../JID';
+import { attribute, childAttribute, DefinitionOptions, extendMessage, JIDAttribute } from '../jxt';
 import { NS_SID_0 } from '../Namespaces';
-
-import { extendMessage, JID, JIDAttribute } from './util';
 
 declare module './' {
     export interface Message {

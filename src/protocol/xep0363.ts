@@ -12,13 +12,11 @@ import {
     childEnum,
     deepChildInteger,
     DefinitionOptions,
+    extendStanzaError,
     integerAttribute,
     text
 } from '../jxt';
-
 import { NS_HTTP_UPLOAD_0 } from '../Namespaces';
-
-import { extendStanzaError } from './util';
 
 declare module './' {
     export interface IQPayload {

@@ -19,16 +19,20 @@
 // ====================================================================
 
 import { MUCAffiliation, MUCRole, MUCStatusCode } from '../Constants';
+import { JID } from '../JID';
 import {
+    addAlias,
     attribute,
     childAttribute,
     childBoolean,
     childEnum,
+    childJIDAttribute,
     childText,
     dateAttribute,
     deepChildText,
     DefinitionOptions,
     integerAttribute,
+    JIDAttribute,
     multipleChildAttribute,
     splicePath,
     staticValue,
@@ -45,7 +49,6 @@ import {
 } from '../Namespaces';
 
 import { DataForm, Presence, ReceivedPresence } from './';
-import { addAlias, childJIDAttribute, JID, JIDAttribute } from './util';
 
 declare module './' {
     export interface Presence {

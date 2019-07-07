@@ -1,61 +1,19 @@
-import {
-    attribute,
-    childAttribute,
-    childText,
-    createElement,
-    DefinitionOptions,
-    FieldDefinition,
-    findAll,
-    LinkPath,
-    TranslationContext,
-    XMLElement
-} from '../jxt';
-
 import { NS_CLIENT, NS_STANZAS, NS_STREAM } from '../Namespaces';
 
-export type JID = string;
+import { DefinitionOptions, FieldDefinition, LinkPath } from './Definitions';
+import { attribute, childAttribute, childText } from './Types';
+
+// ====================================================================
+// Useful XMPP Aliases
+// ====================================================================
+
 export const JIDAttribute = attribute;
 export const childJIDAttribute = childAttribute;
 export const childJID = childText;
 
-export function parameterMap(
-    namespace: string,
-    element: string,
-    keyName: string,
-    valueName: string
-): FieldDefinition {
-    return {
-        importer(
-            xml: XMLElement,
-            context: TranslationContext
-        ): { [key: string]: string | undefined } {
-            const result: { [key: string]: string | undefined } = {};
-            const params = findAll(xml, namespace, element);
-            const keyImporter = attribute(keyName).importer;
-            const valueImporter = attribute(valueName).importer;
-            for (const param of params) {
-                result[keyImporter(param, context)!] = valueImporter(param, context);
-            }
-            return result;
-        },
-        exporter(
-            xml: XMLElement,
-            values: { [key: string]: string | undefined },
-            context: TranslationContext
-        ) {
-            const keyExporter = attribute(keyName).exporter;
-            const valueExporter = attribute(valueName).exporter;
-            for (const param of Object.keys(values)) {
-                const paramEl = createElement(namespace, element);
-                keyExporter(paramEl, param, context);
-                if (values[param]) {
-                    valueExporter(paramEl, values[param]!, context);
-                }
-                xml.appendChild(paramEl);
-            }
-        }
-    };
-}
+// ====================================================================
+// XMPP Definition Shortcuts
+// ====================================================================
 
 export function addAlias(
     namespace: string,

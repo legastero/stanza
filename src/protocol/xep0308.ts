@@ -5,11 +5,8 @@
 // Version: 1.0 (2013-04-08)
 // ====================================================================
 
-import { childAttribute, DefinitionOptions } from '../jxt';
-
+import { childAttribute, extendMessage } from '../jxt';
 import { NS_CORRECTION_0 } from '../Namespaces';
-
-import { extendMessage } from './util';
 
 declare module './' {
     export interface Message {

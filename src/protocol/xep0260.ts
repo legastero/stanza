@@ -10,12 +10,12 @@ import {
     childAttribute,
     childBoolean,
     DefinitionOptions,
-    integerAttribute
+    integerAttribute,
+    JIDAttribute
 } from '../jxt';
 import { NS_JINGLE_SOCKS5_1 } from '../Namespaces';
 
 import { JingleTransport } from './';
-import { JIDAttribute } from './util';
 
 export interface JingleSocks5 extends JingleTransport {
     transportType: typeof NS_JINGLE_SOCKS5_1;

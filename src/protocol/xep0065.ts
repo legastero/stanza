@@ -5,10 +5,18 @@
 // Version: 1.8.1 (2015-09-17)
 // ====================================================================
 
-import { attribute, childAttribute, childText, DefinitionOptions, integerAttribute } from '../jxt';
+import { JID } from '../JID';
+import {
+    attribute,
+    childAttribute,
+    childJIDAttribute,
+    childText,
+    DefinitionOptions,
+    integerAttribute,
+    JIDAttribute
+} from '../jxt';
 
 import { NS_SOCKS5 } from '../Namespaces';
-import { childJIDAttribute, JID, JIDAttribute } from './util';
 
 declare module './' {
     export interface IQPayload {

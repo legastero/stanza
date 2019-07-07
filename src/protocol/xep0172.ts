@@ -5,12 +5,17 @@
 // Version: 1.1 (2012-03-21)
 // ====================================================================
 
-import { childText, DefinitionOptions, text } from '../jxt';
-
+import {
+    childText,
+    DefinitionOptions,
+    extendMessage,
+    extendPresence,
+    pubsubItemContentAliases,
+    text
+} from '../jxt';
 import { NS_NICK } from '../Namespaces';
 
 import { PubsubItemContent } from './';
-import { extendMessage, extendPresence, pubsubItemContentAliases } from './util';
 
 declare module './' {
     export interface Message {

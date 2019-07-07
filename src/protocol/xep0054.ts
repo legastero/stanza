@@ -5,6 +5,7 @@
 // Version: 1.2 (2008-07-16)
 // ====================================================================
 
+import { JID } from '../JID';
 import {
     childBoolean,
     childText,
@@ -13,9 +14,7 @@ import {
     multipleChildText,
     text
 } from '../jxt';
-
 import { NS_VCARD_TEMP } from '../Namespaces';
-import { JID } from './util';
 
 declare module './' {
     export interface IQPayload {

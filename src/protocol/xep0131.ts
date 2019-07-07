@@ -5,11 +5,15 @@
 // Version: 1.2 (2006-07-12)
 // ====================================================================
 
-import { attribute, DefinitionOptions, splicePath, text } from '../jxt';
-
+import {
+    attribute,
+    DefinitionOptions,
+    extendMessage,
+    extendPresence,
+    splicePath,
+    text
+} from '../jxt';
 import { NS_SHIM } from '../Namespaces';
-
-import { extendMessage, extendPresence } from './util';
 
 declare module './' {
     export interface Message {

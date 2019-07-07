@@ -5,11 +5,8 @@
 // Version: Version 1.0 (2008-11-13)
 // ====================================================================
 
-import { childBoolean, DefinitionOptions } from '../jxt';
-
+import { childBoolean, extendMessage } from '../jxt';
 import { NS_ATTENTION_0 } from '../Namespaces';
-
-import { extendMessage } from './util';
 
 declare module './' {
     export interface Message {

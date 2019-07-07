@@ -5,12 +5,10 @@
 // Version: 0.12.0 (2017-02-16)
 // ====================================================================
 
-import { DefinitionOptions } from '../jxt';
-
+import { addAlias } from '../jxt';
 import { NS_CARBONS_2, NS_FORWARD_0 } from '../Namespaces';
 
 import { Forward } from './';
-import { addAlias } from './util';
 
 declare module './' {
     export interface Message {

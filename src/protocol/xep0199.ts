@@ -5,11 +5,8 @@
 // Version: 2.0 (2009-06-03)
 // ====================================================================
 
-import { childBoolean, DefinitionOptions } from '../jxt';
-
+import { childBoolean, extendIQ } from '../jxt';
 import { NS_PING } from '../Namespaces';
-
-import { extendIQ } from './util';
 
 declare module './' {
     export interface IQPayload {

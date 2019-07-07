@@ -5,11 +5,11 @@
 // Version: 1.3 (2009-09-15)
 // ====================================================================
 
-import { childText, DefinitionOptions } from '../jxt';
+import { JID } from '../JID';
+import { addAlias, childText, DefinitionOptions, JIDAttribute } from '../jxt';
 import { NS_DATAFORM, NS_SEARCH } from '../Namespaces';
 
 import { DataForm } from './';
-import { addAlias, JID, JIDAttribute } from './util';
 
 declare module './' {
     export interface IQPayload {

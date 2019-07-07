@@ -11,12 +11,12 @@ import {
     childDoubleEnum,
     childText,
     DefinitionOptions,
-    LanguageSet
+    LanguageSet,
+    pubsubItemContentAliases
 } from '../jxt';
 import { NS_ACTIVITY } from '../Namespaces';
 
 import { PubsubItemContent } from './';
-import { pubsubItemContentAliases } from './util';
 
 export interface UserActivity extends PubsubItemContent {
     itemType?: typeof NS_ACTIVITY;

@@ -5,12 +5,10 @@
 // Version: Version 1.0 (2008-11-13)
 // ====================================================================
 
-import { attribute, DefinitionOptions, integerAttribute } from '../jxt';
-
+import { addAlias, attribute, DefinitionOptions, integerAttribute } from '../jxt';
 import { NS_BOB, NS_THUMBS_1 } from '../Namespaces';
 
 import { Bits } from './';
-import { addAlias } from './util';
 
 declare module './xep0166' {
     export interface Jingle {

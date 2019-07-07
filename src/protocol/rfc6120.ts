@@ -22,6 +22,7 @@ import {
     childText,
     DefinitionOptions,
     FieldDefinition,
+    JIDAttribute,
     languageAttribute,
     LanguageSet,
     multipleChildText,
@@ -30,7 +31,6 @@ import {
 import { NS_BIND, NS_CLIENT, NS_SASL, NS_STANZAS, NS_STARTTLS, NS_STREAM } from '../Namespaces';
 
 import { IQ } from './';
-import { JIDAttribute } from './util';
 
 declare module './' {
     export interface Stream {

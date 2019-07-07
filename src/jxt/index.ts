@@ -5,6 +5,7 @@ import Translator from './Translator';
 
 export * from './Definitions';
 export * from './Types';
+export * from './Helpers';
 
 export { default as Parser, parse } from './Parser';
 export { default as StreamParser, ParsedData } from './StreamParser';

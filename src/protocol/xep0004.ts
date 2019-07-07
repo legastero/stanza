@@ -6,6 +6,7 @@
 // ====================================================================
 
 import { DataFormFieldType, DataFormType } from '../Constants';
+import { JID } from '../JID';
 import {
     attribute,
     childBoolean,
@@ -17,8 +18,6 @@ import {
     XMLElement
 } from '../jxt';
 import { NS_DATAFORM } from '../Namespaces';
-
-import { JID } from './util';
 
 declare module './' {
     export interface Message {

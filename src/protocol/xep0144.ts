@@ -5,11 +5,17 @@
 // Version: 1.1.1 (2017-11-28)
 // ====================================================================
 
-import { attribute, DefinitionOptions, multipleChildText, splicePath } from '../jxt';
-
+import { JID } from '../JID';
+import {
+    attribute,
+    DefinitionOptions,
+    extendIQ,
+    extendMessage,
+    JIDAttribute,
+    multipleChildText,
+    splicePath
+} from '../jxt';
 import { NS_ROSTER_EXCHANGE } from '../Namespaces';
-
-import { extendIQ, extendMessage, JID, JIDAttribute } from './util';
 
 declare module './' {
     export interface Message {

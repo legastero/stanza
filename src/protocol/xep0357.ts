@@ -5,12 +5,17 @@
 // Version: 0.3 (2017-08-24)
 // ====================================================================
 
-import { attribute, DefinitionOptions } from '../jxt';
-
+import { JID } from '../JID';
+import {
+    addAlias,
+    attribute,
+    DefinitionOptions,
+    JIDAttribute,
+    pubsubItemContentAliases
+} from '../jxt';
 import { NS_DATAFORM, NS_PUSH_0 } from '../Namespaces';
 
 import { DataForm } from './';
-import { addAlias, JID, JIDAttribute, pubsubItemContentAliases } from './util';
 
 declare module './' {
     export interface IQPayload {

@@ -7,6 +7,7 @@
 
 import { JINGLE_INFO_CHECKSUM_5, JINGLE_INFO_RECEIVED_5, JingleSessionRole } from '../Constants';
 import {
+    addAlias,
     attribute,
     childDate,
     childInteger,
@@ -17,7 +18,6 @@ import {
 import { NS_HASHES_2, NS_JINGLE_FILE_TRANSFER_5, NS_THUMBS_1 } from '../Namespaces';
 
 import { Hash, HashUsed, JingleApplication, JingleInfo, Thumbnail } from './';
-import { addAlias } from './util';
 
 export interface FileTransferDescription extends JingleApplication {
     applicationType: typeof NS_JINGLE_FILE_TRANSFER_5;

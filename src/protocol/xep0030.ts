@@ -12,11 +12,18 @@
 // Version: 1.0 (2004-10-20)
 // ====================================================================
 
-import { attribute, DefinitionOptions, languageAttribute, multipleChildAttribute } from '../jxt';
+import { JID } from '../JID';
+import {
+    addAlias,
+    attribute,
+    DefinitionOptions,
+    JIDAttribute,
+    languageAttribute,
+    multipleChildAttribute
+} from '../jxt';
 import { NS_DATAFORM, NS_DISCO_INFO, NS_DISCO_ITEMS, NS_RSM } from '../Namespaces';
 
 import { DataForm } from './';
-import { addAlias, JID, JIDAttribute } from './util';
 
 declare module './' {
     export interface IQPayload {

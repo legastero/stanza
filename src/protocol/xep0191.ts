@@ -5,11 +5,9 @@
 // Version: 1.3 (2015-03-12)
 // ====================================================================
 
-import { childBoolean, DefinitionOptions, multipleChildAttribute } from '../jxt';
-
+import { JID } from '../JID';
+import { childBoolean, DefinitionOptions, extendStanzaError, multipleChildAttribute } from '../jxt';
 import { NS_BLOCKING, NS_BLOCKING_ERRORS } from '../Namespaces';
-
-import { extendStanzaError, JID } from './util';
 
 declare module './' {
     export interface IQPayload {

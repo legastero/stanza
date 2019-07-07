@@ -5,11 +5,9 @@
 // Version: 2.0 (2009-09-15)
 // ====================================================================
 
-import { dateAttribute, DefinitionOptions, text } from '../jxt';
+import { dateAttribute, DefinitionOptions, JIDAttribute, text } from '../jxt';
 
 import { NS_DELAY } from '../Namespaces';
-
-import { JIDAttribute } from './util';
 
 declare module './' {
     export interface Message {

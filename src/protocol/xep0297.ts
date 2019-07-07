@@ -5,13 +5,12 @@
 // Version: 1.0 (2013-10-02)
 // ====================================================================
 
-import { define, DefinitionOptions } from '../jxt';
+import { addAlias, define, DefinitionOptions } from '../jxt';
 
 import { StreamType } from '../Constants';
 import { NS_DELAY, NS_FORWARD_0 } from '../Namespaces';
 
 import { Delay, IQ, Message, Presence } from './';
-import { addAlias } from './util';
 
 declare module './' {
     export interface Message {

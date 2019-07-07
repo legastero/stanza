@@ -1,6 +1,8 @@
 import Punycode from 'punycode';
 import { nameprep, nodeprep, resourceprep } from './lib/stringprep';
 
+export type JID = string;
+
 export interface JIDParts {
     domain: string;
     local?: string;
@@ -20,7 +22,7 @@ export interface PreparationOptions {
     escaped?: boolean;
 }
 
-export function create(data: JIDParts, opts: PreparationOptions = {}): string {
+export function create(data: JIDParts, opts: PreparationOptions = {}): JID {
     let localPart = data.local;
     if (!opts.escaped) {
         localPart = escapeLocal(data.local);
@@ -68,7 +70,7 @@ export function prepare(data: JIDParts): JIDParts {
     };
 }
 
-export function parse(jid: string = ''): ParsedJID {
+export function parse(jid: JID = ''): ParsedJID {
     let local = '';
     let domain = '';
     let resource = '';
@@ -111,7 +113,7 @@ export function parse(jid: string = ''): ParsedJID {
     };
 }
 
-export function allowedResponders(jid1?: string, jid2?: string): Set<string | undefined> {
+export function allowedResponders(jid1?: JID, jid2?: JID): Set<JID | undefined> {
     const allowed = new Set<string | undefined>();
     allowed.add(undefined);
     allowed.add('');
@@ -133,7 +135,7 @@ export function allowedResponders(jid1?: string, jid2?: string): Set<string | un
     return allowed;
 }
 
-export function equal(jid1: string, jid2: string): boolean {
+export function equal(jid1: JID, jid2: JID): boolean {
     if (!jid1 || !jid2) {
         return false;
     }
@@ -146,7 +148,7 @@ export function equal(jid1: string, jid2: string): boolean {
     );
 }
 
-export function equalBare(jid1?: string, jid2?: string): boolean {
+export function equalBare(jid1?: JID, jid2?: JID): boolean {
     if (!jid1 || !jid2) {
         return false;
     }
@@ -155,32 +157,32 @@ export function equalBare(jid1?: string, jid2?: string): boolean {
     return parsed1.local === parsed2.local && parsed1.domain === parsed2.domain;
 }
 
-export function isBare(jid: string): boolean {
+export function isBare(jid: JID): boolean {
     return !isFull(jid);
 }
 
-export function isFull(jid: string): boolean {
+export function isFull(jid: JID): boolean {
     const parsed = parse(jid);
     return !!parsed.resource;
 }
 
-export function getLocal(jid: string = ''): string | undefined {
+export function getLocal(jid: JID = ''): string | undefined {
     return parse(jid).local;
 }
 
-export function getDomain(jid: string = ''): string {
+export function getDomain(jid: JID = ''): JID {
     return parse(jid).domain;
 }
 
-export function getResource(jid: string = ''): string | undefined {
+export function getResource(jid: JID = ''): string | undefined {
     return parse(jid).resource;
 }
 
-export function toBare(jid: string = ''): string {
+export function toBare(jid: JID = ''): JID {
     return parse(jid).bare;
 }
 
-export function escapeLocal(val: string = '') {
+export function escapeLocal(val: string = ''): string {
     return val
         .replace(/^\s+|\s+$/g, '')
         .replace(/\\5c/g, '\\5c5c')

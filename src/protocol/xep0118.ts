@@ -5,12 +5,10 @@
 // Version: 1.2 (2008-01-30)
 // ====================================================================
 
-import { childInteger, childText, DefinitionOptions } from '../jxt';
-
+import { childInteger, childText, DefinitionOptions, pubsubItemContentAliases } from '../jxt';
 import { NS_TUNE } from '../Namespaces';
 
 import { PubsubItemContent } from './';
-import { pubsubItemContentAliases } from './util';
 
 export interface UserTune extends PubsubItemContent {
     itemType?: typeof NS_TUNE;

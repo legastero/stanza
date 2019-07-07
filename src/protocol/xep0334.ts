@@ -5,11 +5,8 @@
 // Version: 0.3.0 (2018-01-25)
 // ====================================================================
 
-import { createElement, FieldDefinition } from '../jxt';
-
+import { createElement, extendMessage, FieldDefinition } from '../jxt';
 import { NS_HINTS } from '../Namespaces';
-
-import { extendMessage } from './util';
 
 declare module './' {
     export interface Message {

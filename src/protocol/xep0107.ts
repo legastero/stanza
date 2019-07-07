@@ -11,13 +11,13 @@ import {
     childEnum,
     childText,
     DefinitionOptions,
-    LanguageSet
+    LanguageSet,
+    pubsubItemContentAliases
 } from '../jxt';
 
 import { NS_MOOD } from '../Namespaces';
 
 import { PubsubItemContent } from './';
-import { pubsubItemContentAliases } from './util';
 
 declare module './' {
     export interface Message {

@@ -5,12 +5,10 @@
 // Version: 0.1 (2013-10-25)
 // ====================================================================
 
-import { childJSON, DefinitionOptions } from '../jxt';
-
+import { childJSON, DefinitionOptions, extendMessage, pubsubItemContentAliases } from '../jxt';
 import { NS_JSON_0 } from '../Namespaces';
 
 import { PubsubItemContent } from './';
-import { extendMessage, pubsubItemContentAliases } from './util';
 
 declare module './' {
     export interface Message {

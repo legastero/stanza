@@ -5,11 +5,17 @@
 // Version: 1.1 (2007-11-07)
 // ====================================================================
 
-import { attribute, childText, DefinitionOptions } from '../jxt';
+import { JID } from '../JID';
+import {
+    attribute,
+    childText,
+    DefinitionOptions,
+    JIDAttribute,
+    pubsubItemContentAliases
+} from '../jxt';
 import { NS_BOOKMARKS } from '../Namespaces';
 
 import { PubsubItemContent } from './';
-import { JID, JIDAttribute, pubsubItemContentAliases } from './util';
 
 declare module './' {
     export interface PrivateStorage {

@@ -53,6 +53,7 @@ import {
     findAll,
     integerAttribute,
     multipleChildAttribute,
+    parameterMap,
     textBuffer,
     TranslationContext,
     XMLElement
@@ -67,7 +68,6 @@ import {
 } from '../Namespaces';
 
 import { JingleApplication, JingleDtlsFingerprint, Thumbnail } from './';
-import { parameterMap } from './util';
 
 declare module './xep0166' {
     export interface JingleReason {

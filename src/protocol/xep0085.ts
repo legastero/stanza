@@ -6,10 +6,8 @@
 // ====================================================================
 
 import { ChatState, toList } from '../Constants';
-import { childEnum } from '../jxt';
+import { childEnum, extendMessage } from '../jxt';
 import { NS_CHAT_STATES } from '../Namespaces';
-
-import { extendMessage } from './util';
 
 declare module './' {
     export interface Message {

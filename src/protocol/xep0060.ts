@@ -6,7 +6,9 @@
 // ====================================================================
 
 import { PubsubErrorCondition, toList } from '../Constants';
+import { JID } from '../JID';
 import {
+    addAlias,
     attribute,
     booleanAttribute,
     childAttribute,
@@ -14,8 +16,10 @@ import {
     childEnum,
     deepChildBoolean,
     DefinitionOptions,
+    extendStanzaError,
     FieldDefinition,
     integerAttribute,
+    JIDAttribute,
     multipleChildAttribute,
     splicePath
 } from '../jxt';
@@ -29,7 +33,6 @@ import {
 } from '../Namespaces';
 
 import { DataForm, Paging } from './';
-import { addAlias, extendStanzaError, JID, JIDAttribute } from './util';
 
 declare module './' {
     export interface Message {

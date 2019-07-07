@@ -10,12 +10,10 @@ import {
     booleanAttribute,
     childBoolean,
     DefinitionOptions,
+    extendStreamFeatures,
     integerAttribute
 } from '../jxt';
-
 import { NS_SMACKS_3 } from '../Namespaces';
-
-import { extendStreamFeatures } from './util';
 
 declare module './' {
     export interface StreamFeatures {

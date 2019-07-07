@@ -5,10 +5,8 @@
 // Version: 1.1 (2018-02-26)
 // ====================================================================
 
-import { DefinitionOptions, findAll, findOrCreate } from '../jxt';
-
+import { extendPresence, findAll, findOrCreate } from '../jxt';
 import { NS_VCARD_TEMP_UPDATE } from '../Namespaces';
-import { extendPresence } from './util';
 
 declare module './' {
     export interface Presence {
