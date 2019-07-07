@@ -64,6 +64,7 @@ export * from './xep0300';
 export * from './xep0301';
 export * from './xep0308';
 export * from './xep0313';
+export * from './xep0317';
 export * from './xep0319';
 export * from './xep0320';
 export * from './xep0335';
@@ -139,6 +140,7 @@ import XEP0300 from './xep0300';
 import XEP0301 from './xep0301';
 import XEP0308 from './xep0308';
 import XEP0313 from './xep0313';
+import XEP0317 from './xep0317';
 import XEP0319 from './xep0319';
 import XEP0320 from './xep0320';
 import XEP0335 from './xep0335';
@@ -215,6 +217,7 @@ export default [
     XEP0301,
     XEP0308,
     XEP0313,
+    XEP0317,
     XEP0319,
     XEP0320,
     XEP0335,
