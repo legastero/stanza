@@ -1,8 +1,8 @@
 import * as FS from 'fs';
 import * as tape from 'tape';
 
-import { parse, Registry, XMLElement } from '../../src/jxt';
-import XMPP from '../../src/protocol';
+import { parse, Registry, XMLElement } from '../src/jxt';
+import XMPP from '../src/protocol';
 
 const test = tape.test;
 
@@ -25,13 +25,13 @@ const removeWhiteSpace = (xml: XMLElement): XMLElement => {
     return xml;
 };
 
-const testCaseFolders = FS.readdirSync(__dirname + '/cases');
+const testCaseFolders = FS.readdirSync(__dirname + '/protocol-cases');
 const testSuites: Map<string, Set<string>> = new Map();
 
 for (const dir of testCaseFolders) {
     const cases = new Set<string>();
 
-    const testCaseFiles = FS.readdirSync(__dirname + '/cases/' + dir);
+    const testCaseFiles = FS.readdirSync(__dirname + '/protocol-cases/' + dir);
     for (const file of testCaseFiles) {
         cases.add(file.substring(0, file.lastIndexOf('.')));
     }
@@ -44,12 +44,14 @@ for (const [testSuite, testCases] of testSuites) {
         const xml = removeWhiteSpace(
             parse(
                 FS.readFileSync(
-                    __dirname + '/cases/' + testSuite + '/' + testCase + '.xml'
+                    __dirname + '/protocol-cases/' + testSuite + '/' + testCase + '.xml'
                 ).toString()
             )
         )!;
         const json = JSON.parse(
-            FS.readFileSync(__dirname + '/cases/' + testSuite + '/' + testCase + '.json').toString()
+            FS.readFileSync(
+                __dirname + '/protocol-cases/' + testSuite + '/' + testCase + '.json'
+            ).toString()
         );
 
         const jsonOut = json[1];

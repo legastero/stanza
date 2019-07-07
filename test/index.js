@@ -16,4 +16,4 @@ import './jingle';
 
 // JXT Tests
 import './jxt';
-import './jxt-definitions';
+import './protocol';
