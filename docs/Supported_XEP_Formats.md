@@ -2,13 +2,6 @@
 
 > Your XMPP is now JSON
 
-## Table of Contents
-
--   [Supported RFCs and Internet-Drafts](#supported-rfcs-ids)
--   [Suported XEPs](#supported-xeps)
--   [Planned Support for XEPs](#planned-support-for-xeps)
--   [Project Information](#project-information)
-
 ## Supported RFCs/IDs
 
 | RFC/ID                                                                                       | Name                                                                              | Source                               | Test Cases                               |
@@ -104,15 +97,3 @@
 | [XEP-0363](https://xmpp.org/extensions/xep-0363.html) | HTTP File Upload                                   | 0.5.0   | [Source](../src/protocol/xep0363.ts) |                                              |
 | [XEP-0371](https://xmpp.org/extensions/xep-0371.html) | Jingle ICE Transport Method                        | 0.2     | [Source](../src/protocol/xep0176.ts) |                                              |
 | [XEP-0380](https://xmpp.org/extensions/xep-0380.html) | Explicit Message Encryption                        | 0.2.0   | [Source](../src/protocol/xep0380.ts) |                                              |
-
-## Planned Support for XEPs
-
-| XEP                                                   | Name                                 | Version |
-| ----------------------------------------------------- | ------------------------------------ | ------- |
-| [XEP-0220](https://xmpp.org/extensions/xep-0220.html) | Server Dialback                      | 1.1.1   |
-| [XEP-0353](https://xmpp.org/extensions/xep-0353.html) | Jingle Message Initiation            | 0.3     |
-| [XEP-0358](https://xmpp.org/extensions/xep-0358.html) | Publishing Available Jingle Sessions | 0.4     |
-| [XEP-0367](https://xmpp.org/extensions/xep-0367.html) | Message Attaching                    | 0.2     |
-| [XEP-0370](https://xmpp.org/extensions/xep-0370.html) | Jingle HTTP Transport Method         | 0.2     |
-| [XEP-0382](https://xmpp.org/extensions/xep-0382.html) | Spoiler Messages                     | 0.2.0   |
-| [XEP-0390](https://xmpp.org/extensions/xep-0390.html) | Entity Capabilities 2.0              | 0.2     |
