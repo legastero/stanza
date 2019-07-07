@@ -4,12 +4,10 @@
 
 Working with XML can be tedious, but many XML to JSON converters leave you with a DOM dump which is just as annoying to traverse and work with. JXT allows you to import XML into dev-friendly JSON that matches what you would have otherwise used, and then export that data back into XML when needed.
 
-Works in both node and browsers.
-
 ## Basic Usage
 
 ```js
-import * as JXT from 'jxt';
+import { JXT } from 'stanza';
 const registry = new JXT.Registry();
 
 registry.define({
@@ -43,9 +41,9 @@ console.log(xml2.toString());
 
 ## Documentation
 
--   [Creating a Definition](docs/Creating.md)
--   [Extending an Existing Definition](docs/Extending.md)
--   [Importing to JSON](docs/Importing.md)
--   [Exporting to XML](docs/Exporting.md)
--   [Working with Languages](docs/Language.md)
--   [Field Definition Types](docs/FieldTypes.md)
+-   [Creating a Definition](./Creating.md)
+-   [Extending an Existing Definition](./Extending.md)
+-   [Importing to JSON](./Importing.md)
+-   [Exporting to XML](./Exporting.md)
+-   [Working with Languages](./Language.md)
+-   [Field Definition Types](./FieldTypes.md)
