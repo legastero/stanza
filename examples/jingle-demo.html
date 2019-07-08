@@ -121,9 +121,9 @@
                 });
 
                 client.on('session:started', function() {
-                    client.getRoster(function(err, resp) {
-                        client.sendPresence();
-                    });
+                    client.getRoster();
+                    client.sendPresence();
+                    client.discoverICEServers();
                     document.getElementById('myJID').textContent = client.jid;
                 });
 
