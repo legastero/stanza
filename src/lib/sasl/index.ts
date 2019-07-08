@@ -225,7 +225,11 @@ export class PLAIN extends SimpleMech implements Mechanism {
 
     public createResponse(credentials: Credentials): Buffer {
         return Buffer.from(
-            `${credentials.authzid || ''}\x00${credentials.username}\x00${credentials.password}`
+            (credentials.authzid || '') +
+                '\x00' +
+                credentials.username +
+                '\x00' +
+                credentials.password
         );
     }
 }

@@ -58,6 +58,7 @@ FS.writeFileSync(
     JSON.stringify(
         {
             ...Pkg,
+            stanzajs_env_mappings: undefined,
             browser: './browser-module.js',
             devDependencies: undefined,
             main: './index.js',

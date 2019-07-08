@@ -43,6 +43,7 @@
         "rimraf": "^2.6.2",
         "rollup": "^1.14.4",
         "rollup-plugin-node-resolve": "^5.0.1",
+        "rollup-plugin-terser": "^5.1.1",
         "rollup-plugin-visualizer": "^2.4.4",
         "tap-spec": "^5.0.0",
         "tape": "^4.10.2",
