@@ -6,7 +6,7 @@ import * as RTT from './helpers/RTT';
 import * as JID from './JID';
 import * as Jingle from './jingle';
 import * as JXT from './jxt';
-import { Factory } from './lib/sasl';
+import * as LibSASL from './lib/sasl';
 import StrictEventEmitter from './lib/StrictEventEmitter';
 import * as Namespaces from './Namespaces';
 import * as Stanzas from './protocol';
@@ -89,7 +89,7 @@ export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
     config: AgentConfig;
     transport?: Transport;
     sm: SM;
-    sasl: Factory;
+    sasl: LibSASL.Factory;
     stanzas: JXT.Registry;
 
     sessionStarted: boolean;
@@ -149,7 +149,7 @@ export interface TransportConfig {
     wait?: number;
 }
 
-export { Client, Constants, JXT, JID, Namespaces, Stanzas, Jingle, Utils, RTT };
+export { Client, Constants, JXT, JID, Namespaces, Stanzas, Jingle, Utils, RTT, LibSASL as SASL };
 
 export const VERSION = '__STANZAJS_VERSION__';
 
