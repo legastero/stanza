@@ -1,4 +1,4 @@
-import { Agent } from '../';
+import { Agent, JID } from '../';
 import { NS_SHIM } from '../Namespaces';
 import {
     DataForm,
@@ -29,11 +29,11 @@ declare module '../' {
     export interface Agent {
         subscribeToNode(
             jid: string,
-            opts: string | PubsubSubscribe
+            opts: string | PubsubSubscribeWithOptions
         ): Promise<PubsubSubscriptionWithOptions>;
         unsubscribeFromNode(
             jid: string,
-            opts: string | PubsubUnsubscribe
+            opts: string | PubsubUnsubscribeOptions
         ): Promise<PubsubSubscription>;
         publish<T extends PubsubItemContent = PubsubItemContent>(
             jid: string,
@@ -80,6 +80,13 @@ declare module '../' {
         'pubsub:subscription': PubsubEventMessage & { pubsub: PubsubEventSubscription };
         'pubsub:config': PubsubEventMessage & { pubsub: PubsubEventConfiguration };
     }
+}
+
+export interface PubsubSubscribeOptions extends PubsubSubscribeWithOptions {
+    useBareJID?: boolean;
+}
+export interface PubsubUnsubscribeOptions extends PubsubUnsubscribe {
+    useBareJID?: boolean;
 }
 
 type PubsubEventMessage = ReceivedMessage & { pubsub: PubsubEvent };
@@ -170,26 +177,22 @@ export default function(client: Agent) {
         */
     });
 
-    client.subscribeToNode = async (jid: string, opts: string | PubsubSubscribeWithOptions) => {
+    client.subscribeToNode = async (jid: string, opts: string | PubsubSubscribeOptions) => {
+        const subscribe: PubsubSubscribe = {};
+        let form: DataForm | undefined;
         if (typeof opts === 'string') {
-            opts = {
-                node: opts
-            };
+            subscribe.node = opts;
+            subscribe.jid = JID.toBare(client.jid);
+        } else {
+            subscribe.node = opts.node;
+            subscribe.jid = opts.jid || (opts.useBareJID ? JID.toBare(client.jid) : client.jid);
+            form = opts.options;
         }
-        opts.jid = opts.jid || client.jid;
-
         const resp = await client.sendIQ({
             pubsub: {
                 context: 'user',
-                subscribe: {
-                    jid: opts.jid,
-                    node: opts.node
-                },
-                subscriptionOptions: opts.options
-                    ? {
-                          form: opts.options
-                      }
-                    : undefined
+                subscribe,
+                subscriptionOptions: form ? { form } : undefined
             },
             to: jid,
             type: 'set'
@@ -202,25 +205,28 @@ export default function(client: Agent) {
         return sub;
     };
 
-    client.unsubscribeFromNode = async (jid: string, opts: string | PubsubUnsubscribe) => {
+    client.unsubscribeFromNode = async (jid: string, opts: string | PubsubUnsubscribeOptions) => {
+        const unsubscribe: PubsubUnsubscribe = {};
         if (typeof opts === 'string') {
-            opts = {
-                node: opts
-            };
+            unsubscribe.node = opts;
+            unsubscribe.jid = JID.toBare(client.jid);
+        } else {
+            unsubscribe.node = opts.node;
+            unsubscribe.subid = opts.subid;
+            unsubscribe.jid = opts.jid || (opts.useBareJID ? JID.toBare(client.jid) : client.jid);
         }
-        opts.jid = opts.jid || client.jid;
 
         const resp = await client.sendIQ({
             pubsub: {
                 context: 'user',
-                unsubscribe: opts
+                unsubscribe
             },
             to: jid,
             type: 'set'
         });
         if (!resp.pubsub || !resp.pubsub.subscription) {
             return {
-                ...opts,
+                ...unsubscribe,
                 state: 'none'
             } as PubsubSubscription;
         }
