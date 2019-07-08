@@ -1,4 +1,5 @@
-import { Agent, JID } from '../';
+import { Agent } from '../';
+import * as JID from '../JID';
 import { NS_SHIM } from '../Namespaces';
 import {
     DataForm,
