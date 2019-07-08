@@ -58,12 +58,12 @@ export default class WSConnection implements Transport {
             const stanzaObj = e.stanza;
 
             if (name === 'stream') {
-                if (stanzaObj.type === 'open') {
+                if (stanzaObj.action === 'open') {
                     this.hasStream = true;
                     this.stream = stanzaObj;
                     return this.client.emit('stream:start', stanzaObj);
                 }
-                if (stanzaObj.type === 'close') {
+                if (stanzaObj.action === 'close') {
                     this.client.emit('stream:end');
                     return this.disconnect();
                 }
