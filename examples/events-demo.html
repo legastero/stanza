@@ -166,7 +166,7 @@
                     await client.getRoster();
                     client.updateCaps();
                     client.sendPresence({
-                        legacyEntityCapabilities: client.disco.caps
+                        legacyCapabilities: client.disco.caps
                     });
                 });
 

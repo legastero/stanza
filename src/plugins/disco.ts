@@ -19,7 +19,7 @@ declare module '../' {
         updateCaps(): LegacyEntityCaps | undefined;
         getCurrentCaps():
             | {
-                  legacyEntityCaps: LegacyEntityCaps;
+                  legacyCapabilities: LegacyEntityCaps;
                   info: DiscoNodeInfo;
               }
             | undefined;
@@ -111,7 +111,7 @@ export default function(client: Agent) {
         const node = `${caps.node}#${caps.value}`;
         return {
             info: client.disco.getNodeInfo(node),
-            legacyEntityCaps: caps
+            legacyCapabilities: caps
         };
     };
 
