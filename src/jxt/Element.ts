@@ -69,7 +69,7 @@ export default class XMLElement {
         return namespaces;
     }
 
-    public getAttribute(name: string, xmlns?: string): string | undefined {
+    public getAttribute(name: string, xmlns?: string | null): string | undefined {
         if (!xmlns) {
             return this.attributes[name];
         }
@@ -83,7 +83,7 @@ export default class XMLElement {
         return this.attributes[[namespaces[xmlns], name].join(':')];
     }
 
-    public getChild(name: string, xmlns?: string | undefined | null): XMLElement {
+    public getChild(name: string, xmlns?: string | undefined | null): XMLElement | undefined {
         return this.getChildren(name, xmlns)[0];
     }
 

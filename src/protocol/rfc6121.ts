@@ -95,7 +95,7 @@ export default [
     {
         element: 'query',
         fields: {
-            version: attribute('ver', undefined, true)
+            version: attribute('ver', undefined, { emitEmpty: true })
         },
         namespace: NS_ROSTER,
         path: 'iq.roster'

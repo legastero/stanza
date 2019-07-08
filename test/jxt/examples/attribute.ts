@@ -29,7 +29,7 @@ registry.define([
     {
         element: 'x3',
         fields: {
-            foo: attribute('foo', undefined, true)
+            foo: attribute('foo', undefined, { emitEmpty: true })
         },
         namespace: '',
         path: 'example3'

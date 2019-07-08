@@ -2,6 +2,10 @@ import { FieldDefinition, JSONData, LanguageSet, TranslationContext } from './De
 import XMLElement, { JSONElement } from './Element';
 import { parse } from './Parser';
 
+// ====================================================================
+// Utility Functions
+// ====================================================================
+
 export function createElement(
     namespace: string | null | undefined,
     name: string,
@@ -85,243 +89,340 @@ export function findOrCreate(
     return created;
 }
 
-export function attribute(
-    name: string,
-    defaultValue?: string,
-    emitEmpty?: boolean
-): FieldDefinition<string> {
-    return {
-        importer(xml) {
-            const value = xml.getAttribute(name);
-            if (value === '' && emitEmpty) {
-                return value;
-            }
-            return value || defaultValue;
-        },
-        exporter(xml, value) {
-            xml.setAttribute(name, value, emitEmpty);
-        }
-    };
+export interface CreateAttributeOptions<T, E = T> {
+    staticDefault?: T;
+    dynamicDefault?: (raw?: string) => T | undefined;
+    emitEmpty?: boolean;
+    name: string;
+    namespace?: string | null;
+    prefix?: string;
+    parseValue(raw: string): T | undefined;
+    writeValue(raw: T | E): string;
 }
-
-export function booleanAttribute(name: string): FieldDefinition<boolean> {
+function createAttributeField<T, E = T>(opts: CreateAttributeOptions<T, E>): FieldDefinition<T, E> {
     return {
         importer(xml) {
-            const data = xml.getAttribute(name);
-            if (data === 'true' || data === '1') {
-                return true;
+            const rawValue = xml.getAttribute(opts.name, opts.namespace);
+            if (!rawValue) {
+                return opts.dynamicDefault ? opts.dynamicDefault(rawValue) : opts.staticDefault;
             }
-            if (data === 'false' || data === '0') {
-                return false;
-            }
+            return opts.parseValue(rawValue);
         },
         exporter(xml, value) {
-            xml.setAttribute(name, value ? '1' : '0');
-        }
-    };
-}
-
-export function integerAttribute(name: string, defaultValue?: number): FieldDefinition<number> {
-    return {
-        importer(xml) {
-            const data = xml.getAttribute(name);
-            if (data) {
-                return parseInt(data, 10);
-            } else if (defaultValue) {
-                return defaultValue;
+            if (value === undefined) {
+                return;
             }
-        },
-        exporter(xml, value) {
-            if (value !== undefined) {
-                xml.setAttribute(name, value.toString());
+            const output = opts.writeValue(value);
+            if (!output && !opts.emitEmpty) {
+                return;
             }
-        }
-    };
-}
-
-export function floatAttribute(name: string, defaultValue?: number): FieldDefinition<number> {
-    return {
-        importer(xml) {
-            const data = xml.getAttribute(name);
-            if (data) {
-                return parseFloat(data);
-            } else if (defaultValue) {
-                return defaultValue;
-            }
-        },
-        exporter(xml, value) {
-            if (value !== undefined) {
-                xml.setAttribute(name, value.toString());
-            }
-        }
-    };
-}
-
-export function dateAttribute(
-    name: string,
-    useCurrentDate: boolean = false
-): FieldDefinition<Date, string> {
-    return {
-        importer(xml) {
-            const data = xml.getAttribute(name);
-            if (data) {
-                return new Date(data);
-            } else if (useCurrentDate) {
-                return new Date(Date.now());
-            }
-        },
-        exporter(xml, value) {
-            let data: string;
-
-            if (typeof value === 'string') {
-                data = value;
+            if (!opts.namespace || !opts.prefix) {
+                xml.setAttribute(opts.name, output, opts.emitEmpty);
             } else {
-                data = value.toISOString();
-            }
-
-            xml.setAttribute(name, data);
-        }
-    };
-}
-
-export function namespacedAttribute(
-    prefix: string,
-    namespace: string,
-    name: string,
-    defaultValue?: string
-): FieldDefinition<string> {
-    return {
-        importer(xml) {
-            return xml.getAttribute(name, namespace) || defaultValue;
-        },
-        exporter(xml, value) {
-            const namespaces = xml.getNamespaceContext();
-            if (value) {
-                if (!namespaces[namespace]) {
-                    xml.setAttribute(`xmlns:${prefix}`, namespace);
-                    namespaces[namespace] = prefix;
-                }
-                xml.setAttribute(`${namespaces[namespace]}:${name}`, value);
-            }
-        }
-    };
-}
-
-export function namespacedBooleanAttribute(
-    prefix: string,
-    namespace: string,
-    name: string
-): FieldDefinition<boolean> {
-    return {
-        importer(xml) {
-            const data = xml.getAttribute(name, namespace);
-            if (data === 'true' || data === '1') {
-                return true;
-            }
-            if (data === 'false' || data === '0') {
-                return false;
-            }
-        },
-        exporter(xml, value) {
-            const namespaces = xml.getNamespaceContext();
-            if (!namespaces[namespace]) {
-                xml.setAttribute(`xmlns:${prefix}`, namespace);
-                namespaces[namespace] = prefix;
-            }
-            xml.setAttribute(`${namespaces[namespace]}:${name}`, value ? '1' : '0');
-        }
-    };
-}
-
-export function namespacedIntegerAttribute(
-    prefix: string,
-    namespace: string,
-    name: string,
-    defaultValue?: number
-): FieldDefinition<number> {
-    return {
-        importer(xml) {
-            const data = xml.getAttribute(name, namespace);
-            if (data) {
-                return parseInt(data, 10);
-            } else if (defaultValue) {
-                return defaultValue;
-            }
-        },
-        exporter(xml, value) {
-            if (value !== undefined) {
                 const namespaces = xml.getNamespaceContext();
-                if (!namespaces[namespace]) {
-                    xml.setAttribute(`xmlns:${prefix}`, namespace);
-                    namespaces[namespace] = prefix;
+                if (value) {
+                    if (!namespaces[opts.namespace]) {
+                        xml.setAttribute(`xmlns:${opts.prefix}`, opts.namespace);
+                        namespaces[opts.namespace] = opts.prefix;
+                    }
+                    xml.setAttribute(
+                        `${namespaces[opts.namespace]}:${opts.name}`,
+                        output,
+                        opts.emitEmpty
+                    );
                 }
-                xml.setAttribute(`${namespaces[namespace]}:${name}`, value.toString());
             }
         }
     };
 }
+function createAttributeType<T, E = T>(
+    parser: TypeParser<T, E>,
+    createOpts?: (
+        opts: Partial<CreateAttributeOptions<T, E>>
+    ) => Partial<CreateAttributeOptions<T, E>>
+) {
+    return (
+        name: string,
+        defaultValue: T | undefined = undefined,
+        opts: Partial<CreateAttributeOptions<T, E>> = {}
+    ): FieldDefinition<T, E> => {
+        opts = { staticDefault: defaultValue, ...opts };
+        return createAttributeField<T, E>({
+            name,
+            ...parser,
+            ...(createOpts ? createOpts(opts) : opts)
+        });
+    };
+}
+function createNamespacedAttributeType<T, E = T>(
+    parser: TypeParser<T, E>,
+    createOpts?: (
+        opts: Partial<CreateAttributeOptions<T, E>>
+    ) => Partial<CreateAttributeOptions<T, E>>
+) {
+    return (
+        prefix: string,
+        namespace: string,
+        name: string,
+        defaultValue: T | undefined = undefined,
+        opts: Partial<CreateAttributeOptions<T, E>> = {}
+    ): FieldDefinition<T, E> => {
+        opts = { staticDefault: defaultValue, ...opts };
+        return createAttributeField<T, E>({
+            name,
+            namespace,
+            prefix,
+            ...parser,
+            ...(createOpts ? createOpts(opts) : opts)
+        });
+    };
+}
 
-export function namespacedFloatAttribute(
-    prefix: string,
-    namespace: string,
-    name: string,
-    defaultValue?: number
-): FieldDefinition<number> {
+export interface CreateChildAttributeOptions<T, E = T> extends CreateAttributeOptions<T, E> {
+    element: string;
+    attributeNamespace?: string | null;
+    converter?: FieldDefinition<T, E>;
+}
+function createChildAttributeField<T, E = T>(
+    opts: CreateChildAttributeOptions<T, E>
+): FieldDefinition<T, E> {
+    const converter =
+        opts.converter ||
+        createAttributeField({
+            ...opts,
+            namespace: opts.attributeNamespace
+        });
+    return {
+        importer(xml, context) {
+            const child = xml.getChild(opts.element, opts.namespace || xml.getNamespace());
+            if (!child) {
+                return opts.dynamicDefault ? opts.dynamicDefault() : opts.staticDefault;
+            }
+            return converter.importer(child, context);
+        },
+        exporter(xml, value, context) {
+            const child = findOrCreate(xml, opts.namespace || xml.getNamespace(), opts.element);
+            converter.exporter(child, value, context);
+        }
+    };
+}
+function createChildAttributeType<T, E = T>(
+    parser: TypeParser<T, E>,
+    createOpts?: (
+        opts: Partial<CreateChildAttributeOptions<T, E>>
+    ) => Partial<CreateChildAttributeOptions<T, E>>
+) {
+    return (
+        namespace: string | null,
+        element: string,
+        name: string,
+        defaultValue: T | undefined = undefined,
+        opts: Partial<CreateChildAttributeOptions<T, E>> = {}
+    ): FieldDefinition<T, E> => {
+        opts = { staticDefault: defaultValue, ...opts };
+        return createChildAttributeField<T, E>({
+            element,
+            name,
+            namespace,
+            ...parser,
+            ...(createOpts ? createOpts(opts) : opts)
+        });
+    };
+}
+
+export interface CreateTextOptions<T, E = T> {
+    staticDefault?: T;
+    dynamicDefault?: (raw?: string) => T | undefined;
+    parseValue(raw: string): T | undefined;
+    writeValue(raw: T | E): string;
+}
+function createTextField<T, E = T>(opts: CreateTextOptions<T, E>): FieldDefinition<T, E> {
     return {
         importer(xml) {
-            const data = xml.getAttribute(name, namespace);
-            if (data) {
-                return parseFloat(data);
-            } else if (defaultValue) {
-                return defaultValue;
+            const rawValue = xml.getText();
+            if (!rawValue) {
+                return opts.dynamicDefault ? opts.dynamicDefault(rawValue) : opts.staticDefault;
             }
+            return opts.parseValue(rawValue);
         },
         exporter(xml, value) {
-            if (value !== undefined) {
-                const namespaces = xml.getNamespaceContext();
-                if (!namespaces[namespace]) {
-                    xml.setAttribute(`xmlns:${prefix}`, namespace);
-                    namespaces[namespace] = prefix;
-                }
-                xml.setAttribute(`${namespaces[namespace]}:${name}`, value.toString());
+            if (value === undefined) {
+                return;
+            }
+            const output = opts.writeValue(value);
+            if (output) {
+                xml.children.push(output);
             }
         }
     };
 }
 
-export function namespacedDateAttribute(
-    prefix: string,
-    namespace: string,
-    name: string,
-    useCurrentDate: boolean = false
-): FieldDefinition<Date, string> {
+export interface CreateChildTextOptions<T, E = T> extends CreateTextOptions<T, E> {
+    matchLanguage?: boolean;
+    element: string;
+    namespace: string | null;
+}
+function createChildTextField<T, E = T>(opts: CreateChildTextOptions<T, E>): FieldDefinition<T, E> {
+    const converter = createTextField<T, E>(opts);
     return {
-        importer(xml) {
-            const data = xml.getAttribute(name, namespace);
-            if (data) {
-                return new Date(data);
-            } else if (useCurrentDate) {
-                return new Date(Date.now());
+        importer(xml, context) {
+            const children = findAll(xml, opts.namespace || xml.getNamespace(), opts.element);
+            const targetLanguage = getTargetLang(children, context);
+
+            if (!children.length) {
+                return opts.dynamicDefault ? opts.dynamicDefault() : opts.staticDefault;
             }
+
+            if (opts.matchLanguage) {
+                for (const child of children) {
+                    if (getLang(child, context.lang) === targetLanguage) {
+                        return converter.importer(child, context);
+                    }
+                }
+            }
+
+            return converter.importer(children[0], context);
         },
-        exporter(xml, value) {
-            let data: string;
-
-            if (typeof value === 'string') {
-                data = value;
-            } else {
-                data = value.toISOString();
-            }
-
-            const namespaces = xml.getNamespaceContext();
-            if (!namespaces[namespace]) {
-                xml.setAttribute(`xmlns:${prefix}`, namespace);
-                namespaces[namespace] = prefix;
-            }
-            xml.setAttribute(`${namespaces[namespace]}:${name}`, data);
+        exporter(xml, value, context) {
+            const child = findOrCreate(
+                xml,
+                opts.namespace || xml.getNamespace(),
+                opts.element,
+                opts.matchLanguage ? context.lang : undefined
+            );
+            converter.exporter(child, value, context);
         }
     };
 }
+
+// ====================================================================
+// Parsers
+// ====================================================================
+
+interface TypeParser<T, E = T> {
+    parseValue(raw: string): T | undefined;
+    writeValue(raw: T | E): string;
+}
+const stringParser: TypeParser<string> = {
+    parseValue: v => v,
+    writeValue: v => v
+};
+const integerParser: TypeParser<number> = {
+    parseValue: v => parseInt(v, 10),
+    writeValue: v => v.toString()
+};
+const floatParser: TypeParser<number> = {
+    parseValue: v => parseFloat(v),
+    writeValue: v => v.toString()
+};
+const boolParser: TypeParser<boolean> = {
+    parseValue: v => {
+        if (v === 'true' || v === '1') {
+            return true;
+        }
+        if (v === 'false' || v === '0') {
+            return false;
+        }
+        return;
+    },
+    writeValue: v => (v ? '1' : '0')
+};
+const dateParser: TypeParser<Date, string> = {
+    parseValue: v => new Date(v),
+    writeValue: v => (typeof v === 'string' ? v : v.toISOString())
+};
+const jsonParser: TypeParser<JSONData> = {
+    parseValue: v => JSON.parse(v),
+    writeValue: v => JSON.stringify(v)
+};
+const bufferParser = (encoding: BufferEncoding = 'utf8'): TypeParser<Buffer, string> => ({
+    parseValue: v => {
+        if (encoding === 'base64' && v === '=') {
+            v = '';
+        }
+        return Buffer.from(v.trim(), encoding);
+    },
+    writeValue: v => {
+        let data: string;
+        if (typeof v === 'string') {
+            data = Buffer.from(v).toString(encoding);
+        } else if (v) {
+            data = v.toString(encoding);
+        } else {
+            data = '';
+        }
+        if (encoding === 'base64') {
+            data = data || '=';
+        }
+        return data;
+    }
+});
+const tzOffsetParser: TypeParser<number, string> = {
+    parseValue: v => {
+        let sign = -1;
+        if (v.charAt(0) === '-') {
+            sign = 1;
+            v = v.slice(1);
+        }
+
+        const split = v.split(':');
+        const hours = parseInt(split[0], 10);
+        const minutes = parseInt(split[1], 10);
+        return (hours * 60 + minutes) * sign;
+    },
+    writeValue: v => {
+        if (typeof v === 'string') {
+            return v;
+        } else {
+            let formatted = '-';
+            if (v < 0) {
+                v = -v;
+                formatted = '+';
+            }
+            const hours = v / 60;
+            const minutes = v % 60;
+            formatted +=
+                (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+
+            return formatted;
+        }
+    }
+};
+
+// ====================================================================
+// Field Types
+// ====================================================================
+
+export const attribute = createAttributeType<string>(stringParser, opts => ({
+    dynamicDefault: opts.emitEmpty ? v => (v === '' ? '' : opts.staticDefault) : undefined,
+    ...opts
+}));
+export const booleanAttribute = createAttributeType<boolean>(boolParser);
+export const integerAttribute = createAttributeType<number>(integerParser);
+export const floatAttribute = createAttributeType<number>(floatParser);
+export const dateAttribute = createAttributeType<Date, string>(dateParser);
+export const namespacedAttribute = createNamespacedAttributeType<string>(stringParser);
+export const namespacedBooleanAttribute = createNamespacedAttributeType<boolean>(boolParser);
+export const namespacedIntegerAttribute = createNamespacedAttributeType<number>(integerParser);
+export const namespacedFloatAttribute = createNamespacedAttributeType<number>(floatParser);
+export const namespacedDateAttribute = createNamespacedAttributeType<Date, string>(dateParser);
+
+export const childAttribute = createChildAttributeType<string>(stringParser);
+export const childBooleanAttribute = createChildAttributeType<boolean>(boolParser);
+export const childIntegerAttribute = createChildAttributeType<number>(integerParser);
+export const childFloatAttribute = createChildAttributeType<number>(floatParser);
+export const childDateAttribute = createChildAttributeType<Date, string>(dateParser);
+
+export const text = (defaultValue?: string) =>
+    createTextField<string>({
+        staticDefault: defaultValue,
+        ...stringParser
+    });
+export const textJSON = () => createTextField<JSONData>({ ...jsonParser });
+export const textBuffer = (encoding: BufferEncoding = 'utf8') =>
+    createTextField<Buffer, string>({
+        ...bufferParser(encoding)
+    });
 
 export function languageAttribute(): FieldDefinition<string> {
     return {
@@ -338,235 +439,76 @@ export function languageAttribute(): FieldDefinition<string> {
     };
 }
 
-export function text(defaultValue?: string): FieldDefinition<string> {
-    return {
-        importer(xml) {
-            return xml.getText() || defaultValue;
-        },
-        exporter(xml, value) {
-            xml.children.push(value);
-        }
-    };
-}
+export const childLanguageAttribute = (namespace: string | null, element: string) =>
+    createChildAttributeField<string>({
+        converter: languageAttribute(),
+        element,
+        name: 'xml:lang',
+        namespace,
+        ...stringParser
+    });
 
-export function textBuffer(
+export const childText = (namespace: string | null, element: string, defaultValue?: string) =>
+    createChildTextField({
+        element,
+        matchLanguage: true,
+        namespace,
+        staticDefault: defaultValue,
+        ...stringParser
+    });
+
+export const childTextBuffer = (
+    namespace: string | null,
+    element: string,
     encoding: BufferEncoding = 'utf8'
-): FieldDefinition<Buffer, string | null> {
-    return {
-        importer(xml) {
-            let data = xml.getText();
-            if (encoding === 'base64' && data === '=') {
-                data = '';
-            }
-            return Buffer.from(data.trim(), encoding);
-        },
-        exporter(xml, value) {
-            let data: string;
-            if (typeof value === 'string') {
-                data = Buffer.from(value).toString(encoding);
-            } else if (value) {
-                data = value.toString(encoding);
-            } else {
-                data = '';
-            }
-            if (encoding === 'base64') {
-                data = data || '=';
-            }
-            xml.children.push(data);
-        }
-    };
-}
+) =>
+    createChildTextField({
+        element,
+        matchLanguage: true,
+        namespace,
+        ...bufferParser(encoding)
+    });
 
-export function childAttribute(
-    namespace: string | null,
-    element: string,
-    name: string,
-    defaultValue?: string
-): FieldDefinition<string> {
-    const converter = attribute(name, defaultValue);
-    return {
-        importer(xml, context) {
-            const child = xml.getChild(element, namespace || xml.getNamespace());
-            if (!child) {
-                return defaultValue;
-            }
-            return converter.importer(child, context);
-        },
-        exporter(xml, value, context) {
-            const child = findOrCreate(xml, namespace || xml.getNamespace(), element);
-            return converter.exporter(child, value, context);
-        }
-    };
-}
+export const childDate = (namespace: string | null, element: string) =>
+    createChildTextField({
+        element,
+        namespace,
+        ...dateParser
+    });
 
-export function childBooleanAttribute(
-    namespace: string | null,
-    element: string,
-    name: string
-): FieldDefinition<boolean> {
-    const converter = booleanAttribute(name);
-    return {
-        importer(xml, context) {
-            const child = xml.getChild(element, namespace || xml.getNamespace());
-            if (!child) {
-                return;
-            }
-            return converter.importer(child, context);
-        },
-        exporter(xml, value, context) {
-            const child = findOrCreate(xml, namespace || xml.getNamespace(), element);
-            return converter.exporter(child, value, context);
-        }
-    };
-}
+export const childInteger = (namespace: string | null, element: string, defaultValue?: number) =>
+    createChildTextField({
+        element,
+        namespace,
+        staticDefault: defaultValue,
+        ...integerParser
+    });
 
-export function childIntegerAttribute(
-    namespace: string | null,
-    element: string,
-    name: string,
-    defaultValue?: number
-): FieldDefinition<number> {
-    const converter = integerAttribute(name, defaultValue);
-    return {
-        importer(xml, context) {
-            const child = xml.getChild(element, namespace || xml.getNamespace());
-            if (!child) {
-                return defaultValue;
-            }
-            return converter.importer(child, context);
-        },
-        exporter(xml, value, context) {
-            const child = findOrCreate(xml, namespace || xml.getNamespace(), element);
-            return converter.exporter(child, value, context);
-        }
-    };
-}
+export const childFloat = (namespace: string | null, element: string, defaultValue?: number) =>
+    createChildTextField({
+        element,
+        namespace,
+        staticDefault: defaultValue,
+        ...floatParser
+    });
 
-export function childFloatAttribute(
-    namespace: string | null,
-    element: string,
-    name: string,
-    defaultValue?: number
-): FieldDefinition<number> {
-    const converter = floatAttribute(name, defaultValue);
-    return {
-        importer(xml, context) {
-            const child = xml.getChild(element, namespace || xml.getNamespace());
-            if (!child) {
-                return defaultValue;
-            }
-            return converter.importer(child, context);
-        },
-        exporter(xml, value, context) {
-            const child = findOrCreate(xml, namespace || xml.getNamespace(), element);
-            return converter.exporter(child, value, context);
-        }
-    };
-}
+export const childJSON = (namespace: string | null, element: string) =>
+    createChildTextField({
+        element,
+        namespace,
+        ...jsonParser
+    });
 
-export function childDateAttribute(
-    namespace: string | null,
-    element: string,
-    name: string,
-    useCurrentDate: boolean = false
-): FieldDefinition<Date, string> {
-    const converter = dateAttribute(name, useCurrentDate);
-    return {
-        importer(xml, context) {
-            const child = xml.getChild(element, namespace || xml.getNamespace());
-            if (!child) {
-                if (useCurrentDate) {
-                    return new Date(Date.now());
-                }
-                return undefined;
-            }
-            return converter.importer(child, context);
-        },
-        exporter(xml, value, context) {
-            const child = findOrCreate(xml, namespace || xml.getNamespace(), element);
-            return converter.exporter(child, value, context);
-        }
-    };
-}
-
-export function childLanguageAttribute(
+export function childTimezoneOffset(
     namespace: string | null,
     element: string
-): FieldDefinition<string> {
-    const converter = languageAttribute();
-    return {
-        importer(xml, context) {
-            const child = xml.getChild(element, namespace || xml.getNamespace());
-            if (!child) {
-                return undefined;
-            }
-            return converter.importer(child, context);
-        },
-        exporter(xml, value, context) {
-            const child = findOrCreate(xml, namespace || xml.getNamespace(), element);
-            return converter.exporter(child, value, context);
-        }
-    };
-}
-
-export function childText(
-    namespace: string | null,
-    element: string,
-    defaultValue?: string
-): FieldDefinition<string> {
-    return {
-        importer(xml, context) {
-            const children = findAll(xml, namespace || xml.getNamespace(), element);
-            const targetLanguage = getTargetLang(children, context);
-
-            if (!children.length) {
-                return defaultValue;
-            }
-
-            for (const child of children) {
-                if (getLang(child, context.lang) === targetLanguage) {
-                    return child.getText() || defaultValue;
-                }
-            }
-
-            return children[0].getText() || defaultValue;
-        },
-        exporter(xml, value, context) {
-            const child = findOrCreate(xml, namespace || xml.getNamespace(), element, context.lang);
-            child.children.push(value);
-        }
-    };
-}
-
-export function childTextBuffer(
-    namespace: string | null,
-    element: string,
-    encoding: BufferEncoding = 'utf8'
-): FieldDefinition<Buffer, string> {
-    return {
-        importer(xml) {
-            const child = xml.getChild(element, namespace || xml.getNamespace());
-            let data = child ? child.getText().trim() || '' : '';
-            if (encoding === 'base64' && data === '=') {
-                data = '';
-            }
-            return Buffer.from(data, encoding);
-        },
-        exporter(xml, value) {
-            const child = findOrCreate(xml, namespace || xml.getNamespace(), element);
-
-            let data: string;
-            if (typeof value === 'string') {
-                data = Buffer.from(value).toString(encoding);
-            } else {
-                data = value.toString(encoding);
-            }
-            if (encoding === 'base64') {
-                data = data || '=';
-            }
-            child.children.push(data);
-        }
-    };
+): FieldDefinition<number, string> {
+    return createChildTextField({
+        element,
+        namespace,
+        staticDefault: 0,
+        ...tzOffsetParser
+    });
 }
 
 export function deepChildText(
@@ -575,7 +517,7 @@ export function deepChildText(
 ): FieldDefinition<string> {
     return {
         importer(xml) {
-            let current = xml;
+            let current: XMLElement | undefined = xml;
             for (const node of path) {
                 current = current.getChild(node.element, node.namespace || current.getNamespace());
                 if (!current) {
@@ -623,7 +565,7 @@ export function deepChildBoolean(
 ): FieldDefinition<boolean> {
     return {
         importer(xml) {
-            let current = xml;
+            let current: XMLElement | undefined = xml;
             for (const node of path) {
                 current = current.getChild(node.element, node.namespace || current.getNamespace());
                 if (!current) {
@@ -655,7 +597,7 @@ export function deepChildInteger(
 ): FieldDefinition<number> {
     return {
         importer(xml) {
-            let current = xml;
+            let current: XMLElement | undefined = xml;
             for (const node of path) {
                 current = current.getChild(node.element, node.namespace || current.getNamespace());
                 if (!current) {
@@ -683,94 +625,6 @@ export function deepChildInteger(
                 );
             }
             current.children.push(value.toString());
-        }
-    };
-}
-
-export function childDate(
-    namespace: string | null,
-    element: string,
-    useCurrentDate: boolean = false
-): FieldDefinition<Date, string> {
-    return {
-        importer(xml) {
-            const child = xml.getChild(element, namespace || xml.getNamespace());
-            if (!child) {
-                if (useCurrentDate) {
-                    return new Date(Date.now());
-                }
-                return undefined;
-            }
-            const data = child.getText();
-            if (data) {
-                return new Date(data);
-            } else if (useCurrentDate) {
-                return new Date(Date.now());
-            }
-        },
-        exporter(xml, value) {
-            const child = findOrCreate(xml, namespace || xml.getNamespace(), element);
-            let data: string;
-
-            if (typeof value === 'string') {
-                data = value;
-            } else {
-                data = value.toISOString();
-            }
-
-            child.children.push(data);
-        }
-    };
-}
-
-export function childInteger(
-    namespace: string | null,
-    element: string,
-    defaultValue?: number
-): FieldDefinition<number> {
-    return {
-        importer(xml) {
-            const child = xml.getChild(element, namespace || xml.getNamespace());
-            if (!child) {
-                return defaultValue;
-            }
-            const data = child.getText();
-            if (data) {
-                return parseInt(data, 10);
-            } else if (defaultValue) {
-                return defaultValue;
-            }
-        },
-        exporter(xml, value) {
-            if (value !== undefined) {
-                const child = findOrCreate(xml, namespace || xml.getNamespace(), element);
-                child.children.push(value.toString());
-            }
-        }
-    };
-}
-
-export function childFloat(
-    namespace: string | null,
-    element: string,
-    defaultValue?: number
-): FieldDefinition<number> {
-    return {
-        importer(xml) {
-            const child = xml.getChild(element, namespace || xml.getNamespace());
-            if (!child) {
-                return defaultValue;
-            }
-            const data = child.getText();
-            if (data) {
-                return parseFloat(data);
-            } else if (defaultValue) {
-                return defaultValue;
-            }
-        },
-        exporter(xml, value) {
-            const child = findOrCreate(xml, namespace || xml.getNamespace(), element);
-            child.children.push(value.toString());
         }
     };
 }
@@ -1101,89 +955,10 @@ export function splicePath(
     };
 }
 
-export function staticValue(value: any): FieldDefinition<any> {
+export function staticValue<T>(value: T): FieldDefinition<T> {
     return {
-        importer() {
-            return value;
-        },
-        exporter() {
-            return;
-        }
-    };
-}
-
-export function childJSON(namespace: string | null, element: string): FieldDefinition<JSONData> {
-    return {
-        importer(xml) {
-            const child = xml.getChild(element, namespace || xml.getNamespace());
-            if (!child) {
-                return;
-            }
-            return JSON.parse(child.getText());
-        },
-        exporter(xml, value) {
-            const child = findOrCreate(xml, namespace, element);
-            child.children.push(JSON.stringify(value));
-        }
-    };
-}
-
-export function textJSON(): FieldDefinition<JSONData> {
-    return {
-        importer(xml) {
-            const data = xml.getText();
-            if (data) {
-                return JSON.parse(data);
-            }
-        },
-        exporter(xml, value) {
-            xml.children.push(JSON.stringify(value));
-        }
-    };
-}
-
-export function childTimezoneOffset(
-    namespace: string | null,
-    element: string
-): FieldDefinition<number, string> {
-    return {
-        importer(xml) {
-            const child = xml.getChild(element, namespace || xml.getNamespace());
-            if (!child) {
-                return 0;
-            }
-            let formatted = child.getText();
-
-            let sign = -1;
-            if (formatted.charAt(0) === '-') {
-                sign = 1;
-                formatted = formatted.slice(1);
-            }
-
-            const split = formatted.split(':');
-            const hours = parseInt(split[1], 10);
-            const minutes = parseInt(split[1], 10);
-            return (hours * 60 + minutes) * sign;
-        },
-        exporter(xml, value) {
-            let formatted = '-';
-
-            if (typeof value === 'string') {
-                formatted = value;
-            } else {
-                if (value < 0) {
-                    value = -value;
-                    formatted = '+';
-                }
-                const hours = value / 60;
-                const minutes = value % 60;
-                formatted +=
-                    (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
-            }
-
-            const child = findOrCreate(xml, namespace, element);
-            child.children.push(formatted);
-        }
+        exporter: () => undefined,
+        importer: () => value
     };
 }
 
