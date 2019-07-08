@@ -167,7 +167,7 @@ export const MUCAffiliation = {
     None: 'none',
     Outcast: 'outcast',
     Owner: 'owner'
-};
+} as const;
 export type MUCAffiliation = (typeof MUCAffiliation)[keyof typeof MUCAffiliation];
 
 export const MUCRole = {
@@ -175,7 +175,7 @@ export const MUCRole = {
     None: 'none',
     Participant: 'participant',
     Visitor: 'visitor'
-};
+} as const;
 export type MUCRole = (typeof MUCRole)[keyof typeof MUCRole];
 
 export const MUCStatusCode = {
@@ -198,7 +198,7 @@ export const MUCStatusCode = {
     Shutdown: '332',
     UnavailableMembersListed: '102',
     UnavailableMembersNotListed: '103'
-};
+} as const;
 export type MUCStatusCode = (typeof MUCStatusCode)[keyof typeof MUCStatusCode];
 
 export const PubsubErrorCondition = {
@@ -224,7 +224,7 @@ export const PubsubErrorCondition = {
     TooManySubscriptions: 'too-many-subscriptions',
     Unsupported: 'unsupported',
     UnsupportedAccessModel: 'unsupported-access-model'
-};
+} as const;
 export type PubsubErrorCondition = (typeof PubsubErrorCondition)[keyof typeof PubsubErrorCondition];
 
 export const ChatState = {
@@ -233,7 +233,7 @@ export const ChatState = {
     Gone: 'gone',
     Inactive: 'inactive',
     Paused: 'paused'
-};
+} as const;
 export type ChatState = (typeof ChatState)[keyof typeof ChatState];
 
 export const JingleSessionRole = {
