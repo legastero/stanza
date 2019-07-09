@@ -69,3 +69,19 @@ export function uuid() {
         bth[buf[i]]
     ].join('');
 }
+
+const ISO_DT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
+export function reviveData(key: string, value: any): any {
+    if (value && typeof value === 'string' && ISO_DT.test(value)) {
+        return new Date(value);
+    }
+    if (
+        value &&
+        typeof value === 'object' &&
+        value.type === 'Buffer' &&
+        Array.isArray(value.data)
+    ) {
+        return Buffer.from(value);
+    }
+    return value;
+}

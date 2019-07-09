@@ -3,6 +3,7 @@ import * as tape from 'tape';
 
 import { parse, Registry, XMLElement } from '../src/jxt';
 import XMPP from '../src/protocol';
+import { reviveData } from '../src/Utils';
 
 const test = tape.test;
 
@@ -58,17 +59,11 @@ for (const [testSuite, testCases] of testSuites) {
             xml.attributes.xmlns = 'jabber:client';
         }
 
-        const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
         const json = JSON.parse(
             FS.readFileSync(
                 __dirname + '/protocol-cases/' + testSuite + '/' + testCase + '.json'
             ).toString(),
-            (_, value) => {
-                if (typeof value === 'string' && dateFormat.test(value)) {
-                    return new Date(value);
-                }
-                return value;
-            }
+            reviveData
         );
 
         const jsonOut = json[1];
