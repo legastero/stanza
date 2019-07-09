@@ -514,7 +514,6 @@ export default [
         element: 'item',
         fields: {
             id: attribute('id'),
-            node: attribute('node'),
             publisher: JIDAttribute('publisher')
         },
         namespace: NS_PUBSUB_EVENT,
