@@ -104,11 +104,11 @@ export default [
         aliases: [{ path: 'iq.roster.items', multiple: true }],
         element: 'item',
         fields: {
-            approved: booleanAttribute('approved'),
-            ask: booleanAttribute('ask'),
             groups: multipleChildText(null, 'group'),
             jid: JIDAttribute('jid'),
             name: attribute('name'),
+            pending: attribute('ask'),
+            preApproved: booleanAttribute('approved'),
             subscription: attribute('subscription')
         },
         namespace: NS_ROSTER

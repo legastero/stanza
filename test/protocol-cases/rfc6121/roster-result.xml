@@ -1,0 +1,6 @@
+<iq id='bv1bs71f' to='juliet@example.com/chamber' type='result'>
+  <query xmlns='jabber:iq:roster' ver='ver7'>
+    <item jid='nurse@example.com'/>
+    <item jid='romeo@example.net'/>
+  </query>
+</iq>

@@ -1,0 +1,20 @@
+[
+    "iq",
+    {
+        "id": "b89c5r7ib574",
+        "to": "romeo@example.net/foo",
+        "type": "set",
+        "lang": "",
+        "payloadType": "roster",
+        "roster": {
+            "items": [
+                {
+                    "pending": "subscribe",
+                    "jid": "juliet@example.com",
+                    "subscription": "none",
+                    "groups": []
+                }
+            ]
+        }
+    }
+]

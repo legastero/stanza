@@ -1,0 +1,9 @@
+<iq id='hu2bac18' to='juliet@example.com/balcony' type='result'>
+  <query xmlns='jabber:iq:roster' ver='ver11'>
+    <item jid='romeo@example.net' name='Romeo' subscription='both'>
+      <group>Friends</group>
+    </item>
+    <item jid='mercutio@example.com' name='Mercutio' subscription='from'/>
+    <item jid='benvolio@example.net' name='Benvolio' subscription='both'/>
+  </query>
+</iq>

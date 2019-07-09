@@ -1,0 +1,32 @@
+[
+    "iq",
+    {
+        "to": "juliet@example.com/balcony",
+        "id": "hu2bac18",
+        "type": "result",
+        "lang": "",
+        "roster": {
+            "version": "ver11",
+            "items": [
+                {
+                    "jid": "romeo@example.net",
+                    "name": "Romeo",
+                    "subscription": "both",
+                    "groups": ["Friends"]
+                },
+                {
+                    "jid": "mercutio@example.com",
+                    "name": "Mercutio",
+                    "subscription": "from",
+                    "groups": []
+                },
+                {
+                    "jid": "benvolio@example.net",
+                    "name": "Benvolio",
+                    "subscription": "both",
+                    "groups": []
+                }
+            ]
+        }
+    }
+]

@@ -1,0 +1,22 @@
+[
+    "iq",
+    {
+        "to": "juliet@example.com/chamber",
+        "id": "bv1bs71f",
+        "type": "result",
+        "lang": "",
+        "roster": {
+            "version": "ver7",
+            "items": [
+                {
+                    "jid": "nurse@example.com",
+                    "groups": []
+                },
+                {
+                    "jid": "romeo@example.net",
+                    "groups": []
+                }
+            ]
+        }
+    }
+]

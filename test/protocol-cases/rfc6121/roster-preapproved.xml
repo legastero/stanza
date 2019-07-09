@@ -1,0 +1,5 @@
+<iq id='h3bs81vs763f' to='romeo@example.net/bar' type='set'>
+    <query xmlns='jabber:iq:roster'>
+        <item approved='1' jid='juliet@example.com' subscription='none'/>
+    </query>
+</iq>

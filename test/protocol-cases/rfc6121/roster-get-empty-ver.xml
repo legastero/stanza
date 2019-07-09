@@ -1,0 +1,3 @@
+<iq from='romeo@example.net/home' id='r1h3vzp7' to='romeo@example.net' type='get'>
+  <query xmlns='jabber:iq:roster' ver=''/>
+</iq>

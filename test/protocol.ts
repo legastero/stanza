@@ -48,6 +48,13 @@ for (const [testSuite, testCases] of testSuites) {
                 ).toString()
             )
         )!;
+
+        // We are testing XMPP definitions, so assume we are using the jabber:client
+        // namespace if not specified.
+        if (!xml.getNamespace()) {
+            xml.attributes.xmlns = 'jabber:client';
+        }
+
         const json = JSON.parse(
             FS.readFileSync(
                 __dirname + '/protocol-cases/' + testSuite + '/' + testCase + '.json'

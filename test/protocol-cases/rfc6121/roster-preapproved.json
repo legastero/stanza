@@ -1,0 +1,20 @@
+[
+    "iq",
+    {
+        "id": "h3bs81vs763f",
+        "to": "romeo@example.net/bar",
+        "type": "set",
+        "lang": "",
+        "payloadType": "roster",
+        "roster": {
+            "items": [
+                {
+                    "preApproved": true,
+                    "jid": "juliet@example.com",
+                    "subscription": "none",
+                    "groups": []
+                }
+            ]
+        }
+    }
+]

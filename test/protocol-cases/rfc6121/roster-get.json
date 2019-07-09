@@ -1,0 +1,11 @@
+[
+    "iq",
+    {
+        "from": "juliet@example.com/balcony",
+        "id": "bv1bs71f",
+        "type": "get",
+        "lang": "",
+        "payloadType": "roster",
+        "roster": {}
+    }
+]

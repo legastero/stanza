@@ -1,0 +1,3 @@
+<iq from='juliet@example.com/balcony' id='bv1bs71f' type='get'>
+  <query xmlns='jabber:iq:roster'/>
+</iq>
