@@ -1,0 +1,14 @@
+<iq from='juliet@capulet.lit/balcony'
+    id='publish1'
+    type='set'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+    <publish node='http://jabber.org/protocol/mood'>
+      <item>
+        <mood xmlns='http://jabber.org/protocol/mood'>
+          <annoyed/>
+          <text>curse my nurse!</text>
+        </mood>
+      </item>
+    </publish>
+  </pubsub>
+</iq>

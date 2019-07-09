@@ -1,0 +1,40 @@
+[
+    "iq",
+    {
+        "from": "juliet@capulet.lit/balcony",
+        "id": "publish1",
+        "type": "set",
+        "pubsub": {
+            "publish": {
+                "node": "http://jabber.org/protocol/mood",
+                "item": {
+                    "content": {
+                        "itemType": "http://jabber.org/protocol/mood",
+                        "value": "annoyed",
+                        "text": "curse my nurse!"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "from": "juliet@capulet.lit/balcony",
+        "id": "publish1",
+        "type": "set",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "publish": {
+                "node": "http://jabber.org/protocol/mood",
+                "item": {
+                    "content": {
+                        "itemType": "http://jabber.org/protocol/mood",
+                        "value": "annoyed",
+                        "text": "curse my nurse!",
+                        "alternateLanguageText": [{ "lang": "", "value": "curse my nurse!" }]
+                    }
+                }
+            }
+        }
+    }
+]

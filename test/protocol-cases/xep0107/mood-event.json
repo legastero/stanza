@@ -1,0 +1,49 @@
+[
+    "message",
+    {
+        "from": "juliet@capulet.lit",
+        "to": "romeo@montague.net",
+        "type": "headline",
+        "pubsub": {
+            "context": "event",
+            "items": {
+                "node": "http://jabber.org/protocol/mood",
+                "published": [
+                    {
+                        "id": "a475804a-0f9c-11dc-98a8-001143d5d5db",
+                        "content": {
+                            "itemType": "http://jabber.org/protocol/mood",
+                            "value": "annoyed",
+                            "text": "curse my nurse!"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "from": "juliet@capulet.lit",
+        "to": "romeo@montague.net",
+        "type": "headline",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "eventType": "items",
+            "items": {
+                "node": "http://jabber.org/protocol/mood",
+                "published": [
+                    {
+                        "id": "a475804a-0f9c-11dc-98a8-001143d5d5db",
+                        "content": {
+                            "itemType": "http://jabber.org/protocol/mood",
+                            "value": "annoyed",
+                            "text": "curse my nurse!",
+                            "alternateLanguageText": [{ "lang": "", "value": "curse my nurse!" }]
+                        }
+                    }
+                ],
+                "retracted": []
+            }
+        }
+    }
+]

@@ -1,0 +1,15 @@
+<message
+    from='juliet@capulet.lit'
+    to='romeo@montague.net'
+    type='headline'>
+  <event xmlns='http://jabber.org/protocol/pubsub#event'>
+    <items node='http://jabber.org/protocol/mood'>
+      <item id='a475804a-0f9c-11dc-98a8-001143d5d5db'>
+        <mood xmlns='http://jabber.org/protocol/mood'>
+          <annoyed/>
+          <text>curse my nurse!</text>
+        </mood>
+      </item>
+    </items>
+  </event>
+</message>
