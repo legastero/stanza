@@ -1,0 +1,18 @@
+[
+    "message",
+    {
+        "from": "coven@chat.shakespeare.lit/secondwitch",
+        "id": "F437C672-D438-4BD3-9BFF-091050D32EE2",
+        "to": "crone1@shakespeare.lit/desktop",
+        "type": "groupchat",
+        "hasSubject": true
+    },
+    {
+        "from": "coven@chat.shakespeare.lit/secondwitch",
+        "id": "F437C672-D438-4BD3-9BFF-091050D32EE2",
+        "to": "crone1@shakespeare.lit/desktop",
+        "type": "groupchat",
+        "lang": "",
+        "hasSubject": true
+    }
+]

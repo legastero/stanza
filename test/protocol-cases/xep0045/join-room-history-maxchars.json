@@ -1,0 +1,27 @@
+[
+    "presence",
+    {
+        "from": "hag66@shakespeare.lit/pda",
+        "to": "coven@chat.shakespeare.lit/thirdwitch",
+        "id": "n13mt3l",
+        "muc": {
+            "type": "join",
+            "history": {
+                "maxCharacters": 65000
+            }
+        }
+    },
+    {
+        "from": "hag66@shakespeare.lit/pda",
+        "lang": "",
+        "to": "coven@chat.shakespeare.lit/thirdwitch",
+        "priority": 0,
+        "id": "n13mt3l",
+        "muc": {
+            "type": "join",
+            "history": {
+                "maxCharacters": 65000
+            }
+        }
+    }
+]

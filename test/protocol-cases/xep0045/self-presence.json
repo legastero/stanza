@@ -1,0 +1,25 @@
+[
+    "presence",
+    {
+        "from": "coven@chat.shakespeare.lit/thirdwitch",
+        "id": "n13mt3l",
+        "to": "hag66@shakespeare.lit/pda",
+        "muc": {
+            "affiliation": "member",
+            "role": "participant",
+            "statusCodes": ["110", "210"]
+        }
+    },
+    {
+        "from": "coven@chat.shakespeare.lit/thirdwitch",
+        "id": "n13mt3l",
+        "to": "hag66@shakespeare.lit/pda",
+        "lang": "",
+        "priority": 0,
+        "muc": {
+            "affiliation": "member",
+            "role": "participant",
+            "statusCodes": ["110", "210"]
+        }
+    }
+]

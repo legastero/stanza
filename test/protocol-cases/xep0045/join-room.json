@@ -1,0 +1,21 @@
+[
+    "presence",
+    {
+        "from": "hag66@shakespeare.lit/pda",
+        "id": "n13mt3l",
+        "to": "coven@chat.shakespeare.lit/thirdwitch",
+        "muc": {
+            "type": "join"
+        }
+    },
+    {
+        "from": "hag66@shakespeare.lit/pda",
+        "id": "n13mt3l",
+        "to": "coven@chat.shakespeare.lit/thirdwitch",
+        "lang": "",
+        "priority": 0,
+        "muc": {
+            "type": "join"
+        }
+    }
+]

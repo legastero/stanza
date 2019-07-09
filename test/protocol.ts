@@ -10,7 +10,7 @@ const registry = new Registry();
 registry.define(XMPP);
 
 const removeWhiteSpace = (xml: XMLElement): XMLElement => {
-    xml.children = xml.children
+    xml.children = (xml.children || [])
         .map(child => {
             if (typeof child === 'string') {
                 if (child.trim() === '') {
@@ -29,6 +29,9 @@ const testCaseFolders = FS.readdirSync(__dirname + '/protocol-cases');
 const testSuites: Map<string, Set<string>> = new Map();
 
 for (const dir of testCaseFolders) {
+    if (dir === 'README.md') {
+        continue;
+    }
     const cases = new Set<string>();
 
     const testCaseFiles = FS.readdirSync(__dirname + '/protocol-cases/' + dir);
@@ -55,10 +58,17 @@ for (const [testSuite, testCases] of testSuites) {
             xml.attributes.xmlns = 'jabber:client';
         }
 
+        const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
         const json = JSON.parse(
             FS.readFileSync(
                 __dirname + '/protocol-cases/' + testSuite + '/' + testCase + '.json'
-            ).toString()
+            ).toString(),
+            (_, value) => {
+                if (typeof value === 'string' && dateFormat.test(value)) {
+                    return new Date(value);
+                }
+                return value;
+            }
         );
 
         const jsonOut = json[1];
