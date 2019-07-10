@@ -75,6 +75,8 @@ Now, there are several things that should be noted at this point.
 
 First, we use the `message:sent` event to capture the `id` of outgoing messages instead of using the return value of `client.sendMessage()` or manually generating and passing `id` values to `sendMessage()`. Doing it this way ensures we capture _all_ outgoing messages, without worrying about where `sendMessage()` was called.
 
+You might notice that the `message:sent` event gets fired _immediately_ when calling `sendMessage()`, even before the message actually gets written to a connection. This is by design: the moment you call `sendMessage()` you must treat the message as if it is in flight over the network.
+
 Second, we are looking at the `viaCarbon` flag to distinguish if this was a message sent locally, or it came from a [XEP-0280 message carbon](https://xmpp.org/extensions/xep-0280.html). If it came from a carbon, then the server has clearly received the original message.
 
 Third, we are storing three flags to represent multiple situations:
