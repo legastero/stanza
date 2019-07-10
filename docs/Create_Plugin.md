@@ -4,13 +4,13 @@
 import { Agent, jxt } from 'stanza';
 
 
-// 1. Declare our new custom stanza type
+// 1. Declare our new custom stanza extension type
 export interface MyStanza {
     type: string;
     value: string;
 }
 
-// 2. Begin injecting our plugin's type information into stanza.
+// 2. Begin injecting our plugin's type information into StanzaJS.
 declare module 'stanza' {
 
     // 3. Declare a new method for the StanzaJS agent
@@ -49,8 +49,8 @@ export default function (client: Agent, stanzas: jxt.Registry) {
     });
 
     // 9. Add API to the StanzaJS agent for sending `mystanza` data
-    client.sendMyStanza = (jid: string, data: string): void {
-        client.sendMessage({
+    client.sendMyStanza = (jid: string, data: string) {
+        return client.sendMessage({
             to: jid,
             mystanza: {
                 type: 'bar',
@@ -60,7 +60,7 @@ export default function (client: Agent, stanzas: jxt.Registry) {
     };
 
     // 10. Listen for incoming `mystanza` data and emit our own event
-    client.on('message', (msg: Message) => {
+    client.on('message', msg => {
         if (msg.mystanza) {
             client.emit('mystanza', msg);
         }

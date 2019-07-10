@@ -4,14 +4,14 @@
 
 ## Supported RFCs/IDs
 
-| RFC/ID                                                                                       | Name                                                                              | Source                               | Test Cases                               |
-| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------ | ---------------------------------------- |
-| [RFC 7395](https://tools.ietf.org/html/rfc7395)                                              | An Extensible Messaging and Presence Protocol (XMPP) Subprotocol for WebSocket    | [Source](../src/protocol/rfc7395.ts) |                                          |
-| [RFC 6121](https://tools.ietf.org/html/rfc6121)                                              | Extensible Messaging and Presence Protocol (XMPP): Instant Messaging and Presence | [Source](../src/protocol/rfc6121.ts) |                                          |
-| [RFC 6120](https://tools.ietf.org/html/rfc6120)                                              | Extensible Messaging and Presence Protocol (XMPP): Core                           | [Source](../src/protocol/rfc6120.ts) |                                          |
-| [RFC 3921](https://tools.ietf.org/html/rfc3921)                                              | Extensible Messaging and Presence Protocol (XMPP): Instant Messaging and Presence | [Source](../src/protocol/rfc3921.ts) |                                          |
-| [draft-cridland-xmpp-session-01](https://tools.ietf.org/html/draft-cridland-xmpp-session-01) | Here Lies Extensible Messaging and Presence Protocol (XMPP) Session Establishment | [Source](../src/protocol/rfc3921.ts) |                                          |
-| [XRD](http://docs.oasis-open.org/xri/xrd/v1.0/xrd-1.0.html)                                  | Extensible Resource Descriptor (XRD)                                              | [Source](../src/protocol/xrd.ts)     | [Test Cases](../test/protocol-cases/xrd) |
+| RFC/ID                                                                                       | Name                                                                              | Source                               | Test Cases                                   |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------ | -------------------------------------------- |
+| [RFC 7395](https://tools.ietf.org/html/rfc7395)                                              | An Extensible Messaging and Presence Protocol (XMPP) Subprotocol for WebSocket    | [Source](../src/protocol/rfc7395.ts) |                                              |
+| [RFC 6121](https://tools.ietf.org/html/rfc6121)                                              | Extensible Messaging and Presence Protocol (XMPP): Instant Messaging and Presence | [Source](../src/protocol/rfc6121.ts) | [Test Cases](../test/protocol-cases/rfc6121) |
+| [RFC 6120](https://tools.ietf.org/html/rfc6120)                                              | Extensible Messaging and Presence Protocol (XMPP): Core                           | [Source](../src/protocol/rfc6120.ts) |                                              |
+| [RFC 3921](https://tools.ietf.org/html/rfc3921)                                              | Extensible Messaging and Presence Protocol (XMPP): Instant Messaging and Presence | [Source](../src/protocol/rfc3921.ts) |                                              |
+| [draft-cridland-xmpp-session-01](https://tools.ietf.org/html/draft-cridland-xmpp-session-01) | Here Lies Extensible Messaging and Presence Protocol (XMPP) Session Establishment | [Source](../src/protocol/rfc3921.ts) |                                              |
+| [XRD](http://docs.oasis-open.org/xri/xrd/v1.0/xrd-1.0.html)                                  | Extensible Resource Descriptor (XRD)                                              | [Source](../src/protocol/xrd.ts)     | [Test Cases](../test/protocol-cases/xrd)     |
 
 ## Supported XEPs
 
@@ -21,7 +21,7 @@
 | [XEP-0016](https://xmpp.org/extensions/xep-0016.html) | Privacy Lists                                      | 1.7     | [Source](../src/protocol/xep0016.ts) |                                              |
 | [XEP-0030](https://xmpp.org/extensions/xep-0030.html) | Service Discovery                                  | 2.5rc3  | [Source](../src/protocol/xep0030.ts) | [Test Cases](../test/protocol-cases/xep0030) |
 | [XEP-0033](https://xmpp.org/extensions/xep-0033.html) | Extended Stanza Addressing                         | 1.3.1   | [Source](../src/protocol/xep0033.ts) |                                              |
-| [XEP-0045](https://xmpp.org/extensions/xep-0045.html) | Multi-User Chat                                    | 1.31.1  | [Source](../src/protocol/xep0045.ts) |                                              |
+| [XEP-0045](https://xmpp.org/extensions/xep-0045.html) | Multi-User Chat                                    | 1.31.1  | [Source](../src/protocol/xep0045.ts) | [Test Cases](../test/protocol-cases/xep0045) |
 | [XEP-0047](https://xmpp.org/extensions/xep-0047.html) | In-Band Bytestreams                                | 2.0     | [Source](../src/protocol/xep0047.ts) |                                              |
 | [XEP-0048](https://xmpp.org/extensions/xep-0048.html) | Bookmarks                                          | 1.1     | [Source](../src/protocol/xep0048.ts) |                                              |
 | [XEP-0049](https://xmpp.org/extensions/xep-0049.html) | Private XML Storage                                | 1.2     | [Source](../src/protocol/xep0049.ts) |                                              |
