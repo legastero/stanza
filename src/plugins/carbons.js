@@ -60,7 +60,7 @@ export default function(client) {
         // Treat the carbon copied message however we would
         // have originally treated it ourself.
         if (msg.from.bare === client.jid.bare) {
-            client.emit('message:sent', msg);
+            client.emit('message:sent', msg, true);
         } else {
             client.emit('message', msg);
         }

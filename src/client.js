@@ -341,7 +341,7 @@ export default class Client extends WildEmitter {
         }
         const Message = this.stanzas.getMessage();
         const msg = new Message(data);
-        this.emit('message:sent', msg.toJSON());
+        this.emit('message:sent', msg.toJSON(), false);
         this.send(msg);
         return data.id;
     }

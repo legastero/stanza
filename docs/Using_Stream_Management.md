@@ -8,7 +8,7 @@
 
 Stream management is enabled automatically if your server offers it during stream negotiation.
 
-You can turn it _off_ if necessary when configuring a client:
+You can turn it off, if necessary, when configuring a client:
 
 ```typescript
 import * as XMPP from 'stanza';
@@ -62,9 +62,9 @@ const messageStorage = new Map();
 Then we need to track every message that we send:
 
 ```typescript
-client.on('message:sent', msg => {
+client.on('message:sent', (msg, viaCarbon) => {
     messageStorage.set(msg.id, {
-        serverReceived: false,
+        serverReceived: viaCarbon,
         mucReceived: false,
         failedToSend: false
     });
@@ -75,7 +75,9 @@ Now, there are several things that should be noted at this point.
 
 First, we use the `message:sent` event to capture the `id` of outgoing messages instead of using the return value of `client.sendMessage()` or manually generating and passing `id` values to `sendMessage()`. Doing it this way ensures we capture _all_ outgoing messages, without worrying about where `sendMessage()` was called.
 
-Second, we are storing three flags to represent multiple situations:
+Second, we are looking at the `viaCarbon` flag to distinguish if this was a message sent locally, or it came from a [XEP-0280 message carbon](https://xmpp.org/extensions/xep-0280.html). If it came from a carbon, then the server has clearly received the original message.
+
+Third, we are storing three flags to represent multiple situations:
 
 -   The server has received our message.
 -   If we are sending a message to a MUC, the MUC service has received our message.
