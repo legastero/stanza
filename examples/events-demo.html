@@ -148,7 +148,7 @@
 
                 const cachedSM = sessionStorage.cachedSM;
                 if (cachedSM) {
-                    client.sm.load(JSON.parse(cachedSM));
+                    client.sm.load(JSON.parse(cachedSM, XMPP.Utils.reviveData));
                 }
                 client.sm.cache(state => {
                     sessionStorage.cachedSM = JSON.stringify(state);
