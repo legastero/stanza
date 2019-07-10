@@ -273,7 +273,7 @@ export default class Client extends EventEmitter {
             id: this.nextId(),
             ...data
         };
-        this.emit('message:sent', msg);
+        this.emit('message:sent', msg, false);
         this.send('message', msg);
         return msg.id;
     }
