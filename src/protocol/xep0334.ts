@@ -70,8 +70,6 @@ function processingHints(): FieldDefinition<ProcessingHints> {
     };
 }
 
-export default [
-    extendMessage({
-        processingHints: processingHints()
-    })
-];
+export default extendMessage({
+    processingHints: processingHints()
+});

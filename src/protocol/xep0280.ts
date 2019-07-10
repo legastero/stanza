@@ -5,7 +5,7 @@
 // Version: 0.12.0 (2017-02-16)
 // ====================================================================
 
-import { addAlias } from '../jxt';
+import { addAlias, DefinitionOptions } from '../jxt';
 import { NS_CARBONS_2, NS_FORWARD_0 } from '../Namespaces';
 
 import { Forward } from './';
@@ -33,7 +33,7 @@ export interface CarbonPrivate {
     type: 'private';
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     addAlias(NS_FORWARD_0, 'forwarded', ['message.carbon.forward']),
     {
         element: 'enable',
@@ -69,3 +69,4 @@ export default [
         path: 'message.carbon'
     }
 ];
+export default Protocol;
