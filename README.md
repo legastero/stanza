@@ -53,8 +53,9 @@ client.connect();
 -   [JXT: JSON/XML Translation](docs/jxt/README.md)
 -   [Supported XEP Formats](docs/Supported_XEP_Formats.md)
 -   [Creating Plugins](docs/Create_Plugin.md)
--   [Using PubSub](docs/Using_PubSub.md)
 -   [Using with React Native](docs/React_Native.md)
+-   [Using PubSub](docs/Using_Pubsub.md)
+-   [Using Stream Management](docs/Using_Stream_Management.md)
 
 ## Discussion
 
