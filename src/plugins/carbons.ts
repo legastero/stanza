@@ -70,7 +70,7 @@ export default function(client: Agent) {
         }
         if (isSentCarbon(msg)) {
             client.emit('carbon:sent', msg);
-            client.emit('message:sent', forwardedMessage);
+            client.emit('message:sent', forwardedMessage, true);
         }
     });
 }

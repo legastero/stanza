@@ -49,7 +49,7 @@ export interface AgentEvents {
     'stream:error': (streamError: Stanzas.StreamError, error?: Error) => void;
     'stream:data': (json: any, kind: string) => void;
 
-    'message:sent': Stanzas.Message;
+    'message:sent': (msg: Stanzas.Message, viaCarbon: boolean) => void;
     'message:error': Stanzas.Message;
     chat: Stanzas.ReceivedMessage;
     groupchat: Stanzas.ReceivedMessage;
