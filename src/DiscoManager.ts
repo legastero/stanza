@@ -12,14 +12,15 @@ export default class Disco {
     public identities: Map<string, DiscoInfoIdentity[]>;
     public extensions: Map<string, DataForm[]>;
     public items: Map<string, DiscoItem[]>;
-    public caps?: LegacyEntityCaps;
+    public caps: Map<string, LegacyEntityCaps>;
+    public capsAlgorithms: string[] = ['sha-1'];
 
     constructor() {
         this.features = new Map();
         this.identities = new Map();
         this.extensions = new Map();
         this.items = new Map();
-        this.caps = undefined;
+        this.caps = new Map();
 
         this.features.set('', new Set());
         this.identities.set('', []);
@@ -62,7 +63,10 @@ export default class Disco {
         this.extensions.get(node)!.push(form);
     }
 
-    public updateCaps(node: string, algorithm: string = 'sha-1'): LegacyEntityCaps | undefined {
+    public updateCaps(
+        node: string,
+        algorithms: string[] = this.capsAlgorithms
+    ): LegacyEntityCaps[] | undefined {
         const info: DiscoInfo = {
             extensions: [...this.extensions.get('')!],
             features: [...this.features.get('')!],
@@ -70,33 +74,39 @@ export default class Disco {
             type: 'info'
         };
 
-        const version = EntityCaps.generate(info, algorithm);
-        if (!version) {
-            this.caps = undefined;
-            return;
+        for (const algorithm of algorithms) {
+            const version = EntityCaps.generate(info, algorithm);
+            if (!version) {
+                this.caps.delete(algorithm);
+                continue;
+            }
+
+            this.caps.set(algorithm, {
+                algorithm,
+                node,
+                value: version
+            });
+
+            const hashedNode = `${node}#${version}`;
+            for (const feature of info.features!) {
+                this.addFeature(feature, hashedNode);
+            }
+            for (const identity of info.identities!) {
+                this.addIdentity(identity, hashedNode);
+            }
+            for (const form of info.extensions!) {
+                this.addExtension(form, hashedNode);
+            }
+
+            this.identities.set(hashedNode, info.identities!);
+            this.features.set(hashedNode, new Set(info.features!));
+            this.extensions.set(hashedNode, info.extensions!);
         }
 
-        this.caps = {
-            algorithm,
-            node,
-            value: version
-        };
+        return [...this.caps.values()];
+    }
 
-        const hashedNode = `${node}#${version}`;
-        for (const feature of info.features!) {
-            this.addFeature(feature, hashedNode);
-        }
-        for (const identity of info.identities!) {
-            this.addIdentity(identity, hashedNode);
-        }
-        for (const form of info.extensions!) {
-            this.addExtension(form, hashedNode);
-        }
-
-        this.identities.set(hashedNode, info.identities!);
-        this.features.set(hashedNode, new Set(info.features!));
-        this.extensions.set(hashedNode, info.extensions!);
-
-        return this.caps;
+    public getCaps(): LegacyEntityCaps[] {
+        return [...this.caps.values()];
     }
 }

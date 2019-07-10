@@ -16,7 +16,7 @@ declare module '../' {
         disco: Disco;
         getDiscoInfo(jid?: string, node?: string): Promise<DiscoInfoResult>;
         getDiscoItems(jid?: string, node?: string): Promise<DiscoItemsResult>;
-        updateCaps(): LegacyEntityCaps | undefined;
+        updateCaps(): LegacyEntityCaps[] | undefined;
         getCurrentCaps():
             | {
                   legacyCapabilities: LegacyEntityCaps[];
@@ -100,18 +100,18 @@ export default function(client: Agent) {
 
     client.updateCaps = () => {
         const node = client.config.capsNode || 'https://stanzajs.org';
-        return client.disco.updateCaps(node, 'sha-1');
+        return client.disco.updateCaps(node);
     };
 
     client.getCurrentCaps = () => {
-        const caps = client.disco.caps;
+        const caps = client.disco.getCaps();
         if (!caps) {
             return;
         }
-        const node = `${caps.node}#${caps.value}`;
+        const node = `${caps[0].node}#${caps[0].value}`;
         return {
             info: client.disco.getNodeInfo(node),
-            legacyCapabilities: [caps]
+            legacyCapabilities: caps
         };
     };
 
