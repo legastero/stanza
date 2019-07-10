@@ -34,11 +34,15 @@ Before calling `client.connect()`, you can use `client.sm.load()` to restore the
 from a previous session:
 
 ```typescript
+import { Utils } from 'stanza';
+
 const cachedSM = sessionStorage.cachedSM;
 if (cachedSM) {
-    client.sm.load(JSON.parse(cachedSM));
+    client.sm.load(JSON.parse(cachedSM, Utils.reviveData));
 }
 ```
+
+The `Utils.reviveData()` helper function is available to restore `Date` and `Buffer` objects after they've been serialized with `JSON.stringify()`.
 
 If you pass a function to `client.sm.cache()`, it will be called on every state change:
 
