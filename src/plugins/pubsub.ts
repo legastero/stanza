@@ -158,6 +158,7 @@ export default function(client: Agent) {
     client.on('message', msg => {
         if (isPubsubAffiliation(msg)) {
             client.emit('pubsub:affiliations', msg);
+            return;
         }
 
         if (!isPubsubMessage(msg)) {
@@ -189,13 +190,6 @@ export default function(client: Agent) {
             client.emit('pubsub:config', msg);
             return;
         }
-
-        /*
-        TODO
-        if (msg.pubsub && msg.pubsub.affiliations) {
-            client.emit('pubsub:affiliation', msg);
-        }
-        */
     });
 
     client.subscribeToNode = async (jid: string, opts: string | PubsubSubscribeOptions) => {
