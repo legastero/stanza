@@ -5,6 +5,7 @@ import {
     DataForm,
     IQ,
     Paging,
+    Pubsub,
     PubsubAffiliation,
     PubsubAffiliations,
     PubsubCreate,
@@ -80,6 +81,7 @@ declare module '../' {
         'pubsub:deleted': PubsubEventMessage & { pubsub: PubsubEventDelete };
         'pubsub:subscription': PubsubEventMessage & { pubsub: PubsubEventSubscription };
         'pubsub:config': PubsubEventMessage & { pubsub: PubsubEventConfiguration };
+        'pubsub:affiliations': PubsubMessage & { pubsub: PubsubAffiliationChange };
     }
 }
 
@@ -90,6 +92,7 @@ export interface PubsubUnsubscribeOptions extends PubsubUnsubscribe {
     useBareJID?: boolean;
 }
 
+type PubsubMessage = ReceivedMessage & { pubsub: Pubsub };
 type PubsubEventMessage = ReceivedMessage & { pubsub: PubsubEvent };
 type PubsubPublish = PubsubEventMessage & {
     pubsub: PubsubEventItems & {
@@ -103,6 +106,11 @@ type PubsubRetract = PubsubEventMessage & {
         items: {
             retracted: PubsubItem[];
         };
+    };
+};
+type PubsubAffiliationChange = PubsubMessage & {
+    pubsub: Pubsub & {
+        affiliations: PubsubAffiliations;
     };
 };
 
@@ -135,11 +143,23 @@ function isPubsubConfiguration(
 ): msg is PubsubEventMessage & { pubsub: PubsubEventConfiguration } {
     return msg.pubsub.eventType === 'configuration';
 }
+function isPubsubAffiliation(
+    msg: ReceivedMessage
+): msg is PubsubMessage & { pubsub: PubsubAffiliationChange } {
+    if (!msg.pubsub) {
+        return false;
+    }
+    return (!msg.pubsub.context || msg.pubsub.context === 'user') && !!msg.pubsub.affiliations;
+}
 
 export default function(client: Agent) {
     client.disco.addFeature(`${NS_SHIM}#SubID`, NS_SHIM);
 
     client.on('message', msg => {
+        if (isPubsubAffiliation(msg)) {
+            client.emit('pubsub:affiliations', msg);
+        }
+
         if (!isPubsubMessage(msg)) {
             return;
         }

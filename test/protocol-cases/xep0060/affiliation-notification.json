@@ -1,0 +1,19 @@
+[
+    "message",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "lang": "",
+        "to": "polonius@denmark.lit",
+        "pubsub": {
+            "affiliations": {
+                "node": "princely_musings",
+                "items": [
+                    {
+                        "jid": "polonius@denmark.lit",
+                        "affiliation": "none"
+                    }
+                ]
+            }
+        }
+    }
+]

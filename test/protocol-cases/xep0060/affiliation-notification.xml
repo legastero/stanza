@@ -1,0 +1,7 @@
+<message from='pubsub.shakespeare.lit' to='polonius@denmark.lit'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+    <affiliations node='princely_musings'>
+      <affiliation jid='polonius@denmark.lit' affiliation='none'/>
+    </affiliations>
+  </pubsub>
+</message>

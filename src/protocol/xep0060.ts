@@ -36,7 +36,7 @@ import { DataForm, Paging } from './';
 
 declare module './' {
     export interface Message {
-        pubsub?: PubsubEvent;
+        pubsub?: PubsubEvent | Pubsub;
     }
 
     export interface IQPayload {
@@ -174,6 +174,7 @@ export interface PubsubSubscriptionOptions {
 }
 
 export interface PubsubEvent {
+    context: 'event';
     eventType: 'items' | 'purge' | 'delete' | 'configuration' | 'subscription';
     items?: PubsubEventItems;
     purge?: PubsubEventPurge;
@@ -258,7 +259,6 @@ const Protocol: DefinitionOptions[] = [
             purge: childAttribute(null, 'purge', 'node')
         },
         namespace: NS_PUBSUB_OWNER,
-        path: 'iq.pubsub',
         type: 'owner',
         typeField: 'context'
     },
@@ -371,40 +371,67 @@ const Protocol: DefinitionOptions[] = [
         namespace: NS_PUBSUB_OWNER
     },
     {
-        aliases: [{ path: 'iq.pubsub.affiliations', selector: 'user' }],
+        aliases: [
+            { path: 'iq.pubsub.affiliations', selector: 'user', impliedType: true },
+            { path: 'message.pubsub.affiliations', selector: 'user', impliedType: true }
+        ],
         element: 'affiliations',
         fields: {
             node: attribute('node')
         },
-        namespace: NS_PUBSUB
+        namespace: NS_PUBSUB,
+        type: 'user'
     },
     {
-        aliases: [{ path: 'iq.pubsub.affiliations', selector: 'owner' }],
+        aliases: [{ path: 'iq.pubsub.affiliations', selector: 'owner', impliedType: true }],
         element: 'affiliations',
         fields: {
             node: attribute('node')
         },
-        namespace: NS_PUBSUB_OWNER
+        namespace: NS_PUBSUB_OWNER,
+        type: 'owner'
     },
     {
-        aliases: [{ path: 'iq.pubsub.affiliations.items', selector: 'user', multiple: true }],
+        aliases: [
+            {
+                impliedType: true,
+                multiple: true,
+                path: 'iq.pubsub.affiliations.items',
+                selector: 'user'
+            },
+            {
+                impliedType: true,
+                multiple: true,
+                path: 'message.pubsub.affiliations.items',
+                selector: 'user'
+            }
+        ],
         element: 'affiliation',
         fields: {
             affiliation: attribute('affiliation'),
             jid: JIDAttribute('jid'),
             node: attribute('node')
         },
-        namespace: NS_PUBSUB
+        namespace: NS_PUBSUB,
+        type: 'user'
     },
     {
-        aliases: [{ path: 'iq.pubsub.affiliations.items', selector: 'owner', multiple: true }],
+        aliases: [
+            {
+                impliedType: true,
+                multiple: true,
+                path: 'iq.pubsub.affiliations.items',
+                selector: 'owner'
+            }
+        ],
         element: 'affiliation',
         fields: {
             affiliation: attribute('affiliation'),
             jid: JIDAttribute('jid'),
             node: attribute('node')
         },
-        namespace: NS_PUBSUB_OWNER
+        namespace: NS_PUBSUB_OWNER,
+        type: 'owner'
     },
     {
         element: 'create',
