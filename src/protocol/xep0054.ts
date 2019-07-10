@@ -128,7 +128,7 @@ function vcardField(element: string, type: string): DefinitionOptions {
     };
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         aliases: [{ path: 'iq.vcard' }],
         defaultType: NS_VCARD_TEMP,
@@ -282,4 +282,5 @@ export default [
         type: 'categories',
         typeField: 'type'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

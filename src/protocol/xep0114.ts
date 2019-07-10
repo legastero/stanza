@@ -13,11 +13,12 @@ export interface ComponentHandshake {
     value: string;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     element: 'handshake',
     fields: {
         value: textBuffer('hex')
     },
     namespace: NS_COMPONENT,
     path: 'handshake'
-} as DefinitionOptions;
+};
+export default Protocol;

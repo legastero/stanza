@@ -5,7 +5,7 @@
 // Version: 1.0 (2013-10-02)
 // ====================================================================
 
-import { addAlias, define, DefinitionOptions } from '../jxt';
+import { addAlias, DefinitionOptions } from '../jxt';
 
 import { StreamType } from '../Constants';
 import { NS_DELAY, NS_FORWARD_0 } from '../Namespaces';
@@ -25,14 +25,14 @@ export interface Forward {
     iq?: IQ;
 }
 
-export default [
-    define(Object.values(StreamType).map(streamNS =>
+const Protocol: DefinitionOptions[] = [
+    ...Object.values(StreamType).map(streamNS =>
         addAlias(streamNS, 'message', ['forward.message'])
-    )),
-    define(Object.values(StreamType).map(streamNS =>
+    ),
+    ...Object.values(StreamType).map(streamNS =>
         addAlias(streamNS, 'presence', ['forward.presence'])
-    )),
-    define(Object.values(StreamType).map(streamNS => addAlias(streamNS, 'iq', ['forward.iq']))),
+    ),
+    ...Object.values(StreamType).map(streamNS => addAlias(streamNS, 'iq', ['forward.iq'])),
     addAlias(NS_DELAY, 'delay', ['forward.delay']),
     {
         aliases: ['message.forward'],
@@ -40,4 +40,5 @@ export default [
         namespace: NS_FORWARD_0,
         path: 'forward'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

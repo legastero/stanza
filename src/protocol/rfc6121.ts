@@ -70,7 +70,7 @@ export interface RosterItem {
     groups?: string[];
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendStreamFeatures({
         rosterPreApproval: childBoolean(NS_SUBSCRIPTION_PREAPPROVAL, 'sub'),
         rosterVersioning: childBoolean(NS_ROSTER_VERSIONING, 'ver')
@@ -113,4 +113,5 @@ export default [
         },
         namespace: NS_ROSTER
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

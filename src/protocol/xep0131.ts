@@ -30,7 +30,7 @@ export interface StanzaHeader {
     value?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendMessage({
         headers: splicePath(NS_SHIM, 'headers', 'header', true)
     }),
@@ -46,4 +46,5 @@ export default [
         namespace: NS_SHIM,
         path: 'header'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

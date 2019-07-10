@@ -20,7 +20,7 @@ export interface EntityTime {
     tzo?: number;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     element: 'time',
     fields: {
         tzo: childTimezoneOffset(null, 'tzo'),
@@ -28,4 +28,5 @@ export default {
     },
     namespace: NS_TIME,
     path: 'iq.time'
-} as DefinitionOptions;
+};
+export default Protocol;

@@ -60,7 +60,7 @@ export type StreamManagement =
     | StreamManagementResume
     | StreamManagementFailed;
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendStreamFeatures({
         streamManagement: childBoolean(NS_SMACKS_3, 'sm')
     }),
@@ -134,4 +134,5 @@ export default [
         type: 'failed',
         typeField: 'type'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

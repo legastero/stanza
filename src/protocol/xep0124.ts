@@ -67,7 +67,7 @@ export interface BOSH {
     xmppVersion?: string;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     element: 'body',
     fields: {
         acceptMediaTypes: attribute('accept'),
@@ -104,4 +104,5 @@ export default {
     },
     namespace: NS_BOSH,
     path: 'bosh'
-} as DefinitionOptions;
+};
+export default Protocol;

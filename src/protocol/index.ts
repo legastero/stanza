@@ -152,7 +152,7 @@ import XEP0359 from './xep0359';
 import XEP0363 from './xep0363';
 import XRD from './xrd';
 
-export default [
+const Protocol: Array<DefinitionOptions | DefinitionOptions[]> = [
     RFC3921,
     RFC6120,
     RFC6121,
@@ -228,4 +228,6 @@ export default [
     XEP0359,
     XEP0363,
     XRD
-] as DefinitionOptions[];
+];
+
+export default Protocol;

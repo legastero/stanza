@@ -53,7 +53,7 @@ export interface HTTPUploadHeader {
     value: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendStanzaError({
         httpUploadError: childEnum(NS_HTTP_UPLOAD_0, ['file-too-large', 'retry']),
         httpUploadMaxFileSize: deepChildInteger([
@@ -100,4 +100,5 @@ export default [
         },
         namespace: NS_HTTP_UPLOAD_0
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

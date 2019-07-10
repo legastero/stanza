@@ -39,7 +39,7 @@ export interface ExtendedAddress {
     delivered?: boolean;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendMessage({
         addresses: splicePath(NS_ADDRESS, 'addresses', 'extendedAddress', true)
     }),
@@ -60,4 +60,5 @@ export default [
         namespace: NS_ADDRESS,
         path: 'extendedAddress'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

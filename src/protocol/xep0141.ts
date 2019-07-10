@@ -41,7 +41,7 @@ export type DataFormLayout =
     | DataFormLayoutFieldRef
     | DataFormLayoutReportedRef;
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         aliases: [
             {
@@ -132,4 +132,5 @@ export default [
         type: 'reportedref',
         typeField: 'type'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

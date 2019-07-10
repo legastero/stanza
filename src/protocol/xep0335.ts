@@ -21,7 +21,7 @@ export interface JSONItem extends PubsubItemContent {
     json?: any;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendMessage({
         json: childJSON(NS_JSON_0, 'json')
     }),
@@ -34,4 +34,5 @@ export default [
         namespace: NS_JSON_0,
         type: NS_JSON_0
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

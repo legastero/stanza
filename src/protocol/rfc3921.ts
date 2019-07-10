@@ -29,7 +29,7 @@ export interface SessionFeature {
     optional?: boolean;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     aliases: ['features.legacySession', 'iq.legacySession'],
     element: 'session',
     fields: {
@@ -40,4 +40,6 @@ export default {
         optional: childBoolean(null, 'optional')
     },
     namespace: NS_SESSION
-} as DefinitionOptions;
+};
+
+export default Protocol;

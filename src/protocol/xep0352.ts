@@ -13,7 +13,7 @@ export interface CSI {
     type: 'active' | 'inactive';
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         element: 'active',
         namespace: NS_CSI_0,
@@ -28,4 +28,5 @@ export default [
         type: 'inactive',
         typeField: 'state'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

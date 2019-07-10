@@ -44,7 +44,7 @@ export interface RTTWait {
 
 export type RTTAction = RTTInsert | RTTErase | RTTWait;
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         element: 'rtt',
         fields: {
@@ -87,4 +87,5 @@ export default [
         type: 'wait',
         typeField: 'type'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

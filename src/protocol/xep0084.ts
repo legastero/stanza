@@ -44,7 +44,7 @@ export interface AvatarPointer {
     mediaType?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         aliases: pubsubItemContentAliases(),
         element: 'data',
@@ -102,4 +102,5 @@ export default [
         },
         namespace: NS_AVATAR_METADATA
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

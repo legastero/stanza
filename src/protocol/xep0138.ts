@@ -35,7 +35,7 @@ export interface CompressionSuccess {
 
 export type Compression = CompressionStart | CompressionFailure | CompressionSuccess;
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         element: 'compression',
         fields: {
@@ -72,4 +72,5 @@ export default [
         type: 'success',
         typeField: 'type'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

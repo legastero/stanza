@@ -19,11 +19,12 @@ declare module './' {
     }
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendMessage({
         captcha: splicePath(NS_CAPTCHA, 'captcha', 'dataform')
     }),
     extendIQ({
         captcha: splicePath(NS_CAPTCHA, 'captcha', 'dataform')
     })
-] as DefinitionOptions[];
+];
+export default Protocol;

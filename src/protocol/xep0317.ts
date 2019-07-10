@@ -19,7 +19,7 @@ export interface Hat {
     name?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendPresence({
         hats: splicePath(NS_HATS_0, 'hats', 'hat', true)
     }),
@@ -32,4 +32,5 @@ export default [
         namespace: NS_HATS_0,
         path: 'hat'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

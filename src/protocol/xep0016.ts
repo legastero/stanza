@@ -39,7 +39,7 @@ export interface PrivacyList {
     }>;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         element: 'query',
         fields: {
@@ -72,4 +72,5 @@ export default [
         },
         namespace: NS_PRIVACY
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

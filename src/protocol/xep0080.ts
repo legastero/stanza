@@ -54,7 +54,7 @@ export interface Geolocation extends PubsubItemContent {
     uri?: string;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     aliases: [
         { path: 'message.geoloc', impliedType: true },
         { path: 'dataform.fields.geoloc', impliedType: true }, // XEP-0350
@@ -90,4 +90,5 @@ export default {
     },
     namespace: NS_GEOLOC,
     type: NS_GEOLOC
-} as DefinitionOptions;
+};
+export default Protocol;

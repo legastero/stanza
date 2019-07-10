@@ -51,7 +51,7 @@ export interface AdHocCommand {
     form?: DataForm;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     addAlias(NS_DATAFORM, 'x', ['iq.command.form']),
     extendStanzaError({
         commandError: childEnum(NS_ADHOC_COMMANDS, [
@@ -94,4 +94,5 @@ export default [
         },
         namespace: NS_ADHOC_COMMANDS
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

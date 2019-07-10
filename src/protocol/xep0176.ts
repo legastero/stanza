@@ -107,4 +107,5 @@ const ice = (transportType: string): DefinitionOptions[] => [
     }
 ];
 
-export default [...ice(NS_JINGLE_ICE_0), ...ice(NS_JINGLE_ICE_UDP_1)] as DefinitionOptions[];
+const Protocol: DefinitionOptions[] = [...ice(NS_JINGLE_ICE_0), ...ice(NS_JINGLE_ICE_UDP_1)];
+export default Protocol;

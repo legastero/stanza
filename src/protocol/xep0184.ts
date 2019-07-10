@@ -20,7 +20,7 @@ export interface MessageReceipt {
     id?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         defaultType: 'request',
         element: 'request',
@@ -39,4 +39,5 @@ export default [
         type: 'received',
         typeField: 'type'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

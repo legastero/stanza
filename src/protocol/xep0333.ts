@@ -20,7 +20,7 @@ export interface ChatMarker {
     id?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         defaultType: 'markable',
         element: 'markable',
@@ -56,4 +56,5 @@ export default [
         path: 'message.marker',
         type: 'acknowledged'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

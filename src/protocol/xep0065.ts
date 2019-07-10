@@ -41,7 +41,7 @@ export interface SOCKS5Candidate {
     uri?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         element: 'query',
         fields: {
@@ -71,4 +71,5 @@ export default [
         },
         namespace: NS_SOCKS5
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

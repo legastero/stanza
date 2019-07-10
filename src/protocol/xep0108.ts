@@ -25,7 +25,7 @@ export interface UserActivity extends PubsubItemContent {
     alternateLanguageText?: LanguageSet<string>;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     aliases: [{ path: 'activity', impliedType: true }, ...pubsubItemContentAliases()],
     element: 'activity',
     fields: {
@@ -35,4 +35,5 @@ export default {
     },
     namespace: NS_ACTIVITY,
     type: NS_ACTIVITY
-} as DefinitionOptions;
+};
+export default Protocol;

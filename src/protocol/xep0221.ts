@@ -24,7 +24,7 @@ export interface DataFormMedia {
     }>;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         element: 'media',
         fields: {
@@ -43,4 +43,5 @@ export default [
         },
         namespace: NS_DATAFORM_MEDIA
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

@@ -15,7 +15,7 @@ declare module './' {
     }
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         element: 'open',
         fields: {
@@ -38,4 +38,5 @@ export default [
         path: 'stream',
         type: 'close'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

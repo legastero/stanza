@@ -83,7 +83,7 @@ export interface DiscoItem {
 
 export type Disco = DiscoInfo | DiscoItems;
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         aliases: ['iq.disco', 'message.disco', 'features.disco'],
         element: 'query',
@@ -144,4 +144,5 @@ export default [
         type: 'items',
         typeField: 'type'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

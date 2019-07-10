@@ -24,7 +24,7 @@ export interface JingleRawUdpCandidate {
     type: 'host' | 'prflx' | 'srflx' | 'relay';
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         element: 'transport',
         fields: {
@@ -57,4 +57,5 @@ export default [
         },
         namespace: NS_JINGLE_RAW_UDP_1
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

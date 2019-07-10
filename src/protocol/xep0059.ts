@@ -27,7 +27,7 @@ export interface Paging {
     firstIndex?: number;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     aliases: ['iq.pubsub.paging'],
     element: 'set',
     fields: {
@@ -42,4 +42,5 @@ export default {
     },
     namespace: NS_RSM,
     path: 'paging'
-} as DefinitionOptions;
+};
+export default Protocol;

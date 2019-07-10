@@ -414,15 +414,16 @@ const _Bind: DefinitionOptions = {
 
 // --------------------------------------------------------------------
 
-export default [
+const Protocol: DefinitionOptions[] = [
     _Stream,
     _StreamFeatures,
     _StreamError,
-    _StanzaError,
-    _SASL,
-    _STARTTLS,
-    _Bind,
-    _IQ,
-    _Message,
-    _Presence
-] as DefinitionOptions[];
+    ..._StanzaError,
+    ..._SASL,
+    ..._STARTTLS,
+    ..._IQ,
+    ..._Message,
+    ..._Presence,
+    _Bind
+];
+export default Protocol;

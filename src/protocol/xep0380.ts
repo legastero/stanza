@@ -20,14 +20,13 @@ export interface EncryptionMethod {
     namespace: string;
 }
 
-export default [
-    {
-        element: 'encryption',
-        fields: {
-            name: attribute('name'),
-            namespace: attribute('namespace')
-        },
-        namespace: NS_EME_0,
-        path: 'message.encryptionMethod'
-    }
-] as DefinitionOptions[];
+const Protocol: DefinitionOptions = {
+    element: 'encryption',
+    fields: {
+        name: attribute('name'),
+        namespace: attribute('namespace')
+    },
+    namespace: NS_EME_0,
+    path: 'message.encryptionMethod'
+};
+export default Protocol;

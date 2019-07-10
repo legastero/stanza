@@ -14,10 +14,11 @@ export interface JingleXMLStreamDescription extends JingleApplication {
     applicationType: typeof NS_JINGLE_XML_0;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     element: 'description',
     namespace: NS_JINGLE_XML_0,
     path: 'iq.jingle.contents.application',
     type: NS_JINGLE_XML_0,
     typeField: 'applicationType'
-} as DefinitionOptions;
+};
+export default Protocol;

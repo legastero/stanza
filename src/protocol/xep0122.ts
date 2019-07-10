@@ -32,7 +32,7 @@ export interface DataFormValidation {
     regex?: string;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     element: 'validate',
     fields: {
         listMax: childIntegerAttribute(null, 'list-range', 'max'),
@@ -45,4 +45,5 @@ export default {
     },
     namespace: NS_DATAFORM_VALIDATION,
     path: 'dataform.fields.validation'
-} as DefinitionOptions;
+};
+export default Protocol;

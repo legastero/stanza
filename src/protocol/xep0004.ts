@@ -112,7 +112,7 @@ export type DataFormField =
     | DataFormFieldJIDMulti
     | DataFormFieldAny;
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         aliases: [{ path: 'message.forms', multiple: true }],
         element: 'x',
@@ -230,4 +230,5 @@ export default [
         element: 'item',
         namespace: NS_DATAFORM
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

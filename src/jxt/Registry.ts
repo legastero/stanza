@@ -106,7 +106,13 @@ export default class Registry {
         return root.getImportKey(xml);
     }
 
-    public define(defs: DefinitionOptions | Plugin | Array<Plugin | DefinitionOptions>): void {
+    public define(
+        defs:
+            | DefinitionOptions
+            | DefinitionOptions[]
+            | Plugin
+            | Array<Plugin | DefinitionOptions | DefinitionOptions[]>
+    ): void {
         if (Array.isArray(defs)) {
             for (const def of defs) {
                 if (typeof def === 'object') {

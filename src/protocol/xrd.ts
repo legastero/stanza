@@ -20,7 +20,7 @@ export interface XRDLink {
     type?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         element: 'XRD',
         fields: {
@@ -39,4 +39,5 @@ export default [
         },
         namespace: NS_XRD
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

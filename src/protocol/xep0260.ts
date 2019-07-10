@@ -38,7 +38,7 @@ export interface JingleSocks5Candidate {
     type?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         element: 'transport',
         fields: {
@@ -75,4 +75,5 @@ export default [
         },
         namespace: NS_JINGLE_SOCKS5_1
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

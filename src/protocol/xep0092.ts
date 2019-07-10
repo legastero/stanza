@@ -21,7 +21,7 @@ export interface SoftwareVersion {
     os?: string;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     element: 'query',
     fields: {
         name: childText(null, 'name'),
@@ -30,4 +30,5 @@ export default {
     },
     namespace: NS_VERSION,
     path: 'iq.software'
-} as DefinitionOptions;
+};
+export default Protocol;

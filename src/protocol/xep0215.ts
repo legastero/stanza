@@ -51,7 +51,7 @@ declare module './' {
     }
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         aliases: ['iq.externalServiceCredentials'],
         defaultType: '1',
@@ -101,4 +101,5 @@ export default [
         type: '1',
         typeField: 'version'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

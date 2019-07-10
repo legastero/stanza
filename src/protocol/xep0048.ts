@@ -36,7 +36,7 @@ export interface MUCBookmark {
     password?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         aliases: [
             { path: 'bookmarkStorage', impliedType: true },
@@ -60,4 +60,5 @@ export default [
         },
         namespace: NS_BOOKMARKS
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

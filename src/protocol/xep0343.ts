@@ -21,7 +21,7 @@ declare module './xep0176' {
     }
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     aliases: [
         {
             path: 'iq.jingle.contents.transport.sctp',
@@ -39,4 +39,5 @@ export default {
         streams: attribute('streams')
     },
     namespace: NS_JINGLE_DTLS_SCTP_1
-} as DefinitionOptions;
+};
+export default Protocol;

@@ -27,7 +27,7 @@ export interface XHTMLIM {
     alternateLanguageBodies?: LanguageSet<JSONElement | string>;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     element: 'html',
     fields: {
         alternateLanguageBodies: childAlternateLanguageRawElement(NS_XHTML, 'body', 'xhtmlim'),
@@ -35,4 +35,5 @@ export default {
     },
     namespace: NS_XHTML_IM,
     path: 'message.html'
-} as DefinitionOptions;
+};
+export default Protocol;

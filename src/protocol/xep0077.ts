@@ -52,7 +52,7 @@ export interface AccountManagement {
     registrationLink?: Link;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendStreamFeatures({
         inbandRegistration: childBoolean(NS_INBAND_REGISTRATION, 'register')
     }),
@@ -85,4 +85,5 @@ export default [
         namespace: NS_REGISTER,
         path: 'iq.account'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

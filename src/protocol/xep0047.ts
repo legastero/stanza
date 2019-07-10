@@ -42,7 +42,7 @@ export interface IBBData {
 
 export type IBB = IBBRequest | IBBData;
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         aliases: ['iq.ibb', 'message.ibb'],
         element: 'open',
@@ -85,4 +85,5 @@ export default [
         type: 'data',
         typeField: 'action'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

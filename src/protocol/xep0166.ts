@@ -81,7 +81,7 @@ export interface JingleInfo {
     name?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendStanzaError({
         jingleError: childEnum(NS_JINGLE_ERRORS_1, toList(JingleErrorCondition))
     }),
@@ -122,4 +122,5 @@ export default [
         namespace: NS_JINGLE_1,
         path: 'iq.jingle.reason'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

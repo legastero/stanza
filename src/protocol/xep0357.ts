@@ -34,7 +34,7 @@ export interface PushNotification {
     form?: DataForm;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     addAlias(NS_DATAFORM, 'x', ['iq.push.form', 'pushNotification.form']),
     {
         element: 'enable',
@@ -66,4 +66,5 @@ export default [
         type: NS_PUSH_0,
         typeField: 'itemType'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

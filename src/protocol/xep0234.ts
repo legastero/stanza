@@ -48,7 +48,7 @@ export interface FileTransferInfo extends JingleInfo {
     file?: FileDescription;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     addAlias(NS_HASHES_2, 'hash', [{ path: 'file.hashes', multiple: true }]),
     addAlias(NS_HASHES_2, 'hash-used', [{ path: 'file.hashesUsed', multiple: true }]),
     addAlias(NS_THUMBS_1, 'thumbnail', [{ path: 'file.thumbnails', multiple: true }]),
@@ -112,4 +112,5 @@ export default [
         type: `{${NS_JINGLE_FILE_TRANSFER_5}}checksum`,
         typeField: 'infoType'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

@@ -32,7 +32,7 @@ export interface UserNick extends PubsubItemContent {
     nick?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendMessage({
         nick: childText(NS_NICK, 'nick')
     }),
@@ -48,4 +48,5 @@ export default [
         namespace: NS_NICK,
         type: NS_NICK
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

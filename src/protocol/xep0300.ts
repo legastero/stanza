@@ -20,7 +20,7 @@ export interface HashUsed {
     algorithm: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         defaultType: '2',
         element: 'hash',
@@ -53,4 +53,5 @@ export default [
         path: 'hash',
         typeField: 'version'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

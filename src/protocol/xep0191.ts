@@ -28,7 +28,7 @@ export interface BlockingList extends Blocking {
     jids: JID[];
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendStanzaError({
         blocked: childBoolean(NS_BLOCKING_ERRORS, 'blocked')
     }),
@@ -62,4 +62,5 @@ export default [
         type: 'unblock',
         typeField: 'action'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

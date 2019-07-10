@@ -231,7 +231,7 @@ const dateOrPresenceAttribute = (name: string): FieldDefinition<Date | 'presence
     }
 });
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         aliases: ['pubsub', 'iq.pubsub', 'message.pubsub'],
         childrenExportOrder: {
@@ -565,4 +565,5 @@ export default [
         namespace: NS_PUBSUB_EVENT,
         path: 'message.pubsub.items'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

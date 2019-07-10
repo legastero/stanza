@@ -50,7 +50,7 @@ export interface MAMResult {
     forwarded: Forward;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     addAlias(NS_DATAFORM, 'x', ['iq.archive.form']),
     addAlias(NS_FORWARD_0, 'forwarded', ['message.archive.item']),
     addAlias(NS_RSM, 'set', ['iq.archive.paging']),
@@ -93,4 +93,5 @@ export default [
         namespace: NS_MAM_2,
         path: 'message.archive'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

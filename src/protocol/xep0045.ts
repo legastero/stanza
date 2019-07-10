@@ -155,7 +155,7 @@ export interface MUCUnique {
     name?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     addAlias(NS_DATAFORM, 'x', [{ path: 'iq.muc.form', selector: 'configure' }]),
     {
         defaultType: 'info',
@@ -314,4 +314,5 @@ export default [
         path: 'iq.muc',
         type: 'unique'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

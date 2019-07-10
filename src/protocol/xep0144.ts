@@ -34,7 +34,7 @@ export interface RosterExchange {
     groups?: string[];
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendMessage({
         rosterExchange: splicePath(NS_ROSTER_EXCHANGE, 'x', 'rosterExchange', true)
     }),
@@ -52,4 +52,5 @@ export default [
         namespace: NS_ROSTER_EXCHANGE,
         path: 'rosterExchange'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

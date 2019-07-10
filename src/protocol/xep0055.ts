@@ -35,7 +35,7 @@ export interface SearchResultItem {
     email?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     addAlias(NS_DATAFORM, 'x', ['iq.search.form']),
     {
         element: 'query',
@@ -61,4 +61,5 @@ export default [
         },
         namespace: NS_SEARCH
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

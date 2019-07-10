@@ -24,8 +24,11 @@ export interface LegacyEntityCaps {
     algorithm: string;
 }
 
-export default {
-    aliases: ['presence.legacyCapabilities', 'features.legacyCapabilities'],
+const Protocol: DefinitionOptions = {
+    aliases: [
+        { path: 'presence.legacyCapabilities', multiple: true },
+        { path: 'features.legacyCapabilities', multiple: true }
+    ],
     element: 'c',
     fields: {
         algorithm: attribute('hash'),
@@ -34,4 +37,5 @@ export default {
         value: attribute('ver')
     },
     namespace: NS_DISCO_LEGACY_CAPS
-} as DefinitionOptions;
+};
+export default Protocol;

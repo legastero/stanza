@@ -21,7 +21,7 @@ export interface StanzaId {
     by: JID;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     extendMessage({
         originId: childAttribute(NS_SID_0, 'origin-id', 'id')
     }),
@@ -34,4 +34,5 @@ export default [
         },
         namespace: NS_SID_0
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

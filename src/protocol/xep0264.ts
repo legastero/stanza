@@ -23,7 +23,7 @@ export interface Thumbnail {
     uri: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     addAlias(NS_BOB, 'data', [{ path: 'iq.jingle.bits', multiple: true }]),
     {
         element: 'thumbnail',
@@ -36,4 +36,5 @@ export default [
         namespace: NS_THUMBS_1,
         path: 'thumbnail'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

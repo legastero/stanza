@@ -23,7 +23,7 @@ export interface JingleIBB extends JingleTransport {
     ack?: boolean;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     element: 'transport',
     fields: {
         ack: {
@@ -42,4 +42,5 @@ export default {
     path: 'iq.jingle.contents.transport',
     type: NS_JINGLE_IBB_1,
     typeField: 'transportType'
-} as DefinitionOptions;
+};
+export default Protocol;

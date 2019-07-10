@@ -30,7 +30,7 @@ export interface Bits {
     mediaType?: string;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     aliases: [
         'iq.bits',
         { path: 'message.bits', multiple: true },
@@ -45,4 +45,5 @@ export default {
         mediaType: attribute('type')
     },
     namespace: NS_BOB
-} as DefinitionOptions;
+};
+export default Protocol;

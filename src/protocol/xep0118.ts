@@ -21,7 +21,7 @@ export interface UserTune extends PubsubItemContent {
     uri?: string;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     aliases: [
         {
             impliedType: true,
@@ -41,4 +41,5 @@ export default {
     },
     namespace: NS_TUNE,
     type: NS_TUNE
-} as DefinitionOptions;
+};
+export default Protocol;

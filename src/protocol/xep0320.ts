@@ -26,7 +26,7 @@ declare module './xep0176' {
     }
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     aliases: [
         {
             multiple: true,
@@ -51,4 +51,5 @@ export default {
         value: text()
     },
     namespace: NS_JINGLE_DTLS_0
-} as DefinitionOptions;
+};
+export default Protocol;

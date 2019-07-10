@@ -20,7 +20,7 @@ export interface Visibility {
     probe?: boolean;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         element: 'invisible',
         fields: {
@@ -37,4 +37,5 @@ export default [
         path: 'iq.visibility',
         type: 'visible'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

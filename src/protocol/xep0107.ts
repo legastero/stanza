@@ -32,7 +32,7 @@ export interface UserMood extends PubsubItemContent {
     alternateLanguageText?: LanguageSet<string>;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     aliases: [{ path: 'message.mood', impliedType: true }, ...pubsubItemContentAliases()],
     element: 'mood',
     fields: {
@@ -42,4 +42,5 @@ export default {
     },
     namespace: NS_MOOD,
     type: NS_MOOD
-} as DefinitionOptions;
+};
+export default Protocol;

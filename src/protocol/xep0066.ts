@@ -24,7 +24,7 @@ export interface Link {
     description?: string;
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         aliases: [{ multiple: true, path: 'message.links' }],
         element: 'x',
@@ -43,4 +43,5 @@ export default [
         namespace: NS_OOB_TRANSFER,
         path: 'iq.transferLink'
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

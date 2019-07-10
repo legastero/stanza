@@ -20,7 +20,7 @@ export interface JingleContentGroup {
     contents: string[];
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         aliases: [{ path: 'iq.jingle.groups', multiple: true }],
         element: 'group',
@@ -30,4 +30,5 @@ export default [
         },
         namespace: NS_JINGLE_GROUPING_0
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

@@ -19,8 +19,9 @@ declare module './' {
 export interface PrivateStorage {}
 // tslint:enable
 
-export default {
+const Protocol: DefinitionOptions = {
     element: 'query',
     namespace: NS_PRIVATE,
     path: 'iq.privateStorage'
-} as DefinitionOptions;
+};
+export default Protocol;

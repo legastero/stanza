@@ -205,7 +205,7 @@ function rtcpFeedback(): FieldDefinition {
     };
 }
 
-export default [
+const Protocol: DefinitionOptions[] = [
     {
         aliases: ['iq.jingle.contents.application'],
         element: 'description',
@@ -385,4 +385,5 @@ export default [
         path: 'iq.jingle.info',
         type: JINGLE_INFO_RINGING
     }
-] as DefinitionOptions[];
+];
+export default Protocol;

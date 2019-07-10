@@ -24,7 +24,7 @@ export interface Delay {
     reason?: string;
 }
 
-export default {
+const Protocol: DefinitionOptions = {
     aliases: ['message.delay', 'presence.delay'],
     element: 'delay',
     fields: {
@@ -33,4 +33,5 @@ export default {
         timestamp: dateAttribute('stamp')
     },
     namespace: NS_DELAY
-} as DefinitionOptions;
+};
+export default Protocol;
