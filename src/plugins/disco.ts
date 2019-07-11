@@ -26,6 +26,13 @@ declare module '../' {
     }
 
     export interface AgentConfig {
+        /**
+         * Entity Caps Disco Node
+         *
+         * The disco info node prefix to use for entity capability advertisements.
+         *
+         * @default "https://stanzajs.org"
+         */
         capsNode?: string;
     }
 

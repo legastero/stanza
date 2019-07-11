@@ -111,16 +111,85 @@ export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
 }
 
 export interface AgentConfig {
+    /**
+     * User JID
+     */
     jid?: string;
+
+    /**
+     * Server Domain Name
+     *
+     * Set the expected name of the server instead of using domain in the provided JID.
+     */
     server?: string;
+
+    /**
+     * Connection Resource
+     *
+     * Optionally request for the server to bind a specific resource for the connection.
+     *
+     * Note that the server is allowed ignore the request.
+     */
     resource?: string;
+
+    /**
+     * IQ Timeout
+     *
+     * The number of seconds to wait before timing out IQ requests.
+     *
+     * @default 15
+     */
     timeout?: number;
+
+    /**
+     * IQ Timeout
+     *
+     * Limit the transport types that will be used.
+     *
+     * @default ["websocket", "bosh"]
+     */
     transports?: string | string[];
+
+    /**
+     * Connection Transport
+     *
+     * Manually set the transport type to use instead of auto-discovering.
+     */
     transport?: string;
+
+    /**
+     * WebSocket URL
+     *
+     * Manually set the WebSocket connection URL to use instead of auto-discovering.
+     */
     wsURL?: string;
+
+    /**
+     * BOSH URL
+     *
+     * Manually set the BOSH connection URL to use instead of auto-discovering.
+     */
     boshURL?: string;
+
+    /**
+     * Account Password
+     *
+     * Equivalent to using <code>credentials: { password: '*****' }</code>.
+     */
     password?: string;
+
+    /**
+     * User Language
+     *
+     * The associated language code for content created by the user.
+     */
     lang?: string;
+
+    /**
+     * Accepted Languages
+     *
+     * A list of language codes acceptable to the user.
+     */
     acceptLanguages?: string[];
 }
 

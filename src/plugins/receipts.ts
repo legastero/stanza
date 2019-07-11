@@ -8,6 +8,13 @@ type ReceiptMessage = ReceivedMessage & {
 
 declare module '../' {
     export interface AgentConfig {
+        /**
+         * Send Message Delivery Receipts
+         *
+         * When enabled, message receipts will automatically be sent when requested.
+         *
+         * @default true
+         */
         sendReceipts?: boolean;
     }
 

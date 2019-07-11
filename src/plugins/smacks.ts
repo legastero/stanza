@@ -8,6 +8,16 @@ import {
 
 declare module '../' {
     export interface AgentConfig {
+        /**
+         * Use Stream Management
+         *
+         * Controls if <a href="https://xmpp.org/extensions/xep-0198.html">XEP-0198: Stream Management</a>
+         * is enabled for the session.
+         *
+         * Disabling stream management is <i>not</i> recommended.
+         *
+         * @default true
+         */
         useStreamManagement?: boolean;
     }
 

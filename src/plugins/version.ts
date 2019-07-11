@@ -8,6 +8,11 @@ declare module '../' {
     }
 
     export interface AgentConfig {
+        /**
+         * Software Version Info
+         *
+         * @default { name: "stanzajs.org" }
+         */
         softwareVersion?: SoftwareVersion;
     }
 

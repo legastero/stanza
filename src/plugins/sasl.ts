@@ -7,6 +7,14 @@ declare module '../' {
         getCredentials(): Promise<AgentConfig['credentials']>;
     }
     export interface AgentConfig {
+        /**
+         * Account Credentials
+         *
+         * The <code>credentials</code> object is used to pass multiple credential values (not just a password).
+         * These are primarily values that have been previously cached.
+         *
+         * If you only need to set a password, then the <code>password</code> config field can be used instead.
+         */
         credentials?: Credentials;
     }
     export interface AgentEvents {

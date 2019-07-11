@@ -11,6 +11,13 @@ declare module '../' {
     }
 
     export interface AgentConfig {
+        /**
+         * Send Chat Markers
+         *
+         * When enabled, message display markers will automatically be sent when requested.
+         *
+         * @default true
+         */
         chatMarkers?: boolean;
     }
 

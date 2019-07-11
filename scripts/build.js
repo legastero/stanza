@@ -58,7 +58,6 @@ FS.writeFileSync(
     JSON.stringify(
         {
             ...Pkg,
-            stanzajs_env_mappings: undefined,
             browser: './browser-module.js',
             devDependencies: undefined,
             main: './index.js',
@@ -67,6 +66,7 @@ FS.writeFileSync(
             'react-native': './rn-module.js',
             scripts: undefined,
             sideEffects: false,
+            stanzajs_env_mappings: undefined,
             typings: './index'
         },
         null,

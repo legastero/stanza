@@ -14,6 +14,15 @@ declare module '../' {
     }
 
     export interface AgentConfig {
+        /**
+         * Roster Version
+         *
+         * The latest known version of the user's roster.
+         *
+         * If the version matches the version on the server, roster data does not need to be sent to the client.
+         *
+         * @default undefined
+         */
         rosterVer?: string;
     }
 
