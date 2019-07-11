@@ -111,7 +111,8 @@ for (const c of fields) {
 
     agentEventsRef.write(`
 <h3 id="${c.name}">${c.name}</h3>
-\`\`\`typescript
+
+\`\`\`
 ${writeType(c.type, false)}
 \`\`\`
 
@@ -147,6 +148,7 @@ const client = XMPP.createClient({
 It is possible to inspect the configuration later by using \`client.config\`.
 
 ## Available Settings
+
 `);
 fields = AgentConfig.children.sort((a, b) => {
     return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
