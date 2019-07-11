@@ -44,13 +44,41 @@ function writeType(t, wrap = true) {
             return wrap ? `<code>${t.name}</code>` : t.name;
         case 'reference':
             return wrap ? `<code>${t.name}</code>` : t.name;
+        case 'reflection':
+            if (t.declaration.type) {
+                return wrap ? `<code>${t.declaration.type}</code>` : t.declaration.type;
+            }
+            if (t.declaration.signatures) {
+                return t.declaration.signatures
+                    .map(x => {
+                        return `(${x.parameters
+                            .map(p => `${p.name}: ${writeType(p.type, wrap)}`)
+                            .join(', ')}) => ${writeType(x.type, wrap)}`;
+                    })
+                    .filter(x => !!x)
+                    .join(' | ');
+            }
+            if (t.declaration.children) {
+                return `{ ${t.declaration.children
+                    .map(x => `${x.name}: ${writeType(x.type, false)}`)
+                    .join('; ')} }`;
+            }
         case 'union':
             return t.types
-                .map(x => writeType(x, true))
+                .map(x => writeType(x, wrap))
                 .filter(x => !!x)
                 .join(' | ');
+        case 'intersection':
+            return t.types
+                .map(x => writeType(x, wrap))
+                .filter(x => !!x)
+                .join(' & ');
         case 'array':
-            return `<code>${writeType(t.elementType, false)}[]</code>`;
+            return wrap
+                ? `<code>${writeType(t.elementType, false)}[]</code>`
+                : `${writeType(t.elementType, false)}[]`;
+        case 'stringLiteral':
+            return wrap ? `<code>${t.value}</code>` : t.value;
     }
 }
 
@@ -65,6 +93,37 @@ const Agent = docData.children.filter(c => c.name === 'Agent')[0];
 // ====================================================================
 
 const AgentEvents = docData.children.filter(c => c.name === 'AgentEvents')[0];
+const agentEventsRef = FS.createWriteStream('./docs/Events.md');
+
+agentEventsRef.write(`# StanzaJS Events
+
+`);
+let fields = AgentEvents.children.sort((a, b) => {
+    return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+});
+
+for (const c of fields) {
+    const meta = c.comment || {};
+    const tags = new Map();
+    for (const tag of meta.tags || []) {
+        tags.set(tag.tag, tag.text.trim());
+    }
+
+    agentEventsRef.write(`
+<h3 id="${c.name}">${c.name}</h3>
+\`\`\`typescript
+${writeType(c.type, false)}
+\`\`\`
+
+${(meta.text || '')
+    .trim()
+    .split(/\n\n+/)
+    .map(l => `<p>${l.replace(/\n/g, ' ')}</p>`)
+    .join('')}
+`);
+}
+agentEventsRef.write(`</tbody></table>`);
+agentEventsRef.close();
 
 // ====================================================================
 // Generate Config Reference
@@ -89,7 +148,7 @@ It is possible to inspect the configuration later by using \`client.config\`.
 
 ## Available Settings
 `);
-const fields = AgentConfig.children.sort((a, b) => {
+fields = AgentConfig.children.sort((a, b) => {
     return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
 });
 agentConfigRef.write(`<ul>`);

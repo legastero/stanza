@@ -50,7 +50,9 @@ client.connect();
 
 ## Documentation
 
--   [Configuring](docs/Configuring.md)
+-   API Reference
+    -   [Configuring](docs/Configuring.md)
+    -   [Events](docs/Events.md)
 -   [JXT: JSON/XML Translation](docs/jxt/README.md)
 -   [Supported XEP Formats](docs/Supported_XEP_Formats.md)
 -   [Creating Plugins](docs/Create_Plugin.md)

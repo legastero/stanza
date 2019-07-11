@@ -71,8 +71,8 @@ export interface AgentEvents {
         | { kind: 'presence'; stanza: Stanzas.Presence }
         | { kind: 'iq'; stanza: Stanzas.IQ };
 
-    'raw:incoming': (data: string) => void;
-    'raw:outgoing': (data: string) => void;
+    'raw:incoming': string;
+    'raw:outgoing': string;
     'raw:*': (direction: 'incoming' | 'outgoing', data: string) => void;
     raw: (direction: 'incoming' | 'outgoing', data: string) => void;
 
