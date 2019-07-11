@@ -84,10 +84,8 @@ export default function(client: Agent) {
                 continue;
             }
 
-            if (cmd === 'restart') {
-                if (client.transport) {
-                    client.transport.restart();
-                }
+            if (cmd === 'restart' && client.transport) {
+                client.transport.restart();
             }
             if (cmd === 'disconnect') {
                 client.emit('stream:error', {

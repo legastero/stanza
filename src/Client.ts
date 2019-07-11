@@ -246,12 +246,10 @@ export default class Client extends EventEmitter {
     }
 
     public disconnect() {
-        if (this.sessionStarted) {
-            if (!this.sm.started) {
-                // Only emit session:end if we had a session, and we aren't using
-                // stream management to keep the session alive.
-                this.emit('session:end');
-            }
+        if (this.sessionStarted && !this.sm.started) {
+            // Only emit session:end if we had a session, and we aren't using
+            // stream management to keep the session alive.
+            this.emit('session:end');
         }
         this.sessionStarted = false;
         if (this.transport) {

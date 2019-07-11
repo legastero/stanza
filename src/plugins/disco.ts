@@ -77,14 +77,12 @@ export default function(client: Agent) {
             type: 'get'
         });
 
-        const result: DiscoInfoResult = {
+        return {
             extensions: [],
             features: [],
             identities: [],
             ...resp.disco
         };
-
-        return result;
     };
 
     client.getDiscoItems = async (jid: string, node?: string) => {
@@ -97,12 +95,10 @@ export default function(client: Agent) {
             type: 'get'
         });
 
-        const result: DiscoItemsResult = {
+        return {
             items: [],
             ...resp.disco
         };
-
-        return result;
     };
 
     client.updateCaps = () => {

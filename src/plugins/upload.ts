@@ -41,7 +41,7 @@ export default function(client: Agent) {
         }
     }
 
-    client.getUploadService = async (domain = JID.getDomain(client.jid)!) => {
+    client.getUploadService = async (domain = JID.getDomain(client.jid)) => {
         const domainParameters = await getUploadParameters(domain);
         if (domainParameters) {
             return domainParameters;

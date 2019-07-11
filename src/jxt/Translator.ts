@@ -44,7 +44,7 @@ export default class Translator {
     public addChild(
         name: FieldName,
         translator: Translator,
-        multiple?: boolean,
+        multiple: boolean = false,
         selector?: string,
         implicit?: string
     ) {

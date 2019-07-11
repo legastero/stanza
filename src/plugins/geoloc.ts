@@ -26,7 +26,7 @@ export default function(client: Agent) {
             return;
         }
 
-        const loc = msg.pubsub.items.published[0]!.content as Geolocation;
+        const loc = msg.pubsub.items.published[0].content as Geolocation;
         client.emit('geoloc', {
             geoloc: loc,
             jid: msg.from

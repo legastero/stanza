@@ -8,7 +8,7 @@ declare module '../' {
 }
 
 export default function(client: Agent) {
-    client.goInvisible = async (probe?: boolean) => {
+    client.goInvisible = async (probe: boolean = false) => {
         await client.sendIQ({
             type: 'set',
             visiblity: {

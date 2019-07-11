@@ -26,7 +26,7 @@ export default function(client: Agent) {
             return;
         }
 
-        const content = msg.pubsub.items.published[0]!.content as UserNick;
+        const content = msg.pubsub.items.published[0].content as UserNick;
 
         client.emit('nick', {
             jid: msg.from,

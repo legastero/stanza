@@ -25,7 +25,7 @@ export default function(client: Agent) {
             return;
         }
 
-        const content = msg.pubsub.items.published[0]!.content as UserMood;
+        const content = msg.pubsub.items.published[0].content as UserMood;
 
         client.emit('mood', {
             jid: msg.from,

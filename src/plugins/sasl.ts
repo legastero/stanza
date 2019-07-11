@@ -80,13 +80,7 @@ export default function(client: Agent) {
                     return;
                 }
 
-                case 'failure': {
-                    client.off('sasl', saslHandler);
-                    client.emit('auth:failed');
-                    done('disconnect', 'authentication failed');
-                    return;
-                }
-
+                case 'failure':
                 case 'abort': {
                     client.off('sasl', saslHandler);
                     client.emit('auth:failed');

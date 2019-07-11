@@ -499,7 +499,7 @@ export const JINGLE_INFO_RECEIVED_5 = JINGLE_INFO(NS_JINGLE_FILE_TRANSFER_5, 're
 // ====================================================================
 
 export function toList<T>(data: { [key: string]: T }): T[] {
-    return Object.keys(data).map(key => data[key]) as T[];
+    return Object.keys(data).map(key => data[key]);
 }
 
 export function sendersToDirection(

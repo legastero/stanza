@@ -246,11 +246,11 @@ export default class Registry {
         namespace: string,
         element: string,
         path: string,
-        multiple?: boolean,
+        multiple: boolean = false,
         selector?: string,
         contextField?: string,
         contextType?: string,
-        contextImpliedType?: boolean
+        contextImpliedType: boolean = false
     ): void {
         const linkedTranslator = this.getOrCreateTranslator(namespace, element);
         linkedTranslator.placeholder = false;

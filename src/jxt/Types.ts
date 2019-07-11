@@ -901,7 +901,7 @@ export function splicePath(
     namespace: string | null,
     element: string,
     path: string,
-    multiple?: boolean
+    multiple: boolean = false
 ): FieldDefinition<JSONData | JSONData[]> {
     return {
         importer(xml, context) {

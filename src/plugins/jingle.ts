@@ -141,11 +141,13 @@ export default function(client: Agent) {
                 const ice: RTCIceServer = {
                     urls: []
                 };
+
+                const baseUrl = `${service.type}:${service.host}`;
+                const port = service.port ? `:${service.port}` : '';
+                const transport = service.transport ? `?transport=${service.transport}` : '';
+
                 if (service.type === 'stun' || service.type === 'stuns') {
-                    ice.urls = [
-                        `${service.type}:${service.host}${service.port ? `:${service.port}` : ''}`
-                    ];
-                    discovered.push(ice);
+                    ice.urls = [`${baseUrl}${port}`];
                 }
                 if (service.type === 'turn' || service.type === 'turns') {
                     if (service.username) {
@@ -154,11 +156,11 @@ export default function(client: Agent) {
                     if (service.password) {
                         ice.credential = service.password;
                     }
-                    ice.urls = [
-                        `${service.type}:${service.host}${service.port ? `:${service.port}` : ''}${
-                            service.transport ? `?transport=${service.transport}` : ''
-                        }`
-                    ];
+                    ice.urls = [`${baseUrl}${port}${transport}`];
+                }
+
+                if (ice.urls.length) {
+                    discovered.push(ice);
                 }
             }
 

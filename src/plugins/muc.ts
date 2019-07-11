@@ -173,7 +173,7 @@ export default function(client: Agent) {
     });
 
     client.on('presence', pres => {
-        const room = JID.toBare(pres.from)!;
+        const room = JID.toBare(pres.from);
 
         if (client.joiningRooms.has(room) && pres.type === 'error') {
             client.joiningRooms.delete(room);
@@ -218,7 +218,7 @@ export default function(client: Agent) {
     });
 
     client.joinRoom = (room: string, nick: string, opts: MUCPresence = {}) => {
-        room = JID.toBare(room)!;
+        room = JID.toBare(room);
         client.joiningRooms.set(room, nick);
         client.sendPresence({
             ...opts,

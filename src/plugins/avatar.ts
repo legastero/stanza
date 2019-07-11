@@ -35,7 +35,7 @@ export default function(client: Agent) {
             return;
         }
 
-        const info = msg.pubsub.items.published[0]!.content as AvatarMetaData;
+        const info = msg.pubsub.items.published[0].content as AvatarMetaData;
 
         client.emit('avatar', {
             avatars: info.versions || [],
