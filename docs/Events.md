@@ -35,7 +35,7 @@ Credentials
 <h3 id="available">available</h3>
 
 ```
-Stanzas.ReceivedPresence
+ReceivedPresence
 ```
 
 <p></p>
@@ -83,7 +83,7 @@ SentCarbon
 <h3 id="chat">chat</h3>
 
 ```
-Stanzas.ReceivedMessage
+ReceivedMessage
 ```
 
 <p></p>
@@ -139,7 +139,7 @@ Error
 <h3 id="features">features</h3>
 
 ```
-Stanzas.StreamFeatures
+StreamFeatures
 ```
 
 <p></p>
@@ -155,7 +155,7 @@ GeolocEvent
 <h3 id="groupchat">groupchat</h3>
 
 ```
-Stanzas.ReceivedMessage
+ReceivedMessage
 ```
 
 <p></p>
@@ -163,7 +163,7 @@ Stanzas.ReceivedMessage
 <h3 id="iq">iq</h3>
 
 ```
-Stanzas.ReceivedIQ
+ReceivedIQ
 ```
 
 <p></p>
@@ -331,7 +331,7 @@ ReceivedMessage
 <h3 id="message">message</h3>
 
 ```
-Stanzas.ReceivedMessage
+ReceivedMessage
 ```
 
 <p></p>
@@ -339,7 +339,7 @@ Stanzas.ReceivedMessage
 <h3 id="message:error">message:error</h3>
 
 ```
-Stanzas.Message
+Message
 ```
 
 <p></p>
@@ -347,7 +347,7 @@ Stanzas.Message
 <h3 id="message:sent">message:sent</h3>
 
 ```
-(msg: Stanzas.Message, viaCarbon: boolean) => void
+(msg: Message, viaCarbon: boolean) => void
 ```
 
 <p></p>
@@ -459,7 +459,7 @@ UserNickEvent
 <h3 id="presence">presence</h3>
 
 ```
-Stanzas.ReceivedPresence
+ReceivedPresence
 ```
 
 <p></p>
@@ -651,7 +651,7 @@ StreamManagement
 <h3 id="stanza">stanza</h3>
 
 ```
-Stanzas.Message | Stanzas.Presence | Stanzas.IQ
+Message | Presence | IQ
 ```
 
 <p></p>
@@ -659,7 +659,7 @@ Stanzas.Message | Stanzas.Presence | Stanzas.IQ
 <h3 id="stanza:acked">stanza:acked</h3>
 
 ```
-{ kind: message; stanza: Stanzas.Message } | { kind: presence; stanza: Stanzas.Presence } | { kind: iq; stanza: Stanzas.IQ }
+{ kind: message; stanza: Message } | { kind: presence; stanza: Presence } | { kind: iq; stanza: IQ }
 ```
 
 <p></p>
@@ -667,7 +667,7 @@ Stanzas.Message | Stanzas.Presence | Stanzas.IQ
 <h3 id="stanza:failed">stanza:failed</h3>
 
 ```
-{ kind: message; stanza: Stanzas.Message } | { kind: presence; stanza: Stanzas.Presence } | { kind: iq; stanza: Stanzas.IQ }
+{ kind: message; stanza: Message } | { kind: presence; stanza: Presence } | { kind: iq; stanza: IQ }
 ```
 
 <p></p>
@@ -691,7 +691,7 @@ void
 <h3 id="stream:error">stream:error</h3>
 
 ```
-(streamError: Stanzas.StreamError, error: Error) => void
+(streamError: StreamError, error: Error) => void
 ```
 
 <p></p>
@@ -715,7 +715,7 @@ StreamManagementResume
 <h3 id="stream:start">stream:start</h3>
 
 ```
-Stanzas.Stream
+Stream
 ```
 
 <p></p>
@@ -731,7 +731,7 @@ TuneEvent
 <h3 id="unavailable">unavailable</h3>
 
 ```
-Stanzas.ReceivedPresence
+ReceivedPresence
 ```
 
 <p></p>

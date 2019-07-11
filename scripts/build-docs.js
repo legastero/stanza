@@ -43,6 +43,9 @@ function writeType(t, wrap = true) {
             }
             return wrap ? `<code>${t.name}</code>` : t.name;
         case 'reference':
+            if (t.name.startsWith('Stanzas.')) {
+                return wrap ? `<code>${t.name.substr(8)}</code>` : t.name.substr(8);
+            }
             return wrap ? `<code>${t.name}</code>` : t.name;
         case 'reflection':
             if (t.declaration.type) {
