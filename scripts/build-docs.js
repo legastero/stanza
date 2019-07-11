@@ -54,7 +54,7 @@ function writeType(t, wrap = true) {
             if (t.declaration.signatures) {
                 return t.declaration.signatures
                     .map(x => {
-                        return `(${x.parameters
+                        return `(${(x.parameters || [])
                             .map(p => `${p.name}: ${writeType(p.type, wrap)}`)
                             .join(', ')}) => ${writeType(x.type, wrap)}`;
                     })
@@ -67,7 +67,7 @@ function writeType(t, wrap = true) {
                     .join('; ')} }`;
             }
         case 'union':
-            return t.types
+            return (t.types || [])
                 .map(x => writeType(x, wrap))
                 .filter(x => !!x)
                 .join(' | ');
@@ -82,6 +82,10 @@ function writeType(t, wrap = true) {
                 : `${writeType(t.elementType, false)}[]`;
         case 'stringLiteral':
             return wrap ? `<code>${t.value}</code>` : t.value;
+        case 'typeParameter':
+            return `<${t.name}>`;
+        case 'unknown':
+            return t.name;
     }
 }
 
@@ -90,6 +94,43 @@ function writeType(t, wrap = true) {
 // ====================================================================
 
 const Agent = docData.children.filter(c => c.name === 'Agent')[0];
+const agentRef = FS.createWriteStream('./docs/Reference.md');
+
+agentRef.write(`# StanzaJS API Reference
+
+`);
+let fields = Agent.children.sort((a, b) => {
+    return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+});
+
+for (const c of fields) {
+    if (c.kindString !== 'Method') {
+        continue;
+    }
+    const meta = c.comment || {};
+    const tags = new Map();
+    for (const tag of meta.tags || []) {
+        tags.set(tag.tag, tag.text.trim());
+    }
+
+    agentRef.write(`
+<h3 id="${c.name}">${c.name}</h3>
+
+\`\`\`
+${c.signatures
+    .map(s => writeType({ type: 'reflection', declaration: { signatures: [s] } }, false))
+    .join('\n')}
+\`\`\`
+
+${(meta.text || '')
+    .trim()
+    .split(/\n\n+/)
+    .map(l => `<p>${l.replace(/\n/g, ' ')}</p>`)
+    .join('')}
+`);
+}
+agentRef.write(`</tbody></table>`);
+agentRef.close();
 
 // ====================================================================
 // Generate Events Reference
@@ -101,7 +142,7 @@ const agentEventsRef = FS.createWriteStream('./docs/Events.md');
 agentEventsRef.write(`# StanzaJS Events
 
 `);
-let fields = AgentEvents.children.sort((a, b) => {
+fields = AgentEvents.children.sort((a, b) => {
     return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
 });
 
