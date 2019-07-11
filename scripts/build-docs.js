@@ -1,3 +1,9 @@
+// ////////////////////////////////////////////////////////////////////
+//                     UNDER CONSTRUCTION
+// --------------------------------------------------------------------
+//       The automated doc generation process is still a WIP.
+// ////////////////////////////////////////////////////////////////////
+
 const FS = require('fs');
 const Child = require('child_process').execSync;
 
