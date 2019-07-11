@@ -1,14 +1,17 @@
-const FS = require('fs');
-const Child = require('child_process').execSync;
+import { execSync as Child } from 'child_process';
+import FS from 'fs';
 
-const Pkg = JSON.parse(FS.readFileSync('package.json'));
+const Pkg = JSON.parse(FS.readFileSync('package.json').toString());
 
-function fileReplace(fileName, placeholder, value) {
+function fileReplace(fileName: string, placeholder: string, value: string) {
     const originalFile = FS.readFileSync(fileName).toString();
     FS.writeFileSync(fileName, originalFile.replace(placeholder, value));
 }
 
-function writeOverrides(overrides = undefined) {
+interface Overrides {
+    [key: string]: string;
+}
+function writeOverrides(overrides?: Overrides) {
     FS.writeFileSync(
         'package.json',
         JSON.stringify(
