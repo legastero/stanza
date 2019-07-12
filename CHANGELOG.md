@@ -5,7 +5,7 @@
 **WARNING:** Unlike many previous major version bumps that were almost entirely backwards compatible, v12 is _not_ backwards compatible. Upgrading to v12 _will_ require modifications in existing code.
 
 -   Complete TypeScript support
--   Changed JXT implementation (**old JXT definitions will not work**)
+-   Changed JXT implementation (**old JXT definitions will not work**). See [JXT docs](./docs/jxt/README.md) for more infora
 -   **Changed structure/names of JXT definitions for supported XEPs.** See [Supported XEP Formats]('./docs/Supported_XEP_Formats.md) for links to the type definitions of each XEP supported by StanzaJS.
 -   **Removed support for callbacks.** All methods now support Promises only.
 -   Methods using IQ stanzas now return the requested data instead of the full IQ stanza data.
