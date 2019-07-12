@@ -3,18 +3,6 @@
     "description": "Modern XMPP in the browser, with a JSON API",
     "version": "11.3.6",
     "author": "Lance Stout <lancestout@gmail.com>",
-    "stanzajs_env_mappings": {
-        "browser": {
-            "./dist/es/lib/crypto/index.js": "./dist/es/lib/crypto/index-browser.js",
-            "./dist/es/lib/fetch/index.js": "./dist/es/lib/fetch/index-browser.js",
-            "./dist/es/lib/ws/index.js": "./dist/es/lib/ws/index-browser.js"
-        },
-        "react-native": {
-            "./dist/es/lib/crypto/index.js": "./dist/es/lib/crypto/index-react-native.js",
-            "./dist/es/lib/fetch/index.js": "./dist/es/lib/fetch/index-browser.js",
-            "./dist/es/lib/ws/index.js": "./dist/es/lib/ws/index-browser.js"
-        }
-    },
     "bugs": "https://github.com/legastero/stanza.io/issues",
     "contributors": [
         "Philipp Hancke <fippo@andyet.net>",
@@ -105,8 +93,21 @@
         "compile:rollup-browser": "rollup -c rollup-browser.config.js",
         "compile:rollup-react-native": "rollup -c rollup-react-native.config.js",
         "compile:webpack": "webpack --mode production",
+        "license-check": "npx license-checker --production --excludePrivatePackages --summary",
         "lint": "tslint -p .",
         "test": "nyc ts-node -O \"{ \\\"allowJs\\\": true }\" --files test/index.js | tap-spec && nyc report --reporter=text",
         "validate": "npm ls"
+    },
+    "stanzajs_env_mappings": {
+        "browser": {
+            "./dist/es/lib/crypto/index.js": "./dist/es/lib/crypto/index-browser.js",
+            "./dist/es/lib/fetch/index.js": "./dist/es/lib/fetch/index-browser.js",
+            "./dist/es/lib/ws/index.js": "./dist/es/lib/ws/index-browser.js"
+        },
+        "react-native": {
+            "./dist/es/lib/crypto/index.js": "./dist/es/lib/crypto/index-react-native.js",
+            "./dist/es/lib/fetch/index.js": "./dist/es/lib/fetch/index-browser.js",
+            "./dist/es/lib/ws/index.js": "./dist/es/lib/ws/index-browser.js"
+        }
     }
 }

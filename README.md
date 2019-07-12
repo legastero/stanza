@@ -71,6 +71,8 @@ MUC Room: [discuss@stanzajs.org](https://stanzajs.org/discuss/logs) / [Logs](htt
 
 [MIT](./LICENSE.md)
 
+Portions of StanzaJS are derived from prior works. [See NOTICE file for details.](./NOTICE.md)
+
 ## Created By
 
 If you like this, follow [@lancestout](http://twitter.com/lancestout) on Twitter.
