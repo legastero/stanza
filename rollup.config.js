@@ -4,9 +4,9 @@ import { terser } from 'rollup-plugin-terser';
 export default {
     external: [
         'async',
-        'cross-fetch',
         'crypto',
         'events',
+        'node-fetch',
         'punycode',
         'sdp',
         'readable-stream',
