@@ -13,6 +13,7 @@
 -   **Removed JID objects.** JIDs are now treated as strings only. [See src/JID.ts for helper functions.]('./src/JID.ts)
 -   Implemented Stringprep (not PRECIS, yet).
 -   **Removed WildEmitter.** Now using standard EventEmitter. Event handlers using `*` wildcards will need to be changed.
+    -   The `*` and `raw:*` events are still supported.
 -   Added input/display helpers for Realtime Text.
 
 ## 11.1.0
