@@ -142,34 +142,21 @@ export interface AgentConfig {
     timeout?: number;
 
     /**
-     * IQ Timeout
+     * Transport Configurations
      *
-     * Limit the transport types that will be used.
+     * Limit the transport types that will be used, or specify connection
+     * URLs to use without needing to use auto-discovery.
      *
-     * @default ["websocket", "bosh"]
+     * If a transport is set to `false`, it will be disabled.
+     *
+     * If a transport is set to a string, that will be used as the connection URL.
+     *
+     * If a transport is set to an object, it MUST include a `url` value for
+     * the connection URL.
+     *
+     * @default { websocket: true, bosh: true }
      */
-    transports?: string | string[];
-
-    /**
-     * Connection Transport
-     *
-     * Manually set the transport type to use instead of auto-discovering.
-     */
-    transport?: string;
-
-    /**
-     * WebSocket URL
-     *
-     * Manually set the WebSocket connection URL to use instead of auto-discovering.
-     */
-    wsURL?: string;
-
-    /**
-     * BOSH URL
-     *
-     * Manually set the BOSH connection URL to use instead of auto-discovering.
-     */
-    boshURL?: string;
+    transports?: { [key: string]: boolean | string | Partial<TransportConfig> };
 
     /**
      * Account Password

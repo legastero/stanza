@@ -27,10 +27,10 @@ const client = XMPP.createClient({
 
     // If you have a .well-known/host-meta.json file for your
     // domain, the connection transport config can be skipped.
-
-    transport: 'websocket',
-    wsURL: 'wss://example.com:5281/xmpp-websocket'
-    // (or `boshURL` if using 'bosh' as the transport)
+    transports: {
+        websocket: 'wss://example.com:5281/xmpp-websocket',
+        bosh: 'https://example.com:5281/http-bind'
+    }
 });
 
 client.on('session:started', () => {

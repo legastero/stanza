@@ -15,6 +15,31 @@
 -   **Removed WildEmitter.** Now using standard EventEmitter. Event handlers using `*` wildcards will need to be changed.
     -   The `*` and `raw:*` events are still supported.
 -   Added input/display helpers for Realtime Text.
+-   **Configuration of transports has changed.** The wsURL/boshURL/transport fields are no longer used. Configuring transports is now done by setting the `transports` field to an object:
+
+    ```
+    XMPP.createClient({
+        transports: {
+            websocket: 'wss://...',
+            bosh: 'https://...'
+        }
+    })
+    ```
+
+    Using `false` instead of a URL will disable that transport type. An object can be used to pass additional configuration, such as BOSH pre-binding rid/sid:
+
+    ```
+    XMPP.createClient({
+        transports: {
+            websocket: false,
+            bosh: {
+                url: 'https://...',
+                rid: 1234,
+                sid: '...'
+            }
+        }
+    })
+    ```
 
 ## 11.1.0
 

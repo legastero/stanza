@@ -124,25 +124,23 @@
                 if (e.preventDefault) e.preventDefault();
 
                 var jid = document.getElementById('jid').value;
-
                 var url = document.getElementById('url').value;
-                var wsURL,
-                    boshURL,
-                    transports = ['websocket', 'bosh'];
 
+                var transports = {
+                    bosh: true,
+                    websocket: true
+                };
                 if (url.indexOf('http') === 0) {
-                    boshURL = url;
-                    transports = ['bosh'];
+                    transports.bosh = url;
+                    transports.websocket = false;
                 } else if (url.indexOf('ws') === 0) {
-                    wsURL = url;
-                    transports = ['websocket'];
+                    transports.websocket = url;
+                    transports.bosh = false;
                 }
 
                 client = XMPP.createClient({
                     jid: jid,
                     password: document.getElementById('password').value,
-                    wsURL: wsURL,
-                    boshURL: boshURL,
                     transports: transports
                 });
 

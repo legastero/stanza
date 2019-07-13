@@ -180,16 +180,16 @@ It is possible to inspect the configuration later by using `client.config`.
 </table>
 <p>Manually set the transport type to use instead of auto-discovering.</p>
 
-<h3 id="transports">IQ Timeout</h3>
+<h3 id="transports">Transport Configurations</h3>
 <table>
   <tr><th>Name</th><th>Type</th><th>Default Value</th></tr>
   <tr>
      <td><code>transports</code></td>
-     <td><code>string</code> | <code>string[]</code></td>
-     <td><code>["websocket", "bosh"]</code></td>
+     <td></td>
+     <td><code>{ websocket: true, bosh: true }</code></td>
   </tr>
 </table>
-<p>Limit the transport types that will be used.</p>
+<p>Limit the transport types that will be used, or specify connection URLs to use without needing to use auto-discovery.</p><p>If a transport is set to `false`, it will be disabled.</p><p>If a transport is set to a string, that will be used as the connection URL.</p><p>If a transport is set to an object, it MUST include a `url` value for the connection URL.</p>
 
 <h3 id="useStreamManagement">Use Stream Management</h3>
 <table>

@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-import { Agent, AgentConfig, AgentEvents, Transport } from './';
+import { Agent, AgentConfig, AgentEvents, Transport, TransportConfig } from './';
 import * as JID from './JID';
 import * as JXT from './jxt';
 import * as SASL from './lib/sasl';
@@ -180,69 +180,54 @@ export default class Client extends EventEmitter {
         return this._getConfiguredCredentials();
     }
 
-    public async connect(
-        opts?: AgentConfig,
-        transInfo?: { name?: string; url?: string }
-    ): Promise<void> {
-        this._initConfig(opts);
-        if (!transInfo && this.config.transports && this.config.transports.length === 1) {
-            transInfo = {};
-            transInfo.name = this.config.transports[0];
-        }
-        if (transInfo && transInfo.name) {
-            const trans = (this.transport = new this.transports[transInfo.name](
+    public async connect(): Promise<void> {
+        const transportPref = ['websocket', 'bosh'];
+        let endpoints: { [key: string]: string[] } | undefined;
+        for (const name of transportPref) {
+            let conf = this.config.transports![name];
+            if (!conf) {
+                continue;
+            }
+            if (typeof conf === 'string') {
+                conf = { url: conf };
+            } else if (conf === true) {
+                if (!endpoints) {
+                    try {
+                        endpoints = await ((this as unknown) as Agent).discoverBindings(
+                            this.config.server!
+                        );
+                    } catch (err) {
+                        console.error(err);
+                        continue;
+                    }
+                }
+                endpoints[name] = (endpoints[name] || []).filter(
+                    url => url.startsWith('wss:') || url.startsWith('https:')
+                );
+                if (!endpoints[name] || !endpoints[name].length) {
+                    continue;
+                }
+                conf = { url: endpoints[name][0] };
+            }
+
+            this.transport = new this.transports[name](
                 (this as unknown) as Agent,
                 this.sm,
                 this.stanzas
-            ));
-            return trans.connect({
+            );
+            this.transport.connect({
                 acceptLanguages: this.config.acceptLanguages || ['en'],
                 jid: this.config.jid!,
                 lang: this.config.lang || 'en',
                 server: this.config.server!,
-                url:
-                    (transInfo.name === 'websocket' ? this.config.wsURL : this.config.boshURL) || ''
+                url: conf.url!,
+                ...conf
             });
+            return;
         }
 
-        try {
-            const endpoints = await ((this as unknown) as Agent).discoverBindings(
-                this.config.server!
-            );
-            for (const transport of this.config.transports || []) {
-                for (let i = 0, len = (endpoints[transport] || []).length; i < len; i++) {
-                    const uri = endpoints[transport][i];
-                    if (uri.indexOf('wss://') === 0 || uri.indexOf('https://') === 0) {
-                        if (transport === 'websocket') {
-                            this.config.wsURL = uri;
-                        } else {
-                            this.config.boshURL = uri;
-                        }
-                        return this.connect(undefined, {
-                            name: transport,
-                            url: uri
-                        });
-                    } else {
-                        console.warn(
-                            'Discovered unencrypted %s endpoint (%s). Ignoring',
-                            transport,
-                            uri
-                        );
-                    }
-                }
-            }
-
-            console.error('No endpoints found for the requested transports.');
-            return this.disconnect();
-        } catch (err) {
-            console.error(
-                'Could not find https://' +
-                    this.config.server +
-                    '/.well-known/host-meta file to discover connection endpoints for the requested transports.',
-                err
-            );
-            return this.disconnect();
-        }
+        console.error('No endpoints found for the requested transports.');
+        return this.disconnect();
     }
 
     public disconnect() {
@@ -370,7 +355,10 @@ export default class Client extends EventEmitter {
         const currConfig = this.config || {};
         this.config = {
             jid: '',
-            transports: ['websocket', 'bosh'],
+            transports: {
+                bosh: true,
+                websocket: true
+            },
             useStreamManagement: true,
             ...currConfig,
             ...opts
@@ -383,12 +371,6 @@ export default class Client extends EventEmitter {
             this.config.credentials = this.config.credentials || {};
             this.config.credentials.password = this.config.password;
             delete this.config.password;
-        }
-        if (this.config.transport) {
-            this.config.transports = [this.config.transport];
-        }
-        if (this.config.transports && !Array.isArray(this.config.transports)) {
-            this.config.transports = [this.config.transports];
         }
     }
 }

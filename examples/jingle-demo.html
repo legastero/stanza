@@ -93,22 +93,22 @@
                 var server = jid.slice(jid.indexOf('@') + 1);
 
                 var url = document.getElementById('url').value;
-                var wsURL, boshURL, transport;
-
+                var transports = {
+                    bosh: true,
+                    websocket: true
+                };
                 if (url.indexOf('http') === 0) {
-                    boshURL = url;
-                    transport = 'bosh';
+                    transports.bosh = url;
+                    transports.websocket = false;
                 } else if (url.indexOf('ws') === 0) {
-                    wsURL = url;
-                    transport = 'websocket';
+                    transports.websocket = url;
+                    transports.bosh = false;
                 }
 
                 client = XMPP.createClient({
                     jid: jid,
                     password: document.getElementById('password').value,
-                    wsURL: wsURL,
-                    boshURL: boshURL,
-                    transport: transport
+                    transports: transports
                 });
 
                 client.jingle.config.debug = true;
