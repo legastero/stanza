@@ -130,7 +130,7 @@ export default class Registry {
         const definition = defs;
 
         definition.aliases = definition.aliases || [];
-        if (definition.path) {
+        if (definition.path && !definition.aliases.includes(definition.path)) {
             definition.aliases.push(definition.path);
         }
         const aliases = definition.aliases
