@@ -177,7 +177,7 @@ export default class MediaSession extends ICESession {
         });
     }
 
-    public mute(creator: JingleSessionRole, name: string): Promise<void> {
+    public mute(creator: JingleSessionRole, name?: string): Promise<void> {
         return this.processLocal('mute', async () => {
             this._log('info', 'Muting', name);
 
@@ -191,7 +191,7 @@ export default class MediaSession extends ICESession {
         });
     }
 
-    public unmute(creator: JingleSessionRole, name: string): Promise<void> {
+    public unmute(creator: JingleSessionRole, name?: string): Promise<void> {
         return this.processLocal('unmute', async () => {
             this._log('info', 'Unmuting', name);
             this.send(JingleAction.SessionInfo, {
