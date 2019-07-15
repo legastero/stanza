@@ -18,10 +18,12 @@ export interface SessionManagerConfig {
     iceTransportPolicy?: string;
     rtcpMuxPolicy?: string;
     iceServers?: RTCIceServer[];
+    sdpSemantics?: string;
     peerConnectionConfig?: {
         bundlePolicy?: string;
         iceTransportPolicy?: string;
         rtcpMuxPolicy?: string;
+        sdpSemantics?: string;
     };
     peerConnectionConstraints?: any;
     performTieBreak?: (session: BaseSession, req: IQ & { jingle: Jingle }) => boolean;
@@ -77,7 +79,8 @@ export default class SessionManager extends EventEmitter {
             peerConnectionConfig: {
                 bundlePolicy: conf.bundlePolicy || 'balanced',
                 iceTransportPolicy: conf.iceTransportPolicy || 'all',
-                rtcpMuxPolicy: conf.rtcpMuxPolicy || 'require'
+                rtcpMuxPolicy: conf.rtcpMuxPolicy || 'require',
+                sdpSemantics: conf.sdpSemantics || 'plan-b'
             },
             peerConnectionConstraints: {
                 optional: [{ DtlsSrtpKeyAgreement: true }, { RtpDataChannels: false }]
@@ -86,12 +89,7 @@ export default class SessionManager extends EventEmitter {
         };
     }
 
-    public addICEServer(server: RTCIceServer): void {
-        // server == {
-        //    url: '',
-        //    [username: '',]
-        //    [credential: '']
-        // }
+    public addICEServer(server: RTCIceServer | string): void {
         if (typeof server === 'string') {
             server = { urls: server };
         }
