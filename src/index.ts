@@ -147,11 +147,11 @@ export interface AgentConfig {
      * Limit the transport types that will be used, or specify connection
      * URLs to use without needing to use auto-discovery.
      *
-     * If a transport is set to `false`, it will be disabled.
+     * If a transport is set to <code>false</code>, it will be disabled.
      *
      * If a transport is set to a string, that will be used as the connection URL.
      *
-     * If a transport is set to an object, it MUST include a `url` value for
+     * If a transport is set to an object, it MUST include a <code>url</code> value for
      * the connection URL.
      *
      * @default { websocket: true, bosh: true }

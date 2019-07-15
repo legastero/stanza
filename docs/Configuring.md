@@ -14,7 +14,7 @@ It is possible to inspect the configuration later by using `client.config`.
 
 ## Available Settings
 
-<ul><li><a href="#acceptLanguages">acceptLanguages</a></li><li><a href="#boshURL">boshURL</a></li><li><a href="#capsNode">capsNode</a></li><li><a href="#chatMarkers">chatMarkers</a></li><li><a href="#credentials">credentials</a></li><li><a href="#jid">jid</a></li><li><a href="#lang">lang</a></li><li><a href="#password">password</a></li><li><a href="#resource">resource</a></li><li><a href="#rosterVer">rosterVer</a></li><li><a href="#sendReceipts">sendReceipts</a></li><li><a href="#server">server</a></li><li><a href="#softwareVersion">softwareVersion</a></li><li><a href="#timeout">timeout</a></li><li><a href="#transport">transport</a></li><li><a href="#transports">transports</a></li><li><a href="#useStreamManagement">useStreamManagement</a></li><li><a href="#wsURL">wsURL</a></li></ul>
+<ul><li><a href="#acceptLanguages">acceptLanguages</a></li><li><a href="#capsNode">capsNode</a></li><li><a href="#chatMarkers">chatMarkers</a></li><li><a href="#credentials">credentials</a></li><li><a href="#jid">jid</a></li><li><a href="#lang">lang</a></li><li><a href="#password">password</a></li><li><a href="#resource">resource</a></li><li><a href="#rosterVer">rosterVer</a></li><li><a href="#sendReceipts">sendReceipts</a></li><li><a href="#server">server</a></li><li><a href="#softwareVersion">softwareVersion</a></li><li><a href="#timeout">timeout</a></li><li><a href="#transports">transports</a></li><li><a href="#useStreamManagement">useStreamManagement</a></li></ul>
 <h3 id="acceptLanguages">Accepted Languages</h3>
 <table>
   <tr><th>Name</th><th>Type</th><th>Default Value</th></tr>
@@ -25,17 +25,6 @@ It is possible to inspect the configuration later by using `client.config`.
   </tr>
 </table>
 <p>A list of language codes acceptable to the user.</p>
-
-<h3 id="boshURL">BOSH URL</h3>
-<table>
-  <tr><th>Name</th><th>Type</th><th>Default Value</th></tr>
-  <tr>
-     <td><code>boshURL</code></td>
-     <td><code>string</code></td>
-     <td><code>undefined</code></td>
-  </tr>
-</table>
-<p>Manually set the BOSH connection URL to use instead of auto-discovering.</p>
 
 <h3 id="capsNode">Entity Caps Disco Node</h3>
 <table>
@@ -169,17 +158,6 @@ It is possible to inspect the configuration later by using `client.config`.
 </table>
 <p>The number of seconds to wait before timing out IQ requests.</p>
 
-<h3 id="transport">Connection Transport</h3>
-<table>
-  <tr><th>Name</th><th>Type</th><th>Default Value</th></tr>
-  <tr>
-     <td><code>transport</code></td>
-     <td><code>string</code></td>
-     <td><code>undefined</code></td>
-  </tr>
-</table>
-<p>Manually set the transport type to use instead of auto-discovering.</p>
-
 <h3 id="transports">Transport Configurations</h3>
 <table>
   <tr><th>Name</th><th>Type</th><th>Default Value</th></tr>
@@ -201,14 +179,3 @@ It is possible to inspect the configuration later by using `client.config`.
   </tr>
 </table>
 <p>Controls if <a href="https://xmpp.org/extensions/xep-0198.html">XEP-0198: Stream Management</a> is enabled for the session.</p><p>Disabling stream management is <i>not</i> recommended.</p>
-
-<h3 id="wsURL">WebSocket URL</h3>
-<table>
-  <tr><th>Name</th><th>Type</th><th>Default Value</th></tr>
-  <tr>
-     <td><code>wsURL</code></td>
-     <td><code>string</code></td>
-     <td><code>undefined</code></td>
-  </tr>
-</table>
-<p>Manually set the WebSocket connection URL to use instead of auto-discovering.</p>
