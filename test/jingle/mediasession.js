@@ -44,7 +44,9 @@ test('Test bidirectional AV session', function(t) {
             managers[1].on('incoming', function(session) {
                 t.pass('peer got incoming session');
                 // testing bidirectional here
-                session.addStream(stream);
+                for (const track of stream.getTracks()) {
+                    session.addTrack(track, stream);
+                }
                 session.accept();
             });
 
