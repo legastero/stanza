@@ -189,7 +189,7 @@ It is possible to inspect the configuration later by using `client.config`.
      <td><code>{ websocket: true, bosh: true }</code></td>
   </tr>
 </table>
-<p>Limit the transport types that will be used, or specify connection URLs to use without needing to use auto-discovery.</p><p>If a transport is set to `false`, it will be disabled.</p><p>If a transport is set to a string, that will be used as the connection URL.</p><p>If a transport is set to an object, it MUST include a `url` value for the connection URL.</p>
+<p>Limit the transport types that will be used, or specify connection URLs to use without needing to use auto-discovery.</p><p>If a transport is set to <code>false</code>, it will be disabled.</p><p>If a transport is set to a string, that will be used as the connection URL.</p><p>If a transport is set to an object, it MUST include a <code>url</code> value for the connection URL.</p>
 
 <h3 id="useStreamManagement">Use Stream Management</h3>
 <table>
