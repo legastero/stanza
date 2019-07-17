@@ -1,5 +1,4 @@
 import resolve from 'rollup-plugin-node-resolve';
-import { terser } from 'rollup-plugin-terser';
 
 import baseconfig from './rollup.config';
 
@@ -12,7 +11,6 @@ export default {
     plugins: [
         resolve({
             browser: true
-        }),
-        terser()
+        })
     ]
 };

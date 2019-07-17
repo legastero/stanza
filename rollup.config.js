@@ -1,5 +1,4 @@
 import resolve from 'rollup-plugin-node-resolve';
-import { terser } from 'rollup-plugin-terser';
 
 export default {
     external: [
@@ -19,5 +18,5 @@ export default {
         file: 'dist/es/index.module.js',
         format: 'es'
     },
-    plugins: [resolve(), terser()]
+    plugins: [resolve()]
 };
