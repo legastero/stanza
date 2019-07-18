@@ -1,0 +1,4 @@
+<set xmlns='http://jabber.org/protocol/rsm'>
+  <max>10</max>
+  <after>peterpan@neverland.lit</after>
+</set>

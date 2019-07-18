@@ -1,0 +1,7 @@
+[
+    "paging",
+    {
+        "max": 10,
+        "before": "peter@pixyland.org"
+    }
+]

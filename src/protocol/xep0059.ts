@@ -31,14 +31,14 @@ const Protocol: DefinitionOptions = {
     aliases: ['iq.pubsub.paging'],
     element: 'set',
     fields: {
-        after: attribute('after'),
-        before: attribute('before'),
+        after: childText(null, 'after'),
+        before: childText(null, 'before'),
         count: childInteger(null, 'count'),
         first: childText(null, 'first'),
         firstIndex: childIntegerAttribute(null, 'first', 'index'),
         index: childInteger(null, 'index'),
         last: childText(null, 'last'),
-        max: integerAttribute('max')
+        max: childInteger(null, 'max')
     },
     namespace: NS_RSM,
     path: 'paging'
