@@ -1,0 +1,8 @@
+<presence
+    from='hag66@shakespeare.lit/pda'
+    id='n13mt3l'
+    to='coven@chat.shakespeare.lit/thirdwitch'>
+  <x xmlns='http://jabber.org/protocol/muc'>
+    <history maxchars='0'/>
+  </x>
+</presence>
