@@ -31,7 +31,7 @@ declare module './' {
 export interface OMEMO {
     header: {
         iv: Buffer;
-        sid: string;
+        sid: number;
         keys: OMEMOKey[];
     };
     payload?: Buffer;
@@ -39,12 +39,12 @@ export interface OMEMO {
 
 export interface OMEMOKey {
     preKey?: boolean;
-    rid: string;
+    rid: number;
     value: Buffer;
 }
 
 export interface OMEMOPreKey {
-    id: string;
+    id: number;
     value: Buffer;
 }
 
@@ -53,7 +53,7 @@ export interface OMEMODevice {
     identityKey: Buffer;
     preKeys: OMEMOPreKey[];
     signedPreKeyPublic: {
-        id: string;
+        id: number;
         value: Buffer;
     };
     signedPreKeySignature: Buffer;
@@ -61,7 +61,7 @@ export interface OMEMODevice {
 
 export interface OMEMODeviceList {
     itemType?: typeof NS_OMEMO_AXOLOTL_DEVICELIST;
-    devices: string[];
+    devices: number[];
 }
 
 const Protocol: DefinitionOptions[] = [
