@@ -25,6 +25,7 @@ function processingHints(): FieldDefinition<ProcessingHints> {
     return {
         importer(xml) {
             const results: ProcessingHints = {};
+            let found = false;
 
             for (const child of xml.children) {
                 if (typeof child === 'string') {
@@ -38,20 +39,24 @@ function processingHints(): FieldDefinition<ProcessingHints> {
                 switch (child.getName()) {
                     case 'no-copy':
                         results.noCopy = true;
+                        found = true;
                         break;
                     case 'no-permanent-store':
                         results.noPermanentStore = true;
+                        found = true;
                         break;
                     case 'no-store':
                         results.noStore = true;
+                        found = true;
                         break;
                     case 'store':
                         results.store = true;
+                        found = true;
                         break;
                 }
             }
 
-            return results;
+            return found ? results : undefined;
         },
         exporter(xml, value) {
             if (value.noCopy) {
