@@ -1,0 +1,28 @@
+<iq from='juliet@capulet.lit/balcony' type='set' id='pip1'>
+    <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+      <publish node='storage:bookmarks'>
+        <item id='current'>
+          <storage xmlns='storage:bookmarks'>
+            <conference name='The Play&apos;s the Thing'
+                        autojoin='1'
+                        jid='theplay@conference.shakespeare.lit'>
+              <nick>JC</nick>
+            </conference>
+          </storage>
+        </item>
+      </publish>
+      <publish-options>
+        <x xmlns='jabber:x:data' type='submit'>
+          <field var='FORM_TYPE' type='hidden'>
+            <value>http://jabber.org/protocol/pubsub#publish-options</value>
+          </field>
+          <field var='pubsub#persist_items'>
+            <value>true</value>
+          </field>
+          <field var='pubsub#access_model'>
+            <value>whitelist</value>
+          </field>
+        </x>
+      </publish-options>
+    </pubsub>
+  </iq>

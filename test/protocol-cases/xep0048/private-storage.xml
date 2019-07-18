@@ -1,0 +1,12 @@
+<iq type='result' id='2'>
+    <query xmlns='jabber:iq:private'>
+      <storage xmlns='storage:bookmarks'>
+        <conference name='Council of Oberon' 
+                    autojoin='1'
+                    jid='council@conference.underhill.org'>
+          <nick>Puck</nick>
+          <password>titania</password>
+        </conference>
+      </storage>
+    </query>
+  </iq> 

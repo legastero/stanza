@@ -8,6 +8,7 @@
 import { JID } from '../JID';
 import {
     attribute,
+    booleanAttribute,
     childText,
     DefinitionOptions,
     JIDAttribute,
@@ -49,10 +50,10 @@ const Protocol: DefinitionOptions[] = [
         typeField: 'itemType'
     },
     {
-        aliases: [{ path: 'bookmarkStorage.conferences', multiple: true }],
+        aliases: [{ path: 'bookmarkStorage.rooms', multiple: true }],
         element: 'conference',
         fields: {
-            autoJoin: attribute('autojoin'),
+            autoJoin: booleanAttribute('autojoin'),
             jid: JIDAttribute('jid'),
             name: attribute('name'),
             nick: childText(null, 'nick'),

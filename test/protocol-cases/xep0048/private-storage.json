@@ -1,0 +1,21 @@
+[
+    "iq",
+    {
+        "type": "result",
+        "id": "2",
+        "lang": "",
+        "privateStorage": {
+            "bookmarks": {
+                "rooms": [
+                    {
+                        "name": "Council of Oberon",
+                        "autoJoin": true,
+                        "jid": "council@conference.underhill.org",
+                        "nick": "Puck",
+                        "password": "titania"
+                    }
+                ]
+            }
+        }
+    }
+]

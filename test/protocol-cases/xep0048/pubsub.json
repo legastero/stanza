@@ -1,0 +1,83 @@
+[
+    "iq",
+    {
+        "from": "juliet@capulet.lit/balcony",
+        "type": "set",
+        "id": "pip1",
+        "pubsub": {
+            "publish": {
+                "node": "storage:bookmarks",
+                "item": {
+                    "id": "current",
+                    "content": {
+                        "itemType": "storage:bookmarks",
+                        "rooms": [
+                            {
+                                "name": "The Play's the Thing",
+                                "autoJoin": true,
+                                "jid": "theplay@conference.shakespeare.lit",
+                                "nick": "JC"
+                            }
+                        ]
+                    }
+                }
+            },
+            "publishOptions": {
+                "type": "submit",
+                "fields": [
+                    {
+                        "name": "FORM_TYPE",
+                        "type": "hidden",
+                        "value": "http://jabber.org/protocol/pubsub#publish-options"
+                    },
+                    { "name": "pubsub#persist_items", "value": "true" },
+                    { "name": "pubsub#access_model", "value": "whitelist" }
+                ]
+            }
+        }
+    },
+    {
+        "from": "juliet@capulet.lit/balcony",
+        "type": "set",
+        "id": "pip1",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "publish": {
+                "node": "storage:bookmarks",
+                "item": {
+                    "id": "current",
+                    "content": {
+                        "itemType": "storage:bookmarks",
+                        "rooms": [
+                            {
+                                "name": "The Play's the Thing",
+                                "autoJoin": true,
+                                "jid": "theplay@conference.shakespeare.lit",
+                                "nick": "JC"
+                            }
+                        ]
+                    }
+                }
+            },
+            "publishOptions": {
+                "instructions": [],
+                "type": "submit",
+                "fields": [
+                    {
+                        "name": "FORM_TYPE",
+                        "type": "hidden",
+                        "value": "http://jabber.org/protocol/pubsub#publish-options",
+                        "rawValues": ["http://jabber.org/protocol/pubsub#publish-options"]
+                    },
+                    { "name": "pubsub#persist_items", "value": "true", "rawValues": ["true"] },
+                    {
+                        "name": "pubsub#access_model",
+                        "value": "whitelist",
+                        "rawValues": ["whitelist"]
+                    }
+                ]
+            }
+        }
+    }
+]

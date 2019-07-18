@@ -1,0 +1,13 @@
+[
+    "bookmarkStorage",
+    {
+        "rooms": [
+            {
+                "jid": "council@conference.underhill.org",
+                "nick": "Puck",
+                "name": "Council of Oberon",
+                "autoJoin": true
+            }
+        ]
+    }
+]
