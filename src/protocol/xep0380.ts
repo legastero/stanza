@@ -17,14 +17,14 @@ declare module './' {
 
 export interface EncryptionMethod {
     name?: string;
-    namespace: string;
+    id: string;
 }
 
 const Protocol: DefinitionOptions = {
     element: 'encryption',
     fields: {
-        name: attribute('name'),
-        namespace: attribute('namespace')
+        id: attribute('namespace'),
+        name: attribute('name')
     },
     namespace: NS_EME_0,
     path: 'message.encryptionMethod'

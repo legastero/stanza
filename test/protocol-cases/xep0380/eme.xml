@@ -1,0 +1,4 @@
+<message to='juliet@capulet.lit' from='romeo@montague.lit' id='send1'>
+  <body>This message is encrypted with OMEMO.</body>
+  <encryption xmlns='urn:xmpp:eme:0' name='OMEMO' namespace='eu.siacs.conversations.axolotl' />
+</message>

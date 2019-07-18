@@ -1,0 +1,28 @@
+[
+    "message",
+    {
+        "to": "juliet@capulet.lit",
+        "from": "romeo@montague.lit",
+        "id": "send1",
+        "lang": "",
+        "body": "This message is encrypted with OMEMO.",
+        "encryptionMethod": {
+            "name": "OMEMO",
+            "id": "eu.siacs.conversations.axolotl"
+        }
+    },
+    {
+        "to": "juliet@capulet.lit",
+        "from": "romeo@montague.lit",
+        "id": "send1",
+        "lang": "",
+        "body": "This message is encrypted with OMEMO.",
+        "alternateLanguageBodies": [
+            { "lang": "", "value": "This message is encrypted with OMEMO." }
+        ],
+        "encryptionMethod": {
+            "name": "OMEMO",
+            "id": "eu.siacs.conversations.axolotl"
+        }
+    }
+]
