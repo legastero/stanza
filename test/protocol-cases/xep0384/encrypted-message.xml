@@ -1,0 +1,10 @@
+<message to="juliet@capulet.lit" from="romeo@montague.lit" id="send1">
+  <encrypted xmlns="eu.siacs.conversations.axolotl">
+    <payload>QkFTRTY0IEVOQ09ERUQ=</payload>
+    <header sid="27183">
+      <iv>QkFTRTY0IEVOQ09ERUQ=</iv>
+      <key rid="31415">QkFTRTY0IEVOQ09ERUQ=</key>
+      <key prekey="1" rid="12321">QkFTRTY0IEVOQ09ERUQ=</key>
+    </header>
+  </encrypted>
+</message>

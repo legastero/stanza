@@ -1,0 +1,13 @@
+<iq from="juliet@capulet.lit" type="set" id="announce1">
+  <pubsub xmlns="http://jabber.org/protocol/pubsub">
+    <publish node="eu.siacs.conversations.axolotl.devicelist">
+      <item id="current">
+        <list xmlns="eu.siacs.conversations.axolotl">
+          <device id="12345" />
+          <device id="4223" />
+          <device id="31415" />
+        </list>
+      </item>
+    </publish>
+  </pubsub>
+</iq>

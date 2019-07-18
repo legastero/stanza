@@ -1,0 +1,18 @@
+<iq from="juliet@capulet.lit" type="set" id="announce2">
+  <pubsub xmlns="http://jabber.org/protocol/pubsub">
+    <publish node="eu.siacs.conversations.axolotl.bundles:31415">
+      <item id="current">
+        <bundle xmlns="eu.siacs.conversations.axolotl">
+          <identityKey>QkFTRTY0IEVOQ09ERUQ=</identityKey>
+          <prekeys>
+            <preKeyPublic preKeyId="1">QkFTRTY0IEVOQ09ERUQ=</preKeyPublic>
+            <preKeyPublic preKeyId="2">QkFTRTY0IEVOQ09ERUQ=</preKeyPublic>
+            <preKeyPublic preKeyId="3">QkFTRTY0IEVOQ09ERUQ=</preKeyPublic>
+          </prekeys>
+          <signedPreKeySignature>QkFTRTY0IEVOQ09ERUQ=</signedPreKeySignature>
+          <signedPreKeyPublic signedPreKeyId="1">QkFTRTY0IEVOQ09ERUQ=</signedPreKeyPublic>
+        </bundle>
+      </item>
+    </publish>
+  </pubsub>
+</iq>

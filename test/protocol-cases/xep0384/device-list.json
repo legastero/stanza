@@ -1,0 +1,22 @@
+[
+    "iq",
+    {
+        "from": "juliet@capulet.lit",
+        "id": "announce1",
+        "lang": "",
+        "type": "set",
+        "pubsub": {
+            "publish": {
+                "node": "eu.siacs.conversations.axolotl.devicelist",
+                "item": {
+                    "id": "current",
+                    "content": {
+                        "itemType": "eu.siacs.conversations.axolotl.devicelist",
+                        "devices": [12345, 4223, 31415]
+                    }
+                }
+            }
+        },
+        "payloadType": "pubsub"
+    }
+]

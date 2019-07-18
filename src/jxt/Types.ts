@@ -770,6 +770,37 @@ export function multipleChildAttribute(
     };
 }
 
+export function multipleChildIntegerAttribute(
+    namespace: string | null,
+    element: string,
+    name: string
+): FieldDefinition<number[]> {
+    return {
+        importer(xml) {
+            const result: number[] = [];
+            const children = xml.getChildren(element, namespace || xml.getNamespace());
+            for (const child of children) {
+                const childAttr = child.getAttribute(name);
+                if (childAttr !== undefined) {
+                    result.push(parseInt(childAttr, 10));
+                }
+            }
+            return result;
+        },
+        exporter(xml, values) {
+            for (const value of values) {
+                const child = createElement(
+                    namespace || xml.getNamespace(),
+                    element,
+                    xml.getNamespace()
+                );
+                child.setAttribute(name, value.toString());
+                xml.appendChild(child);
+            }
+        }
+    };
+}
+
 export function childAlternateLanguageText(
     namespace: string | null,
     element: string

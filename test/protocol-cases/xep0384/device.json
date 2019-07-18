@@ -1,0 +1,59 @@
+[
+    "iq",
+    {
+        "from": "juliet@capulet.lit",
+        "id": "announce2",
+        "lang": "",
+        "type": "set",
+        "pubsub": {
+            "publish": {
+                "node": "eu.siacs.conversations.axolotl.bundles:31415",
+                "item": {
+                    "id": "current",
+                    "content": {
+                        "itemType": "eu.siacs.conversations.axolotl.bundles",
+                        "identityKey": {
+                            "type": "Buffer",
+                            "data": [66, 65, 83, 69, 54, 52, 32, 69, 78, 67, 79, 68, 69, 68]
+                        },
+                        "preKeys": [
+                            {
+                                "id": 1,
+                                "value": {
+                                    "type": "Buffer",
+                                    "data": [66, 65, 83, 69, 54, 52, 32, 69, 78, 67, 79, 68, 69, 68]
+                                }
+                            },
+                            {
+                                "id": 2,
+                                "value": {
+                                    "type": "Buffer",
+                                    "data": [66, 65, 83, 69, 54, 52, 32, 69, 78, 67, 79, 68, 69, 68]
+                                }
+                            },
+                            {
+                                "id": 3,
+                                "value": {
+                                    "type": "Buffer",
+                                    "data": [66, 65, 83, 69, 54, 52, 32, 69, 78, 67, 79, 68, 69, 68]
+                                }
+                            }
+                        ],
+                        "signedPreKeySignature": {
+                            "type": "Buffer",
+                            "data": [66, 65, 83, 69, 54, 52, 32, 69, 78, 67, 79, 68, 69, 68]
+                        },
+                        "signedPreKeyPublic": {
+                            "id": 1,
+                            "value": {
+                                "type": "Buffer",
+                                "data": [66, 65, 83, 69, 54, 52, 32, 69, 78, 67, 79, 68, 69, 68]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "payloadType": "pubsub"
+    }
+]

@@ -97,3 +97,4 @@
 | [XEP-0363](https://xmpp.org/extensions/xep-0363.html) | HTTP File Upload                                   | 0.5.0   | [Source](../src/protocol/xep0363.ts) |                                              |
 | [XEP-0371](https://xmpp.org/extensions/xep-0371.html) | Jingle ICE Transport Method                        | 0.2     | [Source](../src/protocol/xep0176.ts) |                                              |
 | [XEP-0380](https://xmpp.org/extensions/xep-0380.html) | Explicit Message Encryption                        | 0.2.0   | [Source](../src/protocol/xep0380.ts) | [Test Cases](../test/protocol-cases/xep0380) |
+| [XEP-0384](https://xmpp.org/extensions/xep-0384.html) | OMEMO Encryption                                   | 0.3.0   | [Source](../src/protocol/xep0384.ts) | [Test Cases](../test/protocol-cases/xep0384) |

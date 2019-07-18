@@ -368,8 +368,9 @@ export const NS_SPOILER_0 = 'urn:xmppp:spoiler:0';
 // XEP-0384
 export const NS_OMEMO_AXOLOTL = 'eu.siacs.conversations.axolotl';
 export const NS_OMEMO_AXOLOTL_DEVICELIST = 'eu.siacs.conversations.axolotl.devicelist';
+export const NS_OMEMO_AXOLOTL_BUNDLES = 'eu.siacs.conversations.axolotl.bundles';
 export const NS_OMEMO_AXOLOTL_BUNDLE = (deviceId: string) =>
-    `eu.siacs.conversations.axolotl.bundles:${deviceId}`;
+    `${NS_OMEMO_AXOLOTL_BUNDLES}:${deviceId}`;
 
 // ================================================================
 // Other Standards
