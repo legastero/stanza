@@ -1,7 +1,5 @@
-import * as tape from 'tape';
+import test from 'tape';
 import { attribute, childText, ParsedData, Registry, StreamParser } from '../../src/jxt';
-
-const test = tape.test;
 
 interface Message {
     type: string;

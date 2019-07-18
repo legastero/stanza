@@ -1,4 +1,4 @@
-import * as tape from 'tape';
+import test from 'tape';
 
 import {
     childAlternateLanguageRawElement,
@@ -8,8 +8,6 @@ import {
     Registry,
     XMLElement
 } from '../../../src/jxt';
-
-const test = tape.test;
 
 interface Example {
     foo?: LanguageSet<JSONElement | string>;

@@ -1,4 +1,4 @@
-import * as tape from 'tape';
+import test from 'tape';
 import {
     attribute,
     childText,
@@ -7,8 +7,6 @@ import {
     Registry,
     StreamParser
 } from '../../src/jxt/index';
-
-const test = tape.test;
 
 interface Message {
     type: string;

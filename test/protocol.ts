@@ -1,11 +1,9 @@
 import * as FS from 'fs';
-import * as tape from 'tape';
+import test from 'tape';
 
 import { parse, Registry, XMLElement } from '../src/jxt';
 import XMPP from '../src/protocol';
 import { reviveData } from '../src/Utils';
-
-const test = tape.test;
 
 const registry = new Registry();
 registry.define(XMPP);

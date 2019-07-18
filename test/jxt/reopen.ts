@@ -1,8 +1,6 @@
-import * as tape from 'tape';
+import test from 'tape';
 
 import * as JXT from '../../src/jxt';
-
-const test = tape.test;
 
 interface Message {
     id?: string;

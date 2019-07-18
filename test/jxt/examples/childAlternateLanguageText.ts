@@ -1,8 +1,6 @@
-import * as tape from 'tape';
+import test from 'tape';
 
 import { childAlternateLanguageText, LanguageSet, parse, Registry } from '../../../src/jxt';
-
-const test = tape.test;
 
 interface Example {
     foo?: LanguageSet<string>;

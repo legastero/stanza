@@ -1,7 +1,5 @@
-import * as tape from 'tape';
+import test from 'tape';
 import { attribute, childAttribute, childText, Registry } from '../../src/jxt';
-
-const test = tape.test;
 
 function setupRegistry(): Registry {
     const registry = new Registry();

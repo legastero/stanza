@@ -1,4 +1,4 @@
-import * as tape from 'tape';
+import test from 'tape';
 
 import {
     attribute,
@@ -41,8 +41,6 @@ import {
     text,
     textBuffer
 } from '../../src/jxt';
-
-const test = tape.test;
 
 interface Tester {
     attribute?: string;
