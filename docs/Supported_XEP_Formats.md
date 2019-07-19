@@ -86,7 +86,7 @@
 | [XEP-0317](https://xmpp.org/extensions/xep-0317.html) | Hats                                               | 0.1     | [Source](../src/protocol/xep0317.ts) |                                              |
 | [XEP-0319](https://xmpp.org/extensions/xep-0319.html) | Last User Interaction in Presence                  | 1.0.2   | [Source](../src/protocol/xep0319.ts) |                                              |
 | [XEP-0320](https://xmpp.org/extensions/xep-0320.html) | Use of DTLS-SRTP in Jingle Sessions                | 0.3.1   | [Source](../src/protocol/xep0320.ts) |                                              |
-| [XEP-0333](https://xmpp.org/extensions/xep-0333.html) | Chat Markers                                       | 0.3.0   | [Source](../src/protocol/xep0333.ts) |                                              |
+| [XEP-0333](https://xmpp.org/extensions/xep-0333.html) | Chat Markers                                       | 0.3.0   | [Source](../src/protocol/xep0333.ts) | [Test Cases](../test/protocol-cases/xep0333) |
 | [XEP-0334](https://xmpp.org/extensions/xep-0334.html) | Message Processing Hints                           | 0.3.0   | [Source](../src/protocol/xep0334.ts) | [Test Cases](../test/protocol-cases/xep0334) |
 | [XEP-0335](https://xmpp.org/extensions/xep-0335.html) | JSON Containers                                    | 0.1     | [Source](../src/protocol/xep0335.ts) |                                              |
 | [XEP-0339](https://xmpp.org/extensions/xep-0339.html) | Source-Specific Media Attributes in Jingle         | 0.1     | [Source](../src/protocol/xep0167.ts) |                                              |

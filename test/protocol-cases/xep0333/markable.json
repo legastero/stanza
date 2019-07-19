@@ -1,0 +1,27 @@
+[
+    "message",
+    {
+        "from": "northumberland@shakespeare.lit/westminster",
+        "to": "kingrichard@royalty.england.lit/throne",
+        "body": "My lord, dispatch; read o'er these articles.",
+        "thread": "sleeping",
+        "id": "message-1",
+        "marker": {
+            "type": "markable"
+        }
+    },
+    {
+        "from": "northumberland@shakespeare.lit/westminster",
+        "lang": "",
+        "to": "kingrichard@royalty.england.lit/throne",
+        "alternateLanguageBodies": [
+            { "lang": "", "value": "My lord, dispatch; read o'er these articles." }
+        ],
+        "body": "My lord, dispatch; read o'er these articles.",
+        "thread": "sleeping",
+        "id": "message-1",
+        "marker": {
+            "type": "markable"
+        }
+    }
+]

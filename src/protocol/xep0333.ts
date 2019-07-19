@@ -22,7 +22,6 @@ export interface ChatMarker {
 
 const Protocol: DefinitionOptions[] = [
     {
-        defaultType: 'markable',
         element: 'markable',
         namespace: NS_CHAT_MARKERS_0,
         path: 'message.marker',

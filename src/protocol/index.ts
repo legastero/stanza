@@ -67,6 +67,7 @@ export * from './xep0313';
 export * from './xep0317';
 export * from './xep0319';
 export * from './xep0320';
+export * from './xep0333';
 export * from './xep0334';
 export * from './xep0335';
 export * from './xep0338';
@@ -146,6 +147,7 @@ import XEP0313 from './xep0313';
 import XEP0317 from './xep0317';
 import XEP0319 from './xep0319';
 import XEP0320 from './xep0320';
+import XEP0333 from './xep0333';
 import XEP0334 from './xep0334';
 import XEP0335 from './xep0335';
 import XEP0338 from './xep0338';
@@ -226,6 +228,7 @@ const Protocol: Array<DefinitionOptions | DefinitionOptions[]> = [
     XEP0317,
     XEP0319,
     XEP0320,
+    XEP0333,
     XEP0334,
     XEP0335,
     XEP0338,

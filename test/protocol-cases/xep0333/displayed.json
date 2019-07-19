@@ -1,0 +1,11 @@
+[
+    "message",
+    {
+        "from": "kingrichard@royalty.england.lit/throne",
+        "lang": "",
+        "to": "northumberland@shakespeare.lit/westminster",
+        "thread": "sleeping",
+        "id": "message-2",
+        "marker": { "type": "displayed", "id": "message-1" }
+    }
+]

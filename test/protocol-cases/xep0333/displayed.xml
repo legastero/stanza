@@ -1,0 +1,8 @@
+<message
+    from='kingrichard@royalty.england.lit/throne'
+    id='message-2'
+    to='northumberland@shakespeare.lit/westminster'>
+  <thread>sleeping</thread>
+  <displayed xmlns='urn:xmpp:chat-markers:0'
+               id='message-1'/>
+</message>
