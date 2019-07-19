@@ -142,15 +142,15 @@ export default function(client: Agent) {
             return done();
         }
 
-        const smHandler = (sm: StreamManagement) => {
+        const smHandler = async (sm: StreamManagement) => {
             switch (sm.type) {
                 case 'enabled':
-                    client.sm.enabled(sm);
+                    await client.sm.enabled(sm);
                     client.features.negotiated.streamManagement = true;
                     client.off('sm', smHandler);
                     return done();
                 case 'resumed':
-                    client.sm.resumed(sm);
+                    await client.sm.resumed(sm);
                     client.features.negotiated.streamManagement = true;
                     client.features.negotiated.bind = true;
                     client.sessionStarted = true;
@@ -158,7 +158,7 @@ export default function(client: Agent) {
                     client.off('sm', smHandler);
                     return done('break'); // Halt further processing of stream features
                 case 'failed':
-                    client.sm.failed(sm);
+                    await client.sm.failed(sm);
                     client.emit('session:end');
                     client.off('sm', smHandler);
                     done();
@@ -169,13 +169,13 @@ export default function(client: Agent) {
 
         if (!client.sm.id) {
             if (client.features.negotiated.bind) {
-                client.sm.enable();
+                await client.sm.enable();
             } else {
                 client.off('sm', smHandler);
                 done();
             }
         } else if (client.sm.id && client.sm.allowResume) {
-            client.sm.resume();
+            await client.sm.resume();
         } else {
             client.off('sm', smHandler);
             done();

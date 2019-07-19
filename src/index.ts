@@ -107,7 +107,7 @@ export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
     updateConfig(opts?: AgentConfig): void;
     connect(opts?: AgentConfig): void;
     disconnect(): void;
-    send<T extends keyof TopLevelElements>(path: T, data: TopLevelElements[T]): void;
+    send<T extends keyof TopLevelElements>(path: T, data: TopLevelElements[T]): Promise<void>;
 
     sendIQ<T = IQ, R = T>(iq: T & IQ): Promise<IQ & R>;
     sendIQResult(orig: IQ, result?: Partial<IQ>): void;

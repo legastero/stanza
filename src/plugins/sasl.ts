@@ -39,6 +39,11 @@ export default function(client: Agent) {
                     client.features.negotiated.sasl = true;
                     client.off('sasl', saslHandler);
                     client.emit('auth:success', client.config.credentials);
+
+                    if (client.transport) {
+                        client.transport.authenticated = true;
+                    }
+
                     done('restart');
                     return;
                 }

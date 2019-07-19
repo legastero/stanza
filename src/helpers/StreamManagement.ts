@@ -35,7 +35,7 @@ export default class StreamManagement extends EventEmitter {
     private pendingRequest: boolean = false;
     private inboundStarted: boolean = false;
     private outboundStarted: boolean = false;
-    private cacheHandler: (state: SMState) => void;
+    private cacheHandler: (state: SMState) => Promise<void> | void;
 
     constructor() {
         super();
@@ -43,7 +43,7 @@ export default class StreamManagement extends EventEmitter {
         this.jid = undefined;
         this.allowResume = true;
         this.started = false;
-        this.cacheHandler = () => null;
+        this.cacheHandler = () => undefined;
         this._reset();
     }
 
@@ -72,47 +72,51 @@ export default class StreamManagement extends EventEmitter {
         this.cacheHandler = handler;
     }
 
-    public bind(jid: string) {
+    public async bind(jid: string) {
         this.jid = jid;
-        this._cache();
+        await this._cache();
     }
 
-    public enable() {
+    public async enable() {
         this.emit('send', {
             allowResumption: this.allowResume,
             type: 'enable'
         });
         this.handled = 0;
         this.outboundStarted = true;
+
+        await this._cache();
     }
 
-    public resume() {
+    public async resume() {
         this.emit('send', {
             handled: this.handled,
             previousSession: this.id!,
             type: 'resume'
         });
         this.outboundStarted = true;
+
+        await this._cache();
     }
 
-    public enabled(resp: StreamManagementEnabled) {
+    public async enabled(resp: StreamManagementEnabled) {
         this.id = resp.id;
         this.handled = 0;
         this.inboundStarted = true;
 
-        this._cache();
+        await this._cache();
     }
 
-    public resumed(resp: StreamManagementResume) {
+    public async resumed(resp: StreamManagementResume) {
         this.id = resp.previousSession;
         this.inboundStarted = true;
 
         this.process(resp, true);
 
-        this._cache();
+        await this._cache();
     }
 
-    public failed(resp: StreamManagementFailed) {
+    public async failed(resp: StreamManagementFailed) {
         // Resumption might fail, but the server can still tell us how far
         // the old session progressed.
         this.process(resp);
@@ -124,7 +128,7 @@ export default class StreamManagement extends EventEmitter {
         }
 
         this._reset();
-        this._cache();
+        await this._cache();
     }
 
     public ack() {
@@ -147,7 +151,7 @@ export default class StreamManagement extends EventEmitter {
         });
     }
 
-    public process(
+    public async process(
         ack: StreamManagementAck | StreamManagementResume | StreamManagementFailed,
         resend: boolean = false
     ) {
@@ -170,30 +174,30 @@ export default class StreamManagement extends EventEmitter {
             }
         }
 
-        this._cache();
+        await this._cache();
     }
 
-    public track(kind: string, stanza: Message | Presence | IQ) {
+    public async track(kind: string, stanza: Message | Presence | IQ) {
         if (kind !== 'message' && kind !== 'presence' && kind !== 'iq') {
             return;
         }
 
         if (this.outboundStarted) {
             this.unacked.push([kind, stanza] as Unacked);
-            this._cache();
+            await this._cache();
             this.request();
         }
     }
 
-    public handle() {
+    public async handle() {
         if (this.inboundStarted) {
             this.handled = mod(this.handled + 1, MAX_SEQ);
-            this._cache();
+            await this._cache();
         }
     }
 
-    private _cache() {
-        this.cacheHandler({
+    private async _cache() {
+        await this.cacheHandler({
             handled: this.handled,
             id: this.id,
             jid: this.jid,
