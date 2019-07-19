@@ -1,0 +1,7 @@
+<message to='multicast.jabber.org'>
+    <body>Hello, world!</body>
+    <addresses xmlns='http://jabber.org/protocol/address'>
+        <address type='to' jid='hildjj@jabber.org/Work' desc='Joe Hildebrand'/>
+        <address type='cc' jid='jer@jabber.org/Home' desc='Jeremie Miller'/>
+    </addresses>
+ </message>

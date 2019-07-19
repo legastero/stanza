@@ -1,0 +1,21 @@
+[
+    "message",
+    {
+        "to": "multicast.jabber.org",
+        "body": "Hello, world!",
+        "addresses": [
+            { "description": "Joe Hildebrand", "jid": "hildjj@jabber.org/Work", "type": "to" },
+            { "description": "Jeremie Miller", "jid": "jer@jabber.org/Home", "type": "cc" }
+        ]
+    },
+    {
+        "lang": "",
+        "to": "multicast.jabber.org",
+        "alternateLanguageBodies": [{ "lang": "", "value": "Hello, world!" }],
+        "body": "Hello, world!",
+        "addresses": [
+            { "description": "Joe Hildebrand", "jid": "hildjj@jabber.org/Work", "type": "to" },
+            { "description": "Jeremie Miller", "jid": "jer@jabber.org/Home", "type": "cc" }
+        ]
+    }
+]

@@ -10,7 +10,6 @@ import {
     attribute,
     booleanAttribute,
     childAlternateLanguageText,
-    childText,
     DefinitionOptions,
     extendMessage,
     extendPresence,
@@ -51,7 +50,7 @@ const Protocol: DefinitionOptions[] = [
         fields: {
             alternateLanguageDescriptions: childAlternateLanguageText(null, 'desc'),
             delivered: booleanAttribute('delivered'),
-            description: childText(null, 'desc'),
+            description: attribute('desc'),
             jid: JIDAttribute('jid'),
             node: attribute('node'),
             type: attribute('type'),
