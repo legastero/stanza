@@ -1,6 +1,13 @@
 pipeline:
+    audit:
+        image: node:12
+        commands:
+            - npm ci
+            - npm audit --production
     test:
         image: node:12
         commands:
-            - npm install
+            - npm ci
+            - npm run lint
+            - npm run compile
             - npm test

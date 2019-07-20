@@ -3,7 +3,6 @@ node_modules
 *.swp
 *.gz
 dist
-package-lock.json
 coverage
 .nyc_output
 .vscode
