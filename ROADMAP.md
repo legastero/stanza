@@ -22,7 +22,7 @@ There are three goals for this change:
 
 Because this will make event processing async, this is a major breaking change.
 
-The code for the new event system already exists for review: https://github.com/legastero/pegboard
+The code for the new event system already exists for review: https://github.com/legastero/stanza/blob/hook-emitter/src/HookEmitter.ts
 
 The end goal is that things like the following will be possible:
 
