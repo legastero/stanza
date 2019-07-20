@@ -1,5 +1,5 @@
-import { Agent } from '../';
-import { Credentials, ExpectedCredentials } from '../lib/SASL';
+import { Agent, JID } from '../';
+import { CacheableCredentials, Credentials, ExpectedCredentials } from '../lib/SASL';
 import { SASL } from '../protocol';
 
 declare module '../' {
@@ -22,6 +22,14 @@ declare module '../' {
         'auth:failed': void;
         'credentials:update': Credentials;
         sasl: SASL;
+    }
+
+    export interface AgentHooks {
+        'credentials:request': {
+            credentials: Credentials;
+            expected: ExpectedCredentials;
+        };
+        'credentials:update': CacheableCredentials;
     }
 }
 
@@ -85,9 +93,10 @@ export default function(client: Agent) {
                             client.transport.authenticated = true;
                         }
                         const cacheableCredentials = mechanism.getCacheableCredentials();
-                        await client.emit('auth:success', fetchedCreds.credentials);
+                        client.emit('auth:success', fetchedCreds.credentials);
                         if (cacheableCredentials) {
-                            await client.emit('credentials:update', cacheableCredentials);
+                            client.emit('credentials:update', cacheableCredentials);
+                            await client.hooks.emit('credentials:update', cacheableCredentials);
                         }
                         resolve('restart');
                     }
@@ -95,7 +104,7 @@ export default function(client: Agent) {
                         if (client.transport) {
                             client.transport.authenticated = false;
                         }
-                        await client.emit('auth:failed');
+                        client.emit('auth:failed');
                         if (attempts > 0 && stanza.condition !== 'aborted') {
                             resolve(trySASL(attempts - 1));
                         } else {
@@ -116,5 +125,34 @@ export default function(client: Agent) {
 
         const res = await trySASL(MAX_AUTH_ATTEMPTS);
         done(res);
+    });
+
+    client.getCredentials = async (expected?: ExpectedCredentials): Promise<Credentials> => {
+        const result = await client.hooks.emit('credentials:request', {
+            credentials: {},
+            expected: expected ? expected : { optional: [], required: [] }
+        });
+        return result.credentials;
+    };
+
+    client.hooks.on('credentials:request', async event => {
+        const { credentials, expected } = event.data;
+        const requestedJID = JID.parse(client.config.jid || '');
+        const creds = client.config.credentials || {};
+        const server = creds.host || requestedJID.domain;
+        const knownCredentials = {
+            password: creds.password,
+            realm: server,
+            server,
+            serviceName: server,
+            serviceType: 'xmpp',
+            username: creds.username || requestedJID.local,
+            ...(client.config.credentials || {})
+        };
+        for (const cred of [...expected.required, ...expected.optional]) {
+            if (!credentials[cred] && knownCredentials[cred]) {
+                (credentials[cred] as any) = knownCredentials[cred];
+            }
+        }
     });
 }

@@ -61,7 +61,6 @@ export default class Client extends EventEmitter {
         this.sasl.register('ANONYMOUS', SASL.ANONYMOUS, 0);
 
         this.hooks = new HookEmitter();
-        this._initHooks();
 
         this.stanzas = new JXT.Registry();
         this.stanzas.define(Protocol);
@@ -290,14 +289,6 @@ export default class Client extends EventEmitter {
         return uuid();
     }
 
-    public async getCredentials(expected?: SASL.ExpectedCredentials): Promise<SASL.Credentials> {
-        const result = await this.hooks.emit('credentials:request', {
-            credentials: {},
-            expected: expected ? expected : { optional: [], required: [] }
-        });
-        return result.credentials;
-    }
-
     public async connect(): Promise<void> {
         this.emit('--reset-stream-features');
 
@@ -462,28 +453,5 @@ export default class Client extends EventEmitter {
         this.emit('stream:error', error);
         this.send('error', error);
         this.disconnect();
-    }
-
-    private _initHooks() {
-        this.hooks.on('credentials:request', async event => {
-            const { credentials, expected } = event.data;
-            const requestedJID = JID.parse(this.config.jid || '');
-            const creds = this.config.credentials || {};
-            const server = creds.host || requestedJID.domain;
-            const knownCredentials = {
-                password: creds.password,
-                realm: server,
-                server,
-                serviceName: server,
-                serviceType: 'xmpp',
-                username: creds.username || requestedJID.local,
-                ...(this.config.credentials || {})
-            };
-            for (const cred of [...expected.required, ...expected.optional]) {
-                if (!credentials[cred] && knownCredentials[cred]) {
-                    (credentials[cred] as any) = knownCredentials[cred];
-                }
-            }
-        });
     }
 }

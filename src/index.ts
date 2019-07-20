@@ -103,12 +103,8 @@ export interface AgentEvents {
     '*': (...args: any[]) => void;
 }
 
-export interface AgentHooks extends HookEvents {
-    'credentials:request': {
-        credentials: LibSASL.Credentials;
-        expected: LibSASL.ExpectedCredentials;
-    };
-}
+// tslint:disable-next-line
+export interface AgentHooks extends HookEvents {}
 
 export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
     jid: string;
