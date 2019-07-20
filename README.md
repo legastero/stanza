@@ -70,6 +70,15 @@ client.connect();
 
 MUC Room: [discuss@stanzajs.org](https://stanzajs.org/discuss/logs) / [Logs](https://stanzajs.org/discuss/logs)
 
+## Recommended Modules
+
+These are some additional modules that are highly recommended for use with StanzaJS:
+
+| Name                                                       | Description                                                                      | Source                                           |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------ |
+| [staydown](https://npmjs.org/package/staydown)             | Render helper that keeps an element scrolled to the bottom based on user intent. | [Source](https://github.com/fritzy/staydown)     |
+| [webrtc-adapter](https://npmjs.org/package/webrtc-adapter) | Shims browsers to provide a consistent WebRTC API.                               | [Source](https://github.com/webrtchacks/adapter) |
+
 ## License
 
 [MIT](./LICENSE.md)
