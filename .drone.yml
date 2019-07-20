@@ -1,9 +1,4 @@
 pipeline:
-    audit:
-        image: node:12
-        commands:
-            - npm ci
-            - npm audit --production
     test:
         image: node:12
         commands:
