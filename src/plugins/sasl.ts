@@ -1,10 +1,10 @@
 import { Agent } from '../';
-import { Credentials } from '../lib/sasl';
+import { Credentials, ExpectedCredentials } from '../lib/SASL';
 import { SASL } from '../protocol';
 
 declare module '../' {
     export interface Agent {
-        getCredentials(): Promise<AgentConfig['credentials']>;
+        getCredentials(expected?: ExpectedCredentials): Promise<Credentials>;
     }
     export interface AgentConfig {
         /**
@@ -25,100 +25,96 @@ declare module '../' {
     }
 }
 
-export default function (client: Agent) {
+const MAX_AUTH_ATTEMPTS = 5;
+
+export default function(client: Agent) {
     client.registerFeature('sasl', 100, async (features, done) => {
-        const mech = client.sasl.createMechanism(features.sasl!.mechanisms);
-
-        const saslHandler = async (sasl: SASL) => {
-            if (!mech) {
-                return;
+        const trySASL = async (attempts: number): Promise<string> => {
+            const mechanism = client.sasl.createMechanism(features.sasl!.mechanisms);
+            if (!mechanism) {
+                return 'disconnect';
             }
 
-            switch (sasl.type) {
-                case 'success': {
-                    client.features.negotiated.sasl = true;
-                    client.off('sasl', saslHandler);
-                    client.emit('auth:success', client.config.credentials);
+            let fetchedCreds: { credentials: Credentials; expected: ExpectedCredentials };
+            try {
+                fetchedCreds = await client.hooks.emit('credentials:request', {
+                    credentials: {},
+                    expected: mechanism.getExpectedCredentials()
+                });
 
-                    if (client.transport) {
-                        client.transport.authenticated = true;
-                    }
+                client.send('sasl', {
+                    mechanism: mechanism!.name,
+                    type: 'auth',
+                    value: mechanism!.createResponse(fetchedCreds.credentials)!
+                });
+            } catch (err) {
+                // client.log('error', 'Authentication error', err);
+                client.send('sasl', {
+                    type: 'abort'
+                });
+            }
 
-                    done('restart');
-                    return;
-                }
-
-                case 'challenge': {
-                    mech.processChallenge(sasl.value!);
-
-                    try {
-                        const credentials = (await client.getCredentials()) as Credentials;
-                        const resp = mech.createResponse(credentials);
-                        if (resp || resp === '') {
-                            client.send('sasl', {
-                                type: 'response',
-                                value: resp!
-                            });
-                        } else {
-                            client.send('sasl', {
-                                type: 'response'
-                            });
-                        }
-
-                        const cacheable = mech.getCacheableCredentials();
-                        if (cacheable) {
-                            if (!client.config.credentials) {
-                                client.config.credentials = {};
-                            }
-                            client.config.credentials = {
-                                ...client.config.credentials,
-                                ...cacheable
-                            };
-                            client.emit('credentials:update', client.config.credentials);
-                        }
-                    } catch (err) {
-                        console.error(err);
+            return new Promise<string>(resolve => {
+                const handler = async (stanza: SASL) => {
+                    if (stanza.type === 'challenge') {
+                        mechanism!.processChallenge(stanza.value!);
                         client.send('sasl', {
-                            type: 'abort'
+                            type: 'response',
+                            value: mechanism!.createResponse(fetchedCreds.credentials)!
                         });
+                        return;
                     }
-                    return;
-                }
 
-                case 'failure':
-                case 'abort': {
-                    client.off('sasl', saslHandler);
-                    client.emit('auth:failed');
-                    done('disconnect', 'authentication failed');
-                    return;
-                }
-            }
+                    client.removeListener('sasl', handler);
+
+                    if (stanza.type === 'success') {
+                        mechanism!.processSuccess(stanza.value!);
+                        const result = mechanism!.finalize(fetchedCreds.credentials);
+
+                        if (
+                            mechanism.providesMutualAuthentication &&
+                            !result.mutuallyAuthenticated
+                        ) {
+                            // client.log('error', 'Mutual authentication failed, aborting');
+                            resolve('disconnect');
+                            return;
+                        }
+
+                        client.features.negotiated.sasl = true;
+                        if (client.transport) {
+                            client.transport.authenticated = true;
+                        }
+                        const cacheableCredentials = mechanism.getCacheableCredentials();
+                        await client.emit('auth:success', fetchedCreds.credentials);
+                        if (cacheableCredentials) {
+                            await client.emit('credentials:update', cacheableCredentials);
+                        }
+                        resolve('restart');
+                    }
+                    if (stanza.type === 'failure') {
+                        if (client.transport) {
+                            client.transport.authenticated = false;
+                        }
+                        await client.emit('auth:failed');
+                        if (attempts > 0 && stanza.condition !== 'aborted') {
+                            resolve(trySASL(attempts - 1));
+                        } else {
+                            resolve('disconnect');
+                        }
+                    }
+                };
+                client.on('sasl', handler);
+                client.once('disconnected', () => {
+                    client.off('sasl', handler);
+                });
+            });
         };
 
-        if (!mech) {
-            client.off('sasl', saslHandler);
-            client.emit('auth:failed');
-            return done('disconnect', 'authentication failed');
-        }
-
-        client.on('sasl', saslHandler);
         client.once('--reset-stream-features', () => {
             client.features.negotiated.sasl = false;
-            client.off('sasl', saslHandler);
         });
 
-        try {
-            const credentials = (await client.getCredentials()) as Credentials;
-            client.send('sasl', {
-                mechanism: mech.name,
-                type: 'auth',
-                value: mech.createResponse(credentials)!
-            });
-        } catch (err) {
-            console.error(err);
-            client.send('sasl', {
-                type: 'abort'
-            });
-        }
+        const res = await trySASL(MAX_AUTH_ATTEMPTS);
+        done(res);
     });
 }

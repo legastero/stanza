@@ -1,15 +1,23 @@
+export interface HookEvents {
+    error?: {
+        error: Error;
+        data: any;
+        hook: HookRegistration;
+    };
+}
+
 interface HookRegistration {
-    handler: HookHandler<any>;
+    handler: HookHandler<any, any>;
     destroy?: boolean;
     priority: number;
 }
 
-export type HookHandler<T extends object> = (
-    event: HookEvent<T>
-) => void | Promise<void | HookEvent<T>>;
+export type HookHandler<H, T extends keyof H> = (
+    event: HookEvent<H, T>
+) => void | Promise<void | HookEvent<H, T>>;
 export type Logger = (level: string, format: string, args: any[]) => void;
 
-export class HookEvent<T extends object> {
+export class HookEvent<H, T extends keyof H> {
     /**
      * Provided data object for the event.
      *
@@ -17,12 +25,12 @@ export class HookEvent<T extends object> {
      * subsequent event handlers, and to the original event initiator
      * once all handlers have run.
      */
-    public data: T;
+    public data: H[T];
 
     /**
      * The name of the event.
      */
-    public name: string;
+    public name: T;
 
     // These properties are "public", but are only exposed for use
     // by the HookEmitter class.
@@ -30,7 +38,7 @@ export class HookEvent<T extends object> {
     public _destroy: boolean = false;
     public _destroyHandler: boolean = false;
 
-    constructor(name: string, data: T) {
+    constructor(name: T, data: H[T]) {
         this.name = name;
         this.data = data;
     }
@@ -57,9 +65,9 @@ export class HookEvent<T extends object> {
     }
 }
 
-export class HookEmitter {
+export class HookEmitter<H extends HookEvents> {
     private logger?: Logger;
-    private hooks: Map<string, HookRegistration[]>;
+    private hooks: Map<keyof H, HookRegistration[]>;
 
     constructor() {
         this.hooks = new Map();
@@ -82,7 +90,7 @@ export class HookEmitter {
      *
      * @param name The hook name
      */
-    public hookExists(name: string): boolean {
+    public hookExists(name: keyof H): boolean {
         const hooks = this.hooks.get(name) || [];
         return hooks.length > 0;
     }
@@ -99,7 +107,7 @@ export class HookEmitter {
      * @param handler The event handler function.
      * @param priority Optional priority value to control where in the chain the handler will run.
      */
-    public on<T extends object>(name: string, handler: HookHandler<T>, priority: number = 0): void {
+    public on<T extends keyof H>(name: T, handler: HookHandler<H, T>, priority: number = 0): void {
         const hooks = this.hooks.get(name) || [];
 
         hooks.push({
@@ -107,7 +115,7 @@ export class HookEmitter {
             priority
         });
 
-        hooks.sort((a, b) => a.priority - b.priority);
+        hooks.sort((a, b) => b.priority - a.priority);
 
         this.hooks.set(name, hooks);
     }
@@ -119,14 +127,18 @@ export class HookEmitter {
      * @param handler Optional handler function reference. If not provided, *all* handlers will be removed.
      * @param priority Optional handler priority. If provided, only handlers with the given priority will be removed.
      */
-    public remove(name: string, handler?: HookHandler<any>, priority?: number): void {
+    public remove<T extends keyof H>(
+        name: T,
+        handler?: HookHandler<H, T>,
+        priority?: number
+    ): void {
         let hooks = this.hooks.get(name) || [];
 
         hooks = hooks.filter(hook => {
             return hook.handler !== handler && hook.priority !== priority;
         });
 
-        hooks.sort((a, b) => a.priority - b.priority);
+        hooks.sort((a, b) => b.priority - a.priority);
 
         if (hooks.length === 0) {
             this.hooks.delete(name);
@@ -152,7 +164,7 @@ export class HookEmitter {
      * @param name The name of the hook
      * @param data Arbitrary event data object.
      */
-    public async emit<T extends object>(name: string, data: T = {} as T): Promise<T> {
+    public async emit<T extends keyof H>(name: T, data: H[T] = {} as H[T]): Promise<H[T]> {
         const event = new HookEvent(name, data);
         const hooks = this.hooks.get(name) || [];
         let handlerDestroyed = false;

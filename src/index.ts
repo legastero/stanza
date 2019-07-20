@@ -4,10 +4,11 @@ import Client from './Client';
 import * as Constants from './Constants';
 import * as RTT from './helpers/RTT';
 import SM from './helpers/StreamManagement';
+import HookEmitter, { HookEvents } from './HookEmitter';
 import * as JID from './JID';
 import * as Jingle from './jingle';
 import * as JXT from './jxt';
-import * as LibSASL from './lib/sasl';
+import * as LibSASL from './lib/SASL';
 import StrictEventEmitter from './lib/StrictEventEmitter';
 import * as Namespaces from './Namespaces';
 import * as Stanzas from './protocol';
@@ -102,6 +103,13 @@ export interface AgentEvents {
     '*': (...args: any[]) => void;
 }
 
+export interface AgentHooks extends HookEvents {
+    'credentials:request': {
+        credentials: LibSASL.Credentials;
+        expected: LibSASL.ExpectedCredentials;
+    };
+}
+
 export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
     jid: string;
     config: AgentConfig;
@@ -109,6 +117,7 @@ export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
     sm: SM;
     sasl: LibSASL.Factory;
     stanzas: JXT.Registry;
+    hooks: HookEmitter<AgentHooks>;
 
     sessionStarted: boolean;
 
@@ -214,6 +223,7 @@ export interface Transport {
     stream?: Stream;
     authenticated?: boolean;
 
+    getChannelBinding?(): Buffer | undefined;
     connect(opts: TransportConfig): void;
     disconnect(): void;
     restart(): void;

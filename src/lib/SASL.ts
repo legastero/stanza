@@ -1,5 +1,5 @@
 import * as Hashes from 'stanza-shims';
-import { saslprep } from '../stringprep';
+import { saslprep } from './stringprep';
 
 export interface Credentials {
     username?: string;
@@ -24,8 +24,8 @@ export interface CacheableCredentials extends Credentials {
 }
 
 export interface ExpectedCredentials {
-    required: string[];
-    optional: string[];
+    required: Array<keyof Credentials>;
+    optional: Array<keyof Credentials>;
 }
 
 export interface MechanismResult {
@@ -420,15 +420,14 @@ export class SCRAM implements Mechanism {
     }
 
     public getExpectedCredentials(): ExpectedCredentials {
-        const optional = ['authzid', 'clientNonce'];
-        const required = ['username', 'password'];
-        if (this.useChannelBinding) {
-            required.push('tlsUnique');
-        }
-        return {
-            optional,
-            required
+        const expected: ExpectedCredentials = {
+            optional: ['authzid', 'clientNonce'],
+            required: ['username', 'password']
         };
+        if (this.useChannelBinding) {
+            expected.required.push('tlsUnique');
+        }
+        return expected;
     }
 
     public getCacheableCredentials(): CacheableCredentials {

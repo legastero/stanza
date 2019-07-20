@@ -28,6 +28,7 @@ export const StreamType = {
 export type StreamType = typeof SASLFailureCondition[keyof typeof SASLFailureCondition];
 
 export const SASLFailureCondition = {
+    Aborted: 'aborted',
     AccountDisabled: 'account-disabled',
     CredentialsExpired: 'credentials-expired',
     EncryptionRequired: 'encryption-required',

@@ -1,11 +1,12 @@
 import { AsyncPriorityQueue, priorityQueue } from 'async';
 import { EventEmitter } from 'events';
 
-import { Agent, AgentConfig, Transport } from './';
+import { Agent, AgentConfig, AgentHooks, Transport } from './';
 import StreamManagement from './helpers/StreamManagement';
+import HookEmitter from './HookEmitter';
 import * as JID from './JID';
 import * as JXT from './jxt';
-import * as SASL from './lib/sasl';
+import * as SASL from './lib/SASL';
 import { core as corePlugins } from './plugins';
 import Protocol, { IQ, Message, Presence, StreamError } from './protocol';
 import BOSH from './transports/bosh';
@@ -35,6 +36,7 @@ export default class Client extends EventEmitter {
     public sasl: SASL.Factory;
     public incomingDataQueue: AsyncPriorityQueue<StreamData>;
     public outgoingDataQueue: AsyncPriorityQueue<StreamData>;
+    public hooks: HookEmitter<AgentHooks>;
 
     constructor(opts: AgentConfig = {}) {
         super();
@@ -57,6 +59,9 @@ export default class Client extends EventEmitter {
         this.sasl.register('X-OAUTH2', SASL.PLAIN, 50);
         this.sasl.register('PLAIN', SASL.PLAIN, 1);
         this.sasl.register('ANONYMOUS', SASL.ANONYMOUS, 0);
+
+        this.hooks = new HookEmitter();
+        this._initHooks();
 
         this.stanzas = new JXT.Registry();
         this.stanzas.define(Protocol);
@@ -285,8 +290,12 @@ export default class Client extends EventEmitter {
         return uuid();
     }
 
-    public async getCredentials(): Promise<SASL.Credentials> {
-        return this._getConfiguredCredentials();
+    public async getCredentials(expected?: SASL.ExpectedCredentials): Promise<SASL.Credentials> {
+        const result = await this.hooks.emit('credentials:request', {
+            credentials: {},
+            expected: expected ? expected : { optional: [], required: [] }
+        });
+        return result.credentials;
     }
 
     public async connect(): Promise<void> {
@@ -455,19 +464,26 @@ export default class Client extends EventEmitter {
         this.disconnect();
     }
 
-    private _getConfiguredCredentials(): SASL.Credentials {
-        const creds = this.config.credentials || {};
-        const requestedJID = JID.parse(this.config.jid || '');
-        const username = creds.username || requestedJID.local;
-        const server = creds.host || requestedJID.domain;
-        return {
-            host: server,
-            password: this.config.password,
-            realm: server,
-            serviceName: server,
-            serviceType: 'xmpp',
-            username,
-            ...creds
-        };
+    private _initHooks() {
+        this.hooks.on('credentials:request', async event => {
+            const { credentials, expected } = event.data;
+            const requestedJID = JID.parse(this.config.jid || '');
+            const creds = this.config.credentials || {};
+            const server = creds.host || requestedJID.domain;
+            const knownCredentials = {
+                password: creds.password,
+                realm: server,
+                server,
+                serviceName: server,
+                serviceType: 'xmpp',
+                username: creds.username || requestedJID.local,
+                ...(this.config.credentials || {})
+            };
+            for (const cred of [...expected.required, ...expected.optional]) {
+                if (!credentials[cred] && knownCredentials[cred]) {
+                    (credentials[cred] as any) = knownCredentials[cred];
+                }
+            }
+        });
     }
 }
