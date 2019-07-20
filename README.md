@@ -3,8 +3,11 @@
 **Modern XMPP, with a JSON API.**
 
 <hr />
-
-![](https://img.shields.io/npm/v/stanza.svg?style=flat) [![](https://img.shields.io/badge/endpoint.svg?url=https://stanzajs.org/discuss/badge.json&style=flat)](https://stanzajs.org/discuss/logs/)
+<p>
+<a href="https://npmjs.org/package/stanza"><img src="https://img.shields.io/npm/v/stanza.svg?style=flat" alt="npm" /></a>
+<a href="https://cloud.drone.io/legastero/stanza"><img src="https://cloud.drone.io/api/badges/legastero/stanza/status.svg" alt="build status" /></a>
+<a href="https://stanzajs.org/discuss/logs/"><img src="https://img.shields.io/badge/endpoint.svg?url=https://stanzajs.org/discuss/badge.json&style=flat" alt="chat" /></a>
+</p>
 
 ## What is this?
 
