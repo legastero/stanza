@@ -5,9 +5,9 @@ test('Connect using WebSocket', function(t) {
     t.plan(1);
 
     const client = stanza.createClient({
-        jid: 'anon@anon.lance.im',
+        jid: 'anon@anon.stanzajs.org',
         transports: {
-            websocket: 'wss://anon.lance.im/xmpp-websocket'
+            websocket: 'wss://anon.stanzajs.org/xmpp-websocket'
         }
     });
 
@@ -23,9 +23,9 @@ test('Connect using BOSH', function(t) {
     t.plan(1);
 
     const client = stanza.createClient({
-        jid: 'anon@anon.lance.im',
+        jid: 'anon@anon.stanzajs.org',
         transports: {
-            bosh: 'https://anon.lance.im/http-bind'
+            bosh: 'https://anon.stanzajs.org/http-bind'
         }
     });
 
