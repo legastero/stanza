@@ -16,6 +16,16 @@ declare module '../' {
          * If you only need to set a password, then the <code>password</code> config field can be used instead.
          */
         credentials?: Credentials;
+
+        /**
+         * Maximum Authentication Attempts
+         *
+         * The number of times to allow an authentication failure before aborting and disconnectig. This number
+         * should be at least 2, and no more than 5.
+         *
+         * @default 5
+         */
+        maxAuthAttempts?: number;
     }
     export interface AgentEvents {
         'auth:success'?: Credentials;
@@ -23,8 +33,9 @@ declare module '../' {
         'credentials:update': Credentials;
         sasl: SASL;
     }
-
     export interface AgentHooks {
+        'auth:success': Credentials | undefined;
+        'auth:failed': void;
         'credentials:request': {
             credentials: Credentials;
             expected: ExpectedCredentials;
@@ -32,8 +43,6 @@ declare module '../' {
         'credentials:update': CacheableCredentials;
     }
 }
-
-const MAX_AUTH_ATTEMPTS = 5;
 
 export default function(client: Agent) {
     client.registerFeature('sasl', 100, async (features, done) => {
@@ -56,7 +65,7 @@ export default function(client: Agent) {
                     value: mechanism!.createResponse(fetchedCreds.credentials)!
                 });
             } catch (err) {
-                // client.log('error', 'Authentication error', err);
+                client.log('error', 'Authentication error', err);
                 client.send('sasl', {
                     type: 'abort'
                 });
@@ -83,7 +92,7 @@ export default function(client: Agent) {
                             mechanism.providesMutualAuthentication &&
                             !result.mutuallyAuthenticated
                         ) {
-                            // client.log('error', 'Mutual authentication failed, aborting');
+                            client.log('error', 'Mutual authentication failed, aborting');
                             resolve('disconnect');
                             return;
                         }
@@ -93,10 +102,9 @@ export default function(client: Agent) {
                             client.transport.authenticated = true;
                         }
                         const cacheableCredentials = mechanism.getCacheableCredentials();
-                        client.emit('auth:success', fetchedCreds.credentials);
+                        await client.emitCompat('auth:success', fetchedCreds.credentials);
                         if (cacheableCredentials) {
-                            client.emit('credentials:update', cacheableCredentials);
-                            await client.hooks.emit('credentials:update', cacheableCredentials);
+                            await client.emitCompat('credentials:update', cacheableCredentials);
                         }
                         resolve('restart');
                     }
@@ -104,7 +112,7 @@ export default function(client: Agent) {
                         if (client.transport) {
                             client.transport.authenticated = false;
                         }
-                        client.emit('auth:failed');
+                        await client.emitCompat('auth:failed');
                         if (attempts > 0 && stanza.condition !== 'aborted') {
                             resolve(trySASL(attempts - 1));
                         } else {
@@ -123,7 +131,7 @@ export default function(client: Agent) {
             client.features.negotiated.sasl = false;
         });
 
-        const res = await trySASL(MAX_AUTH_ATTEMPTS);
+        const res = await trySASL(client.config.maxAuthAttempts || 5);
         done(res);
     });
 

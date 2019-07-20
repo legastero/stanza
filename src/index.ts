@@ -4,7 +4,7 @@ import Client from './Client';
 import * as Constants from './Constants';
 import * as RTT from './helpers/RTT';
 import SM from './helpers/StreamManagement';
-import HookEmitter, { HookEvents } from './HookEmitter';
+import HookEmitter, { HookEvents, Logger } from './HookEmitter';
 import * as JID from './JID';
 import * as Jingle from './jingle';
 import * as JXT from './jxt';
@@ -117,7 +117,15 @@ export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
 
     sessionStarted: boolean;
 
+    emitCompat<T extends keyof AgentEvents & keyof AgentHooks>(
+        name: T,
+        data?: AgentHooks[T]
+    ): Promise<AgentHooks[T]>;
+
     use(plugin: (agent: Agent, registry: JXT.Registry, config: AgentConfig) => void): void;
+
+    registerLogger(logger: Logger): void;
+    log(level: string, format: string, ...args: any[]): void;
 
     nextId(): string;
 
