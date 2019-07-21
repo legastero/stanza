@@ -161,7 +161,7 @@ export default function(client: Agent) {
                 client.sendIQError({ type: 'set', id: data.id, from: data.to }, data);
             }
         } catch (err) {
-            console.error(err);
+            client.log('error', 'Jingle error: %o', err);
             if (!err.jingle) {
                 err.jingle = {};
             }

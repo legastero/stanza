@@ -2,6 +2,8 @@ import { Agent, JID } from '../';
 import { CacheableCredentials, Credentials, ExpectedCredentials } from '../lib/SASL';
 import { SASL } from '../protocol';
 
+const CREDENTIALS_REQUEST = 'credentials:request';
+
 declare module '../' {
     export interface Agent {
         getCredentials(expected?: ExpectedCredentials): Promise<Credentials>;
@@ -34,9 +36,9 @@ declare module '../' {
         sasl: SASL;
     }
     export interface AgentHooks {
-        'auth:success': Credentials | undefined;
+        'auth:success'?: Credentials;
         'auth:failed': void;
-        'credentials:request': {
+        [CREDENTIALS_REQUEST]: {
             credentials: Credentials;
             expected: ExpectedCredentials;
         };
@@ -54,15 +56,15 @@ export default function(client: Agent) {
 
             let fetchedCreds: { credentials: Credentials; expected: ExpectedCredentials };
             try {
-                fetchedCreds = await client.hooks.emit('credentials:request', {
+                fetchedCreds = await client.hooks.emit(CREDENTIALS_REQUEST, {
                     credentials: {},
                     expected: mechanism.getExpectedCredentials()
                 });
 
                 client.send('sasl', {
-                    mechanism: mechanism!.name,
+                    mechanism: mechanism.name,
                     type: 'auth',
-                    value: mechanism!.createResponse(fetchedCreds.credentials)!
+                    value: mechanism.createResponse(fetchedCreds.credentials)!
                 });
             } catch (err) {
                 client.log('error', 'Authentication error', err);
@@ -74,10 +76,10 @@ export default function(client: Agent) {
             return new Promise<string>(resolve => {
                 const handler = async (stanza: SASL) => {
                     if (stanza.type === 'challenge') {
-                        mechanism!.processChallenge(stanza.value!);
+                        mechanism.processChallenge(stanza.value!);
                         client.send('sasl', {
                             type: 'response',
-                            value: mechanism!.createResponse(fetchedCreds.credentials)!
+                            value: mechanism.createResponse(fetchedCreds.credentials)!
                         });
                         return;
                     }
@@ -85,8 +87,8 @@ export default function(client: Agent) {
                     client.removeListener('sasl', handler);
 
                     if (stanza.type === 'success') {
-                        mechanism!.processSuccess(stanza.value!);
-                        const result = mechanism!.finalize(fetchedCreds.credentials);
+                        mechanism.processSuccess(stanza.value!);
+                        const result = mechanism.finalize(fetchedCreds.credentials);
 
                         if (
                             mechanism.providesMutualAuthentication &&
@@ -136,14 +138,14 @@ export default function(client: Agent) {
     });
 
     client.getCredentials = async (expected?: ExpectedCredentials): Promise<Credentials> => {
-        const result = await client.hooks.emit('credentials:request', {
+        const result = await client.hooks.emit(CREDENTIALS_REQUEST, {
             credentials: {},
             expected: expected ? expected : { optional: [], required: [] }
         });
         return result.credentials;
     };
 
-    client.hooks.on('credentials:request', async event => {
+    client.hooks.on(CREDENTIALS_REQUEST, async event => {
         const { credentials, expected } = event.data;
         const requestedJID = JID.parse(client.config.jid || '');
         const creds = client.config.credentials || {};

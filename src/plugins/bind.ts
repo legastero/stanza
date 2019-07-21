@@ -21,7 +21,7 @@ export default function (client: Agent) {
             }
             return cb();
         } catch (err) {
-            console.error(err);
+            client.log('error', 'JID binding failed: %o', err);
             return cb('disconnect', 'JID binding failed');
         }
     });
