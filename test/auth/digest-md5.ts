@@ -1,3 +1,12 @@
+/**
+ * This file is derived from prior work.
+ *
+ * See NOTICE.md for full license text.
+ *
+ * Derived from:
+ * - sasl-digest-md5, Copyright © 2012-2013 Jared Hanson
+ */
+
 import test from 'tape';
 import { DIGEST } from '../../src/lib/sasl';
 

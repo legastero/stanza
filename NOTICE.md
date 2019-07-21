@@ -1,6 +1,7 @@
 # StanzaJS
 
 Copyright © 2013-2019 Lance Stout
+
 Copyright © 2013-2019 &yet <https://andyet.com>
 
 Portions of this code were adapted from existing projects:

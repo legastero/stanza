@@ -1,3 +1,12 @@
+/**
+ * Portions of this file are derived from prior work.
+ *
+ * See NOTICE.md for full license text.
+ *
+ * Derived from:
+ * - uuid, Copyright (c) 2010-2016 Robert Kieffer and other contributors
+ */
+
 // tslint:disable no-bitwise
 
 import { randomBytes } from './lib/crypto';

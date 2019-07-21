@@ -1,3 +1,14 @@
+/**
+ * This file is derived from prior work.
+ *
+ * See NOTICE.md for full license text.
+ *
+ * Derived from:
+ * - hash-base, Copyright (c) 2016 Kirill Fomichev
+ * - cipher-base, Copyright (c) 2017 crypto-browserify contributors
+ * - md5.js, Copyright (c) 2016 Kirill Fomichev
+ */
+
 // tslint:disable no-bitwise arguments-order
 
 import Hash from './Hash';

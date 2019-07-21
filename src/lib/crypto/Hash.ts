@@ -1,3 +1,14 @@
+/**
+ * This file is derived from prior work.
+ *
+ * See NOTICE.md for full license text.
+ *
+ * Derived from:
+ * - hash-base, Copyright (c) 2016 Kirill Fomichev
+ * - cipher-base, Copyright (c) 2017 crypto-browserify contributors
+ * - create-hash, Copyright (c) 2017 crypto-browserify contributors
+ */
+
 // tslint:disable no-bitwise
 
 import { Transform } from 'readable-stream';

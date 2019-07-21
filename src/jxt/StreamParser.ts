@@ -1,3 +1,11 @@
+/**
+ * This file is derived from prior work.
+ *
+ * See NOTICE.md for full license text.
+ *
+ * Derived from: ltx, Copyright © 2010 Stephan Maka
+ */
+
 import { Transform } from 'readable-stream';
 
 import { JSONData } from './Definitions';

@@ -1,4 +1,13 @@
-// tslint:disable no-bitwise
+/**
+ * This file is derived from prior work.
+ *
+ * See NOTICE.md for full license text.
+ *
+ * Derived from:
+ * - hash-base, Copyright (c) 2016 Kirill Fomichev
+ * - cipher-base, Copyright (c) 2017 crypto-browserify contributors
+ * - sha.js, Copyright (c) 2013-2018 sha.js contributors
+ */
 
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
@@ -8,6 +17,8 @@
  * Distributed under the BSD License
  * See http://pajhome.org.uk/crypt/md5 for details.
  */
+
+// tslint:disable no-bitwise
 
 import Hash from './Hash';
 
