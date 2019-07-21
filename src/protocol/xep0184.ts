@@ -22,7 +22,6 @@ export interface MessageReceipt {
 
 const Protocol: DefinitionOptions[] = [
     {
-        defaultType: 'request',
         element: 'request',
         namespace: NS_RECEIPTS,
         path: 'message.receipt',
