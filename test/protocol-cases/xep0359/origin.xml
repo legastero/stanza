@@ -1,0 +1,6 @@
+<message xmlns='jabber:client'
+         to='room@muc.example.com'
+         type='groupchat'>
+  <body>Typical body text</body>
+  <origin-id xmlns='urn:xmpp:sid:0' id='de305d54-75b4-431b-adb2-eb6b9e546013'/>
+</message>

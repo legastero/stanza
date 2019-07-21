@@ -1,0 +1,17 @@
+[
+    "message",
+    {
+        "type": "groupchat",
+        "to": "room@muc.example.com",
+        "body": "Typical body text",
+        "originId": "de305d54-75b4-431b-adb2-eb6b9e546013"
+    },
+    {
+        "type": "groupchat",
+        "lang": "",
+        "to": "room@muc.example.com",
+        "alternateLanguageBodies": [{ "lang": "", "value": "Typical body text" }],
+        "body": "Typical body text",
+        "originId": "de305d54-75b4-431b-adb2-eb6b9e546013"
+    }
+]

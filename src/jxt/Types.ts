@@ -203,8 +203,10 @@ function createChildAttributeField<T, E = T>(
             return converter.importer(child, context);
         },
         exporter(xml, value, context) {
-            const child = findOrCreate(xml, opts.namespace || xml.getNamespace(), opts.element);
-            converter.exporter(child, value, context);
+            if (value !== undefined) {
+                const child = findOrCreate(xml, opts.namespace || xml.getNamespace(), opts.element);
+                converter.exporter(child, value, context);
+            }
         }
     };
 }
@@ -286,13 +288,15 @@ function createChildTextField<T, E = T>(opts: CreateChildTextOptions<T, E>): Fie
             return converter.importer(children[0], context);
         },
         exporter(xml, value, context) {
-            const child = findOrCreate(
-                xml,
-                opts.namespace || xml.getNamespace(),
-                opts.element,
-                opts.matchLanguage ? context.lang : undefined
-            );
-            converter.exporter(child, value, context);
+            if (value !== undefined) {
+                const child = findOrCreate(
+                    xml,
+                    opts.namespace || xml.getNamespace(),
+                    opts.element,
+                    opts.matchLanguage ? context.lang : undefined
+                );
+                converter.exporter(child, value, context);
+            }
         }
     };
 }

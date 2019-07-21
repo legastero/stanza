@@ -1,0 +1,25 @@
+[
+    "message",
+    {
+        "type": "groupchat",
+        "to": "room@muc.example.com",
+        "body": "Typical body text",
+        "originId": "de305d54-75b4-431b-adb2-eb6b9e546013",
+        "stanzaIds": [
+            { "by": "room@muc.example.com", "id": "5f3dbc5e-e1d3-4077-a492-693f3769c7ad" },
+            { "by": "user@example.com", "id": "de305d54-75b4-431b-adb2-eb6b9e546013" }
+        ]
+    },
+    {
+        "type": "groupchat",
+        "lang": "",
+        "to": "room@muc.example.com",
+        "alternateLanguageBodies": [{ "lang": "", "value": "Typical body text" }],
+        "body": "Typical body text",
+        "originId": "de305d54-75b4-431b-adb2-eb6b9e546013",
+        "stanzaIds": [
+            { "by": "room@muc.example.com", "id": "5f3dbc5e-e1d3-4077-a492-693f3769c7ad" },
+            { "by": "user@example.com", "id": "de305d54-75b4-431b-adb2-eb6b9e546013" }
+        ]
+    }
+]

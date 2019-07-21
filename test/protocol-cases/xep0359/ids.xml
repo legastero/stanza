@@ -1,0 +1,12 @@
+<message xmlns='jabber:client'
+         to='room@muc.example.com'
+         type='groupchat'>
+  <body>Typical body text</body>
+  <origin-id xmlns='urn:xmpp:sid:0' id='de305d54-75b4-431b-adb2-eb6b9e546013'/>
+  <stanza-id xmlns='urn:xmpp:sid:0'
+             id='5f3dbc5e-e1d3-4077-a492-693f3769c7ad'
+             by='room@muc.example.com'/>
+  <stanza-id xmlns='urn:xmpp:sid:0'
+             id='de305d54-75b4-431b-adb2-eb6b9e546013'
+             by='user@example.com'/>
+</message>
