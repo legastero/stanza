@@ -26,5 +26,24 @@
         "cognitive-complexity": [true, 120],
         "parameters-max-number": [true, 8],
         "no-big-function": [true, 400]
+    },
+    "jsRules": {
+        "quotemark": [true, "single", "jsx-double", "avoid-escape"],
+        "trailing-comma": [true, "never"],
+        "no-consecutive-blank-lines": [true, 2],
+        "max-classes-per-file": [false, 1],
+        "interface-name": [false],
+        "arrow-parens": [true, "ban-single-arg-parens"],
+        "max-line-length": [false],
+        "no-console": [false],
+        "variable-name": [
+            true,
+            "ban-keywords",
+            "check-format",
+            "allow-leading-underscore",
+            "allow-pascal-case"
+        ],
+        "semicolon": [true, "always"],
+        "object-literal-key-quotes": [true, "as-needed"]
     }
 }
