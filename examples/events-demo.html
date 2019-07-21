@@ -153,6 +153,9 @@
                 });
 
                 client.on('*', log);
+                client.registerLogger((level, format, args) => {
+                    (console[level] || console.log)(format, ...args);
+                });
 
                 client.on('session:started', async () => {
                     try {
