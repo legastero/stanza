@@ -103,8 +103,13 @@ export interface AgentEvents {
     '*': (...args: any[]) => void;
 }
 
-// tslint:disable-next-line
-export interface AgentHooks extends HookEvents {}
+export interface AgentHooks extends HookEvents {
+    stanza: Stanzas.Message | Stanzas.Presence | Stanzas.IQ;
+    message: Stanzas.ReceivedMessage;
+    presence: Stanzas.ReceivedPresence;
+    iq: Stanzas.ReceivedIQ;
+    features: Stanzas.StreamFeatures;
+}
 
 export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
     jid: string;

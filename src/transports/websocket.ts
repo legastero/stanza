@@ -37,6 +37,7 @@ export default class WSConnection implements Transport {
         this.sendQueue = priorityQueue<OutputData>(({ kind, stanza, data }, cb) => {
             if (this.conn && this.conn.readyState === WS_OPEN) {
                 data = Buffer.from(data, 'utf8').toString();
+                this.client.log('verbose', 'OUTGOING (RAW) :: %s', data);
                 this.client.emit('raw', 'outgoing', data);
                 this.conn.send(data);
             } else if (['message', 'presence', 'iq'].includes(kind!)) {
@@ -108,6 +109,7 @@ export default class WSConnection implements Transport {
         };
         this.conn.onmessage = wsMsg => {
             const data = Buffer.from(wsMsg.data as string, 'utf8').toString();
+            this.client.log('verbose', 'INCOMING (RAW) :: %s', data);
             this.client.emit('raw', 'incoming', data);
             if (this.parser) {
                 this.parser.write(data);
