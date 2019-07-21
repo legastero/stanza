@@ -20,11 +20,13 @@ export interface ChatMarker {
     id?: string;
 }
 
+const path = 'message.marker';
+
 const Protocol: DefinitionOptions[] = [
     {
         element: 'markable',
         namespace: NS_CHAT_MARKERS_0,
-        path: 'message.marker',
+        path,
         type: 'markable',
         typeField: 'type'
     },
@@ -34,7 +36,7 @@ const Protocol: DefinitionOptions[] = [
             id: attribute('id')
         },
         namespace: NS_CHAT_MARKERS_0,
-        path: 'message.marker',
+        path,
         type: 'received'
     },
     {
@@ -43,7 +45,7 @@ const Protocol: DefinitionOptions[] = [
             id: attribute('id')
         },
         namespace: NS_CHAT_MARKERS_0,
-        path: 'message.marker',
+        path,
         type: 'displayed'
     },
     {
@@ -52,7 +54,7 @@ const Protocol: DefinitionOptions[] = [
             id: attribute('id')
         },
         namespace: NS_CHAT_MARKERS_0,
-        path: 'message.marker',
+        path,
         type: 'acknowledged'
     }
 ];

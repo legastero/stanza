@@ -205,6 +205,8 @@ function rtcpFeedback(): FieldDefinition {
     };
 }
 
+const info = 'iq.jingle.info';
+
 const Protocol: DefinitionOptions[] = [
     {
         aliases: ['iq.jingle.contents.application'],
@@ -348,7 +350,7 @@ const Protocol: DefinitionOptions[] = [
             name: attribute('name')
         },
         namespace: NS_JINGLE_RTP_INFO_1,
-        path: 'iq.jingle.info',
+        path: info,
         type: JINGLE_INFO_MUTE
     },
     {
@@ -358,31 +360,31 @@ const Protocol: DefinitionOptions[] = [
             name: attribute('name')
         },
         namespace: NS_JINGLE_RTP_INFO_1,
-        path: 'iq.jingle.info',
+        path: info,
         type: JINGLE_INFO_UNMUTE
     },
     {
         element: 'hold',
         namespace: NS_JINGLE_RTP_INFO_1,
-        path: 'iq.jingle.info',
+        path: info,
         type: JINGLE_INFO_HOLD
     },
     {
         element: 'unhold',
         namespace: NS_JINGLE_RTP_INFO_1,
-        path: 'iq.jingle.info',
+        path: info,
         type: JINGLE_INFO_UNHOLD
     },
     {
         element: 'active',
         namespace: NS_JINGLE_RTP_INFO_1,
-        path: 'iq.jingle.info',
+        path: info,
         type: JINGLE_INFO_ACTIVE
     },
     {
         element: 'ringing',
         namespace: NS_JINGLE_RTP_INFO_1,
-        path: 'iq.jingle.info',
+        path: info,
         type: JINGLE_INFO_RINGING
     }
 ];

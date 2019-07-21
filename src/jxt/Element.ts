@@ -11,6 +11,8 @@ export interface JSONElement {
     attributes: Attributes;
 }
 
+type NullableString = string | null | undefined;
+
 export default class XMLElement {
     public name: string;
     public parent?: XMLElement;
@@ -69,7 +71,7 @@ export default class XMLElement {
         return namespaces;
     }
 
-    public getAttribute(name: string, xmlns?: string | null): string | undefined {
+    public getAttribute(name: string, xmlns?: NullableString): string | undefined {
         if (!xmlns) {
             return this.attributes[name];
         }
@@ -83,11 +85,11 @@ export default class XMLElement {
         return this.attributes[[namespaces[xmlns], name].join(':')];
     }
 
-    public getChild(name: string, xmlns?: string | undefined | null): XMLElement | undefined {
+    public getChild(name: string, xmlns?: NullableString): XMLElement | undefined {
         return this.getChildren(name, xmlns)[0];
     }
 
-    public getChildren(name: string, xmlns?: string | undefined | null): XMLElement[] {
+    public getChildren(name: string, xmlns?: NullableString): XMLElement[] {
         const result: XMLElement[] = [];
         for (const child of this.children) {
             if (
@@ -119,11 +121,7 @@ export default class XMLElement {
         return child;
     }
 
-    public setAttribute(
-        attr: string,
-        val: string | null | undefined,
-        force: boolean = false
-    ): void {
+    public setAttribute(attr: string, val: NullableString, force: boolean = false): void {
         this.attributes[attr] = val || undefined;
         if (val === '' && force) {
             this.attributes[attr] = val;

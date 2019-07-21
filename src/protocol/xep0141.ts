@@ -41,6 +41,18 @@ export type DataFormLayout =
     | DataFormLayoutFieldRef
     | DataFormLayoutReportedRef;
 
+const aliases = [
+    'dataformLayout',
+    {
+        multiple: true,
+        path: 'dataformLayout.contents'
+    },
+    {
+        multiple: true,
+        path: 'dataform.layout.contents'
+    }
+];
+
 const Protocol: DefinitionOptions[] = [
     {
         aliases: [
@@ -56,17 +68,7 @@ const Protocol: DefinitionOptions[] = [
         namespace: NS_DATAFORM_LAYOUT
     },
     {
-        aliases: [
-            'dataformLayout',
-            {
-                multiple: true,
-                path: 'dataformLayout.contents'
-            },
-            {
-                multiple: true,
-                path: 'dataform.layout.contents'
-            }
-        ],
+        aliases,
         element: 'section',
         fields: {
             label: attribute('label')
@@ -76,17 +78,7 @@ const Protocol: DefinitionOptions[] = [
         typeField: 'type'
     },
     {
-        aliases: [
-            'dataformLayout',
-            {
-                multiple: true,
-                path: 'dataformLayout.contents'
-            },
-            {
-                multiple: true,
-                path: 'dataform.layout.contents'
-            }
-        ],
+        aliases,
         element: 'text',
         fields: {
             value: text()
@@ -96,17 +88,7 @@ const Protocol: DefinitionOptions[] = [
         typeField: 'type'
     },
     {
-        aliases: [
-            'dataformLayout',
-            {
-                multiple: true,
-                path: 'dataformLayout.contents'
-            },
-            {
-                multiple: true,
-                path: 'dataform.layout.contents'
-            }
-        ],
+        aliases,
         element: 'fieldref',
         fields: {
             field: attribute('var')
@@ -116,17 +98,7 @@ const Protocol: DefinitionOptions[] = [
         typeField: 'type'
     },
     {
-        aliases: [
-            'dataformLayout',
-            {
-                multiple: true,
-                path: 'dataformLayout.contents'
-            },
-            {
-                multiple: true,
-                path: 'dataform.layout.contents'
-            }
-        ],
+        aliases,
         element: 'reportedref',
         namespace: NS_DATAFORM_LAYOUT,
         type: 'reportedref',

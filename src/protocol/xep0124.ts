@@ -25,6 +25,21 @@ import {
 } from '../jxt';
 import { NS_BOSH, NS_BOSH_XMPP } from '../Namespaces';
 
+type BOSHErrorCondition =
+    | 'bad-request'
+    | 'host-gone'
+    | 'host-unknown'
+    | 'improper-addressing'
+    | 'internal-server-error'
+    | 'item-not-found'
+    | 'other-request'
+    | 'policy-violation'
+    | 'remote-connection-failed'
+    | 'remote-stream-error'
+    | 'see-other-uri'
+    | 'system-shutdown'
+    | 'undefined-condition';
+
 export interface BOSH {
     seeOtherURI?: string;
     acceptMediaTypes?: string;
@@ -46,20 +61,7 @@ export interface BOSH {
     report?: number;
     timeSinceReport?: number;
     type?: 'error' | 'terminate';
-    condition?:
-        | 'bad-request'
-        | 'host-gone'
-        | 'host-unknown'
-        | 'improper-addressing'
-        | 'internal-server-error'
-        | 'item-not-found'
-        | 'other-request'
-        | 'policy-violation'
-        | 'remote-connection-failed'
-        | 'remote-stream-error'
-        | 'see-other-uri'
-        | 'system-shutdown'
-        | 'undefined-condition';
+    condition?: BOSHErrorCondition;
 
     // XEP-0206
     xmppRestart?: boolean;

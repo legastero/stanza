@@ -1,5 +1,5 @@
 {
-    "extends": "tslint:recommended",
+    "extends": ["tslint:recommended", "tslint-sonarts"],
     "linterOptions": {
         "exclude": ["build", "lib"]
     },
@@ -20,7 +20,12 @@
             "allow-pascal-case"
         ],
         "semicolon": [true, "always"],
-        "object-literal-key-quotes": [true, "as-needed"]
+        "object-literal-key-quotes": [true, "as-needed"],
+        "max-union-size": [true, 5],
+        "no-duplicate-string": [true, 4],
+        "cognitive-complexity": [true, 120],
+        "parameters-max-number": [true, 8],
+        "no-big-function": [true, 400]
     },
     "jsRules": {
         "quotemark": [true, "single", "jsx-double", "avoid-escape"],

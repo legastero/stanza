@@ -94,7 +94,7 @@ test('Reject transport-replace by default', function(t) {
                 jingle: {
                     action: 'transport-reject',
                     reason: {
-                        condition: 'failed-application',
+                        condition: 'failed-transport',
                         text: 'transport-replace is not supported'
                     },
                     sid: 'sid123'

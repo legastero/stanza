@@ -30,23 +30,17 @@ function isSentCarbon(msg: Message): msg is SentCarbon {
 }
 
 export default function(client: Agent) {
-    client.enableCarbons = async () => {
+    async function toggleCarbons(action: 'enable' | 'disable') {
         await client.sendIQ({
             carbons: {
-                action: 'enable'
+                action
             },
             type: 'set'
         });
-    };
+    }
 
-    client.disableCarbons = async () => {
-        await client.sendIQ({
-            carbons: {
-                action: 'disable'
-            },
-            type: 'set'
-        });
-    };
+    client.enableCarbons = () => toggleCarbons('enable');
+    client.disableCarbons = () => toggleCarbons('disable');
 
     client.on('message', msg => {
         if (!msg.carbon || !JID.equalBare(msg.from, client.jid)) {

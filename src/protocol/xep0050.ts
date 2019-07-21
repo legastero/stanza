@@ -23,15 +23,17 @@ declare module './' {
         command?: AdHocCommand;
     }
     export interface StanzaError {
-        commandError?:
-            | 'bad-action'
-            | 'bad-locale'
-            | 'bad-payload'
-            | 'bad-sessionid'
-            | 'malformed-action'
-            | 'session-expired';
+        commandError?: AdhocCommandError;
     }
 }
+
+export type AdhocCommandError =
+    | 'bad-action'
+    | 'bad-locale'
+    | 'bad-payload'
+    | 'bad-sessionid'
+    | 'malformed-action'
+    | 'session-expired';
 
 export interface AdHocCommand {
     sid?: string;

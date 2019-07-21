@@ -183,10 +183,7 @@ function parse(challenge: Buffer): { [key: string]: string } {
 
 export class ANONYMOUS extends SimpleMech implements Mechanism {
     public getExpectedCredentials(): ExpectedCredentials {
-        return {
-            optional: ['trace'],
-            required: []
-        };
+        return { optional: ['trace'], required: [] };
     }
 
     public createResponse(credentials: Credentials): Buffer {
@@ -200,10 +197,7 @@ export class ANONYMOUS extends SimpleMech implements Mechanism {
 
 export class EXTERNAL extends SimpleMech implements Mechanism {
     public getExpectedCredentials(): ExpectedCredentials {
-        return {
-            optional: ['authzid'],
-            required: []
-        };
+        return { optional: ['authzid'], required: [] };
     }
 
     public createResponse(credentials: Credentials): Buffer {
@@ -290,8 +284,8 @@ export class DIGEST extends SimpleMech implements Mechanism {
 
     public getExpectedCredentials(): ExpectedCredentials {
         return {
-            optional: [],
-            required: ['token']
+            optional: ['authzid', 'realm', 'clientNonce'],
+            required: ['host', 'password', 'serviceName', 'serviceType', 'username']
         };
     }
 

@@ -128,9 +128,16 @@ export interface PubsubSubscriptions {
     items?: PubsubSubscription[];
 }
 
+type PubsubAffiliationState =
+    | 'member'
+    | 'none'
+    | 'outcast'
+    | 'owner'
+    | 'publisher'
+    | 'publish-only';
 export interface PubsubAffiliation {
     node?: string;
-    affiliation?: 'member' | 'none' | 'outcast' | 'owner' | 'publisher' | 'publish-only';
+    affiliation?: PubsubAffiliationState;
     jid?: JID;
 }
 
@@ -231,6 +238,21 @@ const dateOrPresenceAttribute = (name: string): FieldDefinition<Date | 'presence
         xml.setAttribute(name, data);
     }
 });
+
+const SubscriptionFields: DefinitionOptions['fields'] = {
+    configurable: childBoolean(null, 'subscribe-options'),
+    configurationRequired: deepChildBoolean([
+        { namespace: null, element: 'subscribe-options' },
+        { namespace: null, element: 'required' }
+    ]),
+    jid: JIDAttribute('jid'),
+    node: attribute('node'),
+    state: attribute('subscription'),
+    subid: attribute('subid')
+};
+const NodeOnlyField: DefinitionOptions['fields'] = {
+    node: attribute('node')
+};
 
 const Protocol: DefinitionOptions[] = [
     {
@@ -334,17 +356,7 @@ const Protocol: DefinitionOptions[] = [
             }
         ],
         element: 'subscription',
-        fields: {
-            configurable: childBoolean(null, 'subscribe-options'),
-            configurationRequired: deepChildBoolean([
-                { namespace: null, element: 'subscribe-options' },
-                { namespace: null, element: 'required' }
-            ]),
-            jid: JIDAttribute('jid'),
-            node: attribute('node'),
-            state: attribute('subscription'),
-            subid: attribute('subid')
-        },
+        fields: SubscriptionFields,
         namespace: NS_PUBSUB
     },
     {
@@ -357,17 +369,7 @@ const Protocol: DefinitionOptions[] = [
             }
         ],
         element: 'subscription',
-        fields: {
-            configurable: childBoolean(null, 'subscribe-options'),
-            configurationRequired: deepChildBoolean([
-                { namespace: null, element: 'subscribe-options' },
-                { namespace: null, element: 'required' }
-            ]),
-            jid: JIDAttribute('jid'),
-            node: attribute('node'),
-            state: attribute('subscription'),
-            subid: attribute('subid')
-        },
+        fields: SubscriptionFields,
         namespace: NS_PUBSUB_OWNER
     },
     {
@@ -376,18 +378,14 @@ const Protocol: DefinitionOptions[] = [
             { path: 'message.pubsub.affiliations', selector: 'user', impliedType: true }
         ],
         element: 'affiliations',
-        fields: {
-            node: attribute('node')
-        },
+        fields: NodeOnlyField,
         namespace: NS_PUBSUB,
         type: 'user'
     },
     {
         aliases: [{ path: 'iq.pubsub.affiliations', selector: 'owner', impliedType: true }],
         element: 'affiliations',
-        fields: {
-            node: attribute('node')
-        },
+        fields: NodeOnlyField,
         namespace: NS_PUBSUB_OWNER,
         type: 'owner'
     },
@@ -435,9 +433,7 @@ const Protocol: DefinitionOptions[] = [
     },
     {
         element: 'create',
-        fields: {
-            node: attribute('node')
-        },
+        fields: NodeOnlyField,
         namespace: NS_PUBSUB,
         path: 'iq.pubsub.create'
     },
@@ -453,18 +449,14 @@ const Protocol: DefinitionOptions[] = [
     {
         aliases: [{ path: 'iq.pubsub.configure', selector: 'owner', impliedType: true }],
         element: 'configure',
-        fields: {
-            node: attribute('node')
-        },
+        fields: NodeOnlyField,
         namespace: NS_PUBSUB_OWNER,
         type: 'owner'
     },
     {
         aliases: [{ path: 'iq.pubsub.configure', selector: 'user', impliedType: true }],
         element: 'configure',
-        fields: {
-            node: attribute('node')
-        },
+        fields: NodeOnlyField,
         namespace: NS_PUBSUB,
         type: 'user'
     },
@@ -482,9 +474,7 @@ const Protocol: DefinitionOptions[] = [
     },
     {
         element: 'publish',
-        fields: {
-            node: attribute('node')
-        },
+        fields: NodeOnlyField,
         namespace: NS_PUBSUB,
         path: 'iq.pubsub.publish'
     },
@@ -548,9 +538,7 @@ const Protocol: DefinitionOptions[] = [
     },
     {
         element: 'purge',
-        fields: {
-            node: attribute('node')
-        },
+        fields: NodeOnlyField,
         namespace: NS_PUBSUB_EVENT,
         path: 'message.pubsub.purge'
     },
@@ -577,9 +565,7 @@ const Protocol: DefinitionOptions[] = [
     },
     {
         element: 'configuration',
-        fields: {
-            node: attribute('node')
-        },
+        fields: NodeOnlyField,
         namespace: NS_PUBSUB_EVENT,
         path: 'message.pubsub.configuration'
     },

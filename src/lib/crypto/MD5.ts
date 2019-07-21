@@ -1,4 +1,4 @@
-// tslint:disable no-bitwise
+// tslint:disable no-bitwise arguments-order
 
 import Hash from './Hash';
 

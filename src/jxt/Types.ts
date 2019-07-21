@@ -6,6 +6,8 @@ import { parse } from './Parser';
 // Utility Functions
 // ====================================================================
 
+type ElementPath = Array<{ namespace: string | null; element: string }>;
+
 export function createElement(
     namespace: string | null | undefined,
     name: string,
@@ -511,39 +513,6 @@ export function childTimezoneOffset(
     });
 }
 
-export function deepChildText(
-    path: Array<{ namespace: string | null; element: string }>,
-    defaultValue?: string
-): FieldDefinition<string> {
-    return {
-        importer(xml) {
-            let current: XMLElement | undefined = xml;
-            for (const node of path) {
-                current = current.getChild(node.element, node.namespace || current.getNamespace());
-                if (!current) {
-                    return defaultValue;
-                }
-            }
-            return current.getText() || defaultValue;
-        },
-        exporter(xml, value) {
-            if (!value) {
-                return;
-            }
-
-            let current = xml;
-            for (const node of path) {
-                current = findOrCreate(
-                    current,
-                    node.namespace || current.getNamespace(),
-                    node.element
-                );
-            }
-            current.children.push(value.toString());
-        }
-    };
-}
-
 export function childBoolean(namespace: string | null, element: string): FieldDefinition<boolean> {
     return {
         importer(xml) {
@@ -560,9 +529,63 @@ export function childBoolean(namespace: string | null, element: string): FieldDe
     };
 }
 
-export function deepChildBoolean(
-    path: Array<{ namespace: string | null; element: string }>
-): FieldDefinition<boolean> {
+const deepChildExpoter = (path: ElementPath, xml: XMLElement, value: any) => {
+    if (!value) {
+        return;
+    }
+
+    let current = xml;
+    for (const node of path) {
+        current = findOrCreate(current, node.namespace || current.getNamespace(), node.element);
+    }
+    current.children.push(value.toString());
+};
+
+export function deepChildText(path: ElementPath, defaultValue?: string): FieldDefinition<string> {
+    return {
+        importer(xml) {
+            let current: XMLElement | undefined = xml;
+            for (const node of path) {
+                current = current.getChild(node.element, node.namespace || current.getNamespace());
+                if (!current) {
+                    return defaultValue;
+                }
+            }
+            return current.getText() || defaultValue;
+        },
+        exporter(xml, value) {
+            deepChildExpoter(path, xml, value);
+        }
+    };
+}
+
+export function deepChildInteger(
+    path: ElementPath,
+    defaultValue?: number
+): FieldDefinition<number> {
+    return {
+        importer(xml) {
+            let current: XMLElement | undefined = xml;
+            for (const node of path) {
+                current = current.getChild(node.element, node.namespace || current.getNamespace());
+                if (!current) {
+                    return;
+                }
+            }
+            const data = current.getText();
+            if (data) {
+                return parseInt(data, 10);
+            } else if (defaultValue) {
+                return defaultValue;
+            }
+        },
+        exporter(xml, value) {
+            deepChildExpoter(path, xml, value);
+        }
+    };
+}
+
+export function deepChildBoolean(path: ElementPath): FieldDefinition<boolean> {
     return {
         importer(xml) {
             let current: XMLElement | undefined = xml;
@@ -587,44 +610,6 @@ export function deepChildBoolean(
                     node.element
                 );
             }
-        }
-    };
-}
-
-export function deepChildInteger(
-    path: Array<{ namespace: string | null; element: string }>,
-    defaultValue?: number
-): FieldDefinition<number> {
-    return {
-        importer(xml) {
-            let current: XMLElement | undefined = xml;
-            for (const node of path) {
-                current = current.getChild(node.element, node.namespace || current.getNamespace());
-                if (!current) {
-                    return;
-                }
-            }
-            const data = current.getText();
-            if (data) {
-                return parseInt(data, 10);
-            } else if (defaultValue) {
-                return defaultValue;
-            }
-        },
-        exporter(xml, value) {
-            if (!value) {
-                return;
-            }
-
-            let current = xml;
-            for (const node of path) {
-                current = findOrCreate(
-                    current,
-                    node.namespace || current.getNamespace(),
-                    node.element
-                );
-            }
-            current.children.push(value.toString());
         }
     };
 }

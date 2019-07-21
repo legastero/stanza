@@ -8,6 +8,12 @@ import {
 } from './Namespaces';
 
 // ====================================================================
+// Frequently Used Values
+// ====================================================================
+
+const NotAuthorized = 'not-authorized';
+
+// ====================================================================
 // Named Enum Constants
 // ====================================================================
 
@@ -28,7 +34,7 @@ export const SASLFailureCondition = {
     InvalidMechanism: 'invalid-mechanism',
     MalformedRequest: 'malformed-request',
     MechanismTooWeak: 'mechanism-too-weak',
-    NotAuthorized: 'not-authorized',
+    NotAuthorized,
     TemporaryAuthFailure: 'temporary-auth-failure'
 } as const;
 export type SASLFailureCondition = (typeof SASLFailureCondition)[keyof typeof SASLFailureCondition];
@@ -46,7 +52,7 @@ export const StreamErrorCondition = {
     InvalidId: 'invalid-id',
     InvalidNamespace: 'invalid-namespace',
     InvalidXML: 'invalid-xml',
-    NotAuthorized: 'not-authorized',
+    NotAuthorized,
     NotWellFormed: 'not-well-formed',
     PolicyViolation: 'policy-violation',
     RemoteConnectionFailed: 'remote-connection-failed',
@@ -73,7 +79,7 @@ export const StanzaErrorCondition = {
     JIDMalformed: 'jid-malformed',
     NotAcceptable: 'not-acceptable',
     NotAllowed: 'not-allowed',
-    NotAuthorized: 'not-authorized',
+    NotAuthorized,
     PolicyViolation: 'policy-violation',
     RecipientUnavailable: 'recipient-unavailable',
     Redirect: 'redirect',

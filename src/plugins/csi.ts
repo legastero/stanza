@@ -16,19 +16,14 @@ export default function(client: Agent) {
         cb();
     });
 
-    client.markActive = function() {
-        if (this.features.negotiated.clientStateIndication) {
+    function sendCSI(type: 'active' | 'inactive') {
+        if (client.features.negotiated.clientStateIndication) {
             client.send('csi', {
-                type: 'active'
+                type
             });
         }
-    };
+    }
 
-    client.markInactive = function() {
-        if (this.features.negotiated.clientStateIndication) {
-            client.send('csi', {
-                type: 'inactive'
-            });
-        }
-    };
+    client.markActive = () => sendCSI('active');
+    client.markInactive = () => sendCSI('inactive');
 }

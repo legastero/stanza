@@ -81,21 +81,22 @@ export interface VCardTempCategories {
     value: string[];
 }
 
+type VCardFieldType =
+    | 'nickname'
+    | 'birthday'
+    | 'jid'
+    | 'url'
+    | 'title'
+    | 'role'
+    | 'description'
+    | 'sort'
+    | 'revision'
+    | 'uid'
+    | 'productId'
+    | 'note'
+    | 'timezone';
 export interface VCardTempField {
-    type:
-        | 'nickname'
-        | 'birthday'
-        | 'jid'
-        | 'url'
-        | 'title'
-        | 'role'
-        | 'description'
-        | 'sort'
-        | 'revision'
-        | 'uid'
-        | 'productId'
-        | 'note'
-        | 'timezone';
+    type: VCardFieldType;
     value: string;
 }
 
@@ -115,9 +116,11 @@ export type VCardTempRecord =
     | VCardTempLogo
     | VCardTempCategories;
 
+const path = 'vcardTemp.records';
+
 function vcardField(element: string, type: string): DefinitionOptions {
     return {
-        aliases: [{ multiple: true, path: 'vcardTemp.records' }],
+        aliases: [{ multiple: true, path }],
         element,
         fields: {
             value: text()
@@ -167,7 +170,7 @@ const Protocol: DefinitionOptions[] = [
     vcardField('PRODID', 'productId'),
     vcardField('DESC', 'description'),
     {
-        aliases: [{ multiple: true, path: 'vcardTemp.records' }],
+        aliases: [{ multiple: true, path }],
         element: 'EMAIL',
         fields: {
             preferred: childBoolean(null, 'PREF'),
@@ -182,7 +185,7 @@ const Protocol: DefinitionOptions[] = [
         type: 'email'
     },
     {
-        aliases: [{ path: 'vcardTemp.records', multiple: true }],
+        aliases: [{ path, multiple: true }],
         element: 'ORG',
         fields: {
             units: { ...multipleChildText(null, 'ORGUNIT'), order: 2 },
@@ -193,7 +196,7 @@ const Protocol: DefinitionOptions[] = [
         typeField: 'type'
     },
     {
-        aliases: [{ multiple: true, path: 'vcardTemp.records' }],
+        aliases: [{ multiple: true, path }],
         element: 'ADR',
         fields: {
             city: childText(null, 'LOCALITY'),
@@ -218,7 +221,7 @@ const Protocol: DefinitionOptions[] = [
         typeField: 'type'
     },
     {
-        aliases: [{ multiple: true, path: 'vcardTemp.records' }],
+        aliases: [{ multiple: true, path }],
         element: 'LABEL',
         fields: {
             lines: multipleChildText(null, 'LINE'),
@@ -230,7 +233,7 @@ const Protocol: DefinitionOptions[] = [
         typeField: 'type'
     },
     {
-        aliases: [{ multiple: true, path: 'vcardTemp.records' }],
+        aliases: [{ multiple: true, path }],
         element: 'TEL',
         fields: {
             preferred: childBoolean(null, 'PREF'),
@@ -249,7 +252,7 @@ const Protocol: DefinitionOptions[] = [
         typeField: 'type'
     },
     {
-        aliases: [{ multiple: true, path: 'vcardTemp.records' }],
+        aliases: [{ multiple: true, path }],
         element: 'PHOTO',
         fields: {
             data: childText(null, 'BINVAL'),
@@ -261,7 +264,7 @@ const Protocol: DefinitionOptions[] = [
         typeField: 'type'
     },
     {
-        aliases: [{ multiple: true, path: 'vcardTemp.records' }],
+        aliases: [{ multiple: true, path }],
         element: 'LOGO',
         fields: {
             data: childText(null, 'BINVAL'),
@@ -273,7 +276,7 @@ const Protocol: DefinitionOptions[] = [
         typeField: 'type'
     },
     {
-        aliases: [{ multiple: true, path: 'vcardTemp.records' }],
+        aliases: [{ multiple: true, path }],
         element: 'CATEGORIES',
         fields: {
             value: multipleChildText(null, 'KEYWORD')

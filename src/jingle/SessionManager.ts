@@ -201,14 +201,10 @@ export default class SessionManager extends EventEmitter {
         const action = req.jingle.action;
         const contents = req.jingle.contents || [];
         const applicationTypes = contents.map(content => {
-            if (content.application) {
-                return content.application.applicationType;
-            }
+            return content.application ? content.application.applicationType : undefined;
         });
         const transportTypes = contents.map(content => {
-            if (content.transport) {
-                return content.transport.transportType;
-            }
+            return content.transport ? content.transport.transportType : undefined;
         });
         // Now verify that we are allowed to actually process the
         // requested action

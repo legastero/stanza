@@ -12,12 +12,14 @@ import {
 const MAX_SEQ = Math.pow(2, 32);
 const mod = (v: number, n: number) => ((v % n) + n) % n;
 
+type Unacked = ['message', Message] | ['presence', Presence] | ['iq', IQ];
+
 interface SMState {
     handled: number;
     id?: string;
     jid?: string;
     lastAck: number;
-    unacked: Array<['message' | 'presence' | 'iq', Message | Presence | IQ]>;
+    unacked: Unacked[];
 }
 
 export default class StreamManagement {
@@ -26,7 +28,7 @@ export default class StreamManagement {
     public lastAck: number;
     public handled: number;
     public windowSize: number;
-    public unacked: Array<['message' | 'presence' | 'iq', Message | Presence | IQ]>;
+    public unacked: Unacked[];
 
     private pendingAck: boolean;
     private inboundStarted: boolean;
@@ -186,7 +188,7 @@ export default class StreamManagement {
         }
 
         if (this.outboundStarted) {
-            this.unacked.push([kind, stanza]);
+            this.unacked.push([kind, stanza] as Unacked);
             this._cache();
 
             if (this.needAck()) {

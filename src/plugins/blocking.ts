@@ -22,25 +22,18 @@ declare module '../' {
 }
 
 export default function(client: Agent) {
-    client.block = async (jid: string) => {
+    async function toggleBlock(action: 'block' | 'unblock', jid: string) {
         await client.sendIQ({
             blockList: {
-                action: 'block',
+                action,
                 jids: [jid]
             },
             type: 'set'
         });
-    };
+    }
 
-    client.unblock = async (jid: string) => {
-        await client.sendIQ({
-            blockList: {
-                action: 'unblock',
-                jids: [jid]
-            },
-            type: 'set'
-        });
-    };
+    client.block = async (jid: string) => toggleBlock('block', jid);
+    client.unblock = async (jid: string) => toggleBlock('unblock', jid);
 
     client.getBlocked = async () => {
         const result = await client.sendIQ({

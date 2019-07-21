@@ -45,48 +45,22 @@ export default function(client: Agent) {
         }
     });
 
-    client.markReceived = (msg: Message) => {
+    function sendMarker(msg: Message, marker: 'received' | 'displayed' | 'acknowledged') {
         if (enabled(msg)) {
             const to = msg.type === 'groupchat' ? JID.toBare(msg.from) : msg.from;
             client.sendMessage({
                 body: '',
                 marker: {
                     id: msg.id,
-                    type: 'received'
+                    type: marker
                 },
                 to,
                 type: msg.type
             });
         }
-    };
+    }
 
-    client.markDisplayed = (msg: Message) => {
-        if (enabled(msg)) {
-            const to = msg.type === 'groupchat' ? JID.toBare(msg.from) : msg.from;
-            client.sendMessage({
-                body: '',
-                marker: {
-                    id: msg.id,
-                    type: 'displayed'
-                },
-                to,
-                type: msg.type
-            });
-        }
-    };
-
-    client.markAcknowledged = (msg: Message) => {
-        if (enabled(msg)) {
-            const to = msg.type === 'groupchat' ? JID.toBare(msg.from) : msg.from;
-            client.sendMessage({
-                body: '',
-                marker: {
-                    id: msg.id,
-                    type: 'acknowledged'
-                },
-                to,
-                type: msg.type
-            });
-        }
-    };
+    client.markReceived = (msg: Message) => sendMarker(msg, 'received');
+    client.markDisplayed = (msg: Message) => sendMarker(msg, 'displayed');
+    client.markAcknowledged = (msg: Message) => sendMarker(msg, 'acknowledged');
 }

@@ -1,6 +1,12 @@
 import { priorityQueue } from 'async';
 
-import { JingleAction, JingleReasonCondition, JingleSessionRole } from '../Constants';
+import {
+    JingleAction,
+    JingleErrorCondition,
+    JingleReasonCondition,
+    JingleSessionRole,
+    StanzaErrorCondition
+} from '../Constants';
 import { Jingle, JingleReason } from '../protocol';
 import { uuid } from '../Utils';
 
@@ -30,6 +36,13 @@ export interface SessionOpts {
     parent: SessionManager;
     applicationTypes?: string[];
 }
+
+const badRequest = { condition: StanzaErrorCondition.BadRequest };
+const unsupportedInfo = {
+    condition: StanzaErrorCondition.FeatureNotImplemented,
+    jingleError: JingleErrorCondition.UnsupportedInfo,
+    type: 'modify'
+};
 
 export default class JingleSession {
     public parent: SessionManager;
@@ -132,7 +145,7 @@ export default class JingleSession {
                             return this.onTransportReplace(changes, done);
                         default:
                             this._log('error', 'Invalid or unsupported action: ' + action);
-                            done({ condition: 'bad-request' });
+                            done({ condition: StanzaErrorCondition.BadRequest });
                     }
                 });
             },
@@ -303,42 +316,26 @@ export default class JingleSession {
         if (!changes.info) {
             cb();
         } else {
-            cb({
-                condition: 'feature-not-implemented',
-                jingleError: 'unsupported-info',
-                type: 'modify'
-            });
+            cb(unsupportedInfo);
         }
     }
 
     // It is mandatory to reply to a security-info action with
     // an unsupported-info error if the info isn't recognized.
     protected onSecurityInfo(changes: Jingle, cb: ActionCallback) {
-        cb({
-            condition: 'feature-not-implemented',
-            jingleError: 'unsupported-info',
-            type: 'modify'
-        });
+        cb(unsupportedInfo);
     }
 
     // It is mandatory to reply to a description-info action with
     // an unsupported-info error if the info isn't recognized.
     protected onDescriptionInfo(changes: Jingle, cb: ActionCallback) {
-        cb({
-            condition: 'feature-not-implemented',
-            jingleError: 'unsupported-info',
-            type: 'modify'
-        });
+        cb(unsupportedInfo);
     }
 
     // It is mandatory to reply to a transport-info action with
     // an unsupported-info error if the info isn't recognized.
     protected onTransportInfo(changes: Jingle, cb: ActionCallback) {
-        cb({
-            condition: 'feature-not-implemented',
-            jingleError: 'unsupported-info',
-            type: 'modify'
-        });
+        cb(unsupportedInfo);
     }
 
     // It is mandatory to reply to a content-add action with either
@@ -349,26 +346,26 @@ export default class JingleSession {
 
         this.send(JingleAction.ContentReject, {
             reason: {
-                condition: 'failed-application',
+                condition: JingleReasonCondition.FailedApplication,
                 text: 'content-add is not supported'
             }
         });
     }
 
     protected onContentAccept(changes: Jingle, cb: ActionCallback) {
-        cb({ condition: 'bad-request' });
+        cb(badRequest);
     }
 
     protected onContentReject(changes: Jingle, cb: ActionCallback) {
-        cb({ condition: 'bad-request' });
+        cb(badRequest);
     }
 
     protected onContentModify(changes: Jingle, cb: ActionCallback) {
-        cb({ condition: 'bad-request' });
+        cb(badRequest);
     }
 
     protected onContentRemove(changes: Jingle, cb: ActionCallback) {
-        cb({ condition: 'bad-request' });
+        cb(badRequest);
     }
 
     // It is mandatory to reply to a transport-add action with either
@@ -379,17 +376,17 @@ export default class JingleSession {
 
         this.send(JingleAction.TransportReject, {
             reason: {
-                condition: 'failed-application',
+                condition: JingleReasonCondition.FailedTransport,
                 text: 'transport-replace is not supported'
             }
         });
     }
 
     protected onTransportAccept(changes: Jingle, cb: ActionCallback) {
-        cb({ condition: 'bad-request' });
+        cb(badRequest);
     }
 
     protected onTransportReject(changes: Jingle, cb: ActionCallback) {
-        cb({ condition: 'bad-request' });
+        cb(badRequest);
     }
 }

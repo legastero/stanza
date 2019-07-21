@@ -18,7 +18,7 @@ declare module '../' {
         credentials?: Credentials;
     }
     export interface AgentEvents {
-        'auth:success': Credentials | undefined;
+        'auth:success'?: Credentials;
         'auth:failed': void;
         'credentials:update': Credentials;
         sasl: SASL;

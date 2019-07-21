@@ -1,3 +1,5 @@
+// tslint:disable
+
 // the overridden signatures need to be assignment compatible, but
 // due to how tuple types work[0] it's not possible to be assignment
 // compatible anymore. This hack fixes it with a unique symbol that

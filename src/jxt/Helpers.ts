@@ -29,27 +29,15 @@ export function addAlias(
 }
 
 export function extendMessage(fields: { [key: string]: FieldDefinition }): DefinitionOptions {
-    return {
-        element: 'message',
-        fields,
-        namespace: NS_CLIENT
-    };
+    return { element: 'message', fields, namespace: NS_CLIENT };
 }
 
 export function extendPresence(fields: { [key: string]: FieldDefinition }): DefinitionOptions {
-    return {
-        element: 'presence',
-        fields,
-        namespace: NS_CLIENT
-    };
+    return { element: 'presence', fields, namespace: NS_CLIENT };
 }
 
 export function extendIQ(fields: { [key: string]: FieldDefinition }): DefinitionOptions {
-    return {
-        element: 'iq',
-        fields,
-        namespace: NS_CLIENT
-    };
+    return { element: 'iq', fields, namespace: NS_CLIENT };
 }
 
 export function extendStreamFeatures(fields: {
