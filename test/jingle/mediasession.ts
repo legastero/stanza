@@ -1,4 +1,4 @@
-const test = require('tape');
+import test from 'tape';
 import { SessionManager } from '../../src/jingle';
 
 function setupSessionManagers() {
@@ -11,20 +11,20 @@ function setupSessionManagers() {
     });
     const queueB = [];
 
-    jingleA.on('send', function(data) {
-        data.from = jingleA.jid;
+    jingleA.on('send', data => {
+        data.from = jingleA.selfID;
         queueB.push(data);
-        window.setTimeout(function() {
+        window.setTimeout(() => {
             const next = queueB.shift();
             if (next) {
                 jingleB.process(next);
             }
         }, 0);
     });
-    jingleB.on('send', function(data) {
-        data.from = jingleB.jid;
+    jingleB.on('send', data => {
+        data.from = jingleB.selfID;
         queueA.push(data);
-        window.setTimeout(function() {
+        window.setTimeout(() => {
             const next = queueA.shift();
             if (next) {
                 jingleA.process(next);
@@ -34,14 +34,14 @@ function setupSessionManagers() {
     return [jingleA, jingleB];
 }
 
-test('Test bidirectional AV session', function(t) {
+test('Test bidirectional AV session', t => {
     const managers = setupSessionManagers();
     navigator.mediaDevices
-        .getUserMedia({ audio: true, video: true, fake: true })
-        .then(function(stream) {
+        .getUserMedia({ audio: true, video: true, fake: true } as any)
+        .then(stream => {
             t.pass('got media stream');
 
-            managers[1].on('incoming', function(session) {
+            managers[1].on('incoming', session => {
                 t.pass('peer got incoming session');
                 // testing bidirectional here
                 for (const track of stream.getTracks()) {
@@ -50,24 +50,26 @@ test('Test bidirectional AV session', function(t) {
                 session.accept();
             });
 
-            const sess = managers[0].createMediaSession(managers[1].jid);
-            sess.addStream(stream);
+            const sess = managers[0].createMediaSession(managers[1].selfID);
+            for (const track of stream.getTracks()) {
+                sess.addTrack(track, stream);
+            }
             t.pass('added stream to session');
             sess.start();
             t.pass('started session');
-            sess.on('change:sessionState', function() {
-                if (sess.state === 'active') {
+            managers[1].on('change:sessionState', s => {
+                if (s.state === 'active') {
                     t.pass('session was accepted');
                 }
             });
-            sess.on('change:connectionState', function() {
-                if (sess.connectionState === 'connected') {
+            managers[1].on('change:connectionState', s => {
+                if (s.connectionState === 'connected') {
                     t.pass('P2P connection established');
                     t.end();
                 }
             });
         })
-        .catch(function(err) {
+        .catch(err => {
             t.fail('getUserMedia error' + err.toString());
         });
 });

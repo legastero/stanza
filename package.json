@@ -86,7 +86,7 @@
     },
     "scripts": {
         "build": "ts-node scripts/build",
-        "build:docs": "node scripts/build-docs",
+        "build:docs": "ts-node scripts/build-docs",
         "clean": "rimraf dist",
         "compile": "tsc -p .",
         "compile:module": "tsc -p . --outDir ./dist/es --target es2015 --module es2015",
@@ -96,7 +96,7 @@
         "compile:webpack": "webpack --mode production",
         "license-check": "npx license-checker --production --excludePrivatePackages --summary",
         "lint": "tslint -p .",
-        "test": "nyc ts-node -O \"{ \\\"allowJs\\\": true }\" --files test/index.js | tap-spec && nyc report --reporter=text",
+        "test": "nyc ts-node --files test/index.ts | tap-spec && nyc report --reporter=text",
         "validate": "npm ls"
     },
     "stanzajs_env_mappings": {

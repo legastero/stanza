@@ -1,30 +1,40 @@
-const test = require('tape');
+import test from 'tape';
+import { JingleAction } from '../../src/Constants';
 import { Session as GenericSession, SessionManager } from '../../src/jingle';
+
+// tslint:disable no-identical-functions
+
+const selfID = 'zuser@example.com';
+const peerID = 'peer@example.com';
 
 // We need a Stub Session that acts more like how we'd
 // expect real session types to work, instead of ending
 // itself when trying to start/accept like the GenericSession.
 class StubSession extends GenericSession {
-    constructor(opts) {
+    constructor(opts: any) {
         super(opts);
     }
-    start() {
+    public start() {
         this.state = 'pending';
-        this.send('session-initiate', {
+        this.send(JingleAction.SessionInitiate, {
             contents: [
                 {
                     application: { applicationType: 'stub' },
+                    creator: 'initiator',
+                    name: 'test',
                     transport: { transportType: 'stub' }
                 }
             ]
         });
     }
-    accept() {
+    public accept() {
         this.state = 'active';
-        this.send('session-accept', {
+        this.send(JingleAction.SessionAccept, {
             contents: [
                 {
                     application: { applicationType: 'stub' },
+                    creator: 'initiator',
+                    name: 'test',
                     transport: { transportType: 'stub' }
                 }
             ]
@@ -32,19 +42,19 @@ class StubSession extends GenericSession {
     }
 }
 
-test('Test accepting base session', function(t) {
+test('Test accepting base session', t => {
     t.plan(3);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     let sentResult = false;
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         if (!sentResult) {
             t.same(data, {
                 id: '123',
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'result'
             });
             sentResult = true;
@@ -55,33 +65,35 @@ test('Test accepting base session', function(t) {
             delete data.id;
             t.same(data, {
                 jingle: {
-                    action: 'session-terminate',
+                    action: JingleAction.SessionTerminate,
                     reason: {
                         condition: 'unsupported-applications'
                     },
                     sid: 'sid123'
                 },
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'set'
             });
         }
     });
 
-    jingle.on('incoming', function(session) {
+    jingle.on('incoming', session => {
         t.ok(session);
         session.accept();
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
-            action: 'session-initiate',
+            action: JingleAction.SessionInitiate,
             contents: [
                 {
                     application: {
                         applicationType: 'test'
                     },
+                    creator: 'initiator',
+                    name: 'test',
                     transport: {
                         transportType: 'test'
                     }
@@ -89,12 +101,12 @@ test('Test accepting base session', function(t) {
             ],
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Test accepting stub session', function(t) {
+test('Test accepting stub session', t => {
     t.plan(3);
 
     const jingle = new SessionManager({
@@ -103,15 +115,15 @@ test('Test accepting stub session', function(t) {
                 return new StubSession(meta);
             }
         },
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     let sentResult = false;
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         if (!sentResult) {
             t.same(data, {
                 id: '123',
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'result'
             });
             sentResult = true;
@@ -119,12 +131,14 @@ test('Test accepting stub session', function(t) {
             delete data.id;
             t.same(data, {
                 jingle: {
-                    action: 'session-accept',
+                    action: JingleAction.SessionAccept,
                     contents: [
                         {
                             application: {
                                 applicationType: 'stub'
                             },
+                            creator: 'initiator',
+                            name: 'test',
                             transport: {
                                 transportType: 'stub'
                             }
@@ -132,27 +146,29 @@ test('Test accepting stub session', function(t) {
                     ],
                     sid: 'sid123'
                 },
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'set'
             });
         }
     });
 
-    jingle.on('incoming', function(session) {
+    jingle.on('incoming', session => {
         t.ok(session);
         session.accept();
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
-            action: 'session-initiate',
+            action: JingleAction.SessionInitiate,
             contents: [
                 {
                     application: {
                         applicationType: 'stub'
                     },
+                    creator: 'initiator',
+                    name: 'test',
                     transport: {
                         transportType: 'stub'
                     }
@@ -160,26 +176,27 @@ test('Test accepting stub session', function(t) {
             ],
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Test starting base session', function(t) {
+test('Test starting base session', t => {
     t.plan(2);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new GenericSession({
         initiator: true,
-        peerID: 'peer@example.com'
+        parent: jingle,
+        peerID
     });
 
     // Base sessions can't be started, and will terminate
     // on .start()
-    jingle.on('terminated', function(session) {
+    jingle.on('terminated', session => {
         t.equal(session.sid, sess.sid);
         t.equal(session.state, 'ended');
     });
@@ -188,28 +205,30 @@ test('Test starting base session', function(t) {
     sess.start();
 });
 
-test('Test starting stub session', function(t) {
+test('Test starting stub session', t => {
     t.plan(3);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new StubSession({
         initiator: true,
-        peerID: 'peer@example.com'
+        peerID
     });
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         delete data.id;
         t.same(data, {
             jingle: {
-                action: 'session-initiate',
+                action: JingleAction.SessionInitiate,
                 contents: [
                     {
                         application: {
                             applicationType: 'stub'
                         },
+                        creator: 'initiator',
+                        name: 'test',
                         transport: {
                             transportType: 'stub'
                         }
@@ -217,12 +236,12 @@ test('Test starting stub session', function(t) {
                 ],
                 sid: sess.sid
             },
-            to: 'peer@example.com',
+            to: peerID,
             type: 'set'
         });
     });
 
-    jingle.on('outgoing', function(session) {
+    jingle.on('outgoing', session => {
         t.equal(session.sid, sess.sid);
         t.equal(session.state, 'pending');
     });
@@ -231,7 +250,7 @@ test('Test starting stub session', function(t) {
     sess.start();
 });
 
-test('Test declining a session', function(t) {
+test('Test declining a session', t => {
     t.plan(3);
 
     const jingle = new SessionManager({
@@ -240,15 +259,15 @@ test('Test declining a session', function(t) {
                 return new StubSession(meta);
             }
         },
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     let sentResult = false;
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         if (!sentResult) {
             t.same(data, {
                 id: '123',
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'result'
             });
             sentResult = true;
@@ -256,33 +275,35 @@ test('Test declining a session', function(t) {
             delete data.id;
             t.same(data, {
                 jingle: {
-                    action: 'session-terminate',
+                    action: JingleAction.SessionTerminate,
                     reason: {
                         condition: 'decline'
                     },
                     sid: 'sid123'
                 },
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'set'
             });
         }
     });
 
-    jingle.on('incoming', function(session) {
+    jingle.on('incoming', session => {
         t.ok(session);
         session.decline();
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
-            action: 'session-initiate',
+            action: JingleAction.SessionInitiate,
             contents: [
                 {
                     application: {
                         applicationType: 'stub'
                     },
+                    creator: 'initiator',
+                    name: 'test',
                     transport: {
                         transportType: 'stub'
                     }
@@ -290,35 +311,37 @@ test('Test declining a session', function(t) {
             ],
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Test cancelling a pending session', function(t) {
+test('Test cancelling a pending session', t => {
     t.plan(2);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new StubSession({
         initiator: true,
-        peerID: 'peer@example.com'
+        peerID
     });
 
     let started = false;
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         delete data.id;
         if (!started) {
             t.same(data, {
                 jingle: {
-                    action: 'session-initiate',
+                    action: JingleAction.SessionInitiate,
                     contents: [
                         {
                             application: {
                                 applicationType: 'stub'
                             },
+                            creator: 'initiator',
+                            name: 'test',
                             transport: {
                                 transportType: 'stub'
                             }
@@ -326,20 +349,20 @@ test('Test cancelling a pending session', function(t) {
                     ],
                     sid: sess.sid
                 },
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'set'
             });
             started = true;
         } else {
             t.same(data, {
                 jingle: {
-                    action: 'session-terminate',
+                    action: JingleAction.SessionTerminate,
                     reason: {
                         condition: 'cancel'
                     },
                     sid: sess.sid
                 },
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'set'
             });
         }
@@ -350,38 +373,38 @@ test('Test cancelling a pending session', function(t) {
     sess.cancel();
 });
 
-test('Test ending a session (successful session)', function(t) {
+test('Test ending a session (successful session)', t => {
     t.plan(3);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new StubSession({
         initiator: true,
-        peerID: 'peer@example.com'
+        peerID
     });
 
     jingle.addSession(sess);
 
     sess.state = 'active';
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         delete data.id;
         t.same(data, {
             jingle: {
-                action: 'session-terminate',
+                action: JingleAction.SessionTerminate,
                 reason: {
                     condition: 'success'
                 },
                 sid: sess.sid
             },
-            to: 'peer@example.com',
+            to: peerID,
             type: 'set'
         });
     });
 
-    jingle.on('terminated', function(session) {
+    jingle.on('terminated', session => {
         t.equal(session.sid, sess.sid);
         t.equal(session.state, 'ended');
     });
@@ -389,39 +412,39 @@ test('Test ending a session (successful session)', function(t) {
     sess.end();
 });
 
-test('Test ending a session (non-successful session)', function(t) {
+test('Test ending a session (non-successful session)', t => {
     t.plan(3);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new StubSession({
         initiator: true,
-        peerID: 'peer@example.com'
+        peerID
     });
 
     jingle.addSession(sess);
 
     sess.state = 'active';
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         delete data.id;
         t.same(data, {
             jingle: {
-                action: 'session-terminate',
+                action: JingleAction.SessionTerminate,
                 reason: {
                     condition: 'failed-application',
                     text: 'not working'
                 },
                 sid: sess.sid
             },
-            to: 'peer@example.com',
+            to: peerID,
             type: 'set'
         });
     });
 
-    jingle.on('terminated', function(session) {
+    jingle.on('terminated', session => {
         t.equal(session.sid, sess.sid);
         t.equal(session.state, 'ended');
     });
@@ -432,14 +455,14 @@ test('Test ending a session (non-successful session)', function(t) {
     });
 });
 
-test('Test pending actions', function(t) {
+test('Test pending actions', t => {
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new StubSession({
         initiator: true,
-        peerID: 'peer@example.com',
+        peerID,
         sid: 'sid123'
     });
 
@@ -449,12 +472,12 @@ test('Test pending actions', function(t) {
 
     t.notOk(sess.pendingAction);
 
-    sess.send('transport-replace');
+    sess.send(JingleAction.TransportReplace, {});
 
-    t.equal(sess.pendingAction, 'transport-replace');
+    t.equal(sess.pendingAction, JingleAction.TransportReplace);
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         jingle: {
             sid: 'sid123'
         },
@@ -463,12 +486,12 @@ test('Test pending actions', function(t) {
 
     t.notOk(sess.pendingAction);
 
-    sess.send('transport-replace');
+    sess.send(JingleAction.TransportReplace, {});
 
-    t.equal(sess.pendingAction, 'transport-replace');
+    t.equal(sess.pendingAction, JingleAction.TransportReplace);
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         jingle: {
             sid: 'sid123'
         },
@@ -480,19 +503,19 @@ test('Test pending actions', function(t) {
     t.end();
 });
 
-test('Test connectionState', function(t) {
+test('Test connectionState', t => {
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new StubSession({
         initiator: true,
-        peerID: 'peer@example.com',
-        sid: 'sid123',
-        parent: jingle
+        parent: jingle,
+        peerID,
+        sid: 'sid123'
     });
 
-    jingle.on('connectionState', function(session, connectionState) {
+    jingle.on('connectionState', (session, connectionState) => {
         t.equal(session.sid, sess.sid);
         t.ok(connectionState);
     });

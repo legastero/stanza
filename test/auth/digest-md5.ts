@@ -1,11 +1,15 @@
 import test from 'tape';
 import { DIGEST } from '../../src/lib/sasl';
 
-test('DIGEST-MD5', function(t) {
-    const mech = new DIGEST();
+// tslint:disable no-hardcoded-credentials
+
+test('DIGEST-MD5', t => {
+    const mech = new DIGEST('DIGEST-MD5');
 
     mech.processChallenge(
-        'realm="elwood.innosoft.com",nonce="OA6MG9tEQGm2hh",qop="auth",algorithm=md5-sess,charset=utf-8'
+        Buffer.from(
+            'realm="elwood.innosoft.com",nonce="OA6MG9tEQGm2hh",qop="auth",algorithm=md5-sess,charset=utf-8'
+        )
     );
 
     const res = mech
@@ -15,7 +19,7 @@ test('DIGEST-MD5', function(t) {
             password: 'secret',
             serviceType: 'imap',
             username: 'chris'
-        })
+        })!
         .toString();
 
     t.equal(

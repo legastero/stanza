@@ -198,7 +198,7 @@ export default class SessionManager extends EventEmitter {
             }
             return;
         }
-        const action = req.jingle.action;
+        const action = req.jingle.action!;
         const contents = req.jingle.contents || [];
         const applicationTypes = contents.map(content => {
             return content.application ? content.application.applicationType : undefined;

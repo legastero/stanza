@@ -1,14 +1,16 @@
 import test from 'tape';
 import { SCRAM } from '../../src/lib/sasl';
 
-test('SCRAM', function(t) {
+// tslint:disable no-hardcoded-credentials
+
+test('SCRAM', t => {
     const mech = new SCRAM('SCRAM-SHA-1');
     const initial = mech
         .createResponse({
             clientNonce: 'MsQUY9iw0T9fx2MUEz6LZPwGuhVvWAhc',
             password: 'secret',
             username: 'chris'
-        })
+        })!
         .toString();
     t.equal(initial, 'n,,n=chris,r=MsQUY9iw0T9fx2MUEz6LZPwGuhVvWAhc');
 
@@ -23,7 +25,7 @@ test('SCRAM', function(t) {
             clientNonce: 'MsQUY9iw0T9fx2MUEz6LZPwGuhVvWAhc',
             password: 'secret',
             username: 'chris'
-        })
+        })!
         .toString();
     t.equal(
         res,

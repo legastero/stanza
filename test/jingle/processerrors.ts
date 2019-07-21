@@ -1,47 +1,54 @@
-const test = require('tape');
+import test from 'tape';
 import { Session as GenericSession, SessionManager } from '../../src/jingle';
 
-test('Test session-initiate with no contents fails', function(t) {
+// tslint:disable no-identical-functions
+
+const selfID = 'zuser@example.com';
+const peerID = 'peer@example.com';
+const otherPeerID = 'otherpeer@example.com';
+
+test('Test session-initiate with no contents fails', t => {
     t.plan(1);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         t.same(data, {
             error: {
                 condition: 'bad-request',
                 type: 'cancel'
             },
             id: '123',
-            to: 'peer@example.com',
+            to: peerID,
             type: 'error'
         });
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
             action: 'session-initiate',
             contents: [],
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Test session action from wrong sender', function(t) {
+test('Test session action from wrong sender', t => {
     t.plan(1);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new GenericSession({
-        peerID: 'otherpeer@example.com',
+        parent: jingle,
+        peerID: otherPeerID,
         sid: 'sid123'
     });
 
@@ -50,7 +57,7 @@ test('Test session action from wrong sender', function(t) {
 
     sess.state = 'pending';
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         t.same(data, {
             error: {
                 condition: 'item-not-found',
@@ -58,39 +65,40 @@ test('Test session action from wrong sender', function(t) {
                 type: 'cancel'
             },
             id: '123',
-            to: 'peer@example.com',
+            to: peerID,
             type: 'error'
         });
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
             action: 'session-info',
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Duplicate session-accept', function(t) {
+test('Duplicate session-accept', t => {
     t.plan(1);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new GenericSession({
-        peerID: 'peer@example.com',
+        parent: jingle,
+        peerID,
         sid: 'sid123'
     });
 
     jingle.addSession(sess);
     sess.state = 'active';
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         t.same(data, {
             error: {
                 condition: 'unexpected-request',
@@ -98,39 +106,40 @@ test('Duplicate session-accept', function(t) {
                 type: 'cancel'
             },
             id: '123',
-            to: 'peer@example.com',
+            to: peerID,
             type: 'error'
         });
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
             action: 'session-accept',
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Session-initiate after session accepted', function(t) {
+test('Session-initiate after session accepted', t => {
     t.plan(1);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new GenericSession({
-        peerID: 'peer@example.com',
+        parent: jingle,
+        peerID,
         sid: 'sid123'
     });
 
     jingle.addSession(sess);
     sess.state = 'active';
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         t.same(data, {
             error: {
                 condition: 'unexpected-request',
@@ -138,13 +147,13 @@ test('Session-initiate after session accepted', function(t) {
                 type: 'cancel'
             },
             id: '123',
-            to: 'peer@example.com',
+            to: peerID,
             type: 'error'
         });
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
             action: 'session-initiate',
@@ -153,6 +162,8 @@ test('Session-initiate after session accepted', function(t) {
                     application: {
                         applicationType: 'test'
                     },
+                    creator: 'initiator',
+                    name: 'test',
                     transport: {
                         transportType: 'test'
                     }
@@ -160,20 +171,21 @@ test('Session-initiate after session accepted', function(t) {
             ],
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Test session action for unknown session', function(t) {
+test('Test session action for unknown session', t => {
     t.plan(1);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new GenericSession({
-        peerID: 'otherpeer@example.com',
+        parent: jingle,
+        peerID: otherPeerID,
         sid: 'sid123'
     });
 
@@ -182,7 +194,7 @@ test('Test session action for unknown session', function(t) {
 
     sess.state = 'pending';
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         t.same(data, {
             error: {
                 condition: 'item-not-found',
@@ -190,32 +202,33 @@ test('Test session action for unknown session', function(t) {
                 type: 'cancel'
             },
             id: '123',
-            to: 'peer@example.com',
+            to: peerID,
             type: 'error'
         });
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
             action: 'session-info',
             sid: 'sidunknown'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Test new session with duplicate sid', function(t) {
+test('Test new session with duplicate sid', t => {
     t.plan(1);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new GenericSession({
-        peerID: 'peer@example.com',
+        parent: jingle,
+        peerID,
         sid: 'sid123'
     });
 
@@ -224,20 +237,20 @@ test('Test new session with duplicate sid', function(t) {
 
     sess.state = 'active';
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         t.same(data, {
             error: {
                 condition: 'service-unavailable',
                 type: 'cancel'
             },
             id: '123',
-            to: 'otherpeer@example.com',
+            to: otherPeerID,
             type: 'error'
         });
     });
 
     jingle.process({
-        from: 'otherpeer@example.com',
+        from: otherPeerID,
         id: '123',
         jingle: {
             action: 'session-initiate',
@@ -246,6 +259,8 @@ test('Test new session with duplicate sid', function(t) {
                     application: {
                         applicationType: 'test'
                     },
+                    creator: 'initiator',
+                    name: 'test',
                     transport: {
                         transportType: 'test'
                     }
@@ -253,20 +268,21 @@ test('Test new session with duplicate sid', function(t) {
             ],
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Test bad actions', function(t) {
+test('Test bad actions', t => {
     t.plan(1);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new GenericSession({
-        peerID: 'peer@example.com',
+        parent: jingle,
+        peerID,
         sid: 'sid123'
     });
 
@@ -275,28 +291,30 @@ test('Test bad actions', function(t) {
 
     sess.state = 'active';
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         t.same(data, {
             error: {
                 condition: 'bad-request',
                 type: 'cancel'
             },
             id: '123',
-            to: 'peer@example.com',
+            to: peerID,
             type: 'error'
         });
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
-            action: 'welp',
+            action: 'welp' as any,
             contents: [
                 {
                     application: {
                         applicationType: 'test'
                     },
+                    creator: 'initiator',
+                    name: 'test',
                     transport: {
                         transportType: 'test'
                     }
@@ -304,7 +322,7 @@ test('Test bad actions', function(t) {
             ],
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });

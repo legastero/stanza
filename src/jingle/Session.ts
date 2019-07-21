@@ -246,7 +246,7 @@ export default class JingleSession {
         );
     }
 
-    public start(next: ActionCallback): void;
+    public start(next?: ActionCallback): void;
     public start(opts: any, next?: ActionCallback): void {
         this._log('error', 'Can not start base sessions');
         this.end('unsupported-applications', true);

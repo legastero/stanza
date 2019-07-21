@@ -32,17 +32,17 @@ const json = {
     subject: 'http://blog.example.com/article/id/314'
 };
 
-test('XRD', function(t) {
+test('XRD', t => {
     t.plan(2);
 
-    const xrd = registry.import(JXT.parse(xml));
+    const xrd = registry.import(JXT.parse(xml))!;
 
     t.equal(xrd.subject, json.subject);
     t.deepEqual(xrd.links, json.links);
     t.end();
 });
 
-test('retrieve JSON only', function(t) {
+test('retrieve JSON only', t => {
     t.plan(1);
 
     getHostMeta(registry, {
@@ -55,7 +55,7 @@ test('retrieve JSON only', function(t) {
     });
 });
 
-test('retrieve XRD only', function(t) {
+test('retrieve XRD only', t => {
     t.plan(1);
 
     getHostMeta(registry, {
@@ -68,7 +68,7 @@ test('retrieve XRD only', function(t) {
     });
 });
 
-test('retrieve either', function(t) {
+test('retrieve either', t => {
     t.plan(1);
     getHostMeta(registry, 'lance.im').then(hostmeta => {
         t.ok(hostmeta.links.length > 0);
@@ -76,7 +76,7 @@ test('retrieve either', function(t) {
     });
 });
 
-test('missing host-meta', function(t) {
+test('missing host-meta', t => {
     t.plan(1);
     getHostMeta(registry, {
         host: 'dne.lance.im',

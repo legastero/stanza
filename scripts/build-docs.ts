@@ -4,8 +4,10 @@
 //       The automated doc generation process is still a WIP.
 // ////////////////////////////////////////////////////////////////////
 
-const FS = require('fs');
-const Child = require('child_process').execSync;
+// tslint:disable no-nested-template-literals
+
+import { execSync as Child } from 'child_process';
+import FS from 'fs';
 
 Child('rimraf ./node_modules/typedoc/node_modules/typescript');
 Child('npx typedoc --json ./dist/docs.json --mode file');
@@ -18,7 +20,7 @@ Child('npx typedoc --json ./dist/docs.json --mode file');
 // instead). So here we'll move everything to the top, and merge things
 // with the same name.
 // ====================================================================
-const docData = JSON.parse(FS.readFileSync('./dist/docs.json'));
+const docData = JSON.parse(FS.readFileSync('./dist/docs.json').toString());
 
 const KIND_MODULE = 2;
 const moduleIds = new Set(docData.groups.filter(g => g.kind === KIND_MODULE)[0].children);
@@ -223,7 +225,7 @@ for (const c of fields) {
   <tr>
      <td><code>${c.name}</code></td>
      <td>${writeType(c.type)}</td>
-     <td><code>${tags.get('default', undefined)}</code></td>
+     <td><code>${tags.get('default')}</code></td>
   </tr>
 </table>
 ${(meta.text || '')

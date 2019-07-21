@@ -10,7 +10,6 @@ import { JID } from '../src';
 
 test('Parse JID with only domain', t => {
     const res = JID.parse('example.com');
-    t.equal(res.domain, 'example.com');
     t.equal(res.local, '');
     t.equal(res.resource, '');
     t.equal(res.bare, 'example.com');

@@ -85,7 +85,7 @@ export default class MediaSession extends ICESession {
     // Session control methods
     // ----------------------------------------------------------------
 
-    public async start(opts: RTCOfferOptions | ActionCallback, next?: ActionCallback) {
+    public async start(opts?: RTCOfferOptions | ActionCallback, next?: ActionCallback) {
         this.state = 'pending';
 
         if (arguments.length === 1 && typeof opts === 'function') {

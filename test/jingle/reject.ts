@@ -1,28 +1,33 @@
-const test = require('tape');
+import test from 'tape';
 import { Session as GenericSession, SessionManager } from '../../src/jingle';
 
-test('Reject content-add by default', function(t) {
+// tslint:disable no-identical-functions
+
+const selfID = 'zuser@example.com';
+const peerID = 'peer@example.com';
+
+test('Reject content-add by default', t => {
     t.plan(2);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new GenericSession({
-        peerID: 'peer@example.com',
-        sid: 'sid123',
-        parent: jingle
+        parent: jingle,
+        peerID,
+        sid: 'sid123'
     });
     jingle.addSession(sess);
     sess.state = 'active';
 
     let sentResult = false;
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         if (!sentResult) {
             t.same(data, {
                 id: '123',
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'result'
             });
             sentResult = true;
@@ -37,14 +42,14 @@ test('Reject content-add by default', function(t) {
                     },
                     sid: 'sid123'
                 },
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'set'
             });
         }
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
             action: 'content-add',
@@ -53,6 +58,8 @@ test('Reject content-add by default', function(t) {
                     application: {
                         applicationType: 'test'
                     },
+                    creator: 'initiator',
+                    name: 'test',
                     transport: {
                         transportType: 'test'
                     }
@@ -60,31 +67,32 @@ test('Reject content-add by default', function(t) {
             ],
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Reject transport-replace by default', function(t) {
+test('Reject transport-replace by default', t => {
     t.plan(2);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new GenericSession({
-        peerID: 'peer@example.com',
+        parent: jingle,
+        peerID,
         sid: 'sid123'
     });
     jingle.addSession(sess);
     sess.state = 'active';
 
     let sentResult = false;
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         if (!sentResult) {
             t.same(data, {
                 id: '123',
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'result'
             });
             sentResult = true;
@@ -99,14 +107,14 @@ test('Reject transport-replace by default', function(t) {
                     },
                     sid: 'sid123'
                 },
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'set'
             });
         }
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
             action: 'transport-replace',
@@ -115,6 +123,8 @@ test('Reject transport-replace by default', function(t) {
                     application: {
                         applicationType: 'test'
                     },
+                    creator: 'initiator',
+                    name: 'test',
                     transport: {
                         transportType: 'test'
                     }
@@ -122,27 +132,28 @@ test('Reject transport-replace by default', function(t) {
             ],
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Return error for unknown session-info action', function(t) {
+test('Return error for unknown session-info action', t => {
     t.plan(2);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new GenericSession({
-        peerID: 'peer@example.com',
+        parent: jingle,
+        peerID,
         sid: 'sid123'
     });
     jingle.addSession(sess);
     sess.state = 'active';
 
     let sentError = false;
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         if (!sentError) {
             t.same(data, {
                 error: {
@@ -151,14 +162,14 @@ test('Return error for unknown session-info action', function(t) {
                     type: 'modify'
                 },
                 id: '123',
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'error'
             });
             sentError = true;
         } else {
             t.same(data, {
                 id: '123',
-                to: 'peer@example.com',
+                to: peerID,
                 type: 'result'
             });
         }
@@ -166,7 +177,7 @@ test('Return error for unknown session-info action', function(t) {
 
     // Should generate an error because of unknownInfoData
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
             action: 'session-info',
@@ -175,38 +186,39 @@ test('Return error for unknown session-info action', function(t) {
             },
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 
     // Should generate a normal ack
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
             action: 'session-info',
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Return error for unknown description-info action', function(t) {
+test('Return error for unknown description-info action', t => {
     t.plan(1);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new GenericSession({
-        peerID: 'peer@example.com',
+        parent: jingle,
+        peerID,
         sid: 'sid123'
     });
     jingle.addSession(sess);
     sess.state = 'active';
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         t.same(data, {
             error: {
                 condition: 'feature-not-implemented',
@@ -214,38 +226,39 @@ test('Return error for unknown description-info action', function(t) {
                 type: 'modify'
             },
             id: '123',
-            to: 'peer@example.com',
+            to: peerID,
             type: 'error'
         });
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
             action: 'description-info',
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });
 
-test('Return error for unknown transport-info action', function(t) {
+test('Return error for unknown transport-info action', t => {
     t.plan(1);
 
     const jingle = new SessionManager({
-        selfID: 'zuser@example.com'
+        selfID
     });
 
     const sess = new GenericSession({
-        peerID: 'peer@example.com',
+        parent: jingle,
+        peerID,
         sid: 'sid123'
     });
     jingle.addSession(sess);
     sess.state = 'active';
 
-    jingle.on('send', function(data) {
+    jingle.on('send', data => {
         t.same(data, {
             error: {
                 condition: 'feature-not-implemented',
@@ -253,19 +266,19 @@ test('Return error for unknown transport-info action', function(t) {
                 type: 'modify'
             },
             id: '123',
-            to: 'peer@example.com',
+            to: peerID,
             type: 'error'
         });
     });
 
     jingle.process({
-        from: 'peer@example.com',
+        from: peerID,
         id: '123',
         jingle: {
             action: 'transport-info',
             sid: 'sid123'
         },
-        to: 'zuser@example.com',
+        to: selfID,
         type: 'set'
     });
 });

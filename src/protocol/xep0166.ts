@@ -38,7 +38,7 @@ declare module './' {
 }
 
 export interface Jingle {
-    action: JingleAction;
+    action?: JingleAction;
     initiator?: JID;
     responder?: JID;
     sid: string;

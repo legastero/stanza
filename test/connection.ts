@@ -1,7 +1,7 @@
 import test from 'tape';
 import * as stanza from '../src';
 
-test('Connect using WebSocket', function(t) {
+test('Connect using WebSocket', t => {
     t.plan(1);
 
     const client = stanza.createClient({
@@ -11,7 +11,7 @@ test('Connect using WebSocket', function(t) {
         }
     });
 
-    client.on('session:started', function() {
+    client.on('session:started', () => {
         t.pass('Connected with WebSocket');
         client.disconnect();
     });
@@ -19,7 +19,7 @@ test('Connect using WebSocket', function(t) {
     client.connect();
 });
 
-test('Connect using BOSH', function(t) {
+test('Connect using BOSH', t => {
     t.plan(1);
 
     const client = stanza.createClient({
@@ -29,7 +29,7 @@ test('Connect using BOSH', function(t) {
         }
     });
 
-    client.on('session:started', function() {
+    client.on('session:started', () => {
         t.pass('Connected with BOSH');
         client.disconnect();
     });

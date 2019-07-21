@@ -1,5 +1,4 @@
-const test = require('tape');
-
+import test from 'tape';
 import { SessionManager } from '../../src/jingle';
 
 function setupSessionManagers() {
@@ -12,20 +11,20 @@ function setupSessionManagers() {
     });
     const queueB = [];
 
-    jingleA.on('send', function(data) {
-        data.from = jingleA.jid;
+    jingleA.on('send', data => {
+        data.from = jingleA.selfID;
         queueB.push(data);
-        window.setTimeout(function() {
+        window.setTimeout(() => {
             const next = queueB.shift();
             if (next) {
                 jingleB.process(next);
             }
         }, 0);
     });
-    jingleB.on('send', function(data) {
-        data.from = jingleB.jid;
+    jingleB.on('send', data => {
+        data.from = jingleB.selfID;
         queueA.push(data);
-        window.setTimeout(function() {
+        window.setTimeout(() => {
             const next = queueA.shift();
             if (next) {
                 jingleA.process(next);
@@ -45,40 +44,40 @@ function getFile() {
     for (let i = 0; i < raw.length; i++) {
         arr[i] = raw.charCodeAt(i);
     }
-    const file = new Blob([arr], { type: data[1] });
+    const file = new Blob([arr], { type: data[1] }) as any;
     file.name = 'somename';
     file.lastModifiedDate = new Date();
     return file;
 }
 
-test('filetransfer', function(t) {
+test('filetransfer', t => {
     const sendFile = getFile();
     const managers = setupSessionManagers();
-    managers[1].on('incoming', function(session) {
+    managers[1].on('incoming', session => {
         t.pass('peer got incoming session');
         // FIXME: test it is a file transfer session
         session.accept();
     });
-    managers[1].on('receivedFile', function(session, file, metadata) {
+    managers[1].on('receivedFile', (session, file, metadata) => {
         t.pass('file was received');
         t.ok(sendFile.name === metadata.name, 'filename received by peer');
         t.ok(sendFile.size === metadata.size, 'size was received by peer');
         t.end();
     });
 
-    managers[0].on('sentFile', function(session, metadata) {
+    managers[0].on('sentFile', (session, metadata) => {
         t.ok(metadata.hash !== '', 'hash was calculated on the sender side');
         t.pass('file was sent');
     });
 
-    const sess = managers[0].createFileTransferSession(managers[1].jid);
-    sess.on('change:sessionState', function() {
-        if (sess.state === 'active') {
+    const sess = managers[0].createFileTransferSession(managers[1].selfID);
+    managers[0].on('change:sessionState', s => {
+        if (s.state === 'active') {
             t.pass('session was accepted');
         }
     });
-    sess.on('change:connectionState', function() {
-        if (sess.connectionState === 'connected') {
+    managers[0].on('change:connectionState', s => {
+        if (s.connectionState === 'connected') {
             t.pass('P2P connection established');
         }
     });

@@ -172,10 +172,9 @@ export default class FileTransferSession extends ICESession {
         this.file = undefined;
     }
 
-    public async start(file: File | ActionCallback, next?: ActionCallback) {
+    public async start(file?: File | ActionCallback, next?: ActionCallback) {
         next = next || (() => undefined);
-        if (typeof file === 'function') {
-            next = file;
+        if (!file || typeof file === 'function') {
             throw new Error('File object required');
         }
 
