@@ -1,5 +1,11 @@
 # StanzaJS Events
 
+Events will eventually be replaced by [Hooks](./Hooks.md). See [HookEmitter](./HookEmitter.md).
+
+Unlike events, hooks are async, and handlers can be chained, running in a definable order.
+
+<hr />
+
 <h3 id="*">*</h3>
 
 ```

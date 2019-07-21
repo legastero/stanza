@@ -38,7 +38,7 @@ declare module '../' {
     export interface AgentHooks {
         'auth:success'?: Credentials;
         'auth:failed': void;
-        [CREDENTIALS_REQUEST]: {
+        'credentials:request': {
             credentials: Credentials;
             expected: ExpectedCredentials;
         };

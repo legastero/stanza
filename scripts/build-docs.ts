@@ -149,6 +149,11 @@ const agentEventsRef = FS.createWriteStream('./docs/Events.md');
 
 agentEventsRef.write(`# StanzaJS Events
 
+Events will eventually be replaced by [Hooks](./Hooks.md). See [HookEmitter](./HookEmitter.md).
+
+Unlike events, hooks are async, and handlers can be chained, running in a definable order.
+
+<hr />
 `);
 fields = AgentEvents.children.sort((a: any, b: any) => {
     return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
@@ -177,6 +182,50 @@ ${(meta.text || '')
 }
 agentEventsRef.write(`</tbody></table>`);
 agentEventsRef.close();
+
+// ====================================================================
+// Generate Hooks Reference
+// ====================================================================
+
+const AgentHooks = docData.children.filter((c: any) => c.name === 'AgentHooks')[0];
+const agentHooksRef = FS.createWriteStream('./docs/Hooks.md');
+
+agentHooksRef.write(`# StanzaJS Hooks
+
+Hooks are the eventual replacement for [Events](./Events.md). See [HookEmitter](./HookEmitter.md).
+
+Unlike events, hooks are async, and handlers can be chained, running in a definable order.
+
+<hr />
+
+`);
+fields = AgentHooks.children.sort((a: any, b: any) => {
+    return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+});
+
+for (const c of fields) {
+    const meta = c.comment || {};
+    const tags = new Map();
+    for (const tag of meta.tags || []) {
+        tags.set(tag.tag, tag.text.trim());
+    }
+
+    agentHooksRef.write(`
+<h3 id="${c.name}">${c.name}</h3>
+
+\`\`\`
+${writeType(c.type, false)}
+\`\`\`
+
+${(meta.text || '')
+    .trim()
+    .split(/\n\n+/)
+    .map((l: any) => `<p>${l.replace(/\n/g, ' ')}</p>`)
+    .join('')}
+`);
+}
+agentHooksRef.write(`</tbody></table>`);
+agentHooksRef.close();
 
 // ====================================================================
 // Generate Config Reference
