@@ -31,8 +31,8 @@ Child('npm run compile');
 Child('npm run compile:module');
 
 // Embed package version into CJS and ES modules
-fileReplace('dist/cjs/index.js', '__STANZAJS_VERSION__', Pkg.version);
-fileReplace('dist/es/index.js', '__STANZAJS_VERSION__', Pkg.version);
+fileReplace('dist/cjs/Constants.js', '__STANZAJS_VERSION__', Pkg.version);
+fileReplace('dist/es/Constants.js', '__STANZAJS_VERSION__', Pkg.version);
 
 Child('npm run compile:rollup');
 

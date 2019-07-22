@@ -207,7 +207,7 @@ export interface TransportConfig {
 
 export { Client, Constants, JXT, JID, Namespaces, Stanzas, Jingle, Utils, RTT, LibSASL as SASL };
 
-export const VERSION = '__STANZAJS_VERSION__';
+export const VERSION = Constants.VERSION;
 
 import Plugins from './plugins';
 export * from './plugins';

@@ -7,6 +7,8 @@ import {
     NS_SERVER
 } from './Namespaces';
 
+export const VERSION = '__STANZAJS_VERSION__';
+
 // ====================================================================
 // Frequently Used Values
 // ====================================================================

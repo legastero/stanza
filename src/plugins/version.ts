@@ -1,4 +1,5 @@
 import { Agent } from '../';
+import { VERSION } from '../Constants';
 import { NS_VERSION } from '../Namespaces';
 import { ReceivedIQGet, SoftwareVersion } from '../protocol';
 
@@ -29,7 +30,8 @@ export default function(client: Agent) {
     client.on('iq:get:softwareVersion', iq => {
         return client.sendIQResult(iq, {
             softwareVersion: client.config.softwareVersion || {
-                name: 'stanzajs.org'
+                name: 'stanzajs.org',
+                version: VERSION
             }
         });
     });
