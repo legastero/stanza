@@ -1,10 +1,11 @@
 import { Agent } from '../';
 import * as JID from '../JID';
-import { NS_HTTP_UPLOAD_0 } from '../Namespaces';
-import { HTTPUploadRequest, HTTPUploadSlot } from '../protocol';
+import { NS_BOB, NS_HTTP_UPLOAD_0 } from '../Namespaces';
+import { Bits, HTTPUploadRequest, HTTPUploadSlot } from '../protocol';
 
 declare module '../' {
     export interface Agent {
+        getBits(jid: string, cid: string): Promise<Bits>;
         getUploadService(
             domain?: string
         ): Promise<{
@@ -17,6 +18,20 @@ declare module '../' {
 }
 
 export default function(client: Agent) {
+    client.disco.addFeature(NS_BOB);
+
+    client.getBits = async (jid, cid) => {
+        const result = await client.sendIQ({
+            bits: {
+                cid
+            } as Bits,
+            to: jid,
+            type: 'get'
+        });
+
+        return result.bits;
+    };
+
     async function getUploadParameters(jid: string) {
         const disco = await client.getDiscoInfo(jid);
         if (!disco.features || !disco.features.includes(NS_HTTP_UPLOAD_0)) {

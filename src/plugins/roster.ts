@@ -1,6 +1,14 @@
 import { Agent } from '../';
 import * as JID from '../JID';
-import { IQ, Roster, RosterItem, RosterResult } from '../protocol';
+import {
+    Blocking,
+    BlockingList,
+    IQ,
+    ReceivedIQSet,
+    Roster,
+    RosterItem,
+    RosterResult
+} from '../protocol';
 
 declare module '../' {
     export interface Agent {
@@ -11,6 +19,9 @@ declare module '../' {
         unsubscribe(jid: string): void;
         acceptSubscription(jid: string): void;
         denySubscription(jid: string): void;
+        block(jid: string): Promise<void>;
+        unblock(jid: string): Promise<void>;
+        getBlocked(): Promise<BlockingList>;
     }
 
     export interface AgentConfig {
@@ -34,6 +45,15 @@ declare module '../' {
             roster: Roster;
         };
         'roster:ver': string;
+        block: {
+            jids: string[];
+        };
+        unblock: {
+            jids: string[];
+        };
+        'iq:set:blockList': ReceivedIQSet & {
+            blockList: Blocking & { action: 'block' | 'unblock' };
+        };
     }
 }
 
@@ -50,6 +70,14 @@ export default function(client: Agent) {
         }
 
         client.emit('roster:update', iq);
+        client.sendIQResult(iq);
+    });
+
+    client.on('iq:set:blockList', iq => {
+        const blockList = iq.blockList;
+        client.emit(blockList.action, {
+            jids: blockList.jids || []
+        });
         client.sendIQResult(iq);
     });
 
@@ -99,4 +127,30 @@ export default function(client: Agent) {
     client.denySubscription = (jid: string) => {
         client.sendPresence({ type: 'unsubscribed', to: jid });
     };
+
+    client.getBlocked = async () => {
+        const result = await client.sendIQ({
+            blockList: {
+                action: 'list'
+            },
+            type: 'get'
+        });
+
+        return {
+            jids: [],
+            ...result.blockList
+        };
+    };
+
+    async function toggleBlock(action: 'block' | 'unblock', jid: string) {
+        await client.sendIQ({
+            blockList: {
+                action,
+                jids: [jid]
+            },
+            type: 'set'
+        });
+    }
+    client.block = async (jid: string) => toggleBlock('block', jid);
+    client.unblock = async (jid: string) => toggleBlock('unblock', jid);
 }

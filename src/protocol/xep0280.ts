@@ -12,7 +12,7 @@ import { Forward } from './';
 
 declare module './' {
     export interface Message {
-        carbon?: CarbonMessage | CarbonPrivate;
+        carbon?: CarbonMessage;
     }
 
     export interface IQPayload {
@@ -27,10 +27,6 @@ export interface CarbonControl {
 export interface CarbonMessage {
     type: 'sent' | 'received';
     forward: Forward;
-}
-
-export interface CarbonPrivate {
-    type: 'private';
 }
 
 const Protocol: DefinitionOptions[] = [
@@ -62,11 +58,6 @@ const Protocol: DefinitionOptions[] = [
         path: 'message.carbon',
         type: 'received',
         typeField: 'type'
-    },
-    {
-        element: 'private',
-        namespace: NS_CARBONS_2,
-        path: 'message.carbon'
     }
 ];
 export default Protocol;

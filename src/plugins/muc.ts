@@ -5,6 +5,7 @@ import { NS_HATS_0, NS_MUC, NS_MUC_DIRECT_INVITE } from '../Namespaces';
 import {
     DataForm,
     IQ,
+    MUCBookmark,
     MUCConfigure,
     MUCDestroy,
     MUCDirectInvite,
@@ -52,6 +53,10 @@ declare module '../' {
         configureRoom(room: string, form: Partial<DataForm>): Promise<IQ & { muc: MUCConfigure }>;
         destroyRoom(room: string, opts?: MUCDestroy): Promise<IQ & { muc: MUCConfigure }>;
         getUniqueRoomName(mucHost: string): Promise<string>;
+        getBookmarks(): Promise<MUCBookmark[]>;
+        setBookmarks(bookmarks: MUCBookmark[]): Promise<IQ>;
+        addBookmark(bookmark: MUCBookmark): Promise<IQ>;
+        removeBookmark(jid: string): Promise<IQ>;
     }
 
     export interface AgentEvents {
@@ -435,5 +440,50 @@ export default function(client: Agent) {
             throw new Error('No unique name returned');
         }
         return result.muc.name;
+    };
+
+    client.getBookmarks = async () => {
+        const res = await client.getPrivateData('bookmarks');
+        if (!res || !res.rooms) {
+            return [];
+        }
+        return res.rooms;
+    };
+
+    client.setBookmarks = (bookmarks: MUCBookmark[]) => {
+        return client.setPrivateData('bookmarks', {
+            rooms: bookmarks
+        });
+    };
+
+    client.addBookmark = async (bookmark: MUCBookmark) => {
+        const mucs = await client.getBookmarks();
+        const updated: MUCBookmark[] = [];
+
+        let updatedExisting = false;
+        for (const muc of mucs) {
+            if (JID.equalBare(muc.jid, bookmark.jid)) {
+                updated.push({
+                    ...muc,
+                    ...bookmark
+                });
+                updatedExisting = true;
+            } else {
+                updated.push(muc);
+            }
+        }
+        if (!updatedExisting) {
+            updated.push(bookmark);
+        }
+
+        return client.setBookmarks(updated);
+    };
+
+    client.removeBookmark = async (jid: string) => {
+        const existingMucs = await client.getBookmarks();
+        const updated = existingMucs.filter(muc => {
+            return !JID.equalBare(muc.jid, jid);
+        });
+        return client.setBookmarks(updated);
     };
 }

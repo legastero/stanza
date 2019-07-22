@@ -1,7 +1,7 @@
 import { AsyncPriorityQueue, priorityQueue } from 'async';
 import Punycode from 'punycode';
 
-import { RTT, RTTAction } from '../protocol/xep0301';
+import { RTT, RTTAction } from '../protocol';
 
 export type UnicodeBuffer = number[];
 

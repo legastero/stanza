@@ -41,7 +41,6 @@ declare module '../' {
             caps: LegacyEntityCaps[];
             jid: string;
         };
-
         'iq:get:disco': ReceivedIQGet & { disco: Disco };
     }
 }

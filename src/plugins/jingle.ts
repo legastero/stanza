@@ -15,7 +15,13 @@ import {
     NS_JINGLE_RTP_SSMA_0,
     NS_JINGLE_RTP_VIDEO
 } from '../Namespaces';
-import { IQ, Jingle as JingleRequest, Presence } from '../protocol';
+import {
+    ExternalServiceCredentials,
+    ExternalServiceList,
+    IQ,
+    Jingle as JingleRequest,
+    Presence
+} from '../protocol';
 
 let root: any;
 try {
@@ -29,6 +35,13 @@ declare module '../' {
         jingle: Jingle.SessionManager;
 
         discoverICEServers(): Promise<RTCIceServer[]>;
+        getServices(jid: string, type?: string): Promise<ExternalServiceList>;
+        getServiceCredentials(
+            jid: string,
+            host: string,
+            type?: string,
+            port?: number
+        ): Promise<ExternalServiceCredentials>;
     }
 
     export interface AgentEvents {
@@ -130,6 +143,40 @@ export default function(client: Agent) {
     client.on('unavailable', (pres: Presence) => {
         jingle.endPeerSessions(pres.from!, undefined, true);
     });
+
+    client.getServices = async (jid: string, type?: string) => {
+        const resp = await client.sendIQ({
+            externalServices: {
+                type
+            } as ExternalServiceList,
+            to: jid,
+            type: 'get'
+        });
+
+        const services = resp.externalServices;
+        services.services = services.services || [];
+
+        return services;
+    };
+
+    client.getServiceCredentials = async (
+        jid: string,
+        host: string,
+        type?: string,
+        port?: number
+    ) => {
+        const resp = await client.sendIQ({
+            externalServiceCredentials: {
+                host,
+                port,
+                type
+            } as ExternalServiceCredentials,
+            to: jid,
+            type: 'get'
+        });
+
+        return resp.externalServiceCredentials;
+    };
 
     client.discoverICEServers = async (): Promise<RTCIceServer[]> => {
         try {
