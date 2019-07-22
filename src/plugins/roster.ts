@@ -22,6 +22,8 @@ declare module '../' {
         block(jid: string): Promise<void>;
         unblock(jid: string): Promise<void>;
         getBlocked(): Promise<BlockingList>;
+        goInvisible(probe?: boolean): Promise<void>;
+        goVisible(): Promise<void>;
     }
 
     export interface AgentConfig {
@@ -153,4 +155,23 @@ export default function(client: Agent) {
     }
     client.block = async (jid: string) => toggleBlock('block', jid);
     client.unblock = async (jid: string) => toggleBlock('unblock', jid);
+
+    client.goInvisible = async (probe: boolean = false) => {
+        await client.sendIQ({
+            type: 'set',
+            visiblity: {
+                probe,
+                type: 'invisible'
+            }
+        });
+    };
+
+    client.goVisible = async () => {
+        await client.sendIQ({
+            type: 'set',
+            visiblity: {
+                type: 'visible'
+            }
+        });
+    };
 }

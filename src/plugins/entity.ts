@@ -2,6 +2,10 @@ import { Agent } from '../';
 import { VERSION } from '../Constants';
 import * as hashes from '../lib/crypto';
 import {
+    NS_DATAFORM,
+    NS_DATAFORM_LAYOUT,
+    NS_DATAFORM_MEDIA,
+    NS_DATAFORM_VALIDATION,
     NS_DELAY,
     NS_EME_0,
     NS_FORWARD_0,
@@ -58,6 +62,10 @@ export default function(client: Agent) {
     client.disco.addFeature(NS_PSA);
     client.disco.addFeature(NS_REFERENCE_0);
     client.disco.addFeature(NS_SHIM);
+    client.disco.addFeature(NS_DATAFORM);
+    client.disco.addFeature(NS_DATAFORM_MEDIA);
+    client.disco.addFeature(NS_DATAFORM_VALIDATION);
+    client.disco.addFeature(NS_DATAFORM_LAYOUT);
 
     const names = hashes.getHashes();
     for (const name of names) {

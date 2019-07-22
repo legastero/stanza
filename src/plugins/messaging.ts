@@ -8,7 +8,14 @@ import {
     NS_RECEIPTS,
     NS_RTT_0
 } from '../Namespaces';
-import { CarbonMessage, Message, MessageReceipt, ReceivedMessage, RTT } from '../protocol';
+import {
+    CarbonMessage,
+    DataForm,
+    Message,
+    MessageReceipt,
+    ReceivedMessage,
+    RTT
+} from '../protocol';
 
 declare module '../' {
     export interface Agent {
@@ -44,6 +51,7 @@ declare module '../' {
         'carbon:received': ReceivedCarbon;
         'carbon:sent': SentCarbon;
         'chat:state': ChatStateMessage;
+        dataform: FormsMessage;
         'marker:acknowledged': ReceivedMessage;
         'marker:displayed': ReceivedMessage;
         'marker:received': ReceivedMessage;
@@ -69,31 +77,25 @@ export type CorrectionMessage = ReceivedMessage & {
     replace: ReceivedMessage['replace'];
 };
 export type RTTMessage = Message & { rtt: RTT };
+export type FormsMessage = ReceivedMessage & {
+    forms: DataForm[];
+};
 
 const ACK_TYPES = new Set(['chat', 'headline', 'normal']);
 const ALLOWED_CHAT_STATE_TYPES = new Set(['chat', 'groupcaht', 'normal']);
 
-function isReceivedCarbon(msg: Message): msg is ReceivedCarbon {
-    return !!msg.carbon && msg.carbon.type === 'received';
-}
-function isSentCarbon(msg: Message): msg is SentCarbon {
-    return !!msg.carbon && msg.carbon.type === 'sent';
-}
-function isChatState(msg: Message): msg is ChatStateMessage {
-    return !!msg.chatState;
-}
-function isReceiptMessage(msg: ReceivedMessage): msg is ReceiptMessage {
-    return !!msg.receipt;
-}
-function hasRTT(msg: Message): msg is RTTMessage {
-    return !!msg.rtt;
-}
-function isCorrection(msg: ReceivedMessage): msg is CorrectionMessage {
-    return !!msg.replace;
-}
-function isMarkable(msg: Message, client: Agent) {
-    return msg.marker && msg.marker.type === 'markable' && client.config.chatMarkers !== false;
-}
+const isReceivedCarbon = (msg: Message): msg is ReceivedCarbon =>
+    !!msg.carbon && msg.carbon.type === 'received';
+const isSentCarbon = (msg: Message): msg is SentCarbon =>
+    !!msg.carbon && msg.carbon.type === 'sent';
+const isChatState = (msg: Message): msg is ChatStateMessage => !!msg.chatState;
+const isReceiptMessage = (msg: ReceivedMessage): msg is ReceiptMessage => !!msg.receipt;
+const hasRTT = (msg: Message): msg is RTTMessage => !!msg.rtt;
+const isCorrection = (msg: ReceivedMessage): msg is CorrectionMessage => !!msg.replace;
+const isMarkable = (msg: Message, client: Agent) =>
+    msg.marker && msg.marker.type === 'markable' && client.config.chatMarkers !== false;
+const isFormsMessage = (msg: ReceivedMessage): msg is FormsMessage =>
+    !!msg.forms && msg.forms.length > 0;
 
 async function toggleCarbons(client: Agent, action: 'enable' | 'disable') {
     await client.sendIQ({
@@ -162,6 +164,9 @@ export default function(client: Agent) {
                 client.emit('carbon:sent', msg);
                 client.emit('message:sent', forwardedMessage, true);
             }
+        }
+        if (isFormsMessage(msg)) {
+            client.emit('dataform', msg);
         }
         if (msg.requestingAttention) {
             client.emit('attention', msg);
