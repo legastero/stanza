@@ -17,8 +17,8 @@ declare module '../' {
     }
 
     export interface AgentEvents {
-        'iq:get:softwareVersion': ReceivedIQGet & {
-            softwareVersion: SoftwareVersion;
+        'iq:get:software': ReceivedIQGet & {
+            software: SoftwareVersion;
         };
     }
 }
@@ -26,7 +26,7 @@ declare module '../' {
 export default function(client: Agent) {
     client.disco.addFeature(NS_VERSION);
 
-    client.on('iq:get:softwareVersion', iq => {
+    client.on('iq:get:software', iq => {
         return client.sendIQResult(iq, {
             softwareVersion: client.config.softwareVersion || {
                 name: 'stanzajs.org'

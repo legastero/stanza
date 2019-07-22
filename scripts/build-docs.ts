@@ -23,11 +23,11 @@ Child('npx typedoc --json ./dist/docs.json --mode file');
 const docData = JSON.parse(FS.readFileSync('./dist/docs.json').toString());
 
 const KIND_MODULE = 2;
-const moduleIds = new Set(docData.groups.filter(g => g.kind === KIND_MODULE)[0].children);
-const modules = docData.children.filter(c => moduleIds.has(c.id));
+const moduleIds = new Set(docData.groups.filter((g: any) => g.kind === KIND_MODULE)[0].children);
+const modules = docData.children.filter((c: any) => moduleIds.has(c.id));
 for (const mod of modules) {
     for (const child of mod.children) {
-        const parentDef = docData.children.filter(c => c.name === child.name)[0];
+        const parentDef = docData.children.filter((c: any) => c.name === child.name)[0];
         if (!parentDef) {
             docData.children.push(child);
         } else {
@@ -38,12 +38,12 @@ for (const mod of modules) {
         }
     }
 }
-docData.groups = docData.groups.filter(g => g.kind !== KIND_MODULE);
-docData.children = docData.children.filter(c => !moduleIds.has(c.id));
+docData.groups = docData.groups.filter((g: any) => g.kind !== KIND_MODULE);
+docData.children = docData.children.filter((c: any) => !moduleIds.has(c.id));
 
 FS.writeFileSync('./dist/docs.json', JSON.stringify(docData, null, 4));
 
-function writeType(t, wrap = true) {
+function writeType(t: any, wrap = true): string | undefined {
     switch (t.type) {
         case 'intrinsic':
             if (t.name === 'undefined') {
@@ -61,28 +61,28 @@ function writeType(t, wrap = true) {
             }
             if (t.declaration.signatures) {
                 return t.declaration.signatures
-                    .map(x => {
+                    .map((x: any) => {
                         return `(${(x.parameters || [])
-                            .map(p => `${p.name}: ${writeType(p.type, wrap)}`)
+                            .map((p: any) => `${p.name}: ${writeType(p.type, wrap)}`)
                             .join(', ')}) => ${writeType(x.type, wrap)}`;
                     })
-                    .filter(x => !!x)
+                    .filter((x: any) => !!x)
                     .join(' | ');
             }
             if (t.declaration.children) {
                 return `{ ${t.declaration.children
-                    .map(x => `${x.name}: ${writeType(x.type, false)}`)
+                    .map((x: any) => `${x.name}: ${writeType(x.type, false)}`)
                     .join('; ')} }`;
             }
         case 'union':
             return (t.types || [])
-                .map(x => writeType(x, wrap))
-                .filter(x => !!x)
+                .map((x: any) => writeType(x, wrap))
+                .filter((x: any) => !!x)
                 .join(' | ');
         case 'intersection':
             return t.types
-                .map(x => writeType(x, wrap))
-                .filter(x => !!x)
+                .map((x: any) => writeType(x, wrap))
+                .filter((x: any) => !!x)
                 .join(' & ');
         case 'array':
             return wrap
@@ -101,13 +101,13 @@ function writeType(t, wrap = true) {
 // Generate API Method Reference
 // ====================================================================
 
-const Agent = docData.children.filter(c => c.name === 'Agent')[0];
+const Agent = docData.children.filter((c: any) => c.name === 'Agent')[0];
 const agentRef = FS.createWriteStream('./docs/Reference.md');
 
 agentRef.write(`# StanzaJS API Reference
 
 `);
-let fields = Agent.children.sort((a, b) => {
+let fields: any[] = Agent.children.sort((a: any, b: any) => {
     return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
 });
 
@@ -126,14 +126,14 @@ for (const c of fields) {
 
 \`\`\`
 ${c.signatures
-    .map(s => writeType({ type: 'reflection', declaration: { signatures: [s] } }, false))
+    .map((s: any) => writeType({ type: 'reflection', declaration: { signatures: [s] } }, false))
     .join('\n')}
 \`\`\`
 
 ${(meta.text || '')
     .trim()
     .split(/\n\n+/)
-    .map(l => `<p>${l.replace(/\n/g, ' ')}</p>`)
+    .map((l: any) => `<p>${l.replace(/\n/g, ' ')}</p>`)
     .join('')}
 `);
 }
@@ -144,13 +144,13 @@ agentRef.close();
 // Generate Events Reference
 // ====================================================================
 
-const AgentEvents = docData.children.filter(c => c.name === 'AgentEvents')[0];
+const AgentEvents = docData.children.filter((c: any) => c.name === 'AgentEvents')[0];
 const agentEventsRef = FS.createWriteStream('./docs/Events.md');
 
 agentEventsRef.write(`# StanzaJS Events
 
 `);
-fields = AgentEvents.children.sort((a, b) => {
+fields = AgentEvents.children.sort((a: any, b: any) => {
     return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
 });
 
@@ -171,7 +171,7 @@ ${writeType(c.type, false)}
 ${(meta.text || '')
     .trim()
     .split(/\n\n+/)
-    .map(l => `<p>${l.replace(/\n/g, ' ')}</p>`)
+    .map((l: any) => `<p>${l.replace(/\n/g, ' ')}</p>`)
     .join('')}
 `);
 }
@@ -182,7 +182,7 @@ agentEventsRef.close();
 // Generate Config Reference
 // ====================================================================
 
-const AgentConfig = docData.children.filter(c => c.name === 'AgentConfig')[0];
+const AgentConfig = docData.children.filter((c: any) => c.name === 'AgentConfig')[0];
 const agentConfigRef = FS.createWriteStream('./docs/Configuring.md');
 
 agentConfigRef.write(`# StanzaJS Configuration
@@ -202,7 +202,7 @@ It is possible to inspect the configuration later by using \`client.config\`.
 ## Available Settings
 
 `);
-fields = AgentConfig.children.sort((a, b) => {
+fields = AgentConfig.children.sort((a: any, b: any) => {
     return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
 });
 agentConfigRef.write(`<ul>`);
@@ -231,7 +231,7 @@ for (const c of fields) {
 ${(meta.text || '')
     .trim()
     .split(/\n\n+/)
-    .map(l => `<p>${l.replace(/\n/g, ' ')}</p>`)
+    .map((l: any) => `<p>${l.replace(/\n/g, ' ')}</p>`)
     .join('')}
 `);
 }

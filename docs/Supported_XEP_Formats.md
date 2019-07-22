@@ -37,7 +37,7 @@
 | [XEP-0080](https://xmpp.org/extensions/xep-0080.html) | User Location                                      | 1.9     | [Source](../src/protocol/xep0080.ts) | [Test Cases](../test/protocol-cases/xep0080) |
 | [XEP-0084](https://xmpp.org/extensions/xep-0084.html) | User Avatar                                        | 1.1.1   | [Source](../src/protocol/xep0084.ts) |                                              |
 | [XEP-0085](https://xmpp.org/extensions/xep-0085.html) | Chat State Notifications                           | 2.1     | [Source](../src/protocol/xep0085.ts) |                                              |
-| [XEP-0092](https://xmpp.org/extensions/xep-0092.html) | Software Version                                   | 1.1     | [Source](../src/protocol/xep0092.ts) |                                              |
+| [XEP-0092](https://xmpp.org/extensions/xep-0092.html) | Software Version                                   | 1.1     | [Source](../src/protocol/xep0092.ts) | [Test Cases](../test/protocol-cases/xep0092) |
 | [XEP-0107](https://xmpp.org/extensions/xep-0107.html) | User Mood                                          | 1.2.1   | [Source](../src/protocol/xep0107.ts) | [Test Cases](../test/protocol-cases/xep0107) |
 | [XEP-0108](https://xmpp.org/extensions/xep-0108.html) | User Activity                                      | 1.3     | [Source](../src/protocol/xep0108.ts) |                                              |
 | [XEP-0114](https://xmpp.org/extensions/xep-0114.html) | Jabber Component Protocol                          | 1.6     | [Source](../src/protocol/xep0114.ts) |                                              |

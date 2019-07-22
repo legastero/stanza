@@ -1,0 +1,11 @@
+<iq
+    type='result'
+    to='romeo@montague.net/orchard'
+    from='juliet@capulet.com/balcony'
+    id='version_1'>
+  <query xmlns='jabber:iq:version'>
+    <name>Exodus</name>
+    <os>Windows-XP 5.01.2600</os>
+    <version>0.7.0.4</version>
+  </query>
+</iq>

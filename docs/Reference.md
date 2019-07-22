@@ -884,7 +884,7 @@
 <h3 id="use">use</h3>
 
 ```
-(plugin: (agent: Agent, registry: JXT.Registry, config: AgentConfig) => void) => void
+(plugin: (agent: Agent, registry: Registry, config: AgentConfig) => void) => void
 ```
 
 <p></p>
