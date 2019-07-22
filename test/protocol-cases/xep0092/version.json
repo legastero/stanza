@@ -6,6 +6,6 @@
         "lang": "",
         "to": "romeo@montague.net/orchard",
         "type": "result",
-        "software": { "name": "Exodus", "os": "Windows-XP 5.01.2600", "version": "0.7.0.4" }
+        "softwareVersion": { "name": "Exodus", "os": "Windows-XP 5.01.2600", "version": "0.7.0.4" }
     }
 ]

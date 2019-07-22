@@ -184,10 +184,10 @@ IQ & { ping: boolean }
 
 <p></p>
 
-<h3 id="iq:get:software">iq:get:software</h3>
+<h3 id="iq:get:softwareVersion">iq:get:softwareVersion</h3>
 
 ```
-ReceivedIQGet & { software: SoftwareVersion }
+ReceivedIQGet & { softwareVersion: SoftwareVersion }
 ```
 
 <p></p>

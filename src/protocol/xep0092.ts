@@ -29,6 +29,6 @@ const Protocol: DefinitionOptions = {
         version: childText(null, 'version')
     },
     namespace: NS_VERSION,
-    path: 'iq.software'
+    path: 'iq.softwareVersion'
 };
 export default Protocol;
