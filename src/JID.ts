@@ -17,6 +17,15 @@ export interface ParsedJID {
     resource?: string;
 }
 
+export interface ParsedURI {
+    identity?: string;
+    jid?: string;
+    action?: string;
+    parameters?: {
+        [key: string]: string | string[];
+    };
+}
+
 export interface PreparationOptions {
     prepared?: boolean;
     escaped?: boolean;
@@ -218,4 +227,108 @@ export function unescapeLocal(val: string): string {
         .replace(/\\3e/g, '>')
         .replace(/\\40/g, '@')
         .replace(/\\5c/g, '\\');
+}
+
+export function parseURI(val: string): ParsedURI {
+    const parsed = new URL(val);
+
+    if (parsed.protocol !== 'xmpp:') {
+        throw new Error('Invalid XMPP URI, wrong protocol: ' + parsed.protocol);
+    }
+
+    const identity = parsed.hostname
+        ? parsed.username
+            ? create(
+                  {
+                      domain: decodeURIComponent(parsed.hostname),
+                      local: decodeURIComponent(parsed.username)
+                  },
+                  {
+                      escaped: true
+                  }
+              )
+            : decodeURIComponent(parsed.hostname)
+        : undefined;
+
+    const jid = parse(decodeURIComponent(identity ? parsed.pathname.substr(1) : parsed.pathname))
+        .full;
+
+    const hasParameters = parsed.search && parsed.search.indexOf(';') >= 1;
+    const parameterString = hasParameters
+        ? parsed.search.substr(parsed.search.indexOf(';') + 1)
+        : '';
+    const action = parsed.search
+        ? decodeURIComponent(
+              parsed.search.substr(1, hasParameters ? parsed.search.indexOf(';') - 1 : undefined)
+          )
+        : undefined;
+
+    const params: { [key: string]: string | string[] } = {};
+    for (const token of parameterString.split(';')) {
+        const [name, value] = token.split('=').map(decodeURIComponent);
+        if (!params[name]) {
+            params[name] = value;
+        } else {
+            const existing = params[name];
+            if (Array.isArray(existing)) {
+                existing.push(value);
+            } else {
+                params[name] = [existing, value];
+            }
+        }
+    }
+
+    return {
+        action,
+        identity,
+        jid,
+        parameters: params
+    };
+}
+
+export function toURI(data: ParsedURI): string {
+    const parts = ['xmpp:'];
+
+    const pushJID = (jid: string, allowResource: boolean): void => {
+        const res = parse(jid);
+        if (res.local) {
+            parts.push(encodeURIComponent(escapeLocal(res.local)));
+            parts.push('@');
+        }
+        parts.push(encodeURIComponent(res.domain));
+        if (allowResource && res.resource) {
+            parts.push('/');
+            parts.push(encodeURIComponent(res.resource));
+        }
+    };
+
+    if (data.identity) {
+        parts.push('//');
+        pushJID(data.identity, false);
+        if (data.jid) {
+            parts.push('/');
+        }
+    }
+    if (data.jid) {
+        pushJID(data.jid, true);
+    }
+    if (data.action) {
+        parts.push('?');
+        parts.push(encodeURIComponent(data.action));
+    }
+    for (let [name, values] of Object.entries(data.parameters || {})) {
+        if (!Array.isArray(values)) {
+            values = [values];
+        }
+        for (const val of values) {
+            parts.push(';');
+            parts.push(encodeURIComponent(name));
+            if (val !== undefined) {
+                parts.push('=');
+                parts.push(encodeURIComponent(val));
+            }
+        }
+    }
+
+    return parts.join('');
 }

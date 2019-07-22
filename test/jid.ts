@@ -284,3 +284,189 @@ test('isFull', t => {
     t.notOk(JID.isFull(jid2));
     t.end();
 });
+
+// --------------------------------------------------------------------
+// Test URIs
+// --------------------------------------------------------------------
+
+test('Wrong protocol', t => {
+    t.plan(1);
+    try {
+        JID.parseURI('https://example.com');
+        t.fail('Did not throw error');
+    } catch (err) {
+        t.pass('Wrong protocol throws error');
+    }
+    t.end();
+});
+
+test('JID only', t => {
+    const res = JID.parseURI('xmpp:user@example.com');
+    t.equal(res.jid, 'user@example.com');
+    t.end();
+});
+
+test('JID with resource', t => {
+    const res = JID.parseURI('xmpp:user@example.com/resource');
+    t.equal(res.jid, 'user@example.com/resource');
+    t.end();
+});
+
+test('JID with only domain', t => {
+    const res = JID.parseURI('xmpp:example.com');
+    t.equal(res.jid, 'example.com');
+    t.end();
+});
+
+test('JID with domain and resource', t => {
+    const res = JID.parseURI('xmpp:example.com/resource');
+    t.equal(res.jid, 'example.com/resource');
+    t.end();
+});
+
+test('URI with query command, no parameters', t => {
+    const res = JID.parseURI('xmpp:user@example.com/resource?message');
+    t.equal(res.jid, 'user@example.com/resource');
+    t.equal(res.action, 'message');
+    t.end();
+});
+
+test('URI with query and parameters', t => {
+    const res = JID.parseURI('xmpp:user@example.com/resource?message;body=test;subject=weeeee');
+    t.equal(res.jid, 'user@example.com/resource');
+    t.equal(res.action, 'message');
+    t.same(res.parameters, {
+        body: 'test',
+        subject: 'weeeee'
+    });
+    t.end();
+});
+
+test('URI with encoded parameter values', t => {
+    const res = JID.parseURI(
+        'xmpp:user@example.com/resource?message;body=test%20using%20%3d%20and%20%3b;subject=weeeee'
+    );
+    t.equal(res.jid, 'user@example.com/resource');
+    t.equal(res.action, 'message');
+    t.same(res.parameters, {
+        body: 'test using = and ;',
+        subject: 'weeeee'
+    });
+    t.end();
+});
+
+test('Account selection only', t => {
+    const res = JID.parseURI('xmpp://me@example.com');
+    t.equal(res.identity, 'me@example.com');
+    t.end();
+});
+
+test('Account selection with JID', t => {
+    const res = JID.parseURI('xmpp://me@example.com/user@example.com');
+    t.equal(res.identity, 'me@example.com');
+    t.equal(res.jid, 'user@example.com');
+    t.end();
+});
+
+test('Account selection with JID with resource', t => {
+    const res = JID.parseURI('xmpp://me@example.com/user@example.com/resource');
+    t.equal(res.identity, 'me@example.com');
+    t.equal(res.jid, 'user@example.com/resource');
+    t.end();
+});
+
+test('Account selection with full JID and query action with parameters', t => {
+    const res = JID.parseURI(
+        'xmpp://me@example.com/user@example.com/resource?message;body=kitchen%20sink;subject=allthethings'
+    );
+    t.equal(res.identity, 'me@example.com');
+    t.equal(res.jid, 'user@example.com/resource');
+    t.equal(res.action, 'message');
+    t.same(res.parameters, {
+        body: 'kitchen sink',
+        subject: 'allthethings'
+    });
+    t.end();
+});
+
+test('Create URI with just account', t => {
+    const res = JID.toURI({
+        identity: 'me@example.com'
+    });
+    t.equal(res, 'xmpp://me@example.com');
+    t.end();
+});
+
+test('Create URI with just JID', t => {
+    const res = JID.toURI({
+        jid: 'user@example.com'
+    });
+    t.equal(res, 'xmpp:user@example.com');
+    t.end();
+});
+
+test('Create URI with just JID and resource', t => {
+    const res = JID.toURI({
+        jid: 'user@example.com/@resource='
+    });
+    t.equal(res, 'xmpp:user@example.com/%40resource%3D');
+    t.end();
+});
+
+test('Create URI with just JID and query action', t => {
+    const res = JID.toURI({
+        action: 'subscribe',
+        jid: 'user@example.com/@resource='
+    });
+    t.equal(res, 'xmpp:user@example.com/%40resource%3D?subscribe');
+    t.end();
+});
+
+test('Create URI with JID and query action with parameters', t => {
+    const res = JID.toURI({
+        action: 'message',
+        jid: 'user@example.com/@?resource=',
+        parameters: {
+            body: 'testing',
+            thread: 'thread-id'
+        }
+    });
+    t.equal(res, 'xmpp:user@example.com/%40%3Fresource%3D?message;body=testing;thread=thread-id');
+    t.end();
+});
+
+test('Create URI with selected account and query with parameters', t => {
+    const res = JID.toURI({
+        action: 'message',
+        identity: 'me@example.com',
+        jid: 'user@example.com/@?resource=',
+        parameters: {
+            body: 'testing',
+            thread: 'thread-id'
+        }
+    });
+    t.equal(
+        res,
+        'xmpp://me@example.com/user@example.com/%40%3Fresource%3D?message;body=testing;thread=thread-id'
+    );
+    t.end();
+});
+
+test('Nasty examples from RFC', t => {
+    const res = JID.toURI({
+        action: 'message',
+        jid:
+            'nasty!#$%()*+,-.;=?[\\]^_`{|}~node@example.com/repulsive !#"$%&\'()*+,-./:;<=>?@[\\]^_`{|}~resource'
+    });
+    t.equal(
+        res,
+        "xmpp:nasty!%23%24%25()*%2B%2C-.%3B%3D%3F%5B%5C%5D%5E_%60%7B%7C%7D~node@example.com/repulsive%20!%23%22%24%25%26'()*%2B%2C-.%2F%3A%3B%3C%3D%3E%3F%40%5B%5C%5D%5E_%60%7B%7C%7D~resource?message"
+    );
+
+    const res2 = JID.parseURI(res);
+    t.equal(
+        res2.jid,
+        'nasty!#$%()*+,-.;=?[\\]^_`{|}~node@example.com/repulsive !#"$%&\'()*+,-./:;<=>?@[\\]^_`{|}~resource'
+    );
+    t.end();
+});
