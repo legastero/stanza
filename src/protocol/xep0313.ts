@@ -34,7 +34,7 @@ export interface MAMFin {
     complete?: boolean;
     stable?: boolean;
     results?: MAMResult[];
-    pagin?: Paging;
+    paging?: Paging;
 }
 
 export interface MAMPrefs {
