@@ -192,6 +192,9 @@ export default class ICESession extends BaseSession {
     // ----------------------------------------------------------------
 
     onIceCandidate(e) {
+        if (!e.candidate.candidate) {
+            return;
+        }
         const candidate = SDPUtils.parseCandidate(e.candidate.candidate);
         const jingle = convertIntermediateToTransportInfo(e.candidate.sdpMid, candidate);
         /* monkeypatch ufrag in Firefox */
