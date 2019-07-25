@@ -1,4 +1,5 @@
-import { Agent, JID } from '../';
+import { Agent } from '../';
+import * as JID from '../JID';
 import { CacheableCredentials, Credentials, ExpectedCredentials } from '../lib/sasl';
 import { SASL } from '../protocol';
 
