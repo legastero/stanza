@@ -8,7 +8,7 @@ import HookEmitter, { HookEvents, Logger } from './HookEmitter';
 import * as JID from './JID';
 import * as Jingle from './jingle';
 import * as JXT from './jxt';
-import * as LibSASL from './lib/SASL';
+import * as LibSASL from './lib/sasl';
 import StrictEventEmitter from './lib/StrictEventEmitter';
 import * as Namespaces from './Namespaces';
 import * as Stanzas from './protocol';

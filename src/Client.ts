@@ -6,7 +6,7 @@ import StreamManagement from './helpers/StreamManagement';
 import HookEmitter, { Logger } from './HookEmitter';
 import * as JID from './JID';
 import * as JXT from './jxt';
-import * as SASL from './lib/SASL';
+import * as SASL from './lib/sasl';
 import { core as corePlugins } from './plugins';
 import Protocol, { IQ, Message, Presence, StreamError } from './protocol';
 import BOSH from './transports/bosh';

@@ -1,5 +1,5 @@
 import { Agent, JID } from '../';
-import { CacheableCredentials, Credentials, ExpectedCredentials } from '../lib/SASL';
+import { CacheableCredentials, Credentials, ExpectedCredentials } from '../lib/sasl';
 import { SASL } from '../protocol';
 
 const CREDENTIALS_REQUEST = 'credentials:request';
