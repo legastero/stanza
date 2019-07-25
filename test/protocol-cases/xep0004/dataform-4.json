@@ -7,9 +7,9 @@
             {
                 "label": "Event Date/Time",
                 "name": "evt.date",
-                "rawValues": ["2003-10-06T11:22:00-07:00"],
+                "rawValues": ["X2003-10-06T11:22:00-07:00"],
                 "type": "text-single",
-                "value": "2003-10-06T11:22:00-07:00",
+                "value": "X2003-10-06T11:22:00-07:00",
                 "validation": {
                     "type": "xs:dateTime",
                     "method": "basic"
@@ -39,14 +39,14 @@
             {
                 "label": "RSVP Date/Time",
                 "name": "evt.rsvp",
-                "rawValues": ["2003-10-06T11:22:00-07:00"],
+                "rawValues": ["X2003-10-06T11:22:00-07:00"],
                 "type": "text-single",
-                "value": "2003-10-06T11:22:00-07:00",
+                "value": "X2003-10-06T11:22:00-07:00",
                 "validation": {
                     "type": "xs:dateTime",
                     "method": "range",
-                    "rangeMin": "2003-10-05T00:00:00-07:00",
-                    "rangeMax": "2003-10-24T23:59:59-07:00"
+                    "rangeMin": "X2003-10-05T00:00:00-07:00",
+                    "rangeMax": "X2003-10-24T23:59:59-07:00"
                 }
             },
             {

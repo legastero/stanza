@@ -1,0 +1,56 @@
+[
+    "iq",
+    {
+        "from": "upload.montague.tld",
+        "id": "step_02",
+        "to": "romeo@montague.tld/garden",
+        "type": "result",
+        "disco": {
+            "type": "info",
+            "features": ["urn:xmpp:http:upload:0"],
+            "identities": [{ "category": "store", "name": "HTTP File Upload", "type": "file" }],
+            "extensions": [
+                {
+                    "type": "result",
+                    "fields": [
+                        {
+                            "name": "FORM_TYPE",
+                            "type": "hidden",
+                            "value": "urn:xmpp:http:upload:0"
+                        },
+                        { "name": "max-file-size", "value": "5242880" }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "from": "upload.montague.tld",
+        "id": "step_02",
+        "lang": "",
+        "to": "romeo@montague.tld/garden",
+        "type": "result",
+        "disco": {
+            "type": "info",
+            "features": ["urn:xmpp:http:upload:0"],
+            "identities": [
+                { "category": "store", "lang": "", "name": "HTTP File Upload", "type": "file" }
+            ],
+            "extensions": [
+                {
+                    "instructions": [],
+                    "type": "result",
+                    "fields": [
+                        {
+                            "name": "FORM_TYPE",
+                            "type": "hidden",
+                            "value": "urn:xmpp:http:upload:0",
+                            "rawValues": ["urn:xmpp:http:upload:0"]
+                        },
+                        { "name": "max-file-size", "value": "5242880", "rawValues": ["5242880"] }
+                    ]
+                }
+            ]
+        }
+    }
+]

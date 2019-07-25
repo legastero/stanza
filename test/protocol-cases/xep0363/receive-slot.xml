@@ -1,0 +1,12 @@
+<iq from='upload.montague.tld'
+    id='step_03'
+    to='romeo@montague.tld/garden'
+    type='result'>
+  <slot xmlns='urn:xmpp:http:upload:0'>
+    <get url='https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/tr%C3%A8s%20cool.jpg' />
+    <put url='https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/tr%C3%A8s%20cool.jpg'>
+      <header name='Authorization'>Basic Base64String==</header>
+      <header name='Cookie'>foo=bar; user=romeo</header>
+    </put>
+  </slot>
+</iq>

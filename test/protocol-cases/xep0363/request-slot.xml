@@ -1,0 +1,9 @@
+<iq from='romeo@montague.tld/garden'
+    id='step_03'
+    to='upload.montague.tld'
+    type='get'>
+  <request xmlns='urn:xmpp:http:upload:0'
+    filename='très cool.jpg'
+    size='23456'
+    content-type='image/jpeg' />
+</iq>

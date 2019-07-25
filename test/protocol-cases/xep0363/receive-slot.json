@@ -1,0 +1,21 @@
+[
+    "iq",
+    {
+        "from": "upload.montague.tld",
+        "id": "step_03",
+        "lang": "",
+        "to": "romeo@montague.tld/garden",
+        "type": "result",
+        "httpUpload": {
+            "type": "slot",
+            "download": "https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/tr%C3%A8s%20cool.jpg",
+            "upload": {
+                "url": "https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/tr%C3%A8s%20cool.jpg",
+                "headers": [
+                    { "name": "Authorization", "value": "Basic Base64String==" },
+                    { "name": "Cookie", "value": "foo=bar; user=romeo" }
+                ]
+            }
+        }
+    }
+]

@@ -86,6 +86,9 @@ export type Disco = DiscoInfo | DiscoItems;
 const Protocol: DefinitionOptions[] = [
     {
         aliases: ['iq.disco', 'message.disco', 'features.disco'],
+        childrenExportOrder: {
+            identities: 100
+        },
         element: 'query',
         fields: {
             features: multipleChildAttribute(null, 'feature', 'var'),

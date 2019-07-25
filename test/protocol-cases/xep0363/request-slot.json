@@ -1,0 +1,17 @@
+[
+    "iq",
+    {
+        "from": "romeo@montague.tld/garden",
+        "id": "step_03",
+        "lang": "",
+        "to": "upload.montague.tld",
+        "type": "get",
+        "httpUpload": {
+            "type": "request",
+            "mediaType": "image/jpeg",
+            "name": "très cool.jpg",
+            "size": 23456
+        },
+        "payloadType": "httpUpload"
+    }
+]

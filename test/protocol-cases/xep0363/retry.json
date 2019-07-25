@@ -1,0 +1,45 @@
+[
+    "iq",
+    {
+        "from": "upload.montague.tld",
+        "id": "step_03",
+        "to": "romeo@montague.tld/garden",
+        "type": "error",
+        "httpUpload": {
+            "type": "request",
+            "mediaType": "image/jpeg",
+            "name": "très cool.jpg",
+            "size": 23456
+        },
+        "error": {
+            "condition": "resource-constraint",
+            "text": "Quota reached. You can only upload 5 files in 5 minutes",
+            "type": "wait",
+            "httpUploadError": "retry",
+            "httpUploadRetry": "2017-12-03T23:42:05.000Z"
+        }
+    },
+    {
+        "from": "upload.montague.tld",
+        "id": "step_03",
+        "lang": "",
+        "to": "romeo@montague.tld/garden",
+        "type": "error",
+        "httpUpload": {
+            "type": "request",
+            "mediaType": "image/jpeg",
+            "name": "très cool.jpg",
+            "size": 23456
+        },
+        "error": {
+            "alternateLanguageText": [
+                { "lang": "", "value": "Quota reached. You can only upload 5 files in 5 minutes" }
+            ],
+            "condition": "resource-constraint",
+            "text": "Quota reached. You can only upload 5 files in 5 minutes",
+            "type": "wait",
+            "httpUploadError": "retry",
+            "httpUploadRetry": "2017-12-03T23:42:05.000Z"
+        }
+    }
+]

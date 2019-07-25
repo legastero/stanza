@@ -1,0 +1,15 @@
+<iq from='upload.montague.tld'
+    id='step_03'
+    to='romeo@montague.tld/garden'
+    type='error'>
+  <request xmlns='urn:xmpp:http:upload:0'
+    filename='très cool.jpg'
+    size='23456'
+    content-type='image/jpeg' />
+  <error type='wait'>
+    <resource-constraint xmlns='urn:ietf:params:xml:ns:xmpp-stanzas' />
+    <text xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'>Quota reached. You can only upload 5 files in 5 minutes</text>
+    <retry xmlns='urn:xmpp:http:upload:0'
+      stamp='2017-12-03T23:42:05.000Z' />
+  </error>
+</iq>

@@ -93,7 +93,7 @@ const Protocol: DefinitionOptions[] = [
     },
     {
         aliases: [{ path: 'iq.httpUpload.upload.headers', multiple: true }],
-        element: 'put',
+        element: 'header',
         fields: {
             name: attribute('name'),
             value: text()

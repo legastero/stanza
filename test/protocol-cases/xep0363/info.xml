@@ -1,0 +1,19 @@
+<iq from='upload.montague.tld'
+    id='step_02'
+    to='romeo@montague.tld/garden'
+    type='result'>
+  <query xmlns='http://jabber.org/protocol/disco#info'>
+    <identity category='store'
+              type='file'
+              name='HTTP File Upload' />
+    <feature var='urn:xmpp:http:upload:0' />
+    <x type='result' xmlns='jabber:x:data'>
+      <field var='FORM_TYPE' type='hidden'>
+        <value>urn:xmpp:http:upload:0</value>
+      </field>
+      <field var='max-file-size'>
+        <value>5242880</value>
+      </field>
+    </x>
+  </query>
+</iq>

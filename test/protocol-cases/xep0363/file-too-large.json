@@ -1,0 +1,45 @@
+[
+    "iq",
+    {
+        "from": "upload.montague.tld",
+        "id": "step_03",
+        "to": "romeo@montague.tld/garden",
+        "type": "error",
+        "httpUpload": {
+            "type": "request",
+            "mediaType": "image/jpeg",
+            "name": "très cool.jpg",
+            "size": 23456
+        },
+        "error": {
+            "condition": "not-acceptable",
+            "text": "File too large. The maximum file size is 20000 bytes",
+            "type": "modify",
+            "httpUploadError": "file-too-large",
+            "httpUploadMaxFileSize": 20000
+        }
+    },
+    {
+        "from": "upload.montague.tld",
+        "id": "step_03",
+        "lang": "",
+        "to": "romeo@montague.tld/garden",
+        "type": "error",
+        "httpUpload": {
+            "type": "request",
+            "mediaType": "image/jpeg",
+            "name": "très cool.jpg",
+            "size": 23456
+        },
+        "error": {
+            "alternateLanguageText": [
+                { "lang": "", "value": "File too large. The maximum file size is 20000 bytes" }
+            ],
+            "condition": "not-acceptable",
+            "text": "File too large. The maximum file size is 20000 bytes",
+            "type": "modify",
+            "httpUploadError": "file-too-large",
+            "httpUploadMaxFileSize": 20000
+        }
+    }
+]
