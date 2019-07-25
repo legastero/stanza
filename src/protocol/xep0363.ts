@@ -44,7 +44,7 @@ export interface HTTPUploadSlot {
 }
 
 export interface HTTPUploadLocation {
-    uri: string;
+    url: string;
     headers?: HTTPUploadHeader[];
 }
 
@@ -77,7 +77,7 @@ const Protocol: DefinitionOptions[] = [
     {
         element: 'slot',
         fields: {
-            download: childAttribute(null, 'get', 'uri')
+            download: childAttribute(null, 'get', 'url')
         },
         namespace: NS_HTTP_UPLOAD_0,
         path: 'iq.httpUpload',
@@ -87,7 +87,7 @@ const Protocol: DefinitionOptions[] = [
         aliases: [{ path: 'iq.httpUpload.upload', selector: 'slot' }],
         element: 'put',
         fields: {
-            uri: attribute('uri')
+            url: attribute('url')
         },
         namespace: NS_HTTP_UPLOAD_0
     },
