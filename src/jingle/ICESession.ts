@@ -326,6 +326,9 @@ export default class ICESession extends BaseSession {
     // ----------------------------------------------------------------
 
     protected onIceCandidate(e: RTCPeerConnectionIceEvent) {
+        if (!e.candidate!.candidate) {
+            return;
+        }
         const candidate = SDPUtils.parseCandidate(e.candidate!.candidate);
         const jingle = convertIntermediateToTransportInfo(
             e.candidate!.sdpMid!,
