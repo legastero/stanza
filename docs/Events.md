@@ -8,6 +8,14 @@
 
 <p></p>
 
+<h3 id="activity">activity</h3>
+
+```
+UserActivityEvent
+```
+
+<p></p>
+
 <h3 id="attention">attention</h3>
 
 ```
@@ -147,7 +155,7 @@ StreamFeatures
 <h3 id="geoloc">geoloc</h3>
 
 ```
-GeolocEvent
+UserLocationEvent
 ```
 
 <p></p>
@@ -723,7 +731,7 @@ Stream
 <h3 id="tune">tune</h3>
 
 ```
-TuneEvent
+UserTuneEvent
 ```
 
 <p></p>

@@ -584,6 +584,14 @@
 
 <p></p>
 
+<h3 id="publishActivity">publishActivity</h3>
+
+```
+(data: UserActivity) => Promise
+```
+
+<p></p>
+
 <h3 id="publishAvatar">publishAvatar</h3>
 
 ```
@@ -685,14 +693,6 @@
 ```
 (opts: Partial) => Promise
 (jid: string, opts: MAMQuery) => Promise
-```
-
-<p></p>
-
-<h3 id="send">send</h3>
-
-```
-(path: csi, data: CSI) => void
 ```
 
 <p></p>

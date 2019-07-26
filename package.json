@@ -38,7 +38,7 @@
         "ts-node": "^8.2.0",
         "tslint": "^5.17.0",
         "tslint-sonarts": "^1.9.0",
-        "typedoc": "^0.15.0-0",
+        "typedoc": "^0.15.0",
         "typescript": "^3.5.1",
         "webpack": "^4.33.0",
         "webpack-bundle-analyzer": "^3.0.3",
