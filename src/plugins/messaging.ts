@@ -82,7 +82,7 @@ export type FormsMessage = ReceivedMessage & {
 };
 
 const ACK_TYPES = new Set(['chat', 'headline', 'normal']);
-const ALLOWED_CHAT_STATE_TYPES = new Set(['chat', 'groupcaht', 'normal']);
+const ALLOWED_CHAT_STATE_TYPES = new Set(['chat', 'groupchat', 'normal']);
 
 const isReceivedCarbon = (msg: Message): msg is ReceivedCarbon =>
     !!msg.carbon && msg.carbon.type === 'received';
