@@ -155,7 +155,7 @@ export default class StreamManagement {
         ack: StreamManagementAck | StreamManagementResume | StreamManagementFailed,
         resend: boolean = false
     ) {
-        if (!ack.handled) {
+        if (ack.handled === undefined) {
             return;
         }
 
