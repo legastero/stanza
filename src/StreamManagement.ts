@@ -106,7 +106,7 @@ export default class StreamManagement {
 
     public resumed(resp: StreamManagementResume) {
         this.id = resp.previousSession;
-        if (resp.handled) {
+        if (resp.handled !== undefined) {
             this.process(resp, true);
         }
         this.inboundStarted = true;
@@ -117,7 +117,7 @@ export default class StreamManagement {
     public failed(resp: StreamManagementFailed) {
         // Resumption might fail, but the server can still tell us how far
         // the old session progressed.
-        if (resp.handled) {
+        if (resp.handled !== undefined) {
             this.process(resp);
         }
 
