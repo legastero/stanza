@@ -1,0 +1,7 @@
+[
+    "streamError",
+    {
+        "condition": "see-other-host",
+        "seeOtherHost": "[2001:41D0:1:A49b::1]:9222"
+    }
+]

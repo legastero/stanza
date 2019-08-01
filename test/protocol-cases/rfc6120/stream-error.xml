@@ -1,0 +1,4 @@
+<error xmlns="http://etherx.jabber.org/streams">
+    <not-well-formed xmlns="urn:ietf:params:xml:ns:xmpp-streams" />
+    <text xmlns="urn:ietf:params:xml:ns:xmpp-streams">Some special application diagnostic information!</text>
+</error>

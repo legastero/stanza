@@ -1,0 +1,14 @@
+[
+    "streamError",
+    {
+        "condition": "not-well-formed",
+        "text": "Some special application diagnostic information!"
+    },
+    {
+        "alternateLanguageText": [
+            { "lang": "", "value": "Some special application diagnostic information!" }
+        ],
+        "condition": "not-well-formed",
+        "text": "Some special application diagnostic information!"
+    }
+]

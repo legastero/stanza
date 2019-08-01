@@ -28,7 +28,15 @@ import {
     multipleChildText,
     textBuffer
 } from '../jxt';
-import { NS_BIND, NS_CLIENT, NS_SASL, NS_STANZAS, NS_STARTTLS, NS_STREAM } from '../Namespaces';
+import {
+    NS_BIND,
+    NS_CLIENT,
+    NS_SASL,
+    NS_STANZAS,
+    NS_STARTTLS,
+    NS_STREAM,
+    NS_STREAMS
+} from '../Namespaces';
 
 import { IQ } from './';
 
@@ -189,14 +197,14 @@ const _StreamFeatures: DefinitionOptions = {
 const _StreamError: DefinitionOptions = {
     element: 'error',
     fields: {
-        alternateLanguageText: childAlternateLanguageText(NS_STANZAS, 'text'),
+        alternateLanguageText: childAlternateLanguageText(NS_STREAMS, 'text'),
         condition: childEnum(
-            NS_STREAM,
+            NS_STREAMS,
             toList(StreamErrorCondition),
             StreamErrorCondition.UndefinedCondition
         ),
-        seeOtherHost: childText(NS_STREAM, StreamErrorCondition.SeeOtherHost),
-        text: childText(NS_STANZAS, 'text')
+        seeOtherHost: childText(NS_STREAMS, StreamErrorCondition.SeeOtherHost),
+        text: childText(NS_STREAMS, 'text')
     },
     namespace: NS_STREAM,
     path: 'streamError'
