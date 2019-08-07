@@ -156,6 +156,7 @@ function unescapeXMLReplaceChar(match: string, allowUnknown: boolean = false) {
     if (
         code === 0x9 ||
         code === 0xa ||
+        code === 0xd ||
         (0x20 <= code && code <= 0xd7ff) ||
         (0xe000 <= code && code <= 0xfffd) ||
         (0x10000 <= code && code <= 0x10ffff)
