@@ -84,6 +84,11 @@ declare module 'sdp' {
         rtcpFeedback?: SDPFeedbackParameter[];
     }
 
+    export interface SDPGroup {
+        semantics: string;
+        mids: string[];
+    }
+
     export interface SDPMLine {
         kind: string;
         port?: number;
@@ -124,6 +129,12 @@ declare module 'sdp' {
         codecs: SDPCodec[];
         headerExtensions: SDPHeaderExtension[];
         fecMechanisms: string[];
+    }
+
+    export interface SDPSctpDescription {
+        port: number;
+        protocol: string;
+        maxMessageSize?: number;
     }
 
     export const localCname: string;
@@ -180,6 +191,12 @@ declare module 'sdp' {
     export function parseRtpEncodingParameters(mediaSection: SDPSection): SDPEncodingParameters[];
     export function parseRtcpParameters(mediaSection: SDPSection): SDPRtcpParameters;
     export function parseMsid(mediaSection: SDPSection): SDPMediaStreamId;
+
+    export function parseSctpDescription(mediaSection: SDPSection): SDPSctpDescription;
+    export function writeSctpDescription(
+        mediaSection: SDPMLine,
+        desc: SDPSctpDescription
+    ): SDPSection;
 
     export function generateSessionId(): string;
     export function writeSessionBoilerplate(

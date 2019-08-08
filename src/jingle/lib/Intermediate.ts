@@ -1,4 +1,4 @@
-import * as SDP from '../../lib/SDP';
+import * as SDP from 'sdp';
 
 // ====================================================================
 // Intermediate Object Descriptions
@@ -19,7 +19,7 @@ export interface IntermediateMediaDescription {
     rtcpParameters?: SDP.SDPRtcpParameters;
     streams?: SDP.SDPMediaStreamId[];
     candidates?: SDP.SDPIceCandidate[];
-    sctp?: SDP.SDPSctpParameters;
+    sctp?: SDP.SDPSctpDescription;
 }
 
 export interface IntermediateSessionDescription {
@@ -84,7 +84,7 @@ export function importFromSDP(sdp: SDP.SDPBlob): IntermediateSessionDescription 
                 media.streams = [];
             }
         } else if (kind === 'application') {
-            media.sctp = SDP.parseSctpMap(mediaSection);
+            media.sctp = SDP.parseSctpDescription(mediaSection);
         }
 
         media.candidates = SDP.matchPrefix(mediaSection, 'a=candidate:').map(SDP.parseCandidate);

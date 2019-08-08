@@ -10,9 +10,9 @@ import { attribute, DefinitionOptions, integerAttribute } from '../jxt';
 import { NS_JINGLE_DTLS_SCTP_1, NS_JINGLE_ICE_0, NS_JINGLE_ICE_UDP_1 } from '../Namespaces';
 
 export interface JingleSctpMap {
-    number: string;
+    port: number;
     protocol: string;
-    streams: string;
+    streams?: string;
 }
 
 declare module './xep0176' {
@@ -34,7 +34,7 @@ const Protocol: DefinitionOptions = {
     ],
     element: 'sctpmap',
     fields: {
-        number: attribute('number'),
+        port: integerAttribute('number'),
         protocol: attribute('protocol'),
         streams: attribute('streams')
     },

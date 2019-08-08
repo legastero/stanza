@@ -1,5 +1,6 @@
+import * as SDPUtils from 'sdp';
+
 import { JingleAction, JingleReasonCondition, JingleSessionRole } from '../Constants';
-import * as SDPUtils from '../lib/SDP';
 import { NS_JINGLE_ICE_UDP_1 } from '../Namespaces';
 import { Jingle, JingleContent, JingleIce, JingleReason } from '../protocol';
 

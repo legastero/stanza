@@ -1,5 +1,6 @@
+import * as SDP from 'sdp';
+
 import { directionToSenders, JingleSessionRole, sendersToDirection } from '../../Constants';
-import * as SDP from '../../lib/SDP';
 import { NS_JINGLE_RTP_1 } from '../../Namespaces';
 import {
     Jingle,

@@ -233,7 +233,7 @@ export default class FileTransferSession extends ICESession {
                 jingle.contents![0].application = {
                     applicationType: NS_JINGLE_FILE_TRANSFER_5,
                     file: {
-                        date: new Date(file.lastModified),
+                        date: file.lastModified ? new Date(file.lastModified) : undefined,
                         hashesUsed: [
                             {
                                 algorithm: 'sha-1'
