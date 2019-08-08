@@ -141,6 +141,10 @@ const UNESCAPE_XML_CHAR: { [key: string]: string } = {
     '&quot;': '"'
 };
 
+const ESCAPE_SEQUENCE = /&([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+);/g;
+const NEED_ESCAPING = /&|<|>|"|'/g;
+const NEED_ESCAPING_TEXT = /&|<|>/g;
+
 function escapeXMLReplaceChar(match: string) {
     return ESCAPE_XML_CHAR[match];
 }
@@ -172,17 +176,17 @@ function unescapeXMLReplaceChar(match: string, allowUnknown: boolean = false) {
 }
 
 export function escapeXML(text: string) {
-    return text.replace(/&|<|>|"|'/g, escapeXMLReplaceChar);
+    return text.replace(NEED_ESCAPING, escapeXMLReplaceChar);
 }
 
 export function unescapeXML(text: string, allowUnknown: boolean = false) {
-    return text.replace(/&([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+);/g, match => {
+    return text.replace(ESCAPE_SEQUENCE, match => {
         return unescapeXMLReplaceChar(match, allowUnknown);
     });
 }
 
 export function escapeXMLText(text: string) {
-    return text.replace(/&|>/g, escapeXMLReplaceChar);
+    return text.replace(NEED_ESCAPING_TEXT, escapeXMLReplaceChar);
 }
 
 export function basicLanguageResolver(
