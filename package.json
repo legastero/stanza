@@ -9,30 +9,30 @@
         "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
     ],
     "dependencies": {
-        "@types/async": "^3.0.0",
-        "@types/node": "^12.0.7",
+        "@types/async": "^3.0.1",
+        "@types/node": "^12.7.1",
         "@types/punycode": "^2.1.0",
-        "@types/readable-stream": "^2.3.1",
+        "@types/readable-stream": "^2.3.3",
         "@types/tape": "^4.2.33",
-        "@types/ws": "^6.0.1",
+        "@types/ws": "^6.0.2",
         "async": "^3.0.1",
         "node-fetch": "^2.6.0",
         "punycode": "^2.1.1",
         "react-native-randombytes": "^3.5.3",
         "readable-stream": "^2.3.6",
-        "sdp": "^2.9.0",
+        "sdp": "^2.10.0",
         "tslib": "^1.9.3",
-        "ws": "^7.0.0"
+        "ws": "^7.1.1"
     },
     "devDependencies": {
-        "husky": "^3.0.0",
+        "husky": "^3.0.3",
         "nyc": "^14.1.1",
         "prettier": "^1.18.2",
         "pretty-quick": "^1.11.0",
         "rimraf": "^2.6.2",
-        "rollup": "^1.14.4",
+        "rollup": "^1.19.4",
         "rollup-plugin-node-resolve": "^5.0.1",
-        "rollup-plugin-visualizer": "^2.4.4",
+        "rollup-plugin-visualizer": "^2.5.4",
         "tap-spec": "^5.0.0",
         "tape": "^4.10.2",
         "ts-node": "^8.2.0",
@@ -40,9 +40,9 @@
         "tslint-sonarts": "^1.9.0",
         "typedoc": "^0.15.0",
         "typescript": "^3.5.1",
-        "webpack": "^4.33.0",
-        "webpack-bundle-analyzer": "^3.0.3",
-        "webpack-cli": "^3.3.3"
+        "webpack": "^4.39.1",
+        "webpack-bundle-analyzer": "^3.4.1",
+        "webpack-cli": "^3.3.6"
     },
     "homepage": "https://stanzajs.org",
     "husky": {
