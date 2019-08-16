@@ -1,0 +1,19 @@
+[
+    "presence",
+    {
+        "from": "juliet@capulet.com/balcony",
+        "show": "away",
+        "legacyLastActivity": {
+            "seconds": 600
+        }
+    },
+    {
+        "from": "juliet@capulet.com/balcony",
+        "show": "away",
+        "priority": 0,
+        "lang": "",
+        "legacyLastActivity": {
+            "seconds": 600
+        }
+    }
+]

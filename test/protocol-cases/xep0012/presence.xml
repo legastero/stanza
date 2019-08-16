@@ -1,0 +1,4 @@
+<presence from='juliet@capulet.com/balcony'>
+  <show>away</show>
+  <query xmlns='jabber:iq:last' seconds='600' />
+</presence>

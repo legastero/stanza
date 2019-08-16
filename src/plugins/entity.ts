@@ -21,12 +21,13 @@ import {
     NS_TIME,
     NS_VERSION
 } from '../Namespaces';
-import { EntityTime, IQ, ReceivedIQGet, SoftwareVersion } from '../protocol';
+import { EntityTime, IQ, LastActivity, ReceivedIQGet, SoftwareVersion } from '../protocol';
 
 declare module '../' {
     export interface Agent {
         getSoftwareVersion(jid: string): Promise<SoftwareVersion>;
         getTime(jid: string): Promise<EntityTime>;
+        getLastActivity(jid: string): Promise<LastActivity>;
     }
 
     export interface AgentConfig {
@@ -112,5 +113,14 @@ export default function(client: Agent) {
         });
 
         return resp.time;
+    };
+
+    client.getLastActivity = async (jid: string) => {
+        const resp = await client.sendIQ({
+            lastActivity: {},
+            to: jid,
+            type: 'get'
+        });
+        return resp.lastActivity;
     };
 }

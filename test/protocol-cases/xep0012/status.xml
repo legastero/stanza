@@ -1,0 +1,6 @@
+<iq from='juliet@capulet.com'
+    id='last1'
+    to='romeo@montague.net/orchard'
+    type='result'>
+  <query xmlns='jabber:iq:last' seconds='903'>Heading Home</query>
+</iq>

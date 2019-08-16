@@ -5,6 +5,7 @@ export * from './rfc6120';
 export * from './rfc6121';
 export * from './rfc7395';
 export * from './xep0004';
+export * from './xep0012';
 export * from './xep0016';
 export * from './xep0030';
 export * from './xep0033';
@@ -86,6 +87,7 @@ import RFC6120 from './rfc6120';
 import RFC6121 from './rfc6121';
 import RFC7395 from './rfc7395';
 import XEP0004 from './xep0004';
+import XEP0012 from './xep0012';
 import XEP0016 from './xep0016';
 import XEP0030 from './xep0030';
 import XEP0033 from './xep0033';
@@ -168,6 +170,7 @@ const Protocol: Array<DefinitionOptions | DefinitionOptions[]> = [
     RFC6121,
     RFC7395,
     XEP0004,
+    XEP0012,
     XEP0016,
     XEP0030,
     XEP0033,

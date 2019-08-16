@@ -18,6 +18,7 @@
 | XEP                                                   | Name                                               | Version | Source                               | Test Cases                                   |
 | ----------------------------------------------------- | -------------------------------------------------- | ------- | ------------------------------------ | -------------------------------------------- |
 | [XEP-0004](https://xmpp.org/extensions/xep-0004.html) | Data Forms                                         | 2.9     | [Source](../src/protocol/xep0004.ts) | [Test Cases](../test/protocol-cases/xep0004) |
+| [XEP-0012](https://xmpp.org/extensions/xep-0012.html) | Last Activity                                      | 2.0     | [Source](../src/protocol/xep0012.ts) | [Test Cases](../test/protocol-cases/xep0012) |
 | [XEP-0016](https://xmpp.org/extensions/xep-0016.html) | Privacy Lists                                      | 1.7     | [Source](../src/protocol/xep0016.ts) |                                              |
 | [XEP-0030](https://xmpp.org/extensions/xep-0030.html) | Service Discovery                                  | 2.5rc3  | [Source](../src/protocol/xep0030.ts) | [Test Cases](../test/protocol-cases/xep0030) |
 | [XEP-0033](https://xmpp.org/extensions/xep-0033.html) | Extended Stanza Addressing                         | 1.3.1   | [Source](../src/protocol/xep0033.ts) | [Test Cases](../test/protocol-cases/xep0033) |
@@ -70,6 +71,7 @@
 | [XEP-0234](https://xmpp.org/extensions/xep-0234.html) | Jingle File Transfer                               | 0.18.3  | [Source](../src/protocol/xep0234.ts) |                                              |
 | [XEP-0247](https://xmpp.org/extensions/xep-0247.html) | Jingle XML Streams                                 | 0.2     | [Source](../src/protocol/xep247.ts)  |                                              |
 | [XEP-0249](https://xmpp.org/extensions/xep-0249.html) | Direct MUC Invitations                             | 1.2     | [Source](../src/protocol/xep0045.ts) |                                              |
+| [XEP-0256](https://xmpp.org/extensions/xep-0256.html) | Last Activity in Presence                          | 1.1     | [Source](../src/protocol/xep0012.ts) | [Test Cases](../test/protocol-cases/xep0012) |
 | [XEP-0260](https://xmpp.org/extensions/xep-0260.html) | Jingle SOCKS5 Bytestreams Transport Method         | 1.0.1   | [Source](../src/protocol/xep0260.ts) |                                              |
 | [XEP-0261](https://xmpp.org/extensions/xep-0261.html) | Jingle In-Band Bytestreams Transport Method        | 1.0     | [Source](../src/protocol/xep0261.ts) |                                              |
 | [XEP-0261](https://xmpp.org/extensions/xep-0262.html) | Use of ZRTP in Jingle RTP Sessions                 | 1.0     | [Source](../src/protocol/xep0167.ts) |                                              |

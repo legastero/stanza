@@ -1,0 +1,13 @@
+[
+    "iq",
+    {
+        "from": "juliet@capulet.com/balcony",
+        "id": "last2",
+        "to": "romeo@montague.net/orchard",
+        "lang": "",
+        "type": "result",
+        "lastActivity": {
+            "seconds": 123
+        }
+    }
+]
