@@ -1,0 +1,25 @@
+[
+    "iq",
+    {
+        "from": "stpeter@jabber.org/work",
+        "id": "oob1",
+        "to": "MaineBoy@jabber.org/home",
+        "type": "set",
+        "transferLink": {
+            "description": "A license to Jabber!",
+            "url": "http://www.jabber.org/images/psa-license.jpg"
+        }
+    },
+    {
+        "from": "stpeter@jabber.org/work",
+        "id": "oob1",
+        "lang": "",
+        "to": "MaineBoy@jabber.org/home",
+        "type": "set",
+        "transferLink": {
+            "description": "A license to Jabber!",
+            "url": "http://www.jabber.org/images/psa-license.jpg"
+        },
+        "payloadType": "transferLink"
+    }
+]

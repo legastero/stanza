@@ -20,7 +20,7 @@ declare module './' {
 }
 
 export interface Link {
-    uri?: string;
+    url?: string;
     description?: string;
 }
 
@@ -30,7 +30,7 @@ const Protocol: DefinitionOptions[] = [
         element: 'x',
         fields: {
             description: childText(null, 'desc'),
-            uri: childText(null, 'uri')
+            url: childText(null, 'url')
         },
         namespace: NS_OOB
     },
@@ -38,7 +38,7 @@ const Protocol: DefinitionOptions[] = [
         element: 'query',
         fields: {
             description: childText(null, 'desc'),
-            uri: childText(null, 'uri')
+            url: childText(null, 'url')
         },
         namespace: NS_OOB_TRANSFER,
         path: 'iq.transferLink'
