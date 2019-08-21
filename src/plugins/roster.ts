@@ -96,9 +96,11 @@ export default function(client: Agent) {
                 client.config.rosterVer = version;
                 client.emit('roster:ver', version);
             }
+            resp.roster.items = resp.roster.items || [];
+            return resp.roster as RosterResult;
+        } else {
+            return { items: [] };
         }
-        resp.roster.items = resp.roster.items || [];
-        return resp.roster as RosterResult;
     };
 
     client.updateRosterItem = async (item: RosterItem) => {
