@@ -1,0 +1,14 @@
+<x xmlns='jabber:x:data' type='form'>
+  <field var='bool-1' type='boolean'>
+    <value>true</value>
+  </field>
+  <field var='bool-2' type='boolean'>
+    <value>1</value>
+  </field>
+  <field var='bool-3' type='boolean'>
+    <value>false</value>
+  </field>
+  <field var='bool-4' type='boolean'>
+    <value>0</value>
+  </field>
+</x>

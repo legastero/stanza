@@ -1,0 +1,9 @@
+<x xmlns='jabber:x:data' type='form'>
+  <field var='fixed-1' type='fixed'>
+    <value>fixed-value</value>
+  </field>
+  <field var='fixed-2' type='fixed'>
+    <value>fixed-value-1</value>
+    <value>fixed-value-2</value>
+  </field>
+</x>

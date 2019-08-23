@@ -1,0 +1,36 @@
+[
+    "dataform",
+    {
+        "type": "form",
+        "fields": [
+            {
+                "name": "fixed-1",
+                "type": "fixed",
+                "value": "fixed-value"
+            },
+            {
+                "name": "fixed-2",
+                "type": "fixed",
+                "value": ["fixed-value-1", "fixed-value-2"]
+            }
+        ]
+    },
+    {
+        "instructions": [],
+        "type": "form",
+        "fields": [
+            {
+                "name": "fixed-1",
+                "type": "fixed",
+                "rawValues": ["fixed-value"],
+                "value": "fixed-value"
+            },
+            {
+                "name": "fixed-2",
+                "type": "fixed",
+                "rawValues": ["fixed-value-1", "fixed-value-2"],
+                "value": ["fixed-value-1", "fixed-value-2"]
+            }
+        ]
+    }
+]

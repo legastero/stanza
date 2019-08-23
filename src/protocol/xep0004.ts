@@ -157,7 +157,7 @@ const Protocol: DefinitionOptions[] = [
                 ): DataFormFieldValueType | undefined {
                     const fieldType = xml.getAttribute('type') as DataFormFieldType;
                     const converter = multipleChildText(NS_DATAFORM, 'value');
-                    const rawValues: string[] = converter.importer(xml, context) || [];
+                    const rawValues: string[] = converter.importer(xml, context)!;
                     const singleValue = rawValues[0];
 
                     switch (fieldType) {
@@ -171,11 +171,6 @@ const Protocol: DefinitionOptions[] = [
                                 return singleValue;
                             }
                             return rawValues;
-                        case DataFormFieldType.JID:
-                            if (singleValue) {
-                                return singleValue;
-                            }
-                            break;
                         case DataFormFieldType.Boolean:
                             if (singleValue) {
                                 return singleValue === '1' || singleValue === 'true';
@@ -192,9 +187,17 @@ const Protocol: DefinitionOptions[] = [
                 ) {
                     const converter = multipleChildText(null, 'value');
                     let outputData: string[] = [];
+                    const rawData =
+                        context.data && context.data.rawValues
+                            ? context.data.rawValues[0]
+                            : undefined;
 
                     if (typeof data === 'boolean') {
-                        outputData = [data ? '1' : '0'];
+                        if (rawData === 'true' || rawData === 'false') {
+                            outputData = [rawData];
+                        } else {
+                            outputData = [data ? '1' : '0'];
+                        }
                     } else if (!Array.isArray(data)) {
                         outputData = [data.toString()];
                     } else {

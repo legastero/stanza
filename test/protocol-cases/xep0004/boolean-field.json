@@ -1,0 +1,60 @@
+[
+    "dataform",
+    {
+        "type": "form",
+        "fields": [
+            {
+                "name": "bool-1",
+                "type": "boolean",
+                "rawValues": ["true"],
+                "value": true
+            },
+            {
+                "name": "bool-2",
+                "type": "boolean",
+                "value": true
+            },
+            {
+                "name": "bool-3",
+                "type": "boolean",
+                "rawValues": ["false"],
+                "value": false
+            },
+            {
+                "name": "bool-4",
+                "type": "boolean",
+                "value": false
+            }
+        ]
+    },
+    {
+        "instructions": [],
+        "type": "form",
+        "fields": [
+            {
+                "name": "bool-1",
+                "rawValues": ["true"],
+                "type": "boolean",
+                "value": true
+            },
+            {
+                "name": "bool-2",
+                "rawValues": ["1"],
+                "type": "boolean",
+                "value": true
+            },
+            {
+                "name": "bool-3",
+                "rawValues": ["false"],
+                "type": "boolean",
+                "value": false
+            },
+            {
+                "name": "bool-4",
+                "rawValues": ["0"],
+                "type": "boolean",
+                "value": false
+            }
+        ]
+    }
+]
