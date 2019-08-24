@@ -56,9 +56,16 @@ export default class StreamParser extends Transform {
             allowComments: opts.allowComments
         });
 
+        this.parser.on('error', err => {
+            this.destroy(err);
+        });
+
         this.parser.on('startElement', (name: string, attributes: Attributes) => {
+            if (this.destroyed) {
+                return;
+            }
             if (this.closedStream) {
-                return this.emit('error', JXTError.alreadyClosed());
+                return this.destroy(JXTError.alreadyClosed());
             }
 
             const el = new XMLElement(name, attributes);
@@ -66,7 +73,7 @@ export default class StreamParser extends Transform {
 
             if (this.wrappedStream && !this.rootElement) {
                 if (this.rootImportKey && key !== this.rootImportKey) {
-                    return this.emit('error', JXTError.unknownRoot());
+                    return this.destroy(JXTError.unknownRoot());
                 }
 
                 const root = this.registry.import(el, {
@@ -84,7 +91,7 @@ export default class StreamParser extends Transform {
                     });
                     return;
                 } else {
-                    return this.emit('error', JXTError.notWellFormed());
+                    return this.destroy(JXTError.notWellFormed());
                 }
             }
 
@@ -96,10 +103,13 @@ export default class StreamParser extends Transform {
         });
 
         this.parser.on('endElement', (name: string) => {
+            if (this.destroyed) {
+                return;
+            }
             if (this.wrappedStream && !this.currentElement) {
                 if (!this.rootElement || name !== this.rootElement.name) {
                     this.closedStream = true;
-                    return this.emit('error', JXTError.notWellFormed());
+                    return this.destroy(JXTError.notWellFormed());
                 }
                 this.closedStream = true;
                 this.push({
@@ -113,7 +123,7 @@ export default class StreamParser extends Transform {
 
             if (!this.currentElement || name !== this.currentElement.name) {
                 this.closedStream = true;
-                return this.emit('error', JXTError.notWellFormed());
+                return this.destroy(JXTError.notWellFormed());
             }
 
             if (this.currentElement.parent) {

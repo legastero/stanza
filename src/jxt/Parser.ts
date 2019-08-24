@@ -14,20 +14,15 @@ import JXTError from './Error';
 
 const enum State {
     ATTR_EQ,
-    ATTR_ENTITY,
     ATTR_NAME,
     ATTR_QUOTE,
     ATTR_VALUE,
     CDATA,
-    ENTITY,
     IGNORE_COMMENT,
     IGNORE_INSTRUCTION,
-    INITIAL,
     TAG,
-    TAG_ENTITY,
     TAG_NAME,
     TEXT,
-    TEXT_ENTITY,
     XML_DECLARATION
 }
 
@@ -290,11 +285,6 @@ export default class Parser extends EventEmitter {
                         this.haveDeclaration = true;
                         this.state = State.IGNORE_INSTRUCTION;
                         break;
-                    } else if (c === Character.GreaterThan) {
-                        if (this.lookBehindMatch(data, pos, '?')) {
-                            this.state = State.TEXT;
-                        }
-                        break;
                     }
 
                     this.emit('error', JXTError.restrictedXML());
@@ -327,7 +317,7 @@ export default class Parser extends EventEmitter {
                 }
 
                 case State.ATTR_NAME: {
-                    if (!isPrintable(c) || c === Character.Space || c === Character.Equal) {
+                    if (!isPrintable(c) || isWhitespace(c) || c === Character.Equal) {
                         this.attributeName = this.endRecording(data, pos);
                         pos--;
                         this.state = State.ATTR_EQ;
@@ -336,13 +326,22 @@ export default class Parser extends EventEmitter {
                 }
 
                 case State.ATTR_EQ: {
+                    if (isWhitespace(c)) {
+                        break;
+                    }
                     if (c === Character.Equal) {
                         this.state = State.ATTR_QUOTE;
+                        break;
                     }
-                    break;
+
+                    this.emit('error', JXTError.notWellFormed());
+                    return;
                 }
 
                 case State.ATTR_QUOTE: {
+                    if (isWhitespace(c)) {
+                        break;
+                    }
                     if (c === Character.DoubleQuote || c === Character.SingleQuote) {
                         this.attributeQuote = c;
                         this.state = State.ATTR_VALUE;

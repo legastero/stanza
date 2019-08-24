@@ -190,6 +190,22 @@ export default function runTests() {
         t.end();
     });
 
+    test('[Parser] Prohibit multiple XML declarations', t => {
+        try {
+            parse(`
+                <?xml version="1.0"?>
+                <?xml version="1.0"?>
+                <message xmlns="jabber:client" id="123">
+                  <body>test</body>
+                </message>`);
+
+            t.fail('Did not prohibit multiple XML declarations');
+        } catch (err) {
+            t.pass('Prohibited multiple XML declarations');
+        }
+        t.end();
+    });
+
     test('[Parser] Always accept numeric escape entities', t => {
         const registry = setupRegistry();
 
@@ -242,6 +258,74 @@ export default function runTests() {
 
         for (const char of inputData) {
             parser.write(char);
+        }
+
+        t.end();
+    });
+
+    test('[Parser] Attribute whitespace', t => {
+        try {
+            parse(`
+                <message xmlns="jabber:client"   id   =     "123">
+                  <body>test</body>
+                </message>`);
+            t.pass();
+        } catch (err) {
+            t.fail(err);
+        }
+
+        t.end();
+    });
+
+    test('[Parser] Attribute missing =', t => {
+        try {
+            parse(`
+                <message xmlns="jabber:client" id "x">
+                  <body>test</body>
+                </message>`);
+        } catch (err) {
+            t.ok(err);
+        }
+
+        t.end();
+    });
+
+    test('[Parser] Attribute multiple =', t => {
+        try {
+            parse(`
+                <message xmlns="jabber:client" id=="x">
+                  <body>test</body>
+                </message>`);
+        } catch (err) {
+            t.ok(err);
+        }
+
+        t.end();
+    });
+
+    test('[Parser] Prohibit unknown entity in attribute', t => {
+        try {
+            parse(`
+                <message xmlns="jabber:client" id="&foo;">
+                  <body>test</body>
+                </message>`);
+            t.fail('Did not prohibit entity');
+        } catch (err) {
+            t.ok(err);
+        }
+
+        t.end();
+    });
+
+    test('[Parser] Prohibit multiple attributes with same name', t => {
+        try {
+            parse(`
+                <message xmlns="jabber:client" id="1" id="2">
+                  <body>test</body>
+                </message>`);
+            t.fail('Did not fail on multiple attributes with same name');
+        } catch (err) {
+            t.ok(err);
         }
 
         t.end();

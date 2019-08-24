@@ -373,9 +373,13 @@ export default class Translator {
         }
 
         const output = createElement(exporter.namespace, exporter.element, parentContext.namespace);
+        if (parentContext.element) {
+            output.parent = parentContext.element;
+        }
         const context: TranslationContext = {
             ...parentContext,
             data,
+            element: output,
             exporter,
             lang: (data[this.languageField] || parentContext.lang || '').toLowerCase(),
             namespace: exporter.namespace,

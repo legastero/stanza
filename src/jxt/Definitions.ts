@@ -108,6 +108,7 @@ export interface TranslationContext {
     lang?: string;
     namespace?: string;
     data?: JSONData;
+    element?: XMLElement;
     translator?: Translator;
     importer?: Importer;
     exporter?: Exporter;

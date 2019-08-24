@@ -1,5 +1,6 @@
 import test from 'tape';
 import { attribute, childText, ParsedData, Registry, StreamParser } from '../../src/jxt';
+import { JXTErrorCondition } from '../../src/jxt/Error';
 
 interface Message {
     type: string;
@@ -80,5 +81,129 @@ export default function runTests() {
         parser.write('<body>test</body>');
         parser.write('</message>');
         parser.write('</stream:stream>');
+    });
+
+    test('[Stream Errors] Unknown Root', t => {
+        t.plan(2);
+
+        const registry = setupRegistry();
+        const parser = new StreamParser({
+            registry,
+            rootKey: 'stream',
+            wrappedStream: true
+        });
+
+        parser.on('error', err => {
+            t.ok(err.isJXTError);
+            t.equal(err.condition, JXTErrorCondition.UnknownRoot);
+        });
+
+        parser.write('<message xmlns="jabber:client" type="normal" id="123"><body>');
+    });
+
+    test('[Stream Errors] Not well-formed', t => {
+        t.plan(2);
+
+        const registry = setupRegistry();
+        const parser = new StreamParser({
+            registry
+        });
+
+        parser.on('error', err => {
+            t.ok(err.isJXTError);
+            t.equal(err.condition, JXTErrorCondition.NotWellFormed);
+        });
+
+        parser.write('<message xmlns="jabber:client" type="normal" id="123">');
+        parser.write('</presence>');
+    });
+
+    test('[Stream Errors] Not well-formed: close unopened stream', t => {
+        t.plan(2);
+
+        const registry = setupRegistry();
+        const parser = new StreamParser({
+            registry,
+            rootKey: 'stream',
+            wrappedStream: true
+        });
+
+        parser.on('error', err => {
+            t.ok(err.isJXTError);
+            t.equal(err.condition, JXTErrorCondition.NotWellFormed);
+        });
+
+        parser.write('</stream:stream>');
+    });
+
+    test('[Stream Errors] Already closed', t => {
+        t.plan(2);
+
+        const registry = setupRegistry();
+        const parser = new StreamParser({
+            registry,
+            rootKey: 'stream',
+            wrappedStream: true
+        });
+
+        parser.on('error', err => {
+            t.ok(err.isJXTError);
+            t.equal(err.condition, JXTErrorCondition.AlreadyClosed);
+        });
+
+        parser.write(
+            '<stream:stream xmlns:stream="http://etherx.jabber.org/streams" xmlns="jabber:client">'
+        );
+        parser.write('</stream:stream><extra />');
+    });
+
+    test('[Stream Errors] Unknown root element', t => {
+        t.plan(2);
+
+        const registry = setupRegistry();
+        const parser = new StreamParser({
+            registry,
+            wrappedStream: true
+        });
+
+        parser.on('error', err => {
+            t.ok(err.isJXTError);
+            t.equal(err.condition, JXTErrorCondition.NotWellFormed);
+        });
+
+        parser.write('<message />');
+    });
+
+    test('[Stream Errors] Unknown element', t => {
+        const registry = setupRegistry();
+        const parser = new StreamParser({
+            registry
+        });
+
+        parser.on('error', err => {
+            t.fail();
+        });
+
+        parser.write('<message />');
+        t.pass();
+        t.end();
+    });
+
+    test('[Stream Errors] Restricted XML', t => {
+        t.plan(2);
+
+        const registry = setupRegistry();
+        const parser = new StreamParser({
+            allowComments: false,
+            registry,
+            wrappedStream: true
+        });
+
+        parser.on('error', err => {
+            t.ok(err.isJXTError);
+            t.equal(err.condition, JXTErrorCondition.RestrictedXML);
+        });
+
+        parser.write('<!-- illegal comment -->');
     });
 }

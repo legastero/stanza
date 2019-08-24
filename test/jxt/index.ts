@@ -12,6 +12,7 @@ import attributeTests from './examples/attribute';
 import booleanAttributeTests from './examples/booleanAttribute';
 import childAlternateLanguageRawElementTests from './examples/childAlternateLanguageRawElement';
 import childAlternateLanguageTextTests from './examples/childAlternateLanguageText';
+import namespacedAttributeTests from './examples/namespacedAttribute';
 
 importTests();
 exportTests();
@@ -27,3 +28,4 @@ attributeTests();
 booleanAttributeTests();
 childAlternateLanguageRawElementTests();
 childAlternateLanguageTextTests();
+namespacedAttributeTests();
