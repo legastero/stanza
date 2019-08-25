@@ -73,9 +73,7 @@ export default class Translator {
 
         const existing = existingChild.translator;
 
-        if (multiple === true || multiple === false) {
-            existingChild.multiple = multiple;
-        }
+        existingChild.multiple = multiple;
         if (selector && existingChild.selector && selector !== existingChild.selector) {
             existingChild.selector = undefined;
         }
@@ -89,6 +87,7 @@ export default class Translator {
                 importerOrdering: importer.fieldOrders,
                 importers: importer.fields,
                 namespace: importer.namespace,
+                optionalNamespaces: new Map(),
                 type: existing.typeValues.get(xid)
             });
             if (!this.implicitChildren.has(xid)) {
@@ -105,6 +104,7 @@ export default class Translator {
                 importerOrdering: new Map(),
                 importers: new Map(),
                 namespace: exporter.namespace,
+                optionalNamespaces: exporter.optionalNamespaces,
                 type: exportType
             });
         }
@@ -173,13 +173,17 @@ export default class Translator {
                 element: opts.element,
                 fieldOrders: new Map(),
                 fields: new Map(),
-                namespace: opts.namespace
+                namespace: opts.namespace,
+                optionalNamespaces: opts.optionalNamespaces
             } as Exporter);
         for (const [fieldName, fieldExporter] of opts.exporters) {
             exporter.fields.set(fieldName, fieldExporter);
         }
         for (const [name, order] of opts.exporterOrdering) {
             exporter.fieldOrders.set(name, order);
+        }
+        for (const [prefix, namespace] of opts.optionalNamespaces) {
+            exporter.optionalNamespaces.set(prefix, namespace);
         }
         this.exporters.set(opts.type || this.defaultType, exporter);
 
@@ -372,17 +376,27 @@ export default class Translator {
             return;
         }
 
-        const output = createElement(exporter.namespace, exporter.element, parentContext.namespace);
+        const output = createElement(
+            exporter.namespace,
+            exporter.element,
+            parentContext.namespace,
+            parentContext.element
+        );
         if (parentContext.element) {
             output.parent = parentContext.element;
         }
+
+        for (const [prefix, namespace] of exporter.optionalNamespaces) {
+            output.addOptionalNamespace(prefix, namespace);
+        }
+
         const context: TranslationContext = {
             ...parentContext,
             data,
             element: output,
             exporter,
             lang: (data[this.languageField] || parentContext.lang || '').toLowerCase(),
-            namespace: exporter.namespace,
+            namespace: output.getDefaultNamespace(),
             pathSelector: exportType,
             translator: this
         };

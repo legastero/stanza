@@ -44,7 +44,7 @@
 | [XEP-0114](https://xmpp.org/extensions/xep-0114.html) | Jabber Component Protocol                          | 1.6     | [Source](../src/protocol/xep0114.ts) |                                              |
 | [XEP-0115](https://xmpp.org/extensions/xep-0115.html) | Entity Capabilities                                | 1.5.1   | [Source](../src/protocol/xep0115.ts) |                                              |
 | [XEP-0118](https://xmpp.org/extensions/xep-0118.html) | User Tune                                          | 1.2     | [Source](../src/protocol/xep0118.ts) |                                              |
-| [XEP-0122](https://xmpp.org/extensions/xep-0122.html) | Data Forms Validation                              | 1.0.1   | [Source](../src/protocol/xep0122.ts) |                                              |
+| [XEP-0122](https://xmpp.org/extensions/xep-0122.html) | Data Forms Validation                              | 1.0.1   | [Source](../src/protocol/xep0004.ts) | [Test Cases](../test/protocol-cases/xep0004) |
 | [XEP-0124](https://xmpp.org/extensions/xep-0124.html) | Bidirectional-streams Over Synchronous HTTP (BOSH) | 1.11.1  | [Source](../src/protocol/xep0124.ts) |                                              |
 | [XEP-0128](https://xmpp.org/extensions/xep-0128.html) | Service Discovery Extensions                       | 1.0     | [Source](../src/protocol/xep0030.ts) |                                              |
 | [XEP-0131](https://xmpp.org/extensions/xep-0131.html) | Stanza Headers and Internet Metadata               | 1.2     | [Source](../src/protocol/xep0131.ts) |                                              |

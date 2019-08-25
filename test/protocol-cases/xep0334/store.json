@@ -4,7 +4,7 @@
         "from": "romeo@montague.lit/laptop",
         "to": "juliet@capulet.lit/laptop",
         "body": "V unir avtug'f pybnx gb uvqr zr sebz gurve fvtug",
-        "processingHints": { "noCopy": true, "noStore": true, "noPermanentStore": true }
+        "processingHints": { "store": true }
     },
     {
         "from": "romeo@montague.lit/laptop",
@@ -14,6 +14,6 @@
             { "lang": "", "value": "V unir avtug'f pybnx gb uvqr zr sebz gurve fvtug" }
         ],
         "body": "V unir avtug'f pybnx gb uvqr zr sebz gurve fvtug",
-        "processingHints": { "noCopy": true, "noStore": true, "noPermanentStore": true }
+        "processingHints": { "store": true }
     }
 ]

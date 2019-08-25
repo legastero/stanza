@@ -11,11 +11,21 @@ type ElementPath = Array<{ namespace: string | null; element: string }>;
 export function createElement(
     namespace: string | null | undefined,
     name: string,
-    parentNamespace?: string
+    parentNamespace?: string,
+    parent?: XMLElement
 ): XMLElement {
+    if (parent) {
+        namespace = namespace || parent.getNamespace();
+        const root = parent.getNamespaceRoot(namespace);
+        if (root) {
+            const prefix = root.useNamespace('', namespace);
+            name = `${prefix}:${name}`;
+        }
+    }
+
     const el = new XMLElement(name);
 
-    if (!parentNamespace || namespace !== parentNamespace) {
+    if (name.indexOf(':') < 0 && (!parentNamespace || namespace !== parentNamespace)) {
         el.setAttribute('xmlns', namespace);
     }
 
@@ -77,12 +87,14 @@ export function findOrCreate(
     element: string,
     lang?: string
 ): XMLElement {
+    namespace = namespace || xml.getNamespace();
+
     const existing = findAll(xml, namespace, element, lang);
     if (existing.length) {
         return existing[0];
     }
 
-    const created = createElement(namespace, element, xml.getNamespace());
+    const created = createElement(namespace, element, xml.getDefaultNamespace(), xml);
     const parentLang = getLang(xml, lang);
     if (lang && parentLang !== lang) {
         created.setAttribute('xml:lang', lang);
@@ -121,18 +133,18 @@ function createAttributeField<T, E = T>(opts: CreateAttributeOptions<T, E>): Fie
             if (!opts.namespace || !opts.prefix) {
                 xml.setAttribute(opts.name, output, opts.emitEmpty);
             } else {
-                const namespaces = xml.getNamespaceContext();
-                if (value) {
+                let prefix;
+                const root = xml.getNamespaceRoot(opts.namespace);
+                if (root) {
+                    prefix = root.useNamespace(opts.prefix, opts.namespace);
+                } else {
+                    const namespaces = xml.getNamespaceContext();
                     if (!namespaces[opts.namespace]) {
-                        xml.setAttribute(`xmlns:${opts.prefix}`, opts.namespace);
-                        namespaces[opts.namespace] = opts.prefix;
+                        prefix = xml.useNamespace(opts.prefix, opts.namespace);
+                        namespaces[opts.namespace] = prefix;
                     }
-                    xml.setAttribute(
-                        `${namespaces[opts.namespace]}:${opts.name}`,
-                        output,
-                        opts.emitEmpty
-                    );
                 }
+                xml.setAttribute(`${prefix}:${opts.name}`, output, opts.emitEmpty);
             }
         }
     };
@@ -719,7 +731,8 @@ export function multipleChildText(
                 const child = createElement(
                     namespace || xml.getNamespace(),
                     element,
-                    xml.getNamespace()
+                    context.namespace,
+                    xml
                 );
                 child.children.push(value);
                 xml.appendChild(child);
@@ -745,12 +758,13 @@ export function multipleChildAttribute(
             }
             return result;
         },
-        exporter(xml, values) {
+        exporter(xml, values, context) {
             for (const value of values) {
                 const child = createElement(
                     namespace || xml.getNamespace(),
                     element,
-                    xml.getNamespace()
+                    context.namespace,
+                    xml
                 );
                 child.setAttribute(name, value);
                 xml.appendChild(child);
@@ -776,12 +790,13 @@ export function multipleChildIntegerAttribute(
             }
             return result;
         },
-        exporter(xml, values) {
+        exporter(xml, values, context) {
             for (const value of values) {
                 const child = createElement(
                     namespace || xml.getNamespace(),
                     element,
-                    xml.getNamespace()
+                    context.namespace,
+                    xml
                 );
                 child.setAttribute(name, value.toString());
                 xml.appendChild(child);
@@ -820,7 +835,8 @@ export function childAlternateLanguageText(
                     const child = createElement(
                         namespace || xml.getNamespace(),
                         element,
-                        context.namespace
+                        context.namespace,
+                        xml
                     );
                     if (entry.lang !== context.lang) {
                         child.setAttribute('xml:lang', entry.lang);
@@ -865,7 +881,8 @@ export function multipleChildAlternateLanguageText(
                     const child = createElement(
                         namespace || xml.getNamespace(),
                         element,
-                        context.namespace
+                        context.namespace,
+                        xml
                     );
                     if (entry.lang !== context.lang) {
                         child.setAttribute('xml:lang', entry.lang);
@@ -1148,7 +1165,8 @@ export function childAlternateLanguageRawElement(
                     const rawElement = createElement(
                         namespace || xml.getNamespace(),
                         element,
-                        context.namespace
+                        context.namespace,
+                        xml
                     );
                     xml.appendChild(rawElement);
 
@@ -1198,11 +1216,13 @@ export function parameterMap(
         ) {
             const keyExporter = attribute(keyName).exporter;
             const valueExporter = attribute(valueName).exporter;
-            for (const param of Object.keys(values)) {
-                const paramEl = createElement(namespace, element);
+            const ns = namespace || xml.getNamespace();
+
+            for (const [param, value] of Object.entries(values)) {
+                const paramEl = createElement(ns, element, context.namespace, xml);
                 keyExporter(paramEl, param, context);
                 if (values[param]) {
-                    valueExporter(paramEl, values[param]!, context);
+                    valueExporter(paramEl, value!, context);
                 }
                 xml.appendChild(paramEl);
             }

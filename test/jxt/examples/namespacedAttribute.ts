@@ -34,6 +34,9 @@ registry.define([
             baz: namespacedAttribute('p', 'ns', 'baz')
         },
         namespace: '',
+        optionalNamespaces: {
+            other: 'ns'
+        },
         path: 'example3'
     },
     {
@@ -73,7 +76,7 @@ export default function runTests() {
         t.ok(ex, 'Exported version exists');
         t.equal(
             ex!.toString(),
-            '<x3 xmlns:p="ns" p:baz="qux"><c p:foo="bar"/></x3>',
+            '<x3 xmlns:other="ns" other:baz="qux"><c other:foo="bar"/></x3>',
             'Exported XML matches'
         );
         t.end();

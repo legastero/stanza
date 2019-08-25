@@ -187,13 +187,23 @@ function rtcpFeedback(): FieldDefinition {
             for (const fb of values) {
                 let child: XMLElement;
                 if (fb.type === 'trr-int') {
-                    child = createElement(NS_JINGLE_RTP_RTCP_FB_0, 'rtcp-fb-trr-int');
+                    child = createElement(
+                        NS_JINGLE_RTP_RTCP_FB_0,
+                        'rtcp-fb-trr-int',
+                        context.namespace,
+                        xml
+                    );
                     typeExporter(child, fb.type, context);
                     if (fb.parameter) {
                         valueExporter(child, fb.parameter, context);
                     }
                 } else {
-                    child = createElement(NS_JINGLE_RTP_RTCP_FB_0, 'rtcp-fb');
+                    child = createElement(
+                        NS_JINGLE_RTP_RTCP_FB_0,
+                        'rtcp-fb',
+                        context.namespace,
+                        xml
+                    );
                     typeExporter(child, fb.type, context);
                     if (fb.parameter) {
                         subtypeExporter(child, fb.parameter, context);
@@ -212,13 +222,17 @@ const Protocol: DefinitionOptions[] = [
         aliases: ['iq.jingle.contents.application'],
         element: 'description',
         fields: {
-            feedback: rtcpFeedback(),
             media: attribute('media'),
+            rtcpFeedback: rtcpFeedback(),
             rtcpMux: childBoolean(null, 'rtcp-mux'),
             rtcpReducedSize: childBoolean(null, 'rtcp-reduced-size'),
             ssrc: attribute('ssrc')
         },
         namespace: NS_JINGLE_RTP_1,
+        optionalNamespaces: {
+            rtcpf: NS_JINGLE_RTP_RTCP_FB_0,
+            rtph: NS_JINGLE_RTP_HDREXT_0
+        },
         type: NS_JINGLE_RTP_1
     },
     {
@@ -250,12 +264,12 @@ const Protocol: DefinitionOptions[] = [
         fields: {
             channels: integerAttribute('channels'),
             clockRate: integerAttribute('clockrate'),
-            feedback: rtcpFeedback(),
             id: attribute('id'),
             maxptime: integerAttribute('maxptime'),
             name: attribute('name'),
             parameters: parameterMap(NS_JINGLE_RTP_1, 'parameter', 'name', 'value'),
-            ptime: integerAttribute('ptime')
+            ptime: integerAttribute('ptime'),
+            rtcpFeedback: rtcpFeedback()
         },
         namespace: NS_JINGLE_RTP_1
     },

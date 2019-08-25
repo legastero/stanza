@@ -18,6 +18,9 @@ export default class XMLElement {
     public parent?: XMLElement;
     public children: Array<XMLElement | string>;
     public attributes: Attributes;
+    public optionalNamespaces: {
+        [ns: string]: string;
+    };
 
     constructor(
         name: string,
@@ -27,6 +30,7 @@ export default class XMLElement {
         this.name = name;
         this.attributes = attrs;
         this.children = [];
+        this.optionalNamespaces = {};
 
         for (const child of children) {
             if (typeof child !== 'string') {
@@ -62,13 +66,43 @@ export default class XMLElement {
             namespaces = this.parent.getNamespaceContext();
         }
 
-        for (const attr of Object.keys(this.attributes)) {
+        for (const [attr, value] of Object.entries(this.attributes)) {
             if (attr.startsWith('xmlns:')) {
                 const prefix = attr.substr(6);
-                namespaces[this.attributes[attr]!] = prefix;
+                namespaces[value!] = prefix;
             }
         }
         return namespaces;
+    }
+
+    public getDefaultNamespace(): string {
+        if (this.attributes.xmlns) {
+            return this.attributes.xmlns;
+        }
+        if (this.parent) {
+            return this.parent.getDefaultNamespace();
+        }
+        return '';
+    }
+
+    public getNamespaceRoot(namespace: string): XMLElement | undefined {
+        if (this.parent) {
+            const parentRoot = this.parent.getNamespaceRoot(namespace);
+            if (parentRoot) {
+                return parentRoot;
+            }
+        }
+
+        for (const [attr, value] of Object.entries(this.attributes)) {
+            if (attr.startsWith('xmlns:') && value === namespace) {
+                return this;
+            }
+        }
+        if (this.optionalNamespaces[namespace]) {
+            return this;
+        }
+
+        return undefined;
     }
 
     public getAttribute(name: string, xmlns?: NullableString): string | undefined {
@@ -126,6 +160,18 @@ export default class XMLElement {
         if (val === '' && force) {
             this.attributes[attr] = val;
         }
+    }
+
+    public addOptionalNamespace(prefix: string, namespace: string): void {
+        this.optionalNamespaces[namespace] = prefix;
+    }
+
+    public useNamespace(prefix: string, namespace: string): string {
+        if (this.optionalNamespaces[namespace]) {
+            prefix = this.optionalNamespaces[namespace];
+        }
+        this.setAttribute(`xmlns:${prefix}`, namespace);
+        return prefix;
     }
 
     public toJSON(): JSONElement {

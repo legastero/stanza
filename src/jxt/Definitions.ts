@@ -47,6 +47,7 @@ export interface Exporter {
     element: string;
     fields: Map<FieldName, FieldExporter>;
     fieldOrders: Map<FieldName, number>;
+    optionalNamespaces: Map<string, string>;
 }
 
 export interface ChildTranslator {
@@ -65,6 +66,7 @@ export interface DefinitionUpdateOptions {
     exporterOrdering: Map<FieldName, number>;
     exporters: Map<FieldName, FieldExporter>;
     contexts: Map<string, PathContext>;
+    optionalNamespaces: Map<string, string>;
 }
 
 export interface DefinitionOptions {
@@ -78,6 +80,7 @@ export interface DefinitionOptions {
     path?: string;
     aliases?: Array<string | LinkPath>;
     childrenExportOrder?: { [key: string]: number };
+    optionalNamespaces?: { [prefix: string]: string };
 }
 
 export interface LinkPath {

@@ -3,13 +3,23 @@
 // --------------------------------------------------------------------
 // Source: https://xmpp.org/extensions/xep-0004.html
 // Version: 2.9 (2007-08-13)
+//
+// Additional:
+// --------------------------------------------------------------------
+// XEP-0122: Data Forms Validation
+// --------------------------------------------------------------------
+// Source: https://xmpp.org/extensions/xep-0122.html
+// Version: 1.0.1 (2018-03-05)
 // ====================================================================
 
 import { DataFormFieldType, DataFormType } from '../Constants';
 import { JID } from '../JID';
 import {
     attribute,
+    childAttribute,
     childBoolean,
+    childEnum,
+    childIntegerAttribute,
     childText,
     DefinitionOptions,
     multipleChildText,
@@ -17,7 +27,7 @@ import {
     TranslationContext,
     XMLElement
 } from '../jxt';
-import { NS_DATAFORM } from '../Namespaces';
+import { NS_DATAFORM, NS_DATAFORM_VALIDATION } from '../Namespaces';
 
 declare module './' {
     export interface Message {
@@ -47,6 +57,7 @@ export interface DataFormFieldBase {
     description?: string;
     required?: boolean;
     rawValues?: string[];
+    validation?: DataFormValidation;
 }
 
 export interface DataFormFieldBoolean extends DataFormFieldBase {
@@ -112,6 +123,16 @@ export type DataFormField =
     | DataFormFieldJIDMulti
     | DataFormFieldAny;
 
+export interface DataFormValidation {
+    type: string;
+    method: 'basic' | 'open' | 'range' | 'regex';
+    rangeMin?: string;
+    rangeMax?: string;
+    listMin?: number;
+    listMax?: number;
+    regex?: string;
+}
+
 const Protocol: DefinitionOptions[] = [
     {
         aliases: [{ path: 'message.forms', multiple: true }],
@@ -132,6 +153,9 @@ const Protocol: DefinitionOptions[] = [
             type: attribute('type')
         },
         namespace: NS_DATAFORM,
+        optionalNamespaces: {
+            xdv: NS_DATAFORM_VALIDATION
+        },
         path: 'dataform'
     },
     {
@@ -232,6 +256,23 @@ const Protocol: DefinitionOptions[] = [
         aliases: [{ path: 'dataform.items', multiple: true }],
         element: 'item',
         namespace: NS_DATAFORM
+    },
+    // ----------------------------------------------------------------
+    // XEP-0122: Data Forms Validation
+    // ----------------------------------------------------------------
+    {
+        element: 'validate',
+        fields: {
+            listMax: childIntegerAttribute(null, 'list-range', 'max'),
+            listMin: childIntegerAttribute(null, 'list-range', 'min'),
+            method: childEnum(null, ['basic', 'open', 'range', 'regex'], 'basic'),
+            rangeMax: childAttribute(null, 'range', 'max'),
+            rangeMin: childAttribute(null, 'range', 'min'),
+            regex: childText(null, 'regex'),
+            type: attribute('datatype', 'xs:string')
+        },
+        namespace: NS_DATAFORM_VALIDATION,
+        path: 'dataform.fields.validation'
     }
 ];
 export default Protocol;

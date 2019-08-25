@@ -206,6 +206,11 @@ export default class Registry {
             }
         }
 
+        const optionalNamespaces: Map<string, string> = new Map();
+        for (const [prefix, namespace] of Object.entries(definition.optionalNamespaces || {})) {
+            optionalNamespaces.set(prefix, namespace);
+        }
+
         translator.updateDefinition({
             contexts: new Map(),
             element: definition.element,
@@ -214,6 +219,7 @@ export default class Registry {
             importerOrdering,
             importers,
             namespace: definition.namespace,
+            optionalNamespaces,
             type: definition.type
         });
 

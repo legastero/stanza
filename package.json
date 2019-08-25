@@ -33,7 +33,7 @@
         "rollup": "^1.19.4",
         "rollup-plugin-node-resolve": "^5.0.1",
         "rollup-plugin-visualizer": "^2.5.4",
-        "tap-spec": "^5.0.0",
+        "tap-dot": "^2.0.0",
         "tape": "^4.10.2",
         "ts-node": "^8.2.0",
         "tslint": "^5.17.0",
@@ -96,7 +96,7 @@
         "compile:webpack": "webpack --mode production",
         "license-check": "npx license-checker --production --excludePrivatePackages --summary",
         "lint": "tslint -p .",
-        "test": "nyc ts-node --files test/index.ts | tap-spec && nyc report --reporter=text",
+        "test": "nyc ts-node --files test/index.ts | tap-dot",
         "validate": "npm ls"
     },
     "stanzajs_env_mappings": {

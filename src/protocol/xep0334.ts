@@ -58,18 +58,20 @@ function processingHints(): FieldDefinition<ProcessingHints> {
 
             return found ? results : undefined;
         },
-        exporter(xml, value) {
+        exporter(xml, value, context) {
             if (value.noCopy) {
-                xml.appendChild(createElement(NS_HINTS, 'no-copy'));
+                xml.appendChild(createElement(NS_HINTS, 'no-copy', context.namespace, xml));
             }
             if (value.noPermanentStore) {
-                xml.appendChild(createElement(NS_HINTS, 'no-permanent-store'));
+                xml.appendChild(
+                    createElement(NS_HINTS, 'no-permanent-store', context.namespace, xml)
+                );
             }
             if (value.noStore) {
-                xml.appendChild(createElement(NS_HINTS, 'no-store'));
+                xml.appendChild(createElement(NS_HINTS, 'no-store', context.namespace, xml));
             }
             if (value.store) {
-                xml.appendChild(createElement(NS_HINTS, 'store'));
+                xml.appendChild(createElement(NS_HINTS, 'store', context.namespace, xml));
             }
         }
     };
