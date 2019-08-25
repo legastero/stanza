@@ -1,4 +1,4 @@
-import test from 'tape';
+import expect from 'expect';
 
 import { booleanAttribute, parse, Registry } from '../../../src/jxt';
 
@@ -16,67 +16,56 @@ registry.define({
     path: 'example'
 });
 
-export default function runTests() {
-    test('[Type: booleanAttribute]: Import with "true"', t => {
-        const ex = registry.import(parse('<x foo="true" />')) as Example;
-        t.ok(ex, 'Imported version exists (using "true")');
-        t.equal(ex.foo, true, 'Attribute is true');
-        t.end();
-    });
+test('[Type: booleanAttribute]: Import with "true"', () => {
+    const ex = registry.import(parse('<x foo="true" />')) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex.foo).toBe(true);
+});
 
-    test('[Type: booleanAttribute]: Import with "1"', t => {
-        const ex = registry.import(parse('<x foo="1" />')) as Example;
-        t.ok(ex, 'Imported version exists (using "1")');
-        t.equal(ex.foo, true, 'Attribute is true');
-        t.end();
-    });
+test('[Type: booleanAttribute]: Import with "1"', () => {
+    const ex = registry.import(parse('<x foo="1" />')) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex.foo).toBe(true);
+});
 
-    test('[Type: booleanAttribute]: Import with "false"', t => {
-        const ex = registry.import(parse('<x foo="false" />')) as Example;
-        t.ok(ex, 'Imported version exists (using "false")');
-        t.equal(ex.foo, false, 'Attribute is false');
-        t.end();
-    });
+test('[Type: booleanAttribute]: Import with "false"', () => {
+    const ex = registry.import(parse('<x foo="false" />')) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex.foo).toBe(false);
+});
 
-    test('[Type: booleanAttribute]: Import with "0"', t => {
-        const ex = registry.import(parse('<x foo="0" />')) as Example;
-        t.ok(ex, 'Imported version exists (using "0")');
-        t.equal(ex.foo, false, 'Attribute is false');
-        t.end();
-    });
+test('[Type: booleanAttribute]: Import with "0"', () => {
+    const ex = registry.import(parse('<x foo="0" />')) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex.foo).toBe(false);
+});
 
-    test('[Type: booleanAttribute]: Import with anything not "true" or "1"', t => {
-        const ex = registry.import(parse('<x foo="blah" />')) as Example;
-        t.ok(ex, 'Imported version exists (using "blah")');
-        t.equal(ex.foo, undefined, 'Attribute is falsey');
-        t.end();
-    });
+test('[Type: booleanAttribute]: Import with anything not "true" or "1"', () => {
+    const ex = registry.import(parse('<x foo="blah" />')) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex.foo).toBe(undefined);
+});
 
-    test('[Type: booleanAttribute]: Export true', t => {
-        const ex = registry.export<Example>('example', { foo: true });
-        t.ok(ex, 'Exported version exists');
-        t.equal(ex!.toString(), '<x foo="1"/>', 'Exported XML matches');
-        t.end();
-    });
+test('[Type: booleanAttribute]: Export true', () => {
+    const ex = registry.export<Example>('example', { foo: true });
+    expect(ex).toBeTruthy();
+    expect(ex!.toString()).toBe('<x foo="1"/>');
+});
 
-    test('[Type: booleanAttribute]: Export false', t => {
-        const ex = registry.export<Example>('example', { foo: false });
-        t.ok(ex, 'Exported version exists');
-        t.equal(ex!.toString(), '<x foo="0"/>', 'Exported XML matches');
-        t.end();
-    });
+test('[Type: booleanAttribute]: Export false', () => {
+    const ex = registry.export<Example>('example', { foo: false });
+    expect(ex).toBeTruthy();
+    expect(ex!.toString()).toBe('<x foo="0"/>');
+});
 
-    test('[Type: booleanAttribute]: Export not set', t => {
-        const ex = registry.import(parse('<x />')) as Example;
-        t.ok(ex, 'Imported version exists');
-        t.equal(ex!.foo, undefined, 'Attribute is falsey');
-        t.end();
-    });
+test('[Type: booleanAttribute]: Export not set', () => {
+    const ex = registry.import(parse('<x />')) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex!.foo).toBe(undefined);
+});
 
-    test('[Type: booleanAttribute]', t => {
-        const ex = registry.export<Example>('example', {});
-        t.ok(ex, 'Exported version exists');
-        t.equal(ex!.toString(), '<x/>', 'Exported XML matches');
-        t.end();
-    });
-}
+test('[Type: booleanAttribute]', () => {
+    const ex = registry.export<Example>('example', {});
+    expect(ex).toBeTruthy();
+    expect(ex!.toString()).toBe('<x/>');
+});

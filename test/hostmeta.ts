@@ -1,4 +1,4 @@
-import test from 'tape';
+import expect from 'expect';
 import * as JXT from '../src/jxt';
 
 import { getHostMeta } from '../src/plugins/hostmeta';
@@ -32,58 +32,57 @@ const json = {
     subject: 'http://blog.example.com/article/id/314'
 };
 
-test('XRD', t => {
-    t.plan(2);
+test('XRD', () => {
+    expect.assertions(2);
 
     const xrd = registry.import(JXT.parse(xml))!;
 
-    t.equal(xrd.subject, json.subject);
-    t.deepEqual(xrd.links, json.links);
-    t.end();
+    expect(xrd.subject).toBe(json.subject);
+    expect(xrd.links).toEqual(json.links);
 });
 
-test('retrieve JSON only', t => {
-    t.plan(1);
+test('retrieve JSON only', done => {
+    expect.assertions(1);
 
     getHostMeta(registry, {
         host: 'lance.im',
         json: true,
         xrd: false
     }).then(hostmeta => {
-        t.ok(hostmeta.links.length > 0);
-        t.end();
+        expect(hostmeta.links.length > 0).toBeTruthy();
+        done();
     });
 });
 
-test('retrieve XRD only', t => {
-    t.plan(1);
+test('retrieve XRD only', done => {
+    expect.assertions(1);
 
     getHostMeta(registry, {
         host: 'lance.im',
         json: false,
         xrd: true
     }).then(hostmeta => {
-        t.ok(hostmeta.links.length > 0);
-        t.end();
+        expect(hostmeta.links.length > 0).toBeTruthy();
+        done();
     });
 });
 
-test('retrieve either', t => {
-    t.plan(1);
+test('retrieve either', done => {
+    expect.assertions(1);
     getHostMeta(registry, 'lance.im').then(hostmeta => {
-        t.ok(hostmeta.links.length > 0);
-        t.end();
+        expect(hostmeta.links.length > 0).toBeTruthy();
+        done();
     });
 });
 
-test('missing host-meta', t => {
-    t.plan(1);
+test('missing host-meta', done => {
+    expect.assertions(1);
     getHostMeta(registry, {
         host: 'dne.lance.im',
         json: true,
         xrd: true
     }).catch(err => {
-        t.ok(err);
-        t.end();
+        expect(err).toBeTruthy();
+        done();
     });
 });

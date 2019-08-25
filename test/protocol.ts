@@ -1,5 +1,5 @@
+import expect from 'expect';
 import * as FS from 'fs';
-import test from 'tape';
 
 import { parse, Registry, XMLElement } from '../src/jxt';
 import XMPP from '../src/protocol';
@@ -67,13 +67,12 @@ for (const [testSuite, testCases] of testSuites) {
         const jsonOut = json[1];
         const jsonIn = json.length === 2 ? json[1] : json[2];
 
-        test(`${testSuite}/${testCase}`, t => {
+        test(`${testSuite}/${testCase}`, () => {
             const imported = registry.import(xml);
-            t.deepEqual(imported, jsonIn, 'Import XML to JSON');
+            expect(imported).toEqual(jsonIn);
 
             const exported = registry.export(json[0], jsonOut)!;
-            t.same(exported.toJSON(), xml.toJSON(), 'Export JSON to XML');
-            t.end();
+            expect(exported.toJSON()).toEqual(xml.toJSON());
         });
     }
 }

@@ -23,7 +23,7 @@
         "object-literal-key-quotes": [true, "as-needed"],
         "max-union-size": [true, 5],
         "no-duplicate-string": [true, 4],
-        "cognitive-complexity": [true, 120],
+        "cognitive-complexity": [true, 125],
         "parameters-max-number": [true, 8],
         "no-big-function": [true, 400]
     },

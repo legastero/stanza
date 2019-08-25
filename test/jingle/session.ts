@@ -1,4 +1,4 @@
-import test from 'tape';
+import expect from 'expect';
 import { JingleAction } from '../../src/Constants';
 import { Session as GenericSession, SessionManager } from '../../src/jingle';
 
@@ -42,8 +42,8 @@ class StubSession extends GenericSession {
     }
 }
 
-test('Test accepting base session', t => {
-    t.plan(3);
+test('Test accepting base session', done => {
+    expect.assertions(3);
 
     const jingle = new SessionManager({
         selfID
@@ -52,7 +52,7 @@ test('Test accepting base session', t => {
     let sentResult = false;
     jingle.on('send', data => {
         if (!sentResult) {
-            t.same(data, {
+            expect(data).toEqual({
                 id: '123',
                 to: peerID,
                 type: 'result'
@@ -63,7 +63,7 @@ test('Test accepting base session', t => {
             // sessions, so we'll test that we successfully terminated
             // the session instead.
             delete data.id;
-            t.same(data, {
+            expect(data).toEqual({
                 jingle: {
                     action: JingleAction.SessionTerminate,
                     reason: {
@@ -74,11 +74,12 @@ test('Test accepting base session', t => {
                 to: peerID,
                 type: 'set'
             });
+            done();
         }
     });
 
     jingle.on('incoming', session => {
-        t.ok(session);
+        expect(session).toBeTruthy();
         session.accept();
     });
 
@@ -106,8 +107,8 @@ test('Test accepting base session', t => {
     });
 });
 
-test('Test accepting stub session', t => {
-    t.plan(3);
+test('Test accepting stub session', done => {
+    expect.assertions(3);
 
     const jingle = new SessionManager({
         prepareSession: meta => {
@@ -121,7 +122,7 @@ test('Test accepting stub session', t => {
     let sentResult = false;
     jingle.on('send', data => {
         if (!sentResult) {
-            t.same(data, {
+            expect(data).toEqual({
                 id: '123',
                 to: peerID,
                 type: 'result'
@@ -129,7 +130,7 @@ test('Test accepting stub session', t => {
             sentResult = true;
         } else {
             delete data.id;
-            t.same(data, {
+            expect(data).toEqual({
                 jingle: {
                     action: JingleAction.SessionAccept,
                     contents: [
@@ -149,11 +150,12 @@ test('Test accepting stub session', t => {
                 to: peerID,
                 type: 'set'
             });
+            done();
         }
     });
 
     jingle.on('incoming', session => {
-        t.ok(session);
+        expect(session).toBeTruthy();
         session.accept();
     });
 
@@ -181,8 +183,8 @@ test('Test accepting stub session', t => {
     });
 });
 
-test('Test starting base session', t => {
-    t.plan(2);
+test('Test starting base session', done => {
+    expect.assertions(2);
 
     const jingle = new SessionManager({
         selfID
@@ -197,16 +199,17 @@ test('Test starting base session', t => {
     // Base sessions can't be started, and will terminate
     // on .start()
     jingle.on('terminated', session => {
-        t.equal(session.sid, sess.sid);
-        t.equal(session.state, 'ended');
+        expect(session.sid).toBe(sess.sid);
+        expect(session.state).toBe('ended');
+        done();
     });
 
     jingle.addSession(sess);
     sess.start();
 });
 
-test('Test starting stub session', t => {
-    t.plan(3);
+test('Test starting stub session', done => {
+    expect.assertions(3);
 
     const jingle = new SessionManager({
         selfID
@@ -219,7 +222,7 @@ test('Test starting stub session', t => {
 
     jingle.on('send', data => {
         delete data.id;
-        t.same(data, {
+        expect(data).toEqual({
             jingle: {
                 action: JingleAction.SessionInitiate,
                 contents: [
@@ -239,19 +242,20 @@ test('Test starting stub session', t => {
             to: peerID,
             type: 'set'
         });
+        done();
     });
 
     jingle.on('outgoing', session => {
-        t.equal(session.sid, sess.sid);
-        t.equal(session.state, 'pending');
+        expect(session.sid).toBe(sess.sid);
+        expect(session.state).toBe('pending');
     });
 
     jingle.addSession(sess);
     sess.start();
 });
 
-test('Test declining a session', t => {
-    t.plan(3);
+test('Test declining a session', done => {
+    expect.assertions(3);
 
     const jingle = new SessionManager({
         prepareSession: meta => {
@@ -265,7 +269,7 @@ test('Test declining a session', t => {
     let sentResult = false;
     jingle.on('send', data => {
         if (!sentResult) {
-            t.same(data, {
+            expect(data).toEqual({
                 id: '123',
                 to: peerID,
                 type: 'result'
@@ -273,7 +277,7 @@ test('Test declining a session', t => {
             sentResult = true;
         } else {
             delete data.id;
-            t.same(data, {
+            expect(data).toEqual({
                 jingle: {
                     action: JingleAction.SessionTerminate,
                     reason: {
@@ -284,11 +288,12 @@ test('Test declining a session', t => {
                 to: peerID,
                 type: 'set'
             });
+            done();
         }
     });
 
     jingle.on('incoming', session => {
-        t.ok(session);
+        expect(session).toBeTruthy();
         session.decline();
     });
 
@@ -316,8 +321,8 @@ test('Test declining a session', t => {
     });
 });
 
-test('Test cancelling a pending session', t => {
-    t.plan(2);
+test('Test cancelling a pending session', done => {
+    expect.assertions(2);
 
     const jingle = new SessionManager({
         selfID
@@ -332,7 +337,7 @@ test('Test cancelling a pending session', t => {
     jingle.on('send', data => {
         delete data.id;
         if (!started) {
-            t.same(data, {
+            expect(data).toEqual({
                 jingle: {
                     action: JingleAction.SessionInitiate,
                     contents: [
@@ -354,7 +359,7 @@ test('Test cancelling a pending session', t => {
             });
             started = true;
         } else {
-            t.same(data, {
+            expect(data).toEqual({
                 jingle: {
                     action: JingleAction.SessionTerminate,
                     reason: {
@@ -365,6 +370,7 @@ test('Test cancelling a pending session', t => {
                 to: peerID,
                 type: 'set'
             });
+            done();
         }
     });
 
@@ -373,8 +379,8 @@ test('Test cancelling a pending session', t => {
     sess.cancel();
 });
 
-test('Test ending a session (successful session)', t => {
-    t.plan(3);
+test('Test ending a session (successful session)', done => {
+    expect.assertions(3);
 
     const jingle = new SessionManager({
         selfID
@@ -391,7 +397,7 @@ test('Test ending a session (successful session)', t => {
 
     jingle.on('send', data => {
         delete data.id;
-        t.same(data, {
+        expect(data).toEqual({
             jingle: {
                 action: JingleAction.SessionTerminate,
                 reason: {
@@ -402,18 +408,19 @@ test('Test ending a session (successful session)', t => {
             to: peerID,
             type: 'set'
         });
+        done();
     });
 
     jingle.on('terminated', session => {
-        t.equal(session.sid, sess.sid);
-        t.equal(session.state, 'ended');
+        expect(session.sid).toBe(sess.sid);
+        expect(session.state).toBe('ended');
     });
 
     sess.end();
 });
 
-test('Test ending a session (non-successful session)', t => {
-    t.plan(3);
+test('Test ending a session (non-successful session)', done => {
+    expect.assertions(3);
 
     const jingle = new SessionManager({
         selfID
@@ -430,7 +437,7 @@ test('Test ending a session (non-successful session)', t => {
 
     jingle.on('send', data => {
         delete data.id;
-        t.same(data, {
+        expect(data).toEqual({
             jingle: {
                 action: JingleAction.SessionTerminate,
                 reason: {
@@ -442,11 +449,12 @@ test('Test ending a session (non-successful session)', t => {
             to: peerID,
             type: 'set'
         });
+        done();
     });
 
     jingle.on('terminated', session => {
-        t.equal(session.sid, sess.sid);
-        t.equal(session.state, 'ended');
+        expect(session.sid).toBe(sess.sid);
+        expect(session.state).toBe('ended');
     });
 
     sess.end({
@@ -455,7 +463,7 @@ test('Test ending a session (non-successful session)', t => {
     });
 });
 
-test('Test pending actions', t => {
+test('Test pending actions', () => {
     const jingle = new SessionManager({
         selfID
     });
@@ -470,11 +478,11 @@ test('Test pending actions', t => {
 
     sess.state = 'active';
 
-    t.notOk(sess.pendingAction);
+    expect(sess.pendingAction).toBeFalsy();
 
     sess.send(JingleAction.TransportReplace, {});
 
-    t.equal(sess.pendingAction, JingleAction.TransportReplace);
+    expect(sess.pendingAction).toBe(JingleAction.TransportReplace);
 
     jingle.process({
         from: peerID,
@@ -484,11 +492,11 @@ test('Test pending actions', t => {
         type: 'result'
     });
 
-    t.notOk(sess.pendingAction);
+    expect(sess.pendingAction).toBeFalsy();
 
     sess.send(JingleAction.TransportReplace, {});
 
-    t.equal(sess.pendingAction, JingleAction.TransportReplace);
+    expect(sess.pendingAction).toBe(JingleAction.TransportReplace);
 
     jingle.process({
         from: peerID,
@@ -498,12 +506,10 @@ test('Test pending actions', t => {
         type: 'error'
     });
 
-    t.notOk(sess.pendingAction);
-
-    t.end();
+    expect(sess.pendingAction).toBeFalsy();
 });
 
-test('Test connectionState', t => {
+test('Test connectionState', () => {
     const jingle = new SessionManager({
         selfID
     });
@@ -516,11 +522,11 @@ test('Test connectionState', t => {
     });
 
     jingle.on('connectionState', (session, connectionState) => {
-        t.equal(session.sid, sess.sid);
-        t.ok(connectionState);
+        expect(session.sid).toBe(sess.sid);
+        expect(connectionState).toBeTruthy();
     });
 
-    t.equal(sess.connectionState, 'starting');
+    expect(sess.connectionState).toBe('starting');
 
     // Should only trigger a change event once
     sess.connectionState = 'connecting';
@@ -529,18 +535,17 @@ test('Test connectionState', t => {
     sess.connectionState = 'connecting';
     sess.connectionState = 'connecting';
 
-    t.equal(sess.connectionState, 'connecting');
+    expect(sess.connectionState).toBe('connecting');
 
     sess.connectionState = 'connected';
 
-    t.equal(sess.connectionState, 'connected');
+    expect(sess.connectionState).toBe('connected');
 
     sess.connectionState = 'disconnected';
 
-    t.equal(sess.connectionState, 'disconnected');
+    expect(sess.connectionState).toBe('disconnected');
 
     sess.connectionState = 'interrupted';
 
-    t.equal(sess.connectionState, 'interrupted');
-    t.end();
+    expect(sess.connectionState).toBe('interrupted');
 });

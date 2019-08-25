@@ -1,4 +1,4 @@
-import test from 'tape';
+import expect from 'expect';
 
 import * as JXT from '../../src/jxt';
 
@@ -22,64 +22,62 @@ function setup(): JXT.Registry {
     return registry;
 }
 
-export default function runTests() {
-    test('[Re-open] Re-open existing defintion with additional fields', t => {
-        const registry = setup();
+test('[Re-open] Re-open existing defintion with additional fields', () => {
+    const registry = setup();
 
-        registry.define({
-            element: 'message',
-            fields: {
-                body: JXT.childText(null, 'body')
-            },
-            namespace: 'jabber:client'
-        });
-
-        const msgXML = JXT.parse(`
-            <message xmlns="jabber:client" id="test">
-              <body>beep</body>
-            </message>
-        `);
-        const msg = registry.import(msgXML) as Message;
-
-        t.ok(msg.id, 'message.id exists');
-        t.equal(msg.id, 'test', 'message.id is "test"');
-        t.ok(msg.body, 'message.body exists');
-        t.equal(msg.body, 'beep', 'message.body is "beep"');
-        t.end();
+    registry.define({
+        element: 'message',
+        fields: {
+            body: JXT.childText(null, 'body')
+        },
+        namespace: 'jabber:client'
     });
 
-    test('[Re-open] Re-open existing defintion with additional aliases/path', t => {
-        const registry = setup();
-
-        registry.define({
-            aliases: ['message.forwarded'],
-            element: 'forwarded',
-            namespace: 'urn:xmpp:forward:0',
-            path: 'forward'
-        });
-
-        registry.define({
-            element: 'message',
-            fields: {
-                body: JXT.childText(null, 'body')
-            },
-            namespace: 'jabber:client',
-            path: 'forward.message'
-        });
-
-        const msgXML = JXT.parse(`
+    const msgXML = JXT.parse(`
             <message xmlns="jabber:client" id="test">
               <body>beep</body>
             </message>
         `);
-        const msg = registry.import(msgXML) as Message;
+    const msg = registry.import(msgXML) as Message;
 
-        t.ok(msg.id, 'message.id exists');
-        t.equal(msg.id, 'test', 'message.id is "test"');
-        t.ok(msg.body, 'message.body exists');
-        t.equal(msg.body, 'beep', 'message.body is "beep"');
+    expect(msg.id).toBeTruthy();
+    expect(msg.id).toBe('test');
+    expect(msg.body).toBeTruthy();
+    expect(msg.body).toBe('beep');
+});
 
-        const msg2XML = JXT.parse(`
+test('[Re-open] Re-open existing defintion with additional aliases/path', () => {
+    const registry = setup();
+
+    registry.define({
+        aliases: ['message.forwarded'],
+        element: 'forwarded',
+        namespace: 'urn:xmpp:forward:0',
+        path: 'forward'
+    });
+
+    registry.define({
+        element: 'message',
+        fields: {
+            body: JXT.childText(null, 'body')
+        },
+        namespace: 'jabber:client',
+        path: 'forward.message'
+    });
+
+    const msgXML = JXT.parse(`
+            <message xmlns="jabber:client" id="test">
+              <body>beep</body>
+            </message>
+        `);
+    const msg = registry.import(msgXML) as Message;
+
+    expect(msg.id).toBeTruthy();
+    expect(msg.id).toBe('test');
+    expect(msg.body).toBeTruthy();
+    expect(msg.body).toBe('beep');
+
+    const msg2XML = JXT.parse(`
             <message xmlns="jabber:client" id="outer">
               <body>outer beep</body>
               <forwarded xmlns="urn:xmpp:forward:0">
@@ -89,16 +87,14 @@ export default function runTests() {
               </forwarded>
             </message>
         `);
-        const msg2 = registry.import(msg2XML) as any;
+    const msg2 = registry.import(msg2XML) as any;
 
-        t.ok(msg2.id, 'id exists');
-        t.equal(msg2.id, 'outer', 'id is "outer"');
-        t.ok(msg2.body, 'body exists');
-        t.equal(msg2.body, 'outer beep', 'body is "outer beep"');
-        t.ok(msg2.forwarded.message.id, 'forwarded.message.id exists');
-        t.equal(msg2.forwarded.message.id, 'test', 'forwarded.message.id is "test"');
-        t.ok(msg2.forwarded.message.body, 'forwarded.message.body exists');
-        t.equal(msg2.forwarded.message.body, 'beep', 'forwarded.message.body is "beep"');
-        t.end();
-    });
-}
+    expect(msg2.id).toBeTruthy();
+    expect(msg2.id).toBe('outer');
+    expect(msg2.body).toBeTruthy();
+    expect(msg2.body).toBe('outer beep');
+    expect(msg2.forwarded.message.id).toBeTruthy();
+    expect(msg2.forwarded.message.id).toBe('test');
+    expect(msg2.forwarded.message.body).toBeTruthy();
+    expect(msg2.forwarded.message.body).toBe('beep');
+});

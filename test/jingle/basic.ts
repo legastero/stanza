@@ -1,32 +1,28 @@
-import test from 'tape';
+import expect from 'expect';
 import { Session as GenericSession, SessionManager } from '../../src/jingle';
-
-import './processerrors';
-import './reject';
-import './session';
-import './tiebreaking';
 
 const selfID = 'zuser@example.com';
 const peerID = 'peer@example.com';
 const turnServer = 'turn:example.com';
 
-test('Test session-initiate', t => {
-    t.plan(2);
+test('Test session-initiate', done => {
+    expect.assertions(2);
 
     const jingle = new SessionManager({
         selfID
     });
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             id: '123',
             to: peerID,
             type: 'result'
         });
+        done();
     });
 
     jingle.on('incoming', session => {
-        t.ok(session);
+        expect(session).toBeTruthy();
     });
 
     jingle.process({
@@ -53,8 +49,8 @@ test('Test session-initiate', t => {
     });
 });
 
-test('Test ending sessions for peer', t => {
-    t.plan(2);
+test('Test ending sessions for peer', done => {
+    expect.assertions(2);
 
     const jingle = new SessionManager({
         selfID
@@ -81,26 +77,31 @@ test('Test ending sessions for peer', t => {
     });
     jingle.addSession(sess3);
 
-    jingle.on('terminated', session => {
-        t.equal(session.peerID, peerID);
-    });
+    let terminatedCount = 0;
 
+    jingle.on('terminated', session => {
+        terminatedCount++;
+        expect(session.peerID).toBe(peerID);
+
+        if (terminatedCount == 2) {
+            done();
+        }
+    });
     jingle.endPeerSessions(peerID);
 });
 
-test('Test ending sessions for peer with no sessions', t => {
+test('Test ending sessions for peer with no sessions', () => {
     const jingle = new SessionManager({
         selfID
     });
 
     jingle.endPeerSessions(peerID);
 
-    t.notOk(jingle.peers[peerID]);
-    t.end();
+    expect(jingle.peers[peerID]).toBeFalsy();
 });
 
-test('Test ending sessions for all peers', t => {
-    t.plan(3);
+test('Test ending sessions for all peers', done => {
+    expect.assertions(3);
 
     const jingle = new SessionManager({
         selfID
@@ -127,19 +128,25 @@ test('Test ending sessions for all peers', t => {
     });
     jingle.addSession(sess3);
 
+    let terminatedCount = 0;
     jingle.on('terminated', session => {
-        t.ok(session);
+        terminatedCount++;
+        expect(session).toBeTruthy();
+
+        if (terminatedCount === 3) {
+            done();
+        }
     });
 
     jingle.endAllSessions();
 });
 
-test('Prepare session', t => {
-    t.plan(1);
+test('Prepare session', () => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         prepareSession: meta => {
-            t.ok(meta);
+            expect(meta).toBeTruthy();
             return new GenericSession(meta);
         },
         selfID
@@ -169,7 +176,7 @@ test('Prepare session', t => {
     });
 });
 
-test('Add ICE server', t => {
+test('Add ICE server', () => {
     const jingle = new SessionManager({
         iceServers: [],
         selfID
@@ -179,12 +186,10 @@ test('Add ICE server', t => {
         urls: turnServer
     });
 
-    t.same(jingle.iceServers, [{ urls: turnServer }]);
-
-    t.end();
+    expect(jingle.iceServers).toEqual([{ urls: turnServer }]);
 });
 
-test('Add ICE server as just a string', t => {
+test('Add ICE server as just a string', () => {
     const jingle = new SessionManager({
         iceServers: [],
         selfID
@@ -192,7 +197,5 @@ test('Add ICE server as just a string', t => {
 
     jingle.addICEServer(turnServer);
 
-    t.same(jingle.iceServers, [{ urls: turnServer }]);
-
-    t.end();
+    expect(jingle.iceServers).toEqual([{ urls: turnServer }]);
 });

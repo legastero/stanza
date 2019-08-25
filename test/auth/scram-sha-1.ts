@@ -1,9 +1,9 @@
-import test from 'tape';
+import expect from 'expect';
 import { SCRAM } from '../../src/lib/sasl';
 
 // tslint:disable no-hardcoded-credentials
 
-test('SCRAM', t => {
+test('SCRAM', () => {
     const mech = new SCRAM('SCRAM-SHA-1');
     const initial = mech
         .createResponse({
@@ -12,7 +12,7 @@ test('SCRAM', t => {
             username: 'chris'
         })!
         .toString();
-    t.equal(initial, 'n,,n=chris,r=MsQUY9iw0T9fx2MUEz6LZPwGuhVvWAhc');
+    expect(initial).toBe('n,,n=chris,r=MsQUY9iw0T9fx2MUEz6LZPwGuhVvWAhc');
 
     mech.processChallenge(
         Buffer.from(
@@ -27,10 +27,7 @@ test('SCRAM', t => {
             username: 'chris'
         })!
         .toString();
-    t.equal(
-        res,
+    expect(res).toBe(
         'c=biws,r=MsQUY9iw0T9fx2MUEz6LZPwGuhVvWAhc7b276f42-009a-40e2-84ee-8d5c8b206b6a,p=WKFCdDykcs73+CG653eG721vItw='
     );
-
-    t.end();
 });

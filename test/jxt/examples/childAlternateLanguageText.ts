@@ -1,4 +1,4 @@
-import test from 'tape';
+import expect from 'expect';
 
 import { childAlternateLanguageText, LanguageSet, parse, Registry } from '../../../src/jxt';
 
@@ -16,9 +16,8 @@ registry.define({
     path: 'example'
 });
 
-export default function runTests() {
-    test('[Type: childAlternateLanguageText] Basic import', t => {
-        const xml = parse(`
+test('[Type: childAlternateLanguageText] Basic import', () => {
+    const xml = parse(`
             <x xml:lang="sv">
               <foo xml:lang="no">Hallo verden</foo>
               <foo xml:lang="en-US">Hello world, from the US</foo>
@@ -29,44 +28,37 @@ export default function runTests() {
               <foo xml:lang="de">Hallo Welt</foo>
             </x>`);
 
-        const ex = registry.import(xml) as Example;
-        t.ok(ex, 'Imported version exists');
-        t.deepEqual(
-            ex,
-            {
-                foo: [
-                    { lang: 'no', value: 'Hallo verden' },
-                    { lang: 'en-us', value: 'Hello world, from the US' },
-                    { lang: 'en', value: 'Hello world' },
-                    { lang: 'en-ca', value: 'Hello world, from Canada' },
-                    { lang: 'sv', value: 'Hej världen' },
-                    { lang: 'es', value: 'Hola mundo' },
-                    { lang: 'de', value: 'Hallo Welt' }
-                ]
-            },
-            'Imported JSON matches'
-        );
-        t.end();
+    const ex = registry.import(xml) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex).toEqual({
+        foo: [
+            { lang: 'no', value: 'Hallo verden' },
+            { lang: 'en-us', value: 'Hello world, from the US' },
+            { lang: 'en', value: 'Hello world' },
+            { lang: 'en-ca', value: 'Hello world, from Canada' },
+            { lang: 'sv', value: 'Hej världen' },
+            { lang: 'es', value: 'Hola mundo' },
+            { lang: 'de', value: 'Hallo Welt' }
+        ]
     });
+});
 
-    test('[Type: childAlternateLanguageText] Basic export', t => {
-        const data: Example = {
-            foo: [
-                { lang: 'no', value: 'Hallo verden' },
-                { lang: 'en-us', value: 'Hello world, from the US' },
-                { lang: 'en', value: 'Hello world' },
-                { lang: 'en-ca', value: 'Hello world, from Canada' },
-                { lang: 'sv', value: 'Hej världen' },
-                { lang: 'es', value: 'Hola mundo' },
-                { lang: 'de', value: 'Hallo Welt' }
-            ]
-        };
+test('[Type: childAlternateLanguageText] Basic export', () => {
+    const data: Example = {
+        foo: [
+            { lang: 'no', value: 'Hallo verden' },
+            { lang: 'en-us', value: 'Hello world, from the US' },
+            { lang: 'en', value: 'Hello world' },
+            { lang: 'en-ca', value: 'Hello world, from Canada' },
+            { lang: 'sv', value: 'Hej världen' },
+            { lang: 'es', value: 'Hola mundo' },
+            { lang: 'de', value: 'Hallo Welt' }
+        ]
+    };
 
-        const ex = registry.export('example', data);
-        t.ok(ex, 'Exported version exists');
+    const ex = registry.export('example', data);
+    expect(ex).toBeTruthy();
 
-        const reimported = registry.import(ex!) as Example;
-        t.deepEqual(data, reimported, 'Reimported XML matches');
-        t.end();
-    });
-}
+    const reimported = registry.import(ex!) as Example;
+    expect(data).toEqual(reimported);
+});

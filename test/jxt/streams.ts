@@ -1,4 +1,4 @@
-import test from 'tape';
+import expect from 'expect';
 import { attribute, childText, ParsedData, Registry, StreamParser } from '../../src/jxt';
 import { JXTErrorCondition } from '../../src/jxt/Error';
 
@@ -31,179 +31,183 @@ function setupRegistry(): Registry {
     return registry;
 }
 
-export default function runTests() {
-    test('[Streams] Unwrapped streams', t => {
-        const registry = setupRegistry();
-        const parser = new StreamParser({
-            registry
-        });
+test('[Streams] Unwrapped streams', done => {
+    const registry = setupRegistry();
+    const parser = new StreamParser({
+        registry
+    });
 
-        parser.on('data', (data: ParsedData) => {
-            t.equal(data.kind, 'message', 'Parsed data is a message');
+    parser.on('data', (data: ParsedData) => {
+        expect(data.kind).toBe('message');
+        const msg = data.stanza as Message;
+        expect(msg.body).toBe('test');
+        done();
+    });
+
+    parser.write('<message xmlns="jabber:client" type="normal" id="123">');
+    parser.write('<body>test</body>');
+    parser.write('</message>');
+});
+
+test('[Streams] Wrapped streams', done => {
+    expect.assertions(4);
+
+    const registry = setupRegistry();
+    const parser = new StreamParser({
+        registry,
+        rootKey: 'stream',
+        wrappedStream: true
+    });
+
+    parser.on('data', (data: ParsedData) => {
+        if (data.event === 'stream-start') {
+            expect(data.kind).toBe('stream');
+        }
+        if (data.event === 'stream-end') {
+            expect(data.kind).toBe('stream');
+        }
+        if (!data.event) {
+            expect(data.kind).toBe('message');
             const msg = data.stanza as Message;
-            t.equal(msg.body, 'test', 'Message body is "test"');
-            t.end();
-        });
-
-        parser.write('<message xmlns="jabber:client" type="normal" id="123">');
-        parser.write('<body>test</body>');
-        parser.write('</message>');
+            expect(msg.body).toBe('test');
+        }
+        done();
     });
 
-    test('[Streams] Wrapped streams', t => {
-        t.plan(4);
+    parser.write(
+        '<stream:stream xmlns:stream="http://etherx.jabber.org/streams" xmlns="jabber:client">'
+    );
+    parser.write('<message type="normal" id="123">');
+    parser.write('<body>test</body>');
+    parser.write('</message>');
+    parser.write('</stream:stream>');
+});
 
-        const registry = setupRegistry();
-        const parser = new StreamParser({
-            registry,
-            rootKey: 'stream',
-            wrappedStream: true
-        });
+test('[Stream Errors] Unknown Root', done => {
+    expect.assertions(2);
 
-        parser.on('data', (data: ParsedData) => {
-            if (data.event === 'stream-start') {
-                t.equal(data.kind, 'stream', 'Parsed data is stream opening');
-            }
-            if (data.event === 'stream-end') {
-                t.equal(data.kind, 'stream', 'Parsed data is stream closing');
-            }
-            if (!data.event) {
-                t.equal(data.kind, 'message', 'Parsed data is a message');
-                const msg = data.stanza as Message;
-                t.equal(msg.body, 'test', 'Message body is "test"');
-            }
-        });
-
-        parser.write(
-            '<stream:stream xmlns:stream="http://etherx.jabber.org/streams" xmlns="jabber:client">'
-        );
-        parser.write('<message type="normal" id="123">');
-        parser.write('<body>test</body>');
-        parser.write('</message>');
-        parser.write('</stream:stream>');
+    const registry = setupRegistry();
+    const parser = new StreamParser({
+        registry,
+        rootKey: 'stream',
+        wrappedStream: true
     });
 
-    test('[Stream Errors] Unknown Root', t => {
-        t.plan(2);
-
-        const registry = setupRegistry();
-        const parser = new StreamParser({
-            registry,
-            rootKey: 'stream',
-            wrappedStream: true
-        });
-
-        parser.on('error', err => {
-            t.ok(err.isJXTError);
-            t.equal(err.condition, JXTErrorCondition.UnknownRoot);
-        });
-
-        parser.write('<message xmlns="jabber:client" type="normal" id="123"><body>');
+    parser.on('error', err => {
+        expect(err.isJXTError).toBeTruthy();
+        expect(err.condition).toBe(JXTErrorCondition.UnknownRoot);
+        done();
     });
 
-    test('[Stream Errors] Not well-formed', t => {
-        t.plan(2);
+    parser.write('<message xmlns="jabber:client" type="normal" id="123"><body>');
+});
 
-        const registry = setupRegistry();
-        const parser = new StreamParser({
-            registry
-        });
+test('[Stream Errors] Not well-formed', done => {
+    expect.assertions(2);
 
-        parser.on('error', err => {
-            t.ok(err.isJXTError);
-            t.equal(err.condition, JXTErrorCondition.NotWellFormed);
-        });
-
-        parser.write('<message xmlns="jabber:client" type="normal" id="123">');
-        parser.write('</presence>');
+    const registry = setupRegistry();
+    const parser = new StreamParser({
+        registry
     });
 
-    test('[Stream Errors] Not well-formed: close unopened stream', t => {
-        t.plan(2);
-
-        const registry = setupRegistry();
-        const parser = new StreamParser({
-            registry,
-            rootKey: 'stream',
-            wrappedStream: true
-        });
-
-        parser.on('error', err => {
-            t.ok(err.isJXTError);
-            t.equal(err.condition, JXTErrorCondition.NotWellFormed);
-        });
-
-        parser.write('</stream:stream>');
+    parser.on('error', err => {
+        expect(err.isJXTError).toBeTruthy();
+        expect(err.condition).toBe(JXTErrorCondition.NotWellFormed);
+        done();
     });
 
-    test('[Stream Errors] Already closed', t => {
-        t.plan(2);
+    parser.write('<message xmlns="jabber:client" type="normal" id="123">');
+    parser.write('</presence>');
+});
 
-        const registry = setupRegistry();
-        const parser = new StreamParser({
-            registry,
-            rootKey: 'stream',
-            wrappedStream: true
-        });
+test('[Stream Errors] Not well-formed: close unopened stream', done => {
+    expect.assertions(2);
 
-        parser.on('error', err => {
-            t.ok(err.isJXTError);
-            t.equal(err.condition, JXTErrorCondition.AlreadyClosed);
-        });
-
-        parser.write(
-            '<stream:stream xmlns:stream="http://etherx.jabber.org/streams" xmlns="jabber:client">'
-        );
-        parser.write('</stream:stream><extra />');
+    const registry = setupRegistry();
+    const parser = new StreamParser({
+        registry,
+        rootKey: 'stream',
+        wrappedStream: true
     });
 
-    test('[Stream Errors] Unknown root element', t => {
-        t.plan(2);
-
-        const registry = setupRegistry();
-        const parser = new StreamParser({
-            registry,
-            wrappedStream: true
-        });
-
-        parser.on('error', err => {
-            t.ok(err.isJXTError);
-            t.equal(err.condition, JXTErrorCondition.NotWellFormed);
-        });
-
-        parser.write('<message />');
+    parser.on('error', err => {
+        expect(err.isJXTError).toBeTruthy();
+        expect(err.condition).toBe(JXTErrorCondition.NotWellFormed);
+        done();
     });
 
-    test('[Stream Errors] Unknown element', t => {
-        const registry = setupRegistry();
-        const parser = new StreamParser({
-            registry
-        });
+    parser.write('</stream:stream>');
+});
 
-        parser.on('error', err => {
-            t.fail();
-        });
+test('[Stream Errors] Already closed', done => {
+    expect.assertions(2);
 
-        parser.write('<message />');
-        t.pass();
-        t.end();
+    const registry = setupRegistry();
+    const parser = new StreamParser({
+        registry,
+        rootKey: 'stream',
+        wrappedStream: true
     });
 
-    test('[Stream Errors] Restricted XML', t => {
-        t.plan(2);
-
-        const registry = setupRegistry();
-        const parser = new StreamParser({
-            allowComments: false,
-            registry,
-            wrappedStream: true
-        });
-
-        parser.on('error', err => {
-            t.ok(err.isJXTError);
-            t.equal(err.condition, JXTErrorCondition.RestrictedXML);
-        });
-
-        parser.write('<!-- illegal comment -->');
+    parser.on('error', err => {
+        expect(err.isJXTError).toBeTruthy();
+        expect(err.condition).toBe(JXTErrorCondition.AlreadyClosed);
+        done();
     });
-}
+
+    parser.write(
+        '<stream:stream xmlns:stream="http://etherx.jabber.org/streams" xmlns="jabber:client">'
+    );
+    parser.write('</stream:stream><extra />');
+});
+
+test('[Stream Errors] Unknown root element', done => {
+    expect.assertions(2);
+
+    const registry = setupRegistry();
+    const parser = new StreamParser({
+        registry,
+        wrappedStream: true
+    });
+
+    parser.on('error', err => {
+        expect(err.isJXTError).toBeTruthy();
+        expect(err.condition).toBe(JXTErrorCondition.NotWellFormed);
+        done();
+    });
+
+    parser.write('<message />');
+});
+
+test('[Stream Errors] Unknown element', done => {
+    const registry = setupRegistry();
+    const parser = new StreamParser({
+        registry
+    });
+
+    parser.on('error', err => {
+        done.fail();
+    });
+
+    parser.write('<message />');
+    done();
+});
+
+test('[Stream Errors] Restricted XML', done => {
+    expect.assertions(2);
+
+    const registry = setupRegistry();
+    const parser = new StreamParser({
+        allowComments: false,
+        registry,
+        wrappedStream: true
+    });
+
+    parser.on('error', err => {
+        expect(err.isJXTError).toBeTruthy();
+        expect(err.condition).toBe(JXTErrorCondition.RestrictedXML);
+        done();
+    });
+
+    parser.write('<!-- illegal comment -->');
+});

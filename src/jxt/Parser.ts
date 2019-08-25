@@ -319,8 +319,12 @@ export default class Parser extends EventEmitter {
                 case State.ATTR_NAME: {
                     if (!isPrintable(c) || isWhitespace(c) || c === Character.Equal) {
                         this.attributeName = this.endRecording(data, pos);
-                        pos--;
-                        this.state = State.ATTR_EQ;
+                        if (c === Character.Equal) {
+                            this.state = State.ATTR_QUOTE;
+                        } else {
+                            pos--;
+                            this.state = State.ATTR_EQ;
+                        }
                     }
                     break;
                 }
@@ -346,8 +350,11 @@ export default class Parser extends EventEmitter {
                         this.attributeQuote = c;
                         this.state = State.ATTR_VALUE;
                         this.recordStart = pos + 1;
+                        break;
                     }
-                    break;
+
+                    this.emit('error', JXTError.notWellFormed());
+                    return;
                 }
 
                 case State.ATTR_VALUE: {

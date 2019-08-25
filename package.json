@@ -13,7 +13,6 @@
         "@types/node": "^12.7.1",
         "@types/punycode": "^2.1.0",
         "@types/readable-stream": "^2.3.3",
-        "@types/tape": "^4.2.33",
         "@types/ws": "^6.0.2",
         "async": "^3.0.1",
         "node-fetch": "^2.6.0",
@@ -25,16 +24,18 @@
         "ws": "^7.1.1"
     },
     "devDependencies": {
+        "@types/jest": "^24.0.18",
+        "expect": "^24.9.0",
         "husky": "^3.0.3",
-        "nyc": "^14.1.1",
+        "jest": "^24.9.0",
+        "jest-mock": "^24.9.0",
         "prettier": "^1.18.2",
         "pretty-quick": "^1.11.0",
         "rimraf": "^3.0.0",
         "rollup": "^1.19.4",
         "rollup-plugin-node-resolve": "^5.0.1",
         "rollup-plugin-visualizer": "^2.5.4",
-        "tap-dot": "^2.0.0",
-        "tape": "^4.10.2",
+        "ts-jest": "^24.0.2",
         "ts-node": "^8.2.0",
         "tslint": "^5.17.0",
         "tslint-sonarts": "^1.9.0",
@@ -50,6 +51,18 @@
             "pre-commit": "pretty-quick --stage && npm run lint && npm test"
         }
     },
+    "jest": {
+        "preset": "ts-jest",
+        "testEnvironment": "node",
+        "testRegex": "test/.*\\.ts$",
+        "testMatch": null,
+        "collectCoverage": true,
+        "coverageDirectory": "./coverage",
+        "coverageReporters": [
+            "text",
+            "html"
+        ]
+    },
     "keywords": [
         "jingle",
         "stanza",
@@ -58,21 +71,6 @@
     ],
     "license": "MIT",
     "main": "./dist/cjs/index.js",
-    "nyc": {
-        "extension": [
-            ".ts"
-        ],
-        "include": [
-            "src/**/*.ts"
-        ],
-        "exclude": [
-            "**/*.d.ts"
-        ],
-        "reporter": [
-            "html"
-        ],
-        "all": true
-    },
     "prettier": {
         "tabWidth": 4,
         "printWidth": 100,
@@ -96,7 +94,7 @@
         "compile:webpack": "webpack --mode production",
         "license-check": "npx license-checker --production --excludePrivatePackages --summary",
         "lint": "tslint -p .",
-        "test": "nyc ts-node --files test/index.ts | tap-dot",
+        "test": "jest",
         "validate": "npm ls"
     },
     "stanzajs_env_mappings": {

@@ -1,4 +1,4 @@
-import test from 'tape';
+import expect from 'expect';
 
 import * as JXT from '../../src/jxt';
 
@@ -67,29 +67,27 @@ const htmlBody = (lang: string = '', message: string = 'hi!'): JXT.JSONElement =
     return body;
 };
 
-export default function runTests() {
-    test('[Import] Raw Element (XHTML)', t => {
-        const registry = setupRegistry();
+test('[Import] Raw Element (XHTML)', () => {
+    const registry = setupRegistry();
 
-        const messageXML = JXT.parse(`
+    const messageXML = JXT.parse(`
             <message xmlns='jabber:client'>
               <body>hi!</body>
               <html xmlns='http://jabber.org/protocol/xhtml-im'>
                 <body xmlns='http://www.w3.org/1999/xhtml'><p style='font-weight:bold'>hi!</p></body>
               </html>
             </message>`);
-        const msg = registry.import(messageXML) as Message;
+    const msg = registry.import(messageXML) as Message;
 
-        t.equal(msg.body, 'hi!', 'Plain body matches');
-        t.ok(msg.html && msg.html.body, 'HTML body exists');
-        t.deepEqual(msg.html!.body, htmlBody(), 'HTML body matches');
-        t.end();
-    });
+    expect(msg.body).toBe('hi!');
+    expect(msg.html && msg.html.body).toBeTruthy();
+    expect(msg.html!.body).toEqual(htmlBody());
+});
 
-    test('[Import] Raw Element (XHTML) by language', t => {
-        const registry = setupRegistry();
+test('[Import] Raw Element (XHTML) by language', () => {
+    const registry = setupRegistry();
 
-        const messageXML = JXT.parse(`
+    const messageXML = JXT.parse(`
             <message xmlns='jabber:client' xml:lang="en">
               <body>hi!</body>
               <html xmlns='http://jabber.org/protocol/xhtml-im'>
@@ -99,97 +97,80 @@ export default function runTests() {
               </html>
             </message>`);
 
-        const msgEs = registry.import(messageXML, { acceptLanguages: ['es'] }) as Message;
-        t.ok(msgEs.html && msgEs.html.langBody, 'HTML body exists');
-        t.deepEqual(msgEs.html!.langBody, htmlBody('es', 'hola!'), 'HTML body matches');
-        t.deepEqual(
-            msgEs.html!.alternateLangBodies,
-            [
-                { lang: 'fr', value: htmlBody('fr', 'bonjour!') },
-                { lang: 'en', value: htmlBody('', 'hi!') },
-                { lang: 'es', value: htmlBody('es', 'hola!') }
+    const msgEs = registry.import(messageXML, { acceptLanguages: ['es'] }) as Message;
+    expect(msgEs.html && msgEs.html.langBody).toBeTruthy();
+    expect(msgEs.html!.langBody).toEqual(htmlBody('es', 'hola!'));
+    expect(msgEs.html!.alternateLangBodies).toEqual([
+        { lang: 'fr', value: htmlBody('fr', 'bonjour!') },
+        { lang: 'en', value: htmlBody('', 'hi!') },
+        { lang: 'es', value: htmlBody('es', 'hola!') }
+    ]);
+
+    const msgEn = registry.import(messageXML, { acceptLanguages: ['en'] }) as Message;
+    expect(msgEn.html && msgEn.html.langBody).toBeTruthy();
+    expect(msgEn.html!.langBody).toEqual(htmlBody('', 'hi!'));
+    expect(msgEs.html!.alternateLangBodies).toEqual([
+        { lang: 'fr', value: htmlBody('fr', 'bonjour!') },
+        { lang: 'en', value: htmlBody('', 'hi!') },
+        { lang: 'es', value: htmlBody('es', 'hola!') }
+    ]);
+});
+
+test('[Export] Raw Element (XHTML)', () => {
+    const registry = setupRegistry();
+
+    const output = registry.export('message', {
+        body: 'hi!',
+        html: {
+            body: htmlBody()
+        }
+    } as Message)!;
+
+    const msg = registry.import(output) as Message;
+    expect(msg.body).toBe('hi!');
+    expect(msg.html && msg.html.body).toBeTruthy();
+    expect(msg.html!.body).toEqual(htmlBody());
+});
+
+test('[Export] Raw Element (XHTML) as string', () => {
+    const registry = setupRegistry();
+
+    const output = registry.export('message', {
+        body: 'hi!',
+        html: {
+            body: '<p style="font-weight:bold">hi!</p>'
+        }
+    } as Message)!;
+
+    const msg = registry.import(output) as Message;
+    expect(msg.body).toBe('hi!');
+    expect(msg.html && msg.html.body).toBeTruthy();
+    expect(msg.html!.body).toEqual(htmlBody());
+});
+
+test('[Export] Raw Element (XHTML) with language as string', () => {
+    const registry = setupRegistry();
+
+    const output = registry.export('message', {
+        body: 'hi!',
+        html: {
+            alternateLangBodies: [
+                { lang: 'en', value: '<p style="font-weight:bold">hi!</p>' },
+                { lang: 'es', value: '<p style="font-weight:bold">hola!</p>' }
             ],
-            'HTML alternate language bodies match'
-        );
+            langBody: '<p style="font-weight:bold">bonjour!</p>'
+        },
+        lang: 'fr'
+    } as Message)!;
 
-        const msgEn = registry.import(messageXML, { acceptLanguages: ['en'] }) as Message;
-        t.ok(msgEn.html && msgEn.html.langBody, 'HTML body exists');
-        t.deepEqual(msgEn.html!.langBody, htmlBody('', 'hi!'), 'HTML body matches');
-        t.deepEqual(
-            msgEs.html!.alternateLangBodies,
-            [
-                { lang: 'fr', value: htmlBody('fr', 'bonjour!') },
-                { lang: 'en', value: htmlBody('', 'hi!') },
-                { lang: 'es', value: htmlBody('es', 'hola!') }
-            ],
-            'HTML alternate language bodies match'
-        );
-        t.end();
-    });
+    const msg = registry.import(output) as Message;
 
-    test('[Export] Raw Element (XHTML)', t => {
-        const registry = setupRegistry();
-
-        const output = registry.export('message', {
-            body: 'hi!',
-            html: {
-                body: htmlBody()
-            }
-        } as Message)!;
-
-        const msg = registry.import(output) as Message;
-        t.equal(msg.body, 'hi!', 'Plain body matches');
-        t.ok(msg.html && msg.html.body, 'HTML body exists');
-        t.deepEqual(msg.html!.body, htmlBody(), 'HTML body matches');
-        t.end();
-    });
-
-    test('[Export] Raw Element (XHTML) as string', t => {
-        const registry = setupRegistry();
-
-        const output = registry.export('message', {
-            body: 'hi!',
-            html: {
-                body: '<p style="font-weight:bold">hi!</p>'
-            }
-        } as Message)!;
-
-        const msg = registry.import(output) as Message;
-        t.equal(msg.body, 'hi!', 'Plain body matches');
-        t.ok(msg.html && msg.html.body, 'HTML body exists');
-        t.deepEqual(msg.html!.body, htmlBody(), 'HTML body matches');
-        t.end();
-    });
-
-    test('[Export] Raw Element (XHTML) with language as string', t => {
-        const registry = setupRegistry();
-
-        const output = registry.export('message', {
-            body: 'hi!',
-            html: {
-                alternateLangBodies: [
-                    { lang: 'en', value: '<p style="font-weight:bold">hi!</p>' },
-                    { lang: 'es', value: '<p style="font-weight:bold">hola!</p>' }
-                ],
-                langBody: '<p style="font-weight:bold">bonjour!</p>'
-            },
-            lang: 'fr'
-        } as Message)!;
-
-        const msg = registry.import(output) as Message;
-
-        t.equal(msg.body, 'hi!', 'Plain body matches');
-        t.ok(msg.html && msg.html.langBody, 'HTML body exists');
-        t.deepEqual(msg.html!.langBody, htmlBody('', 'bonjour!'), 'HTML body matches');
-        t.deepEqual(
-            msg.html!.alternateLangBodies,
-            [
-                { lang: 'en', value: htmlBody('en', 'hi!') },
-                { lang: 'es', value: htmlBody('es', 'hola!') },
-                { lang: 'fr', value: htmlBody('', 'bonjour!') }
-            ],
-            'HTML alternate language bodies match'
-        );
-        t.end();
-    });
-}
+    expect(msg.body).toBe('hi!');
+    expect(msg.html && msg.html.langBody).toBeTruthy();
+    expect(msg.html!.langBody).toEqual(htmlBody('', 'bonjour!'));
+    expect(msg.html!.alternateLangBodies).toEqual([
+        { lang: 'en', value: htmlBody('en', 'hi!') },
+        { lang: 'es', value: htmlBody('es', 'hola!') },
+        { lang: 'fr', value: htmlBody('', 'bonjour!') }
+    ]);
+});

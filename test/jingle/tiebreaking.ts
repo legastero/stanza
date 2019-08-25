@@ -1,4 +1,4 @@
-import test from 'tape';
+import expect from 'expect';
 import { Session as GenericSession, SessionManager } from '../../src/jingle';
 
 // tslint:disable no-identical-functions
@@ -6,8 +6,8 @@ import { Session as GenericSession, SessionManager } from '../../src/jingle';
 const selfID = 'zuser@example.com';
 const peerID = 'peer@example.com';
 
-test('Test tie-break from duplicate sids', t => {
-    t.plan(1);
+test('Test tie-break from duplicate sids', () => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID
@@ -26,7 +26,7 @@ test('Test tie-break from duplicate sids', t => {
     sess.pendingApplicationTypes = ['test'];
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             error: {
                 condition: 'conflict',
                 jingleError: 'tie-break',
@@ -62,8 +62,8 @@ test('Test tie-break from duplicate sids', t => {
     });
 });
 
-test('Test tie-break from existing session', t => {
-    t.plan(1);
+test('Test tie-break from existing session', () => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID
@@ -88,7 +88,7 @@ test('Test tie-break from existing session', t => {
     sess2.state = 'pending';
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             error: {
                 condition: 'conflict',
                 jingleError: 'tie-break',
@@ -124,8 +124,8 @@ test('Test tie-break from existing session', t => {
     });
 });
 
-test('Test tie-break from pending action', t => {
-    t.plan(1);
+test('Test tie-break from pending action', () => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID
@@ -145,7 +145,7 @@ test('Test tie-break from pending action', t => {
     sess.pendingAction = 'content-modify';
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             error: {
                 condition: 'conflict',
                 jingleError: 'tie-break',
@@ -181,8 +181,8 @@ test('Test tie-break from pending action', t => {
     });
 });
 
-test('Test terminate session from lost tie-break during startup', t => {
-    t.plan(1);
+test('Test terminate session from lost tie-break during startup', () => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID: 'auser@example.com'
@@ -200,7 +200,7 @@ test('Test terminate session from lost tie-break during startup', t => {
     sess.state = 'pending';
 
     jingle.on('terminated', session => {
-        t.equal(session.sid, 'sid123');
+        expect(session.sid).toBe('sid123');
     });
 
     jingle.process({

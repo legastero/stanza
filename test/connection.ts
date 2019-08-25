@@ -1,8 +1,8 @@
-import test from 'tape';
+import expect from 'expect';
 import * as stanza from '../src';
 
-test('Connect using WebSocket', t => {
-    t.plan(1);
+test('Connect using WebSocket', done => {
+    expect.assertions(1);
 
     const client = stanza.createClient({
         jid: 'anon@anon.stanzajs.org',
@@ -12,15 +12,16 @@ test('Connect using WebSocket', t => {
     });
 
     client.on('session:started', () => {
-        t.pass('Connected with WebSocket');
         client.disconnect();
+        expect(true).toBe(true);
+        done();
     });
 
     client.connect();
 });
 
-test('Connect using BOSH', t => {
-    t.plan(1);
+test('Connect using BOSH', done => {
+    expect.assertions(1);
 
     const client = stanza.createClient({
         jid: 'anon@anon.stanzajs.org',
@@ -30,8 +31,9 @@ test('Connect using BOSH', t => {
     });
 
     client.on('session:started', () => {
-        t.pass('Connected with BOSH');
         client.disconnect();
+        expect(true).toBe(true);
+        done();
     });
 
     client.connect();

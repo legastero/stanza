@@ -1,4 +1,4 @@
-import test from 'tape';
+import expect from 'expect';
 import { Session as GenericSession, SessionManager } from '../../src/jingle';
 
 // tslint:disable no-identical-functions
@@ -7,15 +7,15 @@ const selfID = 'zuser@example.com';
 const peerID = 'peer@example.com';
 const otherPeerID = 'otherpeer@example.com';
 
-test('Test session-initiate with no contents fails', t => {
-    t.plan(1);
+test('Test session-initiate with no contents fails', done => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID
     });
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             error: {
                 condition: 'bad-request',
                 type: 'cancel'
@@ -24,6 +24,7 @@ test('Test session-initiate with no contents fails', t => {
             to: peerID,
             type: 'error'
         });
+        done();
     });
 
     jingle.process({
@@ -39,8 +40,8 @@ test('Test session-initiate with no contents fails', t => {
     });
 });
 
-test('Test session action from wrong sender', t => {
-    t.plan(1);
+test('Test session action from wrong sender', done => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID
@@ -58,7 +59,7 @@ test('Test session action from wrong sender', t => {
     sess.state = 'pending';
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             error: {
                 condition: 'item-not-found',
                 jingleError: 'unknown-session',
@@ -68,6 +69,7 @@ test('Test session action from wrong sender', t => {
             to: peerID,
             type: 'error'
         });
+        done();
     });
 
     jingle.process({
@@ -82,8 +84,8 @@ test('Test session action from wrong sender', t => {
     });
 });
 
-test('Duplicate session-accept', t => {
-    t.plan(1);
+test('Duplicate session-accept', done => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID
@@ -99,7 +101,7 @@ test('Duplicate session-accept', t => {
     sess.state = 'active';
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             error: {
                 condition: 'unexpected-request',
                 jingleError: 'out-of-order',
@@ -109,6 +111,7 @@ test('Duplicate session-accept', t => {
             to: peerID,
             type: 'error'
         });
+        done();
     });
 
     jingle.process({
@@ -123,8 +126,8 @@ test('Duplicate session-accept', t => {
     });
 });
 
-test('Session-initiate after session accepted', t => {
-    t.plan(1);
+test('Session-initiate after session accepted', done => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID
@@ -140,7 +143,7 @@ test('Session-initiate after session accepted', t => {
     sess.state = 'active';
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             error: {
                 condition: 'unexpected-request',
                 jingleError: 'out-of-order',
@@ -150,6 +153,7 @@ test('Session-initiate after session accepted', t => {
             to: peerID,
             type: 'error'
         });
+        done();
     });
 
     jingle.process({
@@ -176,8 +180,8 @@ test('Session-initiate after session accepted', t => {
     });
 });
 
-test('Test session action for unknown session', t => {
-    t.plan(1);
+test('Test session action for unknown session', done => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID
@@ -195,7 +199,7 @@ test('Test session action for unknown session', t => {
     sess.state = 'pending';
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             error: {
                 condition: 'item-not-found',
                 jingleError: 'unknown-session',
@@ -205,6 +209,7 @@ test('Test session action for unknown session', t => {
             to: peerID,
             type: 'error'
         });
+        done();
     });
 
     jingle.process({
@@ -219,8 +224,8 @@ test('Test session action for unknown session', t => {
     });
 });
 
-test('Test new session with duplicate sid', t => {
-    t.plan(1);
+test('Test new session with duplicate sid', done => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID
@@ -238,7 +243,7 @@ test('Test new session with duplicate sid', t => {
     sess.state = 'active';
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             error: {
                 condition: 'service-unavailable',
                 type: 'cancel'
@@ -247,6 +252,7 @@ test('Test new session with duplicate sid', t => {
             to: otherPeerID,
             type: 'error'
         });
+        done();
     });
 
     jingle.process({
@@ -273,8 +279,8 @@ test('Test new session with duplicate sid', t => {
     });
 });
 
-test('Test bad actions', t => {
-    t.plan(1);
+test('Test bad actions', done => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID
@@ -292,7 +298,7 @@ test('Test bad actions', t => {
     sess.state = 'active';
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             error: {
                 condition: 'bad-request',
                 type: 'cancel'
@@ -301,6 +307,7 @@ test('Test bad actions', t => {
             to: peerID,
             type: 'error'
         });
+        done();
     });
 
     jingle.process({

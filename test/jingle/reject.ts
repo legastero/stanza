@@ -1,4 +1,4 @@
-import test from 'tape';
+import expect from 'expect';
 import { Session as GenericSession, SessionManager } from '../../src/jingle';
 
 // tslint:disable no-identical-functions
@@ -6,8 +6,8 @@ import { Session as GenericSession, SessionManager } from '../../src/jingle';
 const selfID = 'zuser@example.com';
 const peerID = 'peer@example.com';
 
-test('Reject content-add by default', t => {
-    t.plan(2);
+test('Reject content-add by default', done => {
+    expect.assertions(2);
 
     const jingle = new SessionManager({
         selfID
@@ -25,7 +25,7 @@ test('Reject content-add by default', t => {
 
     jingle.on('send', data => {
         if (!sentResult) {
-            t.same(data, {
+            expect(data).toEqual({
                 id: '123',
                 to: peerID,
                 type: 'result'
@@ -33,7 +33,7 @@ test('Reject content-add by default', t => {
             sentResult = true;
         } else {
             delete data.id;
-            t.same(data, {
+            expect(data).toEqual({
                 jingle: {
                     action: 'content-reject',
                     reason: {
@@ -45,6 +45,7 @@ test('Reject content-add by default', t => {
                 to: peerID,
                 type: 'set'
             });
+            done();
         }
     });
 
@@ -72,8 +73,8 @@ test('Reject content-add by default', t => {
     });
 });
 
-test('Reject transport-replace by default', t => {
-    t.plan(2);
+test('Reject transport-replace by default', done => {
+    expect.assertions(2);
 
     const jingle = new SessionManager({
         selfID
@@ -90,7 +91,7 @@ test('Reject transport-replace by default', t => {
     let sentResult = false;
     jingle.on('send', data => {
         if (!sentResult) {
-            t.same(data, {
+            expect(data).toEqual({
                 id: '123',
                 to: peerID,
                 type: 'result'
@@ -98,7 +99,7 @@ test('Reject transport-replace by default', t => {
             sentResult = true;
         } else {
             delete data.id;
-            t.same(data, {
+            expect(data).toEqual({
                 jingle: {
                     action: 'transport-reject',
                     reason: {
@@ -110,6 +111,7 @@ test('Reject transport-replace by default', t => {
                 to: peerID,
                 type: 'set'
             });
+            done();
         }
     });
 
@@ -137,8 +139,8 @@ test('Reject transport-replace by default', t => {
     });
 });
 
-test('Return error for unknown session-info action', t => {
-    t.plan(2);
+test('Return error for unknown session-info action', done => {
+    expect.assertions(2);
 
     const jingle = new SessionManager({
         selfID
@@ -155,7 +157,7 @@ test('Return error for unknown session-info action', t => {
     let sentError = false;
     jingle.on('send', data => {
         if (!sentError) {
-            t.same(data, {
+            expect(data).toEqual({
                 error: {
                     condition: 'feature-not-implemented',
                     jingleError: 'unsupported-info',
@@ -167,11 +169,12 @@ test('Return error for unknown session-info action', t => {
             });
             sentError = true;
         } else {
-            t.same(data, {
+            expect(data).toEqual({
                 id: '123',
                 to: peerID,
                 type: 'result'
             });
+            done();
         }
     });
 
@@ -203,8 +206,8 @@ test('Return error for unknown session-info action', t => {
     });
 });
 
-test('Return error for unknown description-info action', t => {
-    t.plan(1);
+test('Return error for unknown description-info action', done => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID
@@ -219,7 +222,7 @@ test('Return error for unknown description-info action', t => {
     sess.state = 'active';
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             error: {
                 condition: 'feature-not-implemented',
                 jingleError: 'unsupported-info',
@@ -229,6 +232,7 @@ test('Return error for unknown description-info action', t => {
             to: peerID,
             type: 'error'
         });
+        done();
     });
 
     jingle.process({
@@ -243,8 +247,8 @@ test('Return error for unknown description-info action', t => {
     });
 });
 
-test('Return error for unknown transport-info action', t => {
-    t.plan(1);
+test('Return error for unknown transport-info action', done => {
+    expect.assertions(1);
 
     const jingle = new SessionManager({
         selfID
@@ -259,7 +263,7 @@ test('Return error for unknown transport-info action', t => {
     sess.state = 'active';
 
     jingle.on('send', data => {
-        t.same(data, {
+        expect(data).toEqual({
             error: {
                 condition: 'feature-not-implemented',
                 jingleError: 'unsupported-info',
@@ -269,6 +273,7 @@ test('Return error for unknown transport-info action', t => {
             to: peerID,
             type: 'error'
         });
+        done();
     });
 
     jingle.process({

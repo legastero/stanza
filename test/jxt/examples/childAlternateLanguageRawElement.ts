@@ -1,4 +1,4 @@
-import test from 'tape';
+import expect from 'expect';
 
 import {
     childAlternateLanguageRawElement,
@@ -47,235 +47,196 @@ function removeBad(input: JSONElement | string): JSONElement | string | undefine
     return input;
 }
 
-export default function runTests() {
-    test('[Type: childAlternateLanguageRawElement] Basic import', t => {
-        const ex = registry.import(parse('<x><foo /></x>')) as Example;
-        t.ok(ex, 'Imported version exists');
-        t.deepEqual(
-            ex,
-            { foo: [{ lang: '', value: new XMLElement('foo').toJSON() }] },
-            'Imported JSON matches'
-        );
-        t.end();
-    });
+test('[Type: childAlternateLanguageRawElement] Basic import', () => {
+    const ex = registry.import(parse('<x><foo /></x>')) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex).toEqual({ foo: [{ lang: '', value: new XMLElement('foo').toJSON() }] });
+});
 
-    test('[Type: childAlternateLanguageRawElement] Basic export', t => {
-        const ex = registry.export<Example>('example', {
-            foo: [{ lang: '', value: new XMLElement('foo').toJSON() }]
-        });
-        t.ok(ex, 'Exported version exists');
-        t.equal(ex!.toString(), '<x><foo/></x>', 'Exported XML matches');
-        t.end();
+test('[Type: childAlternateLanguageRawElement] Basic export', () => {
+    const ex = registry.export<Example>('example', {
+        foo: [{ lang: '', value: new XMLElement('foo').toJSON() }]
     });
+    expect(ex).toBeTruthy();
+    expect(ex!.toString()).toBe('<x><foo/></x>');
+});
 
-    test('[Type: childAlternateLanguageRawElement] Basic import, no children', t => {
-        const ex = registry.import(parse('<x />')) as Example;
-        t.ok(ex, 'Imported version exists');
-        t.deepEqual(ex, {}, 'Imported JSON matches');
-        t.end();
-    });
+test('[Type: childAlternateLanguageRawElement] Basic import, no children', () => {
+    const ex = registry.import(parse('<x />')) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex).toEqual({});
+});
 
-    test('[Type: childAlternateLanguageRawElement] Basic export, no children', t => {
-        const ex = registry.export<Example>('example', { foo: [] });
-        t.ok(ex, 'Exported version exists');
-        t.equal(ex!.toString(), '<x/>', 'Exported XML matches');
-        t.end();
-    });
+test('[Type: childAlternateLanguageRawElement] Basic export, no children', () => {
+    const ex = registry.export<Example>('example', { foo: [] });
+    expect(ex).toBeTruthy();
+    expect(ex!.toString()).toBe('<x/>');
+});
 
-    test('[Type: childAlternateLanguageRawElement] Export, with a string as child', t => {
-        const ex = registry.export<Example>('example', { foo: [{ lang: 'en', value: 'test' }] });
-        t.ok(ex, 'Exported version exists');
-        t.equal(ex!.toString(), '<x><foo xml:lang="en">test</foo></x>', 'Exported XML matches');
-        t.end();
-    });
+test('[Type: childAlternateLanguageRawElement] Export, with a string as child', () => {
+    const ex = registry.export<Example>('example', { foo: [{ lang: 'en', value: 'test' }] });
+    expect(ex).toBeTruthy();
+    expect(ex!.toString()).toBe('<x><foo xml:lang="en">test</foo></x>');
+});
 
-    test('[Type: childAlternateLanguageRawElement] Basic import, multiple languages', t => {
-        const ex = registry.import(
-            parse(`
+test('[Type: childAlternateLanguageRawElement] Basic import, multiple languages', () => {
+    const ex = registry.import(
+        parse(`
           <x>
             <foo xml:lang="en" />
             <foo xml:lang="no" />
           </x>
         `)
-        ) as Example;
-        t.ok(ex, 'Imported version exists');
-        t.deepEqual(
-            ex,
-            {
-                foo: [
-                    { lang: 'en', value: new XMLElement('foo', { 'xml:lang': 'en' }).toJSON() },
-                    { lang: 'no', value: new XMLElement('foo', { 'xml:lang': 'no' }).toJSON() }
-                ]
-            },
-            'Imported JSON matches'
-        );
-        t.end();
+    ) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex).toEqual({
+        foo: [
+            { lang: 'en', value: new XMLElement('foo', { 'xml:lang': 'en' }).toJSON() },
+            { lang: 'no', value: new XMLElement('foo', { 'xml:lang': 'no' }).toJSON() }
+        ]
     });
+});
 
-    test('[Type: childAlternateLanguageRawElement] Basic export, multiple languages', t => {
-        const ex = registry.export<Example>('example', {
-            foo: [
-                { lang: 'en', value: new XMLElement('foo', { 'xml:lang': 'en' }).toJSON() },
-                { lang: 'no', value: new XMLElement('foo', { 'xml:lang': 'no' }).toJSON() }
-            ]
-        });
-        t.ok(ex, 'Exported version exists');
-        t.equal(
-            ex!.toString(),
-            '<x><foo xml:lang="en"/><foo xml:lang="no"/></x>',
-            'Exported XML matches'
-        );
-        t.end();
+test('[Type: childAlternateLanguageRawElement] Basic export, multiple languages', () => {
+    const ex = registry.export<Example>('example', {
+        foo: [
+            { lang: 'en', value: new XMLElement('foo', { 'xml:lang': 'en' }).toJSON() },
+            { lang: 'no', value: new XMLElement('foo', { 'xml:lang': 'no' }).toJSON() }
+        ]
     });
+    expect(ex).toBeTruthy();
+    expect(ex!.toString()).toBe('<x><foo xml:lang="en"/><foo xml:lang="no"/></x>');
+});
 
-    test('[Type: childAlternateLanguageRawElement] Basic import, multiple languages, with default lang', t => {
-        const ex = registry.import(
-            parse(`
+test('[Type: childAlternateLanguageRawElement] Basic import, multiple languages, with default lang', () => {
+    const ex = registry.import(
+        parse(`
           <x xml:lang="en">
             <foo />
             <foo xml:lang="no" />
           </x>
         `)
-        ) as Example;
-        t.ok(ex, 'Imported version exists');
-        t.deepEqual(
-            ex,
-            {
-                foo: [
-                    { lang: 'en', value: new XMLElement('foo').toJSON() },
-                    { lang: 'no', value: new XMLElement('foo', { 'xml:lang': 'no' }).toJSON() }
-                ]
-            },
-            'Imported JSON matches'
-        );
-        t.end();
+    ) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex).toEqual({
+        foo: [
+            { lang: 'en', value: new XMLElement('foo').toJSON() },
+            { lang: 'no', value: new XMLElement('foo', { 'xml:lang': 'no' }).toJSON() }
+        ]
     });
+});
 
-    test('[Type: childAlternateLanguageRawElement] Export with duplicate language', t => {
-        const ex = registry.export<Example>(
-            'example',
+test('[Type: childAlternateLanguageRawElement] Export with duplicate language', () => {
+    const ex = registry.export<Example>(
+        'example',
+        {
+            foo: [{ lang: 'en', value: 'test en' }, { lang: 'no', value: 'test no' }]
+        },
+        {
+            lang: 'en'
+        }
+    );
+    expect(ex).toBeTruthy();
+    expect(ex!.toString()).toBe('<x><foo>test en</foo><foo xml:lang="no">test no</foo></x>');
+});
+
+test('[Type: childAlternateLanguageRawElement] Import with sanitizer', () => {
+    const ex = registry.import(parse('<x2><foo><bad/><good/></foo></x2>'), {
+        sanitizers: {
+            removeBad
+        }
+    }) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex).toEqual({
+        foo: [
             {
-                foo: [{ lang: 'en', value: 'test en' }, { lang: 'no', value: 'test no' }]
-            },
-            {
-                lang: 'en'
+                lang: '',
+                value: {
+                    attributes: {},
+                    children: [
+                        {
+                            attributes: {},
+                            children: [],
+                            name: 'good'
+                        }
+                    ],
+                    name: 'foo'
+                }
             }
-        );
-        t.ok(ex, 'Exported version exists');
-        t.equal(
-            ex!.toString(),
-            '<x><foo>test en</foo><foo xml:lang="no">test no</foo></x>',
-            'Exported XML matches'
-        );
-        t.end();
+        ]
     });
+});
 
-    test('[Type: childAlternateLanguageRawElement] Import with sanitizer', t => {
-        const ex = registry.import(parse('<x2><foo><bad/><good/></foo></x2>'), {
+test('[Type: childAlternateLanguageRawElement] Export with sanitizer', () => {
+    const ex = registry.export<Example>(
+        'example2',
+        {
+            foo: [
+                {
+                    lang: '',
+                    value: {
+                        attributes: {},
+                        children: [
+                            {
+                                attributes: {},
+                                children: [
+                                    {
+                                        attributes: {},
+                                        children: [],
+                                        name: 'bad'
+                                    }
+                                ],
+                                name: 'good'
+                            }
+                        ],
+                        name: 'foo'
+                    }
+                }
+            ]
+        },
+        {
             sanitizers: {
                 removeBad
             }
-        }) as Example;
-        t.ok(ex, 'Imported version exists');
-        t.deepEqual(
-            ex,
-            {
-                foo: [
-                    {
-                        lang: '',
-                        value: {
-                            attributes: {},
-                            children: [
-                                {
-                                    attributes: {},
-                                    children: [],
-                                    name: 'good'
-                                }
-                            ],
-                            name: 'foo'
-                        }
-                    }
-                ]
-            },
-            'Imported JSON matches'
-        );
-        t.end();
-    });
+        }
+    );
+    expect(ex).toBeTruthy();
+    expect(ex!.toString()).toBe('<x2><foo><good/></foo></x2>');
+});
 
-    test('[Type: childAlternateLanguageRawElement] Export with sanitizer', t => {
-        const ex = registry.export<Example>(
-            'example2',
-            {
-                foo: [
-                    {
-                        lang: '',
-                        value: {
-                            attributes: {},
-                            children: [
-                                {
-                                    attributes: {},
-                                    children: [
-                                        {
-                                            attributes: {},
-                                            children: [],
-                                            name: 'bad'
-                                        }
-                                    ],
-                                    name: 'good'
-                                }
-                            ],
-                            name: 'foo'
-                        }
+test('[Type: childAlternateLanguageRawElement] Import with missing sanitizer', () => {
+    const ex = registry.import(parse('<x2><foo><good/></foo></x2>'), {
+        sanitizers: {}
+    }) as Example;
+    expect(ex).toBeTruthy();
+    expect(ex).toEqual({});
+});
+
+test('[Type: childAlternateLanguageRawElement] Export with missing sanitizer', () => {
+    const ex = registry.export(
+        'example2',
+        {
+            foo: [
+                {
+                    lang: '',
+                    value: {
+                        attributes: {},
+                        children: [
+                            {
+                                attributes: {},
+                                children: [],
+                                name: 'good'
+                            }
+                        ],
+                        name: 'foo'
                     }
-                ]
-            },
-            {
-                sanitizers: {
-                    removeBad
                 }
-            }
-        );
-        t.ok(ex, 'Exported version exists');
-        t.equal(ex!.toString(), '<x2><foo><good/></foo></x2>', 'Exported XML matches');
-        t.end();
-    });
-
-    test('[Type: childAlternateLanguageRawElement] Import with missing sanitizer', t => {
-        const ex = registry.import(parse('<x2><foo><good/></foo></x2>'), {
+            ]
+        } as Example,
+        {
             sanitizers: {}
-        }) as Example;
-        t.ok(ex, 'Imported version exists');
-        t.deepEqual(ex, {}, 'Imported JSON matches');
-        t.end();
-    });
-
-    test('[Type: childAlternateLanguageRawElement] Export with missing sanitizer', t => {
-        const ex = registry.export(
-            'example2',
-            {
-                foo: [
-                    {
-                        lang: '',
-                        value: {
-                            attributes: {},
-                            children: [
-                                {
-                                    attributes: {},
-                                    children: [],
-                                    name: 'good'
-                                }
-                            ],
-                            name: 'foo'
-                        }
-                    }
-                ]
-            } as Example,
-            {
-                sanitizers: {}
-            }
-        );
-        t.ok(ex, 'Exported version exists');
-        t.equal(ex!.toString(), '<x2/>', 'Exported XML matches');
-        t.end();
-    });
-}
+        }
+    );
+    expect(ex).toBeTruthy();
+    expect(ex!.toString()).toBe('<x2/>');
+});

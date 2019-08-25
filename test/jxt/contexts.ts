@@ -1,4 +1,4 @@
-import test from 'tape';
+import expect from 'expect';
 import { attribute, childAttribute, childText, Registry } from '../../src/jxt';
 
 function setupRegistry(): Registry {
@@ -108,134 +108,122 @@ function setupRegistry(): Registry {
     return registry;
 }
 
-export default function runTests() {
-    test('[Contexts] Export Pubsub Tune', t => {
-        const registry = setupRegistry();
+test('[Contexts] Export Pubsub Tune', () => {
+    const registry = setupRegistry();
 
-        const data = {
-            pubsub: {
-                publish: {
-                    content: {
-                        artist: 'Yes!',
-                        itemType: 'http://jabber.org/protocol/tune',
-                        title: 'Homeworld'
-                    },
-                    id: 'current',
-                    node: 'http://jabber.org/protocol/tune'
-                }
-            }
-        };
-
-        const output = registry.export('iq', data);
-        const input = registry.import(output!);
-
-        t.deepEqual(data, input, 'Pubsub tune data equivalent');
-        t.end();
-    });
-
-    test('[Contexts] Export Pubsub Geoloc', t => {
-        const registry = setupRegistry();
-
-        const data = {
-            pubsub: {
-                publish: {
-                    content: {
-                        country: 'United States',
-                        itemType: 'http://jabber.org/protocol/geoloc'
-                    },
-                    id: 'current',
-                    node: 'http://jabber.org/protocol/geoloc'
-                }
-            }
-        };
-
-        const output = registry.export('iq', data);
-        const input = registry.import(output!);
-
-        t.deepEqual(data, input, 'Pubsub geoloc data equivalent');
-        t.end();
-    });
-
-    test('[Contexts] Export Message Tune', t => {
-        const registry = setupRegistry();
-
-        const data = {
-            tune: {
-                artist: 'Yes!',
-                title: 'Homeworld'
-            }
-        };
-
-        const output = registry.export('message', data);
-        const input = registry.import(output!);
-
-        t.deepEqual(data, input, 'Message tune data equivalent');
-        t.end();
-    });
-
-    test('[Contexts] Export Message Geoloc', t => {
-        const registry = setupRegistry();
-
-        const data = {
-            geoloc: {
-                country: 'United States'
-            }
-        };
-
-        const output = registry.export('message', data);
-        const input = registry.import(output!);
-
-        t.deepEqual(data, input, 'Message geoloc data equivalent');
-        t.end();
-    });
-
-    test('[Contexts] Implicit types + selector', t => {
-        const registry = setupRegistry();
-
-        const output = registry.export('iq', {
-            pubsub: {
-                configure: {
-                    node: 'owner'
+    const data = {
+        pubsub: {
+            publish: {
+                content: {
+                    artist: 'Yes!',
+                    itemType: 'http://jabber.org/protocol/tune',
+                    title: 'Homeworld'
                 },
-                mode: 'owner'
+                id: 'current',
+                node: 'http://jabber.org/protocol/tune'
             }
-        });
-        t.equal(
-            output!.toString(),
-            '<iq xmlns="jabber:client"><pubsub xmlns="http://jabber.org/protocol/pubsub#owner"><configure node="owner"/></pubsub></iq>',
-            'Export owner version'
-        );
-        t.deepEqual(registry.import(output!), {
-            pubsub: {
-                configure: {
-                    node: 'owner'
+        }
+    };
+
+    const output = registry.export('iq', data);
+    const input = registry.import(output!);
+
+    expect(data).toEqual(input);
+});
+
+test('[Contexts] Export Pubsub Geoloc', () => {
+    const registry = setupRegistry();
+
+    const data = {
+        pubsub: {
+            publish: {
+                content: {
+                    country: 'United States',
+                    itemType: 'http://jabber.org/protocol/geoloc'
                 },
-                mode: 'owner'
+                id: 'current',
+                node: 'http://jabber.org/protocol/geoloc'
             }
-        });
+        }
+    };
 
-        const output2 = registry.export('iq', {
-            pubsub: {
-                configure: {
-                    node: 'user'
-                },
-                mode: 'user'
-            }
-        });
+    const output = registry.export('iq', data);
+    const input = registry.import(output!);
 
-        t.equal(
-            output2!.toString(),
-            '<iq xmlns="jabber:client"><pubsub xmlns="http://jabber.org/protocol/pubsub"><configure node="user"/></pubsub></iq>',
-            'Export user version'
-        );
-        t.deepEqual(registry.import(output2!), {
-            pubsub: {
-                configure: {
-                    node: 'user'
-                }
-            }
-        });
+    expect(data).toEqual(input);
+});
 
-        t.end();
+test('[Contexts] Export Message Tune', () => {
+    const registry = setupRegistry();
+
+    const data = {
+        tune: {
+            artist: 'Yes!',
+            title: 'Homeworld'
+        }
+    };
+
+    const output = registry.export('message', data);
+    const input = registry.import(output!);
+
+    expect(data).toEqual(input);
+});
+
+test('[Contexts] Export Message Geoloc', () => {
+    const registry = setupRegistry();
+
+    const data = {
+        geoloc: {
+            country: 'United States'
+        }
+    };
+
+    const output = registry.export('message', data);
+    const input = registry.import(output!);
+
+    expect(data).toEqual(input);
+});
+
+test('[Contexts] Implicit types + selector', () => {
+    const registry = setupRegistry();
+
+    const output = registry.export('iq', {
+        pubsub: {
+            configure: {
+                node: 'owner'
+            },
+            mode: 'owner'
+        }
     });
-}
+    expect(output!.toString()).toBe(
+        '<iq xmlns="jabber:client"><pubsub xmlns="http://jabber.org/protocol/pubsub#owner"><configure node="owner"/></pubsub></iq>'
+    );
+    expect(registry.import(output!)).toEqual({
+        pubsub: {
+            configure: {
+                node: 'owner'
+            },
+            mode: 'owner'
+        }
+    });
+
+    const output2 = registry.export('iq', {
+        pubsub: {
+            configure: {
+                node: 'user'
+            },
+            mode: 'user'
+        }
+    });
+
+    expect(output2!.toString()).toBe(
+        '<iq xmlns="jabber:client"><pubsub xmlns="http://jabber.org/protocol/pubsub"><configure node="user"/></pubsub></iq>'
+    );
+    expect(registry.import(output2!)).toEqual({
+        pubsub: {
+            configure: {
+                node: 'user'
+            }
+        }
+    });
+});

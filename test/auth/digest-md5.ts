@@ -1,3 +1,4 @@
+import expect from 'expect';
 /**
  * This file is derived from prior work.
  *
@@ -7,12 +8,11 @@
  * - sasl-digest-md5, Copyright © 2012-2013 Jared Hanson
  */
 
-import test from 'tape';
 import { DIGEST } from '../../src/lib/sasl';
 
 // tslint:disable no-hardcoded-credentials
 
-test('DIGEST-MD5', t => {
+test('DIGEST-MD5', () => {
     const mech = new DIGEST('DIGEST-MD5');
 
     mech.processChallenge(
@@ -31,10 +31,7 @@ test('DIGEST-MD5', t => {
         })!
         .toString();
 
-    t.equal(
-        res,
+    expect(res).toBe(
         'username="chris",realm="elwood.innosoft.com",nonce="OA6MG9tEQGm2hh",cnonce="OA6MHXh6VqTrRk",nc=00000001,qop=auth,digest-uri="imap/elwood.innosoft.com",response=d388dad90d4bbd760a152321f2143af7,charset=utf-8'
     );
-
-    t.end();
 });
