@@ -160,18 +160,15 @@ function rtcpFeedback(): FieldDefinition {
 
             const result: Array<{ type: string; parameter?: string }> = [];
             for (const child of existing) {
-                result.push({
-                    parameter: subtypeImporter(child, context),
-                    type: typeImporter(child, context)!
-                });
+                const type = typeImporter(child, context)!;
+                const parameter = subtypeImporter(child, context);
+                result.push(parameter ? { type, parameter } : { type });
             }
 
             existing = findAll(xml, NS_JINGLE_RTP_RTCP_FB_0, 'rtcp-fb-trr-int');
             for (const child of existing) {
-                result.push({
-                    parameter: valueImporter(child, context),
-                    type: typeImporter(child, context)!
-                });
+                const parameter = valueImporter(child, context);
+                result.push(parameter ? { type: 'trr-int', parameter } : { type: 'trr-int' });
             }
             return result;
         },
@@ -193,7 +190,6 @@ function rtcpFeedback(): FieldDefinition {
                         context.namespace,
                         xml
                     );
-                    typeExporter(child, fb.type, context);
                     if (fb.parameter) {
                         valueExporter(child, fb.parameter, context);
                     }
@@ -220,12 +216,29 @@ const info = 'iq.jingle.info';
 const Protocol: DefinitionOptions[] = [
     {
         aliases: ['iq.jingle.contents.application'],
+        childrenExportOrder: {
+            codecs: 4,
+            encryption: 5,
+            headerExtensions: 6,
+            sourceGroups: 8,
+            sources: 7,
+            streams: 9
+        },
         element: 'description',
         fields: {
             media: attribute('media'),
-            rtcpFeedback: rtcpFeedback(),
-            rtcpMux: childBoolean(null, 'rtcp-mux'),
-            rtcpReducedSize: childBoolean(null, 'rtcp-reduced-size'),
+            rtcpFeedback: {
+                ...rtcpFeedback(),
+                exportOrder: 3
+            },
+            rtcpMux: {
+                ...childBoolean(null, 'rtcp-mux'),
+                exportOrder: 1
+            },
+            rtcpReducedSize: {
+                ...childBoolean(null, 'rtcp-reduced-size'),
+                exportOrder: 2
+            },
             ssrc: attribute('ssrc')
         },
         namespace: NS_JINGLE_RTP_1,

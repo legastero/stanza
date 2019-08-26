@@ -53,7 +53,7 @@
 | [XEP-0144](https://xmpp.org/extensions/xep-0144.html) | Roster Item Exchange                               | 1.1.1   | [Source](../src/protocol/xep0144.ts) |                                              |
 | [XEP-0153](https://xmpp.org/extensions/xep-0153.html) | vCard-Based Avatars                                | 1.1     | [Source](../src/protocol/xep0153.ts) | [Test Cases](../test/protocol-cases/xep0153) |
 | [XEP-0166](https://xmpp.org/extensions/xep-0166.html) | Jingle                                             | 1.1.1   | [Source](../src/protocol/xep0166.ts) |                                              |
-| [XEP-0167](https://xmpp.org/extensions/xep-0167.html) | Jingle RTP Sessions                                | 1.1.1   | [Source](../src/protocol/xep0167.ts) |                                              |
+| [XEP-0167](https://xmpp.org/extensions/xep-0167.html) | Jingle RTP Sessions                                | 1.1.1   | [Source](../src/protocol/xep0167.ts) | [Test Cases](../test/protocol-cases/xep0167) |
 | [XEP-0172](https://xmpp.org/extensions/xep-0172.html) | User Nickname                                      | 1.1     | [Source](../src/protocol/xep0172.ts) |                                              |
 | [XEP-0176](https://xmpp.org/extensions/xep-0176.html) | Jingle ICE-UDP Transport Method                    | 1.0     | [Source](../src/protocol/xep0176.ts) |                                              |
 | [XEP-0177](https://xmpp.org/extensions/xep-0177.html) | Jingle Raw UDP Transport Method                    | 1.1     | [Source](../src/protocol/xep0177.ts) |                                              |
@@ -77,8 +77,8 @@
 | [XEP-0261](https://xmpp.org/extensions/xep-0262.html) | Use of ZRTP in Jingle RTP Sessions                 | 1.0     | [Source](../src/protocol/xep0167.ts) |                                              |
 | [XEP-0264](https://xmpp.org/extensions/xep-0264.html) | Jingle Content Thumbnails                          | 0.4     | [Source](../src/protocol/xep0264.ts) |                                              |
 | [XEP-0280](https://xmpp.org/extensions/xep-0280.html) | Message Carbons                                    | 0.12.0  | [Source](../src/protocol/xep0280.ts) |                                              |
-| [XEP-0293](https://xmpp.org/extensions/xep-0293.html) | Jingle RTP Feedback Negotiation                    | 1.0     | [Source](../src/protocol/xep0167.ts) |                                              |
-| [XEP-0294](https://xmpp.org/extensions/xep-0294.html) | Jingle RTP Header Extensions Negotiation           | 1.0     | [Source](../src/protocol/xep0167.ts) |                                              |
+| [XEP-0293](https://xmpp.org/extensions/xep-0293.html) | Jingle RTP Feedback Negotiation                    | 1.0     | [Source](../src/protocol/xep0167.ts) | [Test Cases](../test/protocol-cases/xep0167) |
+| [XEP-0294](https://xmpp.org/extensions/xep-0294.html) | Jingle RTP Header Extensions Negotiation           | 1.0     | [Source](../src/protocol/xep0167.ts) | [Test Cases](../test/protocol-cases/xep0167) |
 | [XEP-0297](https://xmpp.org/extensions/xep-0297.html) | Stanza Forwarding                                  | 1.0     | [Source](../src/protocol/xep0297.ts) |                                              |
 | [XEP-0300](https://xmpp.org/extensions/xep-0300.html) | Use of Cryptographic Hash Functions in XMPP        | 0.5.3   | [Source](../src/protocol/xep0300.ts) |                                              |
 | [XEP-0301](https://xmpp.org/extensions/xep-0301.html) | In-Band Real Time Text                             | 1.0     | [Source](../src/protocol/xep0301.ts) |                                              |
@@ -91,7 +91,7 @@
 | [XEP-0333](https://xmpp.org/extensions/xep-0333.html) | Chat Markers                                       | 0.3.0   | [Source](../src/protocol/xep0333.ts) | [Test Cases](../test/protocol-cases/xep0333) |
 | [XEP-0334](https://xmpp.org/extensions/xep-0334.html) | Message Processing Hints                           | 0.3.0   | [Source](../src/protocol/xep0334.ts) | [Test Cases](../test/protocol-cases/xep0334) |
 | [XEP-0335](https://xmpp.org/extensions/xep-0335.html) | JSON Containers                                    | 0.1     | [Source](../src/protocol/xep0335.ts) |                                              |
-| [XEP-0339](https://xmpp.org/extensions/xep-0339.html) | Source-Specific Media Attributes in Jingle         | 0.1     | [Source](../src/protocol/xep0167.ts) |                                              |
+| [XEP-0339](https://xmpp.org/extensions/xep-0339.html) | Source-Specific Media Attributes in Jingle         | 0.1     | [Source](../src/protocol/xep0167.ts) | [Test Cases](../test/protocol-cases/xep0167) |
 | [XEP-0350](https://xmpp.org/extensions/xep-0350.html) | Data Forms Geolocation Element                     | 0.2     | [Source](../src/protocol/xep0080.ts) |                                              |
 | [XEP-0352](https://xmpp.org/extensions/xep-0352.html) | Client State Indication                            | 0.2.1   | [Source](../src/protocol/xep0352.ts) |                                              |
 | [XEP-0357](https://xmpp.org/extensions/xep-0357.html) | Push Notifications                                 | 0.3     | [Source](../src/protocol/xep0357.ts) |                                              |

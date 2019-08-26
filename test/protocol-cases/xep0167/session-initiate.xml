@@ -1,0 +1,188 @@
+<iq xmlns="jabber:client" id="0df0eda4-af97-4bbd-a625-3e309661afdb" to="stanzaio@lance.im/PS8djVBY" type="set">
+    <jingle xmlns="urn:xmpp:jingle:1" sid="79fc559c-2844-4aa3-b206-b255b9f446d4" action="session-initiate">
+        <content creator="initiator" name="audio" senders="both" disposition="session">
+            <description xmlns="urn:xmpp:jingle:apps:rtp:1" xmlns:rtcpf="urn:xmpp:jingle:apps:rtp:rtcp-fb:0" xmlns:rtph="urn:xmpp:jingle:apps:rtp:rtp-hdrext:0" media="audio" ssrc="2992613145">
+                <rtcp-mux />
+                <payload-type channels="2" clockrate="48000" id="111" name="opus">
+                    <parameter name="minptime" value="10" />
+                    <parameter name="useinbandfec" value="1" />
+                    <rtcpf:rtcp-fb type="transport-cc" />
+                </payload-type>
+                <payload-type channels="1" clockrate="16000" id="103" name="ISAC" />
+                <payload-type channels="1" clockrate="32000" id="104" name="ISAC" />
+                <payload-type channels="1" clockrate="8000" id="9" name="G722" />
+                <payload-type channels="1" clockrate="8000" id="0" name="PCMU" />
+                <payload-type channels="1" clockrate="8000" id="8" name="PCMA" />
+                <payload-type channels="1" clockrate="32000" id="106" name="CN" />
+                <payload-type channels="1" clockrate="16000" id="105" name="CN" />
+                <payload-type channels="1" clockrate="8000" id="13" name="CN" />
+                <payload-type channels="1" clockrate="48000" id="110" name="telephone-event" />
+                <payload-type channels="1" clockrate="32000" id="112" name="telephone-event" />
+                <payload-type channels="1" clockrate="16000" id="113" name="telephone-event" />
+                <payload-type channels="1" clockrate="8000" id="126" name="telephone-event" />
+                <rtph:rtp-hdrext id="1" uri="urn:ietf:params:rtp-hdrext:ssrc-audio-level" />
+                <rtph:rtp-hdrext id="2" uri="http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01" />
+                <source xmlns="urn:xmpp:jingle:apps:rtp:ssma:0" ssrc="2992613145">
+                    <parameter name="cname" value="u3LAp+BOnJSyXEld" />
+                    <parameter name="msid" value="cWrPgpLVJL3XXIO7G6VFF4fA7z3S64H8D6fW dae627ee-57a4-40ff-80fe-a3ba8098b785" />
+                </source>
+                <stream xmlns="urn:xmpp:jingle:apps:rtp:msid:0" id="cWrPgpLVJL3XXIO7G6VFF4fA7z3S64H8D6fW" track="dae627ee-57a4-40ff-80fe-a3ba8098b785" />
+            </description>
+            <transport xmlns="urn:xmpp:jingle:transports:ice-udp:1" ufrag="XW+8" pwd="kgR2IDubOrje8RzAV65njTkV">
+                <fingerprint xmlns="urn:xmpp:jingle:apps:dtls:0" hash="sha-256" setup="actpass">E9:02:21:50:CB:BD:C3:47:1B:70:E8:4E:5F:A9:5C:E5:42:5A:DF:FB:02:30:BD:8B:7C:90:EE:0A:70:04:CC:99</fingerprint>
+            </transport>
+        </content>
+        <content creator="initiator" name="video" senders="both" disposition="session">
+            <description xmlns="urn:xmpp:jingle:apps:rtp:1" xmlns:rtcpf="urn:xmpp:jingle:apps:rtp:rtcp-fb:0" xmlns:rtph="urn:xmpp:jingle:apps:rtp:rtp-hdrext:0" media="video" ssrc="3883348418">
+                <rtcp-mux />
+                <rtcp-reduced-size />
+                <payload-type channels="1" clockrate="90000" id="96" name="VP8">
+                    <rtcpf:rtcp-fb type="goog-remb" />
+                    <rtcpf:rtcp-fb type="transport-cc" />
+                    <rtcpf:rtcp-fb type="ccm" subtype="fir" />
+                    <rtcpf:rtcp-fb type="nack" />
+                    <rtcpf:rtcp-fb type="nack" subtype="pli" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="97" name="rtx">
+                    <parameter name="apt" value="96" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="98" name="VP9">
+                    <parameter name="profile-id" value="0" />
+                    <rtcpf:rtcp-fb type="goog-remb" />
+                    <rtcpf:rtcp-fb type="transport-cc" />
+                    <rtcpf:rtcp-fb type="ccm" subtype="fir" />
+                    <rtcpf:rtcp-fb type="nack" />
+                    <rtcpf:rtcp-fb type="nack" subtype="pli" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="99" name="rtx">
+                    <parameter name="apt" value="98" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="100" name="VP9">
+                    <parameter name="profile-id" value="2" />
+                    <rtcpf:rtcp-fb type="goog-remb" />
+                    <rtcpf:rtcp-fb type="transport-cc" />
+                    <rtcpf:rtcp-fb type="ccm" subtype="fir" />
+                    <rtcpf:rtcp-fb type="nack" />
+                    <rtcpf:rtcp-fb type="nack" subtype="pli" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="101" name="rtx">
+                    <parameter name="apt" value="100" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="102" name="H264">
+                    <parameter name="level-asymmetry-allowed" value="1" />
+                    <parameter name="packetization-mode" value="1" />
+                    <parameter name="profile-level-id" value="42001f" />
+                    <rtcpf:rtcp-fb type="goog-remb" />
+                    <rtcpf:rtcp-fb type="transport-cc" />
+                    <rtcpf:rtcp-fb type="ccm" subtype="fir" />
+                    <rtcpf:rtcp-fb type="nack" />
+                    <rtcpf:rtcp-fb type="nack" subtype="pli" />
+                    <rtcpf:rtcp-fb-trr-int value='100'/>
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="122" name="rtx">
+                    <parameter name="apt" value="102" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="127" name="H264">
+                    <parameter name="level-asymmetry-allowed" value="1" />
+                    <parameter name="packetization-mode" value="0" />
+                    <parameter name="profile-level-id" value="42001f" />
+                    <rtcpf:rtcp-fb type="goog-remb" />
+                    <rtcpf:rtcp-fb type="transport-cc" />
+                    <rtcpf:rtcp-fb type="ccm" subtype="fir" />
+                    <rtcpf:rtcp-fb type="nack" />
+                    <rtcpf:rtcp-fb type="nack" subtype="pli" />
+                    <rtcpf:rtcp-fb-trr-int value='100'/>
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="121" name="rtx">
+                    <parameter name="apt" value="127" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="125" name="H264">
+                    <parameter name="level-asymmetry-allowed" value="1" />
+                    <parameter name="packetization-mode" value="1" />
+                    <parameter name="profile-level-id" value="42e01f" />
+                    <rtcpf:rtcp-fb type="goog-remb" />
+                    <rtcpf:rtcp-fb type="transport-cc" />
+                    <rtcpf:rtcp-fb type="ccm" subtype="fir" />
+                    <rtcpf:rtcp-fb type="nack" />
+                    <rtcpf:rtcp-fb type="nack" subtype="pli" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="107" name="rtx">
+                    <parameter name="apt" value="125" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="108" name="H264">
+                    <parameter name="level-asymmetry-allowed" value="1" />
+                    <parameter name="packetization-mode" value="0" />
+                    <parameter name="profile-level-id" value="42e01f" />
+                    <rtcpf:rtcp-fb type="goog-remb" />
+                    <rtcpf:rtcp-fb type="transport-cc" />
+                    <rtcpf:rtcp-fb type="ccm" subtype="fir" />
+                    <rtcpf:rtcp-fb type="nack" />
+                    <rtcpf:rtcp-fb type="nack" subtype="pli" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="109" name="rtx">
+                    <parameter name="apt" value="108" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="124" name="H264">
+                    <parameter name="level-asymmetry-allowed" value="1" />
+                    <parameter name="packetization-mode" value="1" />
+                    <parameter name="profile-level-id" value="4d0032" />
+                    <rtcpf:rtcp-fb type="goog-remb" />
+                    <rtcpf:rtcp-fb type="transport-cc" />
+                    <rtcpf:rtcp-fb type="ccm" subtype="fir" />
+                    <rtcpf:rtcp-fb type="nack" />
+                    <rtcpf:rtcp-fb type="nack" subtype="pli" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="120" name="rtx">
+                    <parameter name="apt" value="124" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="123" name="H264">
+                    <parameter name="level-asymmetry-allowed" value="1" />
+                    <parameter name="packetization-mode" value="1" />
+                    <parameter name="profile-level-id" value="640032" />
+                    <rtcpf:rtcp-fb type="goog-remb" />
+                    <rtcpf:rtcp-fb type="transport-cc" />
+                    <rtcpf:rtcp-fb type="ccm" subtype="fir" />
+                    <rtcpf:rtcp-fb type="nack" />
+                    <rtcpf:rtcp-fb type="nack" subtype="pli" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="119" name="rtx">
+                    <parameter name="apt" value="123" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="114" name="red" />
+                <payload-type channels="1" clockrate="90000" id="115" name="rtx">
+                    <parameter name="apt" value="114" />
+                </payload-type>
+                <payload-type channels="1" clockrate="90000" id="116" name="ulpfec" />
+                <rtph:rtp-hdrext id="14" uri="urn:ietf:params:rtp-hdrext:toffset" />
+                <rtph:rtp-hdrext id="13" uri="http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time" />
+                <rtph:rtp-hdrext id="3" uri="urn:3gpp:video-orientation" />
+                <rtph:rtp-hdrext id="2" uri="http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01" />
+                <rtph:rtp-hdrext id="5" uri="http://www.webrtc.org/experiments/rtp-hdrext/playout-delay" />
+                <rtph:rtp-hdrext id="6" uri="http://www.webrtc.org/experiments/rtp-hdrext/video-content-type" />
+                <rtph:rtp-hdrext id="7" uri="http://www.webrtc.org/experiments/rtp-hdrext/video-timing" />
+                <rtph:rtp-hdrext id="8" uri="http://tools.ietf.org/html/draft-ietf-avtext-framemarking-07" />
+                <rtph:rtp-hdrext id="9" uri="http://www.webrtc.org/experiments/rtp-hdrext/color-space" />
+                <source xmlns="urn:xmpp:jingle:apps:rtp:ssma:0" ssrc="3883348418">
+                    <parameter name="cname" value="u3LAp+BOnJSyXEld" />
+                    <parameter name="msid" value="cWrPgpLVJL3XXIO7G6VFF4fA7z3S64H8D6fW 1b129928-a237-4490-8331-17e1a327b52b" />
+                </source>
+                <source xmlns="urn:xmpp:jingle:apps:rtp:ssma:0" ssrc="1145569248">
+                    <parameter name="cname" value="u3LAp+BOnJSyXEld" />
+                    <parameter name="msid" value="cWrPgpLVJL3XXIO7G6VFF4fA7z3S64H8D6fW 1b129928-a237-4490-8331-17e1a327b52b" />
+                </source>
+                <ssrc-group xmlns="urn:xmpp:jingle:apps:rtp:ssma:0" semantics="FID">
+                    <source ssrc="3883348418" />
+                    <source ssrc="1145569248" />
+                </ssrc-group>
+                <stream xmlns="urn:xmpp:jingle:apps:rtp:msid:0" id="cWrPgpLVJL3XXIO7G6VFF4fA7z3S64H8D6fW" track="1b129928-a237-4490-8331-17e1a327b52b" />
+            </description>
+            <transport xmlns="urn:xmpp:jingle:transports:ice-udp:1" ufrag="XW+8" pwd="kgR2IDubOrje8RzAV65njTkV">
+                <fingerprint xmlns="urn:xmpp:jingle:apps:dtls:0" hash="sha-256" setup="actpass">E9:02:21:50:CB:BD:C3:47:1B:70:E8:4E:5F:A9:5C:E5:42:5A:DF:FB:02:30:BD:8B:7C:90:EE:0A:70:04:CC:99</fingerprint>
+            </transport>
+        </content>
+        <group xmlns="urn:xmpp:jingle:apps:grouping:0" semantics="BUNDLE">
+            <content name="audio" />
+            <content name="video" />
+        </group>
+    </jingle>
+</iq>
