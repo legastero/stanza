@@ -1,0 +1,70 @@
+[
+    "message",
+    {
+        "body": "hi!",
+        "html": {
+            "body": {
+                "attributes": {
+                    "xmlns": "http://www.w3.org/1999/xhtml"
+                },
+                "children": [
+                    {
+                        "attributes": {
+                            "style": "font-weight:bold"
+                        },
+                        "children": ["hi!"],
+                        "name": "p"
+                    }
+                ],
+                "name": "body"
+            }
+        }
+    },
+    {
+        "alternateLanguageBodies": [
+            {
+                "lang": "",
+                "value": "hi!"
+            }
+        ],
+        "body": "hi!",
+        "html": {
+            "alternateLanguageBodies": [
+                {
+                    "lang": "",
+                    "value": {
+                        "attributes": {
+                            "xmlns": "http://www.w3.org/1999/xhtml"
+                        },
+                        "children": [
+                            {
+                                "attributes": {
+                                    "style": "font-weight:bold"
+                                },
+                                "children": ["hi!"],
+                                "name": "p"
+                            }
+                        ],
+                        "name": "body"
+                    }
+                }
+            ],
+            "body": {
+                "attributes": {
+                    "xmlns": "http://www.w3.org/1999/xhtml"
+                },
+                "children": [
+                    {
+                        "attributes": {
+                            "style": "font-weight:bold"
+                        },
+                        "children": ["hi!"],
+                        "name": "p"
+                    }
+                ],
+                "name": "body"
+            }
+        },
+        "lang": ""
+    }
+]

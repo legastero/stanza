@@ -33,7 +33,7 @@
 | [XEP-0060](https://xmpp.org/extensions/xep-0060.html) | Publish-Subscribe                                  | 1.15.1  | [Source](../src/protocol/xep0060.ts) | [Test Cases](../test/protocol-cases/xep0060) |
 | [XEP-0065](https://xmpp.org/extensions/xep-0065.html) | SOCKS5 Bytestreams                                 | 1.8.1   | [Source](../src/protocol/xep0065.ts) |                                              |
 | [XEP-0066](https://xmpp.org/extensions/xep-0066.html) | Out of Band Data                                   | 1.5     | [Source](../src/protocol/xep0066.ts) | [Test Cases](../test/protocol-cases/xep0066) |
-| [XEP-0071](https://xmpp.org/extensions/xep-0071.html) | XHTML-IM                                           | 1.5.4   | [Source](../src/protocol/xep0071.ts) |                                              |
+| [XEP-0071](https://xmpp.org/extensions/xep-0071.html) | XHTML-IM                                           | 1.5.4   | [Source](../src/protocol/xep0071.ts) | [Test Cases](../test/protocol-cases/xep0071) |
 | [XEP-0077](https://xmpp.org/extensions/xep-0077.html) | In-Band Registration                               | 2.4     | [Source](../src/protocol/xep0077.ts) |                                              |
 | [XEP-0080](https://xmpp.org/extensions/xep-0080.html) | User Location                                      | 1.9     | [Source](../src/protocol/xep0080.ts) | [Test Cases](../test/protocol-cases/xep0080) |
 | [XEP-0084](https://xmpp.org/extensions/xep-0084.html) | User Avatar                                        | 1.1.1   | [Source](../src/protocol/xep0084.ts) |                                              |

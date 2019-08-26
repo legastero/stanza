@@ -153,7 +153,7 @@ function escapeXMLReplaceChar(match: string) {
     return ESCAPE_XML_CHAR[match];
 }
 
-function unescapeXMLReplaceChar(match: string, allowUnknown: boolean = false) {
+function unescapeXMLReplaceChar(match: string) {
     if (UNESCAPE_XML_CHAR[match]) {
         return UNESCAPE_XML_CHAR[match];
     }
@@ -172,10 +172,6 @@ function unescapeXMLReplaceChar(match: string, allowUnknown: boolean = false) {
         return String.fromCodePoint(code);
     }
 
-    if (allowUnknown) {
-        return match;
-    }
-
     throw JXTError.restrictedXML('Prohibited entity: ' + match);
 }
 
@@ -183,9 +179,9 @@ export function escapeXML(text: string) {
     return text.replace(NEED_ESCAPING, escapeXMLReplaceChar);
 }
 
-export function unescapeXML(text: string, allowUnknown: boolean = false) {
+export function unescapeXML(text: string) {
     return text.replace(ESCAPE_SEQUENCE, match => {
-        return unescapeXMLReplaceChar(match, allowUnknown);
+        return unescapeXMLReplaceChar(match);
     });
 }
 

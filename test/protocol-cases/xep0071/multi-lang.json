@@ -1,0 +1,149 @@
+[
+    "message",
+    {
+        "alternateLanguageBodies": [
+            {
+                "lang": "en-us",
+                "value": "awesome!"
+            },
+            {
+                "lang": "de-de",
+                "value": "ausgezeichnet!"
+            }
+        ],
+        "html": {
+            "alternateLanguageBodies": [
+                {
+                    "lang": "en-us",
+                    "value": {
+                        "attributes": {
+                            "xml:lang": "en-US",
+                            "xmlns": "http://www.w3.org/1999/xhtml"
+                        },
+                        "children": [
+                            {
+                                "attributes": {},
+                                "children": [
+                                    {
+                                        "attributes": {},
+                                        "children": ["awesome!"],
+                                        "name": "strong"
+                                    }
+                                ],
+                                "name": "p"
+                            }
+                        ],
+                        "name": "body"
+                    }
+                },
+                {
+                    "lang": "de-de",
+                    "value": {
+                        "attributes": {
+                            "xml:lang": "de-DE",
+                            "xmlns": "http://www.w3.org/1999/xhtml"
+                        },
+                        "children": [
+                            {
+                                "attributes": {},
+                                "children": [
+                                    {
+                                        "attributes": {},
+                                        "children": ["ausgezeichnet!"],
+                                        "name": "strong"
+                                    }
+                                ],
+                                "name": "p"
+                            }
+                        ],
+                        "name": "body"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "alternateLanguageBodies": [
+            {
+                "lang": "en-us",
+                "value": "awesome!"
+            },
+            {
+                "lang": "de-de",
+                "value": "ausgezeichnet!"
+            }
+        ],
+        "body": "awesome!",
+        "html": {
+            "alternateLanguageBodies": [
+                {
+                    "lang": "en-us",
+                    "value": {
+                        "attributes": {
+                            "xml:lang": "en-us",
+                            "xmlns": "http://www.w3.org/1999/xhtml"
+                        },
+                        "children": [
+                            {
+                                "attributes": {},
+                                "children": [
+                                    {
+                                        "attributes": {},
+                                        "children": ["awesome!"],
+                                        "name": "strong"
+                                    }
+                                ],
+                                "name": "p"
+                            }
+                        ],
+                        "name": "body"
+                    }
+                },
+                {
+                    "lang": "de-de",
+                    "value": {
+                        "attributes": {
+                            "xml:lang": "de-de",
+                            "xmlns": "http://www.w3.org/1999/xhtml"
+                        },
+                        "children": [
+                            {
+                                "attributes": {},
+                                "children": [
+                                    {
+                                        "attributes": {},
+                                        "children": ["ausgezeichnet!"],
+                                        "name": "strong"
+                                    }
+                                ],
+                                "name": "p"
+                            }
+                        ],
+                        "name": "body"
+                    }
+                }
+            ],
+            "body": {
+                "attributes": {
+                    "xml:lang": "en-us",
+                    "xmlns": "http://www.w3.org/1999/xhtml"
+                },
+                "children": [
+                    {
+                        "attributes": {},
+                        "children": [
+                            {
+                                "attributes": {},
+                                "children": ["awesome!"],
+                                "name": "strong"
+                            }
+                        ],
+                        "name": "p"
+                    }
+                ],
+                "name": "body"
+            }
+        },
+        "lang": ""
+    }
+]

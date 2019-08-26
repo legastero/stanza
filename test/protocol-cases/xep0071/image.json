@@ -1,0 +1,142 @@
+[
+    "message",
+    {
+        "body": "Hey, are you licensed to Jabber?\n\n        http://www.xmpp.org/images/psa-license.jpg",
+        "html": {
+            "body": {
+                "attributes": {
+                    "xmlns": "http://www.w3.org/1999/xhtml"
+                },
+                "children": [
+                    {
+                        "attributes": {},
+                        "children": [
+                            "Hey, are you licensed to ",
+                            {
+                                "attributes": {
+                                    "href": "http://www.jabber.org/"
+                                },
+                                "children": ["Jabber"],
+                                "name": "a"
+                            },
+                            "?"
+                        ],
+                        "name": "p"
+                    },
+                    {
+                        "attributes": {},
+                        "children": [
+                            {
+                                "attributes": {
+                                    "alt": "A License to Jabber",
+                                    "height": "261",
+                                    "src": "http://www.xmpp.org/images/psa-license.jpg",
+                                    "width": "537"
+                                },
+                                "children": [],
+                                "name": "img"
+                            }
+                        ],
+                        "name": "p"
+                    }
+                ],
+                "name": "body"
+            }
+        }
+    },
+    {
+        "alternateLanguageBodies": [
+            {
+                "lang": "",
+                "value": "Hey, are you licensed to Jabber?\n\n        http://www.xmpp.org/images/psa-license.jpg"
+            }
+        ],
+        "body": "Hey, are you licensed to Jabber?\n\n        http://www.xmpp.org/images/psa-license.jpg",
+        "html": {
+            "alternateLanguageBodies": [
+                {
+                    "lang": "",
+                    "value": {
+                        "attributes": {
+                            "xmlns": "http://www.w3.org/1999/xhtml"
+                        },
+                        "children": [
+                            {
+                                "attributes": {},
+                                "children": [
+                                    "Hey, are you licensed to ",
+                                    {
+                                        "attributes": {
+                                            "href": "http://www.jabber.org/"
+                                        },
+                                        "children": ["Jabber"],
+                                        "name": "a"
+                                    },
+                                    "?"
+                                ],
+                                "name": "p"
+                            },
+                            {
+                                "attributes": {},
+                                "children": [
+                                    {
+                                        "attributes": {
+                                            "alt": "A License to Jabber",
+                                            "height": "261",
+                                            "src": "http://www.xmpp.org/images/psa-license.jpg",
+                                            "width": "537"
+                                        },
+                                        "children": [],
+                                        "name": "img"
+                                    }
+                                ],
+                                "name": "p"
+                            }
+                        ],
+                        "name": "body"
+                    }
+                }
+            ],
+            "body": {
+                "attributes": {
+                    "xmlns": "http://www.w3.org/1999/xhtml"
+                },
+                "children": [
+                    {
+                        "attributes": {},
+                        "children": [
+                            "Hey, are you licensed to ",
+                            {
+                                "attributes": {
+                                    "href": "http://www.jabber.org/"
+                                },
+                                "children": ["Jabber"],
+                                "name": "a"
+                            },
+                            "?"
+                        ],
+                        "name": "p"
+                    },
+                    {
+                        "attributes": {},
+                        "children": [
+                            {
+                                "attributes": {
+                                    "alt": "A License to Jabber",
+                                    "height": "261",
+                                    "src": "http://www.xmpp.org/images/psa-license.jpg",
+                                    "width": "537"
+                                },
+                                "children": [],
+                                "name": "img"
+                            }
+                        ],
+                        "name": "p"
+                    }
+                ],
+                "name": "body"
+            }
+        },
+        "lang": ""
+    }
+]

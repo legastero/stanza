@@ -24,20 +24,19 @@ const ALLOWED_ELEMENTS = new Set([
 ]);
 
 const style = new Set(['style']);
-const none = new Set();
 const ALLOWED_ATTRIBUTES = new Map([
     ['a', new Set(['href', 'style'])],
     ['body', new Set(['style', 'xml:lang'])],
     ['blockquote', style],
-    ['br', none],
+    ['br', style],
     ['cite', style],
-    ['em', none],
+    ['em', style],
     ['img', new Set(['alt', 'height', 'src', 'style', 'width'])],
     ['li', style],
     ['ol', style],
     ['p', style],
     ['span', style],
-    ['strong', none],
+    ['strong', style],
     ['ul', style]
 ]);
 
@@ -159,6 +158,9 @@ const sanitizeRoot = (input: JSONElement | string): JSONElement | string | undef
         return;
     }
 
+    if (input.attributes.xmlns !== undefined) {
+        attributes.xmlns = input.attributes.xmlns;
+    }
     if (input.attributes.style) {
         attributes.style = input.attributes.style;
     }
@@ -167,11 +169,7 @@ const sanitizeRoot = (input: JSONElement | string): JSONElement | string | undef
     }
 
     return {
-        attributes: {
-            style: input.attributes.style,
-            'xml:lang': input.attributes['xml:lang'],
-            xmlns: input.attributes.xmlns
-        },
+        attributes,
         children,
         name: 'body'
     };

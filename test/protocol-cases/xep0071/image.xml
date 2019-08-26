@@ -1,0 +1,13 @@
+<message>
+    <body>Hey, are you licensed to Jabber?
+
+        http://www.xmpp.org/images/psa-license.jpg</body>
+    <html xmlns="http://jabber.org/protocol/xhtml-im">
+        <body xmlns="http://www.w3.org/1999/xhtml">
+            <p>Hey, are you licensed to <a href="http://www.jabber.org/">Jabber</a>?</p>
+            <p>
+                <img src="http://www.xmpp.org/images/psa-license.jpg" alt="A License to Jabber" height="261" width="537" />
+            </p>
+        </body>
+    </html>
+</message>
