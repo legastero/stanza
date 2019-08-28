@@ -85,7 +85,7 @@ export default class WSConnection implements Transport {
             if (e.preventDefault) {
                 e.preventDefault();
             }
-            this.client.emit('disconnected', e);
+            console.error(e);
         };
         this.conn.onclose = (e: any) => {
             this.client.emit('disconnected', e);
