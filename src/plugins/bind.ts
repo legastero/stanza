@@ -26,7 +26,7 @@ export default function(client: Agent) {
         }
     });
 
-    client.registerFeature('session', 1000, async (features, cb) => {
+    client.registerFeature('legacySession', 1000, async (features, cb) => {
         if (client.sessionStarted || (features.legacySession && features.legacySession.optional)) {
             client.features.negotiated.session = true;
             return cb();
