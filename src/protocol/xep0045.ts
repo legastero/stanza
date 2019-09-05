@@ -23,6 +23,7 @@ import { JID } from '../JID';
 import {
     addAlias,
     attribute,
+    booleanAttribute,
     childAttribute,
     childBoolean,
     childEnum,
@@ -154,6 +155,9 @@ export interface MUCUnique {
     type: 'unique';
     name?: string;
 }
+
+const reasonAttribute = attribute('reason');
+const reasonText = text();
 
 const Protocol: DefinitionOptions[] = [
     addAlias(NS_DATAFORM, 'x', [{ path: 'iq.muc.form', selector: 'configure' }]),
@@ -293,10 +297,21 @@ const Protocol: DefinitionOptions[] = [
         element: 'x',
         fields: {
             action: staticValue('invite'),
-            continue: attribute('continue'),
+            continue: booleanAttribute('continue'),
             jid: JIDAttribute('jid'),
             password: attribute('password'),
-            reason: attribute('reason'),
+            reason: {
+                importer(xml, context) {
+                    const attr = reasonAttribute.importer(xml, context);
+                    if (attr) {
+                        return attr;
+                    }
+                    return reasonText.importer(xml, context);
+                },
+                exporter(xml, data, context) {
+                    reasonAttribute.exporter(xml, data, context);
+                }
+            },
             thread: attribute('thread')
         },
         namespace: NS_MUC_DIRECT_INVITE,

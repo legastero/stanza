@@ -70,7 +70,7 @@
 | [XEP-0231](https://xmpp.org/extensions/xep-0231.html) | Bits of Binary                                     | 1.0     | [Source](../src/protocol/xep0231.ts) |                                              |
 | [XEP-0234](https://xmpp.org/extensions/xep-0234.html) | Jingle File Transfer                               | 0.18.3  | [Source](../src/protocol/xep0234.ts) |                                              |
 | [XEP-0247](https://xmpp.org/extensions/xep-0247.html) | Jingle XML Streams                                 | 0.2     | [Source](../src/protocol/xep247.ts)  |                                              |
-| [XEP-0249](https://xmpp.org/extensions/xep-0249.html) | Direct MUC Invitations                             | 1.2     | [Source](../src/protocol/xep0045.ts) |                                              |
+| [XEP-0249](https://xmpp.org/extensions/xep-0249.html) | Direct MUC Invitations                             | 1.2     | [Source](../src/protocol/xep0045.ts) | [Test Cases](../test/protocol-cases/xep0045) |
 | [XEP-0256](https://xmpp.org/extensions/xep-0256.html) | Last Activity in Presence                          | 1.1     | [Source](../src/protocol/xep0012.ts) | [Test Cases](../test/protocol-cases/xep0012) |
 | [XEP-0260](https://xmpp.org/extensions/xep-0260.html) | Jingle SOCKS5 Bytestreams Transport Method         | 1.0.1   | [Source](../src/protocol/xep0260.ts) |                                              |
 | [XEP-0261](https://xmpp.org/extensions/xep-0261.html) | Jingle In-Band Bytestreams Transport Method        | 1.0     | [Source](../src/protocol/xep0261.ts) |                                              |
