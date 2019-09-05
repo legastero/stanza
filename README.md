@@ -63,7 +63,7 @@ client.connect();
 -   [Supported XEP Formats](docs/Supported_XEP_Formats.md)
 -   [Creating Plugins](docs/Create_Plugin.md)
 -   [Using with React Native](docs/React_Native.md)
--   [Using PubSub](docs/Using_Pubsub.md)
+-   [Using PubSub](docs/Using_PubSub.md)
 -   [Using Stream Management](docs/Using_Stream_Management.md)
 
 ## Discussion

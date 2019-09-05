@@ -288,7 +288,7 @@ const Protocol: DefinitionOptions[] = [
         namespace: NS_MUC_OWNER
     },
 
-    // XEP-0297
+    // XEP-0249
     {
         element: 'x',
         fields: {
