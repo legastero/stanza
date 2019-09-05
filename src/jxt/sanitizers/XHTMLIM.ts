@@ -165,7 +165,7 @@ const sanitizeRoot = (input: JSONElement | string): JSONElement | string | undef
         attributes.style = input.attributes.style;
     }
     if (input.attributes['xml:lang'] !== undefined) {
-        attributes['xml:lang'] = input.attributes['xml:lang']!;
+        attributes['xml:lang'] = input.attributes['xml:lang'];
     }
 
     return {
