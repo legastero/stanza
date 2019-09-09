@@ -1,0 +1,5 @@
+<message xmlns='jabber:client' type='groupchat' from='test@muc.example.com' to='user@example.net/conn1'>
+    <x xmlns='http://jabber.org/protocol/muc#user'>
+        <status code='104'/>
+    </x>
+</message>

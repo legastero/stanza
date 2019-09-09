@@ -1,0 +1,62 @@
+[
+    "message",
+    {
+        "body": "admin@domain/QfQz53QX invited you to the room call-rb8j8seq@conference.quobis (You've been added to the conference's chat room)",
+        "from": "call-rb8j8seq@conference.domain",
+        "id": "4fd708bd0eb29b7e",
+        "legacyMUC": {
+            "jid": "call-rb8j8seq@domain.quobis",
+            "legacyReason": "You've been added to the conference's chat room"
+        },
+        "muc": {
+            "invite": [
+                {
+                    "from": "admin@domain/QfQz53QX",
+                    "reason": "You've been added to the conference's chat room"
+                }
+            ]
+        },
+        "stanzaIds": [
+            {
+                "by": "dev6@domain",
+                "id": "1dHg6QfzhDdy2oXP"
+            }
+        ],
+        "to": "dev6@domain"
+    },
+    {
+        "alternateLanguageBodies": [
+            {
+                "lang": "",
+                "value": "admin@domain/QfQz53QX invited you to the room call-rb8j8seq@conference.quobis (You've been added to the conference's chat room)"
+            }
+        ],
+        "body": "admin@domain/QfQz53QX invited you to the room call-rb8j8seq@conference.quobis (You've been added to the conference's chat room)",
+        "from": "call-rb8j8seq@conference.domain",
+        "id": "4fd708bd0eb29b7e",
+        "lang": "",
+        "legacyMUC": {
+            "action": "invite",
+            "legacyReason": "You've been added to the conference's chat room",
+            "jid": "call-rb8j8seq@domain.quobis",
+            "type": "direct-invite"
+        },
+        "muc": {
+            "action": "invite",
+            "invite": [
+                {
+                    "from": "admin@domain/QfQz53QX",
+                    "reason": "You've been added to the conference's chat room"
+                }
+            ],
+            "statusCodes": []
+        },
+        "stanzaIds": [
+            {
+                "by": "dev6@domain",
+                "id": "1dHg6QfzhDdy2oXP"
+            }
+        ],
+        "to": "dev6@domain"
+    }
+]

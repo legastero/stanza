@@ -1,0 +1,12 @@
+[
+    "message",
+    {
+        "from": "test@muc.example.com",
+        "lang": "",
+        "muc": {
+            "statusCodes": ["104"]
+        },
+        "to": "user@example.net/conn1",
+        "type": "groupchat"
+    }
+]

@@ -1,0 +1,11 @@
+<message
+    from='crone1@shakespeare.lit/desktop'
+    to='hecate@shakespeare.lit'>
+  <x xmlns="http://jabber.org/protocol/muc#user" />
+  <x xmlns='jabber:x:conference'
+     continue='1'
+     jid='darkcave@macbeth.shakespeare.lit'
+     password='cauldronburn'
+     reason='Hey Hecate, this is the place for all good witches!'
+     thread='e0ffe42b28561960c6b12b944a092794b9683a38'/>
+</message>

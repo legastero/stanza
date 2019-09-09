@@ -28,7 +28,10 @@ export default class Registry {
         this.languageResolver = resolver;
     }
 
-    public import(xml: XMLElement, context: TranslationContext = {}): JSONData | undefined {
+    public import(
+        xml: XMLElement,
+        context: TranslationContext = { registry: this }
+    ): JSONData | undefined {
         if (!this.hasTranslator(xml.getNamespace(), xml.getName())) {
             return;
         }
@@ -62,7 +65,7 @@ export default class Registry {
     public export<T extends JSONData = JSONData>(
         path: string,
         data: T,
-        context: TranslationContext = {}
+        context: TranslationContext = { registry: this }
     ): XMLElement | undefined {
         if (!context.acceptLanguages) {
             context.acceptLanguages = [];
@@ -220,7 +223,8 @@ export default class Registry {
             importers,
             namespace: definition.namespace,
             optionalNamespaces,
-            type: definition.type
+            type: definition.type,
+            typeOrder: definition.typeOrder
         });
 
         for (const link of aliases) {

@@ -141,13 +141,14 @@ export default function(client: Agent) {
             return;
         }
 
-        if (msg.muc.type === 'direct-invite') {
+        if (msg.muc.type === 'direct-invite' || (!msg.muc.invite && msg.legacyMUC)) {
+            const invite = msg.muc.type === 'direct-invite' ? msg.muc : msg.legacyMUC!;
             client.emit('muc:invite', {
                 from: msg.from,
-                password: msg.muc.password,
-                reason: msg.muc.reason,
-                room: msg.muc.jid!,
-                thread: msg.muc.thread,
+                password: invite.password,
+                reason: invite.reason,
+                room: invite.jid!,
+                thread: invite.thread,
                 type: 'direct'
             });
             return;

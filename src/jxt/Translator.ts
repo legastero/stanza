@@ -17,6 +17,7 @@ export default class Translator {
     public placeholder: boolean;
     public typeField: FieldName;
     public typeValues: Map<XName, Type>;
+    public typeOrders: Map<Type, number>;
     public defaultType: Type;
     public languageField: FieldName;
     public importers: Map<XName, Importer>;
@@ -33,6 +34,7 @@ export default class Translator {
         this.defaultType = '';
         this.languageField = 'lang';
         this.typeValues = new Map();
+        this.typeOrders = new Map();
         this.importers = new Map();
         this.exporters = new Map();
         this.children = new Map();
@@ -207,6 +209,9 @@ export default class Translator {
 
         if (opts.type) {
             this.typeValues.set(xid, opts.type);
+            if (opts.typeOrder) {
+                this.typeOrders.set(opts.type, opts.typeOrder);
+            }
         } else if (this.typeField && !opts.type) {
             for (const [, imp] of this.importers) {
                 for (const [fieldName, fieldImporter] of opts.importers) {
@@ -251,7 +256,7 @@ export default class Translator {
         this.parents = new Set();
     }
 
-    public import(xml: XMLElement, parentContext: TranslationContext = {}): JSONData | undefined {
+    public import(xml: XMLElement, parentContext: TranslationContext): JSONData | undefined {
         const xid = `{${xml.getNamespace()}}${xml.getName()}`;
         const output: JSONData = {};
 
@@ -330,8 +335,13 @@ export default class Translator {
                             output[fieldName] = [];
                         }
                         output[fieldName].push(childOutput);
-                    } else {
+                    } else if (!output[fieldName]) {
                         output[fieldName] = childOutput;
+                    } else {
+                        output[fieldName] = translator.resolveCollision(
+                            output[fieldName],
+                            childOutput
+                        );
                     }
                 }
             }
@@ -350,7 +360,7 @@ export default class Translator {
         return output;
     }
 
-    public export(data: JSONData, parentContext: TranslationContext = {}): XMLElement | undefined {
+    public export(data: JSONData, parentContext: TranslationContext): XMLElement | undefined {
         if (!data) {
             return;
         }
@@ -410,7 +420,7 @@ export default class Translator {
         keys.sort((key1, key2) => {
             const a = exporter.fieldOrders.get(key1) || 100000;
             const b = exporter.fieldOrders.get(key2) || 100000;
-            return a < b ? -1 : a > b ? 1 : 0;
+            return a - b;
         });
         for (const key of keys) {
             if (key === this.languageField) {
@@ -453,5 +463,13 @@ export default class Translator {
         }
 
         return output;
+    }
+
+    private resolveCollision(existingData: JSONData, newData: JSONData): JSONData {
+        const existingOrder =
+            this.typeOrders.get(existingData[this.typeField] || this.defaultType) || 0;
+        const newOrder = this.typeOrders.get(newData[this.typeField] || this.defaultType) || 0;
+
+        return existingOrder <= newOrder ? existingData : newData;
     }
 }

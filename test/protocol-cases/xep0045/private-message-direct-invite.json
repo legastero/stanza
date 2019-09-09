@@ -1,0 +1,34 @@
+[
+    "message",
+    {
+        "from": "crone1@shakespeare.lit/desktop",
+        "legacyMUC": {
+            "action": "invite",
+            "continue": true,
+            "jid": "darkcave@macbeth.shakespeare.lit",
+            "password": "cauldronburn",
+            "reason": "Hey Hecate, this is the place for all good witches!",
+            "thread": "e0ffe42b28561960c6b12b944a092794b9683a38",
+            "type": "direct-invite"
+        },
+        "muc": {},
+        "to": "hecate@shakespeare.lit"
+    },
+    {
+        "from": "crone1@shakespeare.lit/desktop",
+        "lang": "",
+        "legacyMUC": {
+            "action": "invite",
+            "continue": true,
+            "jid": "darkcave@macbeth.shakespeare.lit",
+            "password": "cauldronburn",
+            "reason": "Hey Hecate, this is the place for all good witches!",
+            "thread": "e0ffe42b28561960c6b12b944a092794b9683a38",
+            "type": "direct-invite"
+        },
+        "muc": {
+            "statusCodes": []
+        },
+        "to": "hecate@shakespeare.lit"
+    }
+]

@@ -32,6 +32,8 @@ import {
     dateAttribute,
     deepChildText,
     DefinitionOptions,
+    extendMessage,
+    findAll,
     integerAttribute,
     JIDAttribute,
     multipleChildAttribute,
@@ -58,6 +60,7 @@ declare module './' {
 
     export interface Message {
         muc?: MUCInfo | MUCDirectInvite;
+        legacyMUC?: MUCDirectInvite;
     }
 
     export interface IQPayload {
@@ -126,6 +129,7 @@ export interface MUCDirectInvite {
     reason?: string;
     thread?: string;
     continue?: boolean;
+    legacyReason?: string;
 }
 
 export interface MUCDecline {
@@ -155,9 +159,6 @@ export interface MUCUnique {
     type: 'unique';
     name?: string;
 }
-
-const reasonAttribute = attribute('reason');
-const reasonText = text();
 
 const Protocol: DefinitionOptions[] = [
     addAlias(NS_DATAFORM, 'x', [{ path: 'iq.muc.form', selector: 'configure' }]),
@@ -203,7 +204,8 @@ const Protocol: DefinitionOptions[] = [
         },
         namespace: NS_MUC_USER,
         type: 'info',
-        typeField: 'type'
+        typeField: 'type',
+        typeOrder: 1
     },
     {
         element: 'actor',
@@ -299,24 +301,15 @@ const Protocol: DefinitionOptions[] = [
             action: staticValue('invite'),
             continue: booleanAttribute('continue'),
             jid: JIDAttribute('jid'),
+            legacyReason: text(),
             password: attribute('password'),
-            reason: {
-                importer(xml, context) {
-                    const attr = reasonAttribute.importer(xml, context);
-                    if (attr) {
-                        return attr;
-                    }
-                    return reasonText.importer(xml, context);
-                },
-                exporter(xml, data, context) {
-                    reasonAttribute.exporter(xml, data, context);
-                }
-            },
+            reason: attribute('reason'),
             thread: attribute('thread')
         },
         namespace: NS_MUC_DIRECT_INVITE,
         path: 'message.muc',
-        type: 'direct-invite'
+        type: 'direct-invite',
+        typeOrder: 2
     },
 
     // XEP-0307
@@ -328,6 +321,37 @@ const Protocol: DefinitionOptions[] = [
         namespace: NS_MUC_UNIQUE,
         path: 'iq.muc',
         type: 'unique'
-    }
+    },
+
+    extendMessage({
+        legacyMUC: {
+            exporter(xml, value, context) {
+                const out = context.registry
+                    ? context.registry.export('message.muc', { ...value, type: 'direct-invite' })
+                    : undefined;
+                if (out) {
+                    xml.appendChild(out);
+                }
+            },
+            exportOrder: 100001,
+            importer(xml, context) {
+                const mucElement = findAll(xml, NS_MUC_USER, 'x')[0];
+                if (!mucElement) {
+                    return;
+                }
+                const confElement = findAll(xml, NS_MUC_DIRECT_INVITE, 'x')[0];
+                if (!confElement) {
+                    return;
+                }
+                return context.registry
+                    ? context.registry.import(confElement, {
+                          ...context,
+                          path: 'message'
+                      })
+                    : undefined;
+            },
+            importOrder: -1
+        }
+    })
 ];
 export default Protocol;

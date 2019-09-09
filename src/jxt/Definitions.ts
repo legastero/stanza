@@ -67,6 +67,7 @@ export interface DefinitionUpdateOptions {
     exporters: Map<FieldName, FieldExporter>;
     contexts: Map<string, PathContext>;
     optionalNamespaces: Map<string, string>;
+    typeOrder?: number;
 }
 
 export interface DefinitionOptions {
@@ -81,6 +82,7 @@ export interface DefinitionOptions {
     aliases?: Array<string | LinkPath>;
     childrenExportOrder?: { [key: string]: number };
     optionalNamespaces?: { [prefix: string]: string };
+    typeOrder?: number;
 }
 
 export interface LinkPath {

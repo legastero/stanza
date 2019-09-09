@@ -1,0 +1,10 @@
+<message id="4fd708bd0eb29b7e" to="dev6@domain" xmlns="jabber:client" from="call-rb8j8seq@conference.domain">
+    <body>admin@domain/QfQz53QX invited you to the room call-rb8j8seq@conference.quobis (You've been added to the conference's chat room)</body>
+    <x xmlns="http://jabber.org/protocol/muc#user">
+        <invite from="admin@domain/QfQz53QX">
+            <reason>You've been added to the conference's chat room</reason>
+        </invite>
+    </x>
+    <stanza-id id="1dHg6QfzhDdy2oXP" xmlns="urn:xmpp:sid:0" by="dev6@domain" />
+    <x xmlns="jabber:x:conference" jid="call-rb8j8seq@domain.quobis">You've been added to the conference's chat room</x>
+</message>
