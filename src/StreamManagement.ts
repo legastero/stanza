@@ -24,15 +24,15 @@ interface SMState {
 
 export default class StreamManagement {
     public id?: string;
-    public allowResume: boolean;
-    public lastAck: number;
-    public handled: number;
-    public windowSize: number;
-    public unacked: Unacked[];
+    public allowResume: boolean = true;
+    public lastAck: number = 0;
+    public handled: number = 0;
+    public windowSize: number = 1;
+    public unacked: Unacked[] = [];
 
-    private pendingAck: boolean;
-    private inboundStarted: boolean;
-    private outboundStarted: boolean;
+    private pendingAck: boolean = false;
+    private inboundStarted: boolean = false;
+    private outboundStarted: boolean = false;
     private client: Agent;
     private cacheHandler: (state: SMState) => void;
 
@@ -41,14 +41,8 @@ export default class StreamManagement {
         this.id = undefined;
         this.allowResume = true;
         this.started = false;
-        this.inboundStarted = false;
-        this.outboundStarted = false;
-        this.lastAck = 0;
-        this.handled = 0;
-        this.windowSize = 1;
-        this.unacked = [];
-        this.pendingAck = false;
         this.cacheHandler = () => null;
+        this._reset();
     }
 
     get started() {
@@ -84,6 +78,7 @@ export default class StreamManagement {
             type: 'enable'
         });
         this.handled = 0;
+        this.pendingAck = false;
         this.outboundStarted = true;
     }
 
@@ -93,6 +88,7 @@ export default class StreamManagement {
             previousSession: this.id!,
             type: 'resume'
         });
+        this.pendingAck = false;
         this.outboundStarted = true;
     }
 
@@ -127,13 +123,7 @@ export default class StreamManagement {
             this.client.emit('stanza:failed', { kind, stanza } as any);
         }
 
-        this.inboundStarted = false;
-        this.outboundStarted = false;
-        this.id = undefined;
-        this.lastAck = 0;
-        this.handled = 0;
-        this.unacked = [];
-
+        this._reset();
         this._cache();
     }
 
@@ -216,5 +206,14 @@ export default class StreamManagement {
             lastAck: this.lastAck,
             unacked: this.unacked
         });
+    }
+
+    private _reset() {
+        this.inboundStarted = false;
+        this.outboundStarted = false;
+        this.lastAck = 0;
+        this.handled = 0;
+        this.unacked = [];
+        this.pendingAck = false;
     }
 }
