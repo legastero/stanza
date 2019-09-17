@@ -126,7 +126,7 @@ export { Hash };
 export function randomBytes(size: number) {
     const rawBytes = new Uint8Array(size);
     if (size > 0) {
-        root.crypto.getRandomValues(rawBytes);
+        (root.crypto || root.msCrypto).getRandomValues(rawBytes);
     }
     return Buffer.from(rawBytes.buffer);
 }
