@@ -18,5 +18,5 @@ export default {
         file: 'dist/es/index.module.js',
         format: 'es'
     },
-    plugins: [resolve()]
+    plugins: [resolve({ browser: true })]
 };

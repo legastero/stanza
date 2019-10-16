@@ -1,7 +1,8 @@
+import { fetch } from 'stanza-shims';
+
 import { Agent, Transport, TransportConfig } from '../';
 import { StreamErrorCondition } from '../Constants';
 import { ParsedData, Registry, StreamParser } from '../jxt';
-import fetch from '../lib/fetch';
 import { BOSH, Stream } from '../protocol';
 import StreamManagement from '../StreamManagement';
 import { sleep, timeoutPromise } from '../Utils';

@@ -1,6 +1,7 @@
+import * as hashes from 'stanza-shims';
+
 import { Agent } from '../';
 import { VERSION } from '../Constants';
-import * as hashes from '../lib/crypto';
 import {
     NS_DATAFORM,
     NS_DATAFORM_LAYOUT,

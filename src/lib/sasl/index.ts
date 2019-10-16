@@ -1,4 +1,4 @@
-import * as Hashes from '../crypto';
+import * as Hashes from 'stanza-shims';
 
 export interface Credentials {
     username?: string;
@@ -136,16 +136,16 @@ function XOR(a: Buffer, b: Buffer) {
 }
 // tslint:enable no-bitwise
 
-function H(text: Buffer, alg = 'sha-1') {
+function H(text: Buffer, alg = 'sha-1'): Buffer {
     return Hashes.createHash(alg)
         .update(text)
         .digest();
 }
 
-function HMAC(key: Buffer, msg: Buffer, alg = 'sha-1') {
+function HMAC(key: Buffer, msg: Buffer, alg = 'sha-1'): Buffer {
     return Hashes.createHmac(alg, key)
         .update(msg)
-        .digest();
+        .digest() as Buffer;
 }
 
 function Hi(text: Buffer, salt: Buffer, iterations: number, alg = 'sha-1') {

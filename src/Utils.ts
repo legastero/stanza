@@ -9,7 +9,7 @@
 
 // tslint:disable no-bitwise
 
-import { randomBytes } from './lib/crypto';
+import { randomBytes } from 'stanza-shims';
 
 const bth: string[] = [];
 for (let i = 0; i < 256; ++i) {

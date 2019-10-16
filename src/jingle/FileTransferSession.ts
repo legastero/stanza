@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
+import * as Hashes from 'stanza-shims';
 
 import { JINGLE_INFO_CHECKSUM_5, JingleAction, JingleSessionRole } from '../Constants';
-import * as Hashes from '../lib/crypto';
 import { NS_JINGLE_FILE_TRANSFER_5 } from '../Namespaces';
 import {
     FileDescription,

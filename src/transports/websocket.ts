@@ -1,9 +1,9 @@
 import { AsyncPriorityQueue, priorityQueue } from 'async';
+import { WebSocket } from 'stanza-shims';
 
 import { Agent, Transport, TransportConfig } from '../';
 import { StreamErrorCondition } from '../Constants';
 import { ParsedData, Registry, StreamParser } from '../jxt';
-import WS from '../lib/ws';
 import { Stream } from '../protocol';
 import StreamManagement from '../StreamManagement';
 
@@ -19,7 +19,7 @@ export default class WSConnection implements Transport {
     private stanzas: Registry;
     private closing: boolean;
     private sendQueue: AsyncPriorityQueue<string>;
-    private conn?: WS;
+    private conn?: WebSocket;
     private parser?: StreamParser;
 
     constructor(client: Agent, sm: StreamManagement, stanzas: Registry) {
@@ -80,7 +80,7 @@ export default class WSConnection implements Transport {
             return this.disconnect();
         });
 
-        this.conn = new WS(opts.url, 'xmpp');
+        this.conn = new WebSocket(opts.url, 'xmpp');
         this.conn.onerror = (e: any) => {
             if (e.preventDefault) {
                 e.preventDefault();
