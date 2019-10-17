@@ -72,7 +72,9 @@ export default class BOSHConnection implements Transport {
 
         this.pollingInterval = setInterval(() => {
             if (
+                this.authenticated &&
                 this.requests.size === 0 &&
+                this.sendBuffer.length === 0 &&
                 Date.now() - this.lastResponseTime >= this.minPollingInterval * 1000
             ) {
                 this.longPoll();
