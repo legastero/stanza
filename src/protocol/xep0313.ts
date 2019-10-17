@@ -47,7 +47,7 @@ export interface MAMPrefs {
 export interface MAMResult {
     queryId: string;
     id: string;
-    forwarded: Forward;
+    item: Forward;
 }
 
 const Protocol: DefinitionOptions[] = [
