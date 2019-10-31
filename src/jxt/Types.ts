@@ -662,7 +662,9 @@ export function childEnum(
             return defaultValue;
         },
         exporter(xml, value) {
-            findOrCreate(xml, namespace, valueNames.get(value)!);
+            if (valueNames.has(value)) {
+                findOrCreate(xml, namespace, valueNames.get(value)!);
+            }
         }
     };
 }
