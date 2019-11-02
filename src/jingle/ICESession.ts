@@ -62,6 +62,10 @@ export default class ICESession extends BaseSession {
     }
 
     public end(reason: JingleReasonCondition | JingleReason = 'success', silent: boolean = false) {
+        if (this._ending) {
+            return;
+        }
+        this._ending = true;
         this.pc.close();
         super.end(reason, silent);
     }
@@ -385,22 +389,31 @@ export default class ICESession extends BaseSession {
                 } else {
                     this.connectionState = 'disconnected';
                 }
-                if (this.restartingIce) {
+                if (this.restartingIce && !this._ending) {
                     this.end(JingleReasonCondition.FailedTransport);
                     return;
                 }
                 this.maybeRestartIce();
                 break;
             case 'failed':
+                if (this._ending) {
+                    this.connectionState = 'failed';
+                    return;
+                }
+
                 if (this.connectionState === 'failed' || this.restartingIce) {
                     this.end(JingleReasonCondition.FailedTransport);
                     return;
                 }
+
                 this.connectionState = 'failed';
                 this.restartIce();
                 break;
             case 'closed':
                 this.connectionState = 'disconnected';
+                if (this._ending) {
+                    return;
+                }
                 if (this.restartingIce) {
                     this.end(JingleReasonCondition.FailedTransport);
                 } else {
