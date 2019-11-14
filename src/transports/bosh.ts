@@ -259,7 +259,12 @@ export default class BOSHConnection implements Transport {
             }
 
             // do not (re)start long polling if terminating, or request is pending, or before authentication
-            if (this.hasStream && !this.closing && !this.requests.size && this.authenticated) {
+            if (
+                this.hasStream &&
+                !this.closing &&
+                this.authenticated &&
+                (!this.requests.size || this.sendBuffer.length)
+            ) {
                 clearTimeout(this.idleTimeout);
                 this.idleTimeout = setTimeout(() => {
                     this.longPoll();
