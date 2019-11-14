@@ -1,0 +1,27 @@
+<iq xmlns="jabber:client" 
+    from='romeo@montague.lit/orchard'
+    id='uh3g1f48'
+    to='juliet@capulet.lit/balcony'
+    type='set'>
+  <jingle xmlns='urn:xmpp:jingle:1'
+          action='transport-info'
+          initiator='romeo@montague.lit/orchard'
+          sid='a73sjjvkla37jfea'>
+    <content creator='initiator' name='this-is-the-audio-content' disposition='session' senders='both'>
+      <transport xmlns='urn:xmpp:jingle:transports:ice-udp:1'
+                 pwd='asd88fgpdd777uzjYhagZg'
+                 ufrag='8hhy'>
+        <candidate component='1'
+                   foundation='1'
+                   generation='0'
+                   id='m3110wc4nd'
+                   ip='2001:db8::9:1'
+                   network='0'
+                   port='9001'
+                   priority='21149780477'
+                   protocol='udp'
+                   type='host'/>
+      </transport>
+    </content>
+  </jingle>
+</iq>

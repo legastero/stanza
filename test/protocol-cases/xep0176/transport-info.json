@@ -1,0 +1,43 @@
+[
+    "iq",
+    {
+        "from": "romeo@montague.lit/orchard",
+        "id": "uh3g1f48",
+        "jingle": {
+            "action": "transport-info",
+            "contents": [
+                {
+                    "creator": "initiator",
+                    "disposition": "session",
+                    "name": "this-is-the-audio-content",
+                    "senders": "both",
+                    "transport": {
+                        "candidates": [
+                            {
+                                "component": 1,
+                                "foundation": "1",
+                                "generation": 0,
+                                "id": "m3110wc4nd",
+                                "ip": "2001:db8::9:1",
+                                "network": 0,
+                                "port": 9001,
+                                "priority": 21149780477,
+                                "protocol": "udp",
+                                "type": "host"
+                            }
+                        ],
+                        "password": "asd88fgpdd777uzjYhagZg",
+                        "transportType": "urn:xmpp:jingle:transports:ice-udp:1",
+                        "usernameFragment": "8hhy"
+                    }
+                }
+            ],
+            "initiator": "romeo@montague.lit/orchard",
+            "sid": "a73sjjvkla37jfea"
+        },
+        "lang": "",
+        "payloadType": "jingle",
+        "to": "juliet@capulet.lit/balcony",
+        "type": "set"
+    }
+]

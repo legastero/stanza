@@ -40,6 +40,7 @@ const Protocol: DefinitionOptions[] = [
     {
         aliases: [
             {
+                impliedType: true,
                 multiple: true,
                 path: 'iq.jingle.contents.transport.candidates',
                 selector: NS_JINGLE_RAW_UDP_1
@@ -47,15 +48,17 @@ const Protocol: DefinitionOptions[] = [
         ],
         element: 'candidate',
         fields: {
-            component: attribute('component'),
+            component: integerAttribute('component'),
             foundation: attribute('foundation'),
-            generation: attribute('generation'),
+            generation: integerAttribute('generation'),
             id: attribute('id'),
             ip: attribute('ip'),
             port: integerAttribute('port'),
             type: attribute('type')
         },
-        namespace: NS_JINGLE_RAW_UDP_1
+        namespace: NS_JINGLE_RAW_UDP_1,
+        type: NS_JINGLE_RAW_UDP_1,
+        typeField: 'transportType'
     }
 ];
 export default Protocol;

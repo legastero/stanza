@@ -67,6 +67,7 @@ const ice = (transportType: string): DefinitionOptions[] => [
     {
         aliases: [
             {
+                impliedType: true,
                 path: 'iq.jingle.contents.transport.remoteCandidate',
                 selector: transportType
             }
@@ -77,11 +78,14 @@ const ice = (transportType: string): DefinitionOptions[] => [
             ip: attribute('ip'),
             port: integerAttribute('port')
         },
-        namespace: transportType
+        namespace: transportType,
+        type: transportType,
+        typeField: 'transportType'
     },
     {
         aliases: [
             {
+                impliedType: true,
                 multiple: true,
                 path: 'iq.jingle.contents.transport.candidates',
                 selector: transportType
@@ -103,7 +107,9 @@ const ice = (transportType: string): DefinitionOptions[] => [
             tcpType: attribute('tcptype'),
             type: attribute('type')
         },
-        namespace: transportType
+        namespace: transportType,
+        type: transportType,
+        typeField: 'transportType'
     }
 ];
 
