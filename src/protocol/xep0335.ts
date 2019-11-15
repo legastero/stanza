@@ -5,7 +5,13 @@
 // Version: 0.1 (2013-10-25)
 // ====================================================================
 
-import { childJSON, DefinitionOptions, extendMessage, pubsubItemContentAliases } from '../jxt';
+import {
+    childJSON,
+    DefinitionOptions,
+    extendMessage,
+    pubsubItemContentAliases,
+    textJSON
+} from '../jxt';
 import { NS_JSON_0 } from '../Namespaces';
 
 import { PubsubItemContent } from './';
@@ -29,7 +35,7 @@ const Protocol: DefinitionOptions[] = [
         aliases: pubsubItemContentAliases(),
         element: 'json',
         fields: {
-            json: childJSON(NS_JSON_0, 'json')
+            json: textJSON()
         },
         namespace: NS_JSON_0,
         type: NS_JSON_0

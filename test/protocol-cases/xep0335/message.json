@@ -1,0 +1,14 @@
+[
+    "message",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "to": "francisco@denmark.lit",
+        "id": "foo",
+        "lang": "",
+        "json": {
+            "name": "romeo",
+            "age": "421",
+            "status": "single"
+        }
+    }
+]

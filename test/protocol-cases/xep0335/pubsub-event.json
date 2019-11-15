@@ -1,0 +1,55 @@
+[
+    "message",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "foo",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "items": {
+                "node": "princely_musings",
+                "published": [
+                    {
+                        "content": {
+                            "itemType": "urn:xmpp:json:0",
+                            "json": {
+                                "age": "421",
+                                "name": "romeo",
+                                "status": "single"
+                            }
+                        },
+                        "id": "ae890ac52d0df67ed7cfdf51b644e901"
+                    }
+                ]
+            }
+        },
+        "to": "francisco@denmark.lit"
+    },
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "foo",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "eventType": "items",
+            "items": {
+                "node": "princely_musings",
+                "published": [
+                    {
+                        "content": {
+                            "itemType": "urn:xmpp:json:0",
+                            "json": {
+                                "age": "421",
+                                "name": "romeo",
+                                "status": "single"
+                            }
+                        },
+                        "id": "ae890ac52d0df67ed7cfdf51b644e901"
+                    }
+                ],
+                "retracted": []
+            }
+        },
+        "to": "francisco@denmark.lit"
+    }
+]
