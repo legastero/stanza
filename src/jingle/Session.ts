@@ -54,8 +54,6 @@ export default class JingleSession {
 
     public processingQueue: async.AsyncPriorityQueue<any>;
 
-    protected _ending: boolean = false;
-
     private _sessionState: string;
     private _connectionState: string;
 
@@ -270,11 +268,6 @@ export default class JingleSession {
 
     public end(reason: JingleReasonCondition | JingleReason = 'success', silent: boolean = false) {
         this.state = 'ended';
-
-        if (this._ending) {
-            return;
-        }
-        this._ending = true;
 
         this.processingQueue.kill();
 
