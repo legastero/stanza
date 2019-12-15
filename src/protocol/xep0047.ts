@@ -27,14 +27,14 @@ declare module './' {
 }
 
 export interface IBBRequest {
-    type: 'open' | 'close';
+    action: 'open' | 'close';
     sid: string;
     blockSize?: number;
     ack?: boolean;
 }
 
 export interface IBBData {
-    type: 'data';
+    action: 'data';
     sid: string;
     seq: number;
     data: Buffer;

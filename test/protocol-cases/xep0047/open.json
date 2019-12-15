@@ -1,0 +1,29 @@
+[
+    "iq",
+    {
+        "from": "romeo@montague.net/orchard",
+        "ibb": {
+            "ack": true,
+            "action": "open",
+            "blockSize": 4096,
+            "sid": "i781hf64"
+        },
+        "id": "jn3h8g65",
+        "to": "juliet@capulet.com/balcony",
+        "type": "set"
+    },
+    {
+        "from": "romeo@montague.net/orchard",
+        "ibb": {
+            "ack": true,
+            "action": "open",
+            "blockSize": 4096,
+            "sid": "i781hf64"
+        },
+        "id": "jn3h8g65",
+        "lang": "",
+        "payloadType": "ibb",
+        "to": "juliet@capulet.com/balcony",
+        "type": "set"
+    }
+]

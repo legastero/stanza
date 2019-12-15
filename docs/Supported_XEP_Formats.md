@@ -23,7 +23,7 @@
 | [XEP-0030](https://xmpp.org/extensions/xep-0030.html) | Service Discovery                                  | 2.5rc3  | [Source](../src/protocol/xep0030.ts) | [Test Cases](../test/protocol-cases/xep0030) |
 | [XEP-0033](https://xmpp.org/extensions/xep-0033.html) | Extended Stanza Addressing                         | 1.3.1   | [Source](../src/protocol/xep0033.ts) | [Test Cases](../test/protocol-cases/xep0033) |
 | [XEP-0045](https://xmpp.org/extensions/xep-0045.html) | Multi-User Chat                                    | 1.31.1  | [Source](../src/protocol/xep0045.ts) | [Test Cases](../test/protocol-cases/xep0045) |
-| [XEP-0047](https://xmpp.org/extensions/xep-0047.html) | In-Band Bytestreams                                | 2.0     | [Source](../src/protocol/xep0047.ts) |                                              |
+| [XEP-0047](https://xmpp.org/extensions/xep-0047.html) | In-Band Bytestreams                                | 2.0     | [Source](../src/protocol/xep0047.ts) | [Test Cases](../test/protocol-cases/xep0047) |
 | [XEP-0048](https://xmpp.org/extensions/xep-0048.html) | Bookmarks                                          | 1.1     | [Source](../src/protocol/xep0048.ts) | [Test Cases](../test/protocol-cases/xep0048) |
 | [XEP-0049](https://xmpp.org/extensions/xep-0049.html) | Private XML Storage                                | 1.2     | [Source](../src/protocol/xep0049.ts) |                                              |
 | [XEP-0050](https://xmpp.org/extensions/xep-0050.html) | Ad-Hoc Commands                                    | 1.2.2   | [Source](../src/protocol/xep0050.ts) |                                              |

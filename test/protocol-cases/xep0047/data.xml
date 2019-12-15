@@ -1,0 +1,6 @@
+<iq from='romeo@montague.net/orchard'
+    id='kr91n475'
+    to='juliet@capulet.com/balcony'
+    type='set'>
+  <data xmlns='http://jabber.org/protocol/ibb' seq='0' sid='i781hf64'>VEVTVElORw==</data>
+</iq>

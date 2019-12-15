@@ -1,0 +1,18 @@
+[
+    "message",
+    {
+        "from": "romeo@montague.net/orchard",
+        "ibb": {
+            "action": "data",
+            "data": {
+                "data": [84, 69, 83, 84, 73, 78, 71],
+                "type": "Buffer"
+            },
+            "seq": 0,
+            "sid": "i781hf64"
+        },
+        "id": "dsw71gj3",
+        "lang": "",
+        "to": "juliet@capulet.com/balcony"
+    }
+]

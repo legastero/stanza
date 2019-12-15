@@ -1,0 +1,25 @@
+[
+    "iq",
+    {
+        "from": "romeo@montague.net/orchard",
+        "ibb": {
+            "action": "close",
+            "sid": "i781hf64"
+        },
+        "id": "us71g45j",
+        "to": "juliet@capulet.com/balcony",
+        "type": "set"
+    },
+    {
+        "from": "romeo@montague.net/orchard",
+        "ibb": {
+            "action": "close",
+            "sid": "i781hf64"
+        },
+        "id": "us71g45j",
+        "lang": "",
+        "payloadType": "ibb",
+        "to": "juliet@capulet.com/balcony",
+        "type": "set"
+    }
+]

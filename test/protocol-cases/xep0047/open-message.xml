@@ -1,0 +1,9 @@
+<iq from='romeo@montague.net/orchard'
+    id='jn3h8g65'
+    to='juliet@capulet.com/balcony'
+    type='set'>
+  <open xmlns='http://jabber.org/protocol/ibb'
+        block-size='4096'
+        sid='i781hf64'
+        stanza='message'/>
+</iq>
