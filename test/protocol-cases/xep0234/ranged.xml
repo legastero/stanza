@@ -1,0 +1,34 @@
+<iq from='romeo@montague.example/dr4hcr0st3lup4c'
+    id='wsn361c3'
+    to='juliet@capulet.example/yn0cl4bnw0yr3vym'
+    type='set'>
+  <jingle xmlns='urn:xmpp:jingle:1'
+          action='session-initiate'
+          initiator='romeo@montague.example/dr4hcr0st3lup4c'
+          sid='uj3b2'>
+    <content creator='initiator' name='restart' senders='initiator'>
+      <description xmlns='urn:xmpp:jingle:apps:file-transfer:5'>
+        <file>
+          <hash xmlns='urn:xmpp:hashes:2'
+            algo='sha-1'>w0mcJylzCn+AfvuGdqkty2+KP48=</hash>
+          <range offset='270336'/>
+        </file>
+      </description>
+      <transport xmlns='urn:xmpp:jingle:transports:s5b:1'
+                 sid='vj3hs98y'>
+        <candidate cid='hft54dqy'
+                   host='192.168.4.1'
+                   jid='romeo@montague.example/dr4hcr0st3lup4c'
+                   port='5086'
+                   priority='8257636'
+                   type='direct'/>
+        <candidate cid='hutr46fe'
+                   host='24.24.24.1'
+                   jid='romeo@montague.example/dr4hcr0st3lup4c'
+                   port='5087'
+                   priority='8258636'
+                   type='direct'/>
+      </transport>
+    </content>
+  </jingle>
+</iq>

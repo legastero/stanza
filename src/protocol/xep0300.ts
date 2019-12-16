@@ -31,6 +31,7 @@ const Protocol: DefinitionOptions[] = [
         },
         namespace: NS_HASHES_2,
         path: 'hash',
+        type: '2',
         typeField: 'version'
     },
     {
@@ -51,6 +52,7 @@ const Protocol: DefinitionOptions[] = [
         },
         namespace: NS_HASHES_1,
         path: 'hash',
+        type: '1',
         typeField: 'version'
     }
 ];

@@ -7,7 +7,7 @@
           action='session-initiate'
           initiator='romeo@montague.lit/orchard'
           sid='a73sjjvkla37jfea'>
-    <content creator='initiator' name='this-is-the-audio-content' disposition='session' senders='both'>
+    <content creator='initiator' name='this-is-the-audio-content'>
       <description xmlns='urn:xmpp:jingle:apps:rtp:1' media='audio'>
         <payload-type id='96' name='speex' clockrate='16000'/>
         <payload-type id='97' name='speex' clockrate='8000'/>

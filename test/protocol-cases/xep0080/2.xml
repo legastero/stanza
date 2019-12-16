@@ -5,9 +5,7 @@
   <pubsub xmlns='http://jabber.org/protocol/pubsub'>
     <publish node='http://jabber.org/protocol/geoloc'>
       <item>
-        <geoloc xmlns='http://jabber.org/protocol/geoloc'>
-          <tzo>-00:00</tzo>
-        </geoloc>
+        <geoloc xmlns='http://jabber.org/protocol/geoloc' />
       </item>
     </publish>
   </pubsub>

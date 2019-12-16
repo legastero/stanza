@@ -1,6 +1,6 @@
 <iq xmlns="jabber:client" id="0df0eda4-af97-4bbd-a625-3e309661afdb" to="stanzaio@lance.im/PS8djVBY" type="set">
     <jingle xmlns="urn:xmpp:jingle:1" sid="79fc559c-2844-4aa3-b206-b255b9f446d4" action="session-initiate">
-        <content creator="initiator" name="audio" senders="both" disposition="session">
+        <content creator="initiator" name="audio">
             <description xmlns="urn:xmpp:jingle:apps:rtp:1" xmlns:rtcpf="urn:xmpp:jingle:apps:rtp:rtcp-fb:0" xmlns:rtph="urn:xmpp:jingle:apps:rtp:rtp-hdrext:0" media="audio" ssrc="2992613145">
                 <rtcp-mux />
                 <payload-type channels="2" clockrate="48000" id="111" name="opus">
@@ -32,7 +32,7 @@
                 <fingerprint xmlns="urn:xmpp:jingle:apps:dtls:0" hash="sha-256" setup="actpass">E9:02:21:50:CB:BD:C3:47:1B:70:E8:4E:5F:A9:5C:E5:42:5A:DF:FB:02:30:BD:8B:7C:90:EE:0A:70:04:CC:99</fingerprint>
             </transport>
         </content>
-        <content creator="initiator" name="video" senders="both" disposition="session">
+        <content creator="initiator" name="video">
             <description xmlns="urn:xmpp:jingle:apps:rtp:1" xmlns:rtcpf="urn:xmpp:jingle:apps:rtp:rtcp-fb:0" xmlns:rtph="urn:xmpp:jingle:apps:rtp:rtp-hdrext:0" media="video" ssrc="3883348418">
                 <rtcp-mux />
                 <rtcp-reduced-size />

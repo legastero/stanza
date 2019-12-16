@@ -1,0 +1,12 @@
+<iq from='juliet@capulet.example/yn0cl4bnw0yr3vym'
+    id='jp2ba614'
+    to='romeo@montague.example/dr4hcr0st3lup4c'
+    type='set'>
+  <jingle xmlns='urn:xmpp:jingle:1'
+          action='session-info'
+          sid='a73sjjvkla37jfea'>
+    <received xmlns='urn:xmpp:jingle:apps:file-transfer:5'
+              creator='initiator'
+              name='a-file-offer' />
+  </jingle>
+</iq>

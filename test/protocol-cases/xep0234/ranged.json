@@ -1,0 +1,86 @@
+[
+    "iq",
+    {
+        "from": "romeo@montague.example/dr4hcr0st3lup4c",
+        "id": "wsn361c3",
+        "jingle": {
+            "action": "session-initiate",
+            "contents": [
+                {
+                    "application": {
+                        "applicationType": "urn:xmpp:jingle:apps:file-transfer:5",
+                        "file": {
+                            "hashes": [
+                                {
+                                    "algorithm": "sha-1",
+                                    "value": {
+                                        "data": [
+                                            195,
+                                            73,
+                                            156,
+                                            39,
+                                            41,
+                                            115,
+                                            10,
+                                            127,
+                                            128,
+                                            126,
+                                            251,
+                                            134,
+                                            118,
+                                            169,
+                                            45,
+                                            203,
+                                            111,
+                                            138,
+                                            63,
+                                            143
+                                        ],
+                                        "type": "Buffer"
+                                    },
+                                    "version": "2"
+                                }
+                            ],
+                            "range": {
+                                "offset": 270336
+                            }
+                        }
+                    },
+                    "creator": "initiator",
+                    "disposition": "session",
+                    "name": "restart",
+                    "senders": "initiator",
+                    "transport": {
+                        "candidates": [
+                            {
+                                "cid": "hft54dqy",
+                                "host": "192.168.4.1",
+                                "jid": "romeo@montague.example/dr4hcr0st3lup4c",
+                                "port": 5086,
+                                "priority": 8257636,
+                                "type": "direct"
+                            },
+                            {
+                                "cid": "hutr46fe",
+                                "host": "24.24.24.1",
+                                "jid": "romeo@montague.example/dr4hcr0st3lup4c",
+                                "port": 5087,
+                                "priority": 8258636,
+                                "type": "direct"
+                            }
+                        ],
+                        "mode": "tcp",
+                        "sid": "vj3hs98y",
+                        "transportType": "urn:xmpp:jingle:transports:s5b:1"
+                    }
+                }
+            ],
+            "initiator": "romeo@montague.example/dr4hcr0st3lup4c",
+            "sid": "uj3b2"
+        },
+        "lang": "",
+        "payloadType": "jingle",
+        "to": "juliet@capulet.example/yn0cl4bnw0yr3vym",
+        "type": "set"
+    }
+]

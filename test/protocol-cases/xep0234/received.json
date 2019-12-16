@@ -1,0 +1,20 @@
+[
+    "iq",
+    {
+        "from": "juliet@capulet.example/yn0cl4bnw0yr3vym",
+        "id": "jp2ba614",
+        "jingle": {
+            "action": "session-info",
+            "info": {
+                "creator": "initiator",
+                "infoType": "{urn:xmpp:jingle:apps:file-transfer:5}received",
+                "name": "a-file-offer"
+            },
+            "sid": "a73sjjvkla37jfea"
+        },
+        "lang": "",
+        "payloadType": "jingle",
+        "to": "romeo@montague.example/dr4hcr0st3lup4c",
+        "type": "set"
+    }
+]

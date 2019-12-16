@@ -1,0 +1,53 @@
+[
+    "iq",
+    {
+        "from": "romeo@montague.example/dr4hcr0st3lup4c",
+        "id": "kqh401b5",
+        "jingle": {
+            "action": "session-info",
+            "info": {
+                "creator": "initiator",
+                "file": {
+                    "hashes": [
+                        {
+                            "algorithm": "sha-1",
+                            "value": {
+                                "data": [
+                                    195,
+                                    73,
+                                    156,
+                                    39,
+                                    41,
+                                    115,
+                                    10,
+                                    127,
+                                    128,
+                                    126,
+                                    251,
+                                    134,
+                                    118,
+                                    169,
+                                    45,
+                                    203,
+                                    111,
+                                    138,
+                                    63,
+                                    143
+                                ],
+                                "type": "Buffer"
+                            },
+                            "version": "2"
+                        }
+                    ]
+                },
+                "infoType": "{urn:xmpp:jingle:apps:file-transfer:5}checksum",
+                "name": "a-file-offer"
+            },
+            "sid": "a73sjjvkla37jfea"
+        },
+        "lang": "",
+        "payloadType": "jingle",
+        "to": "juliet@capulet.example/yn0cl4bnw0yr3vym",
+        "type": "set"
+    }
+]

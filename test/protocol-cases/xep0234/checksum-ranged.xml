@@ -1,0 +1,19 @@
+<iq from='romeo@montague.example/dr4hcr0st3lup4c'
+    id='kqh401b5'
+    to='juliet@capulet.example/yn0cl4bnw0yr3vym'
+    type='set'>
+  <jingle xmlns='urn:xmpp:jingle:1'
+          action='session-info'
+          sid='a73sjjvkla37jfea'>
+    <checksum xmlns='urn:xmpp:jingle:apps:file-transfer:5'
+              creator='initiator'
+              name='a-file-offer'>
+      <file>
+        <range offset='2048' length='1024'>
+          <hash xmlns='urn:xmpp:hashes:2'
+                algo='sha-1'>kHp5RSzW/h7Gm1etSf90Mr5PC/k=</hash>
+        </range>
+      </file>
+    </checksum>
+  </jingle>
+</iq>

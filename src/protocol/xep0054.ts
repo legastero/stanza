@@ -245,7 +245,7 @@ const Protocol: DefinitionOptions[] = [
                 ['voice', 'VOICE'],
                 ['msg', 'MSG']
             ]),
-            value: childText(null, 'NUMBER', '')
+            value: childText(null, 'NUMBER', '', true)
         },
         namespace: NS_VCARD_TEMP,
         type: 'tel',

@@ -1,5 +1,4 @@
 <presence xmlns='jabber:client'>
-  <priority>0</priority>
   <x xmlns='vcard-temp:x:update'>
     <photo/>
   </x>

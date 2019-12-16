@@ -1,0 +1,39 @@
+<iq from='romeo@montague.example/dr4hcr0st3lup4c'
+    id='nzu25s8'
+    to='juliet@capulet.example/yn0cl4bnw0yr3vym'
+    type='set'>
+  <jingle xmlns='urn:xmpp:jingle:1'
+          action='session-initiate'
+          initiator='romeo@montague.example/dr4hcr0st3lup4c'
+          sid='851ba2'>
+    <content creator='initiator' name='a-file-offer' senders='initiator'>
+      <description xmlns='urn:xmpp:jingle:apps:file-transfer:5'>
+        <file>
+          <date>1969-07-21T02:56:15.000Z</date>
+          <desc>This is a test. If this were a real file...</desc>
+          <hash xmlns='urn:xmpp:hashes:2'
+                algo='sha-1'>w0mcJylzCn+AfvuGdqkty2+KP48=</hash>
+          <media-type>text/plain</media-type>
+          <name>test.txt</name>
+          <range/>
+          <size>6144</size>
+        </file>
+      </description>
+      <transport xmlns='urn:xmpp:jingle:transports:s5b:1'
+                 sid='vj3hs98y'>
+        <candidate cid='hft54dqy'
+                   host='192.168.4.1'
+                   jid='romeo@montague.example/dr4hcr0st3lup4c'
+                   port='5086'
+                   priority='8257636'
+                   type='direct'/>
+        <candidate cid='hutr46fe'
+                   host='24.24.24.1'
+                   jid='romeo@montague.example/dr4hcr0st3lup4c'
+                   port='5087'
+                   priority='8258636'
+                   type='direct'/>
+      </transport>
+    </content>
+  </jingle>
+</iq>

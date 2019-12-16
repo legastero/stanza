@@ -123,7 +123,7 @@ function createAttributeField<T, E = T>(opts: CreateAttributeOptions<T, E>): Fie
             return opts.parseValue(rawValue);
         },
         exporter(xml, value) {
-            if (value === undefined) {
+            if (value === undefined || value === opts.staticDefault) {
                 return;
             }
             const output = opts.writeValue(value);
@@ -215,7 +215,7 @@ function createChildAttributeField<T, E = T>(
             return converter.importer(child, context);
         },
         exporter(xml, value, context) {
-            if (value !== undefined) {
+            if (value !== undefined && value !== opts.staticDefault) {
                 const child = findOrCreate(xml, opts.namespace || xml.getNamespace(), opts.element);
                 converter.exporter(child, value, context);
             }
@@ -247,6 +247,7 @@ function createChildAttributeType<T, E = T>(
 }
 
 export interface CreateTextOptions<T, E = T> {
+    emitEmpty?: boolean;
     staticDefault?: T;
     dynamicDefault?: (raw?: string) => T | undefined;
     parseValue(raw: string): T | undefined;
@@ -262,7 +263,11 @@ function createTextField<T, E = T>(opts: CreateTextOptions<T, E>): FieldDefiniti
             return opts.parseValue(rawValue);
         },
         exporter(xml, value) {
-            if (value === undefined) {
+            if (!value && opts.emitEmpty) {
+                xml.children.push('');
+                return;
+            }
+            if (value === undefined || value === opts.staticDefault) {
                 return;
             }
             const output = opts.writeValue(value);
@@ -274,6 +279,7 @@ function createTextField<T, E = T>(opts: CreateTextOptions<T, E>): FieldDefiniti
 }
 
 export interface CreateChildTextOptions<T, E = T> extends CreateTextOptions<T, E> {
+    emitEmpty?: boolean;
     matchLanguage?: boolean;
     element: string;
     namespace: string | null;
@@ -300,7 +306,16 @@ function createChildTextField<T, E = T>(opts: CreateChildTextOptions<T, E>): Fie
             return converter.importer(children[0], context);
         },
         exporter(xml, value, context) {
-            if (value !== undefined) {
+            if (!value && opts.emitEmpty) {
+                findOrCreate(
+                    xml,
+                    opts.namespace || xml.getNamespace(),
+                    opts.element,
+                    opts.matchLanguage ? context.lang : undefined
+                );
+                return;
+            }
+            if (value !== undefined && value !== opts.staticDefault) {
                 const child = findOrCreate(
                     xml,
                     opts.namespace || xml.getNamespace(),
@@ -466,9 +481,15 @@ export const childLanguageAttribute = (namespace: string | null, element: string
         ...stringParser
     });
 
-export const childText = (namespace: string | null, element: string, defaultValue?: string) =>
+export const childText = (
+    namespace: string | null,
+    element: string,
+    defaultValue?: string,
+    emitEmpty: boolean = false
+) =>
     createChildTextField({
         element,
+        emitEmpty,
         matchLanguage: true,
         namespace,
         staticDefault: defaultValue,

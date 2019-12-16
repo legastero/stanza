@@ -1,0 +1,66 @@
+[
+    "iq",
+    {
+        "from": "romeo@montague.example/dr4hcr0st3lup4c",
+        "id": "nzu25s8",
+        "jingle": {
+            "action": "session-initiate",
+            "contents": [
+                {
+                    "application": {
+                        "applicationType": "urn:xmpp:jingle:apps:file-transfer:5",
+                        "file": {
+                            "date": "1969-07-21T02:56:15.000Z",
+                            "description": "This is a test. If this were a real file...",
+                            "hashesUsed": [
+                                {
+                                    "algorithm": "sha-1",
+                                    "version": "2"
+                                }
+                            ],
+                            "mediaType": "text/plain",
+                            "name": "test.txt",
+                            "range": {
+                                "offset": 0
+                            },
+                            "size": 6144
+                        }
+                    },
+                    "creator": "initiator",
+                    "disposition": "session",
+                    "name": "a-file-offer",
+                    "senders": "initiator",
+                    "transport": {
+                        "candidates": [
+                            {
+                                "cid": "hft54dqy",
+                                "host": "192.168.4.1",
+                                "jid": "romeo@montague.example/dr4hcr0st3lup4c",
+                                "port": 5086,
+                                "priority": 8257636,
+                                "type": "direct"
+                            },
+                            {
+                                "cid": "hutr46fe",
+                                "host": "24.24.24.1",
+                                "jid": "romeo@montague.example/dr4hcr0st3lup4c",
+                                "port": 5087,
+                                "priority": 8258636,
+                                "type": "direct"
+                            }
+                        ],
+                        "mode": "tcp",
+                        "sid": "vj3hs98y",
+                        "transportType": "urn:xmpp:jingle:transports:s5b:1"
+                    }
+                }
+            ],
+            "initiator": "romeo@montague.example/dr4hcr0st3lup4c",
+            "sid": "851ba2"
+        },
+        "lang": "",
+        "payloadType": "jingle",
+        "to": "juliet@capulet.example/yn0cl4bnw0yr3vym",
+        "type": "set"
+    }
+]

@@ -2,6 +2,5 @@
   <geoloc xmlns="http://jabber.org/protocol/geoloc">
     <lat>0</lat>
     <lon>0</lon>
-    <tzo>-00:00</tzo>
   </geoloc>
 </message>

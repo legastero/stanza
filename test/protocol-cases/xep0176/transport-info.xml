@@ -7,7 +7,7 @@
           action='transport-info'
           initiator='romeo@montague.lit/orchard'
           sid='a73sjjvkla37jfea'>
-    <content creator='initiator' name='this-is-the-audio-content' disposition='session' senders='both'>
+    <content creator='initiator' name='this-is-the-audio-content'>
       <transport xmlns='urn:xmpp:jingle:transports:ice-udp:1'
                  pwd='asd88fgpdd777uzjYhagZg'
                  ufrag='8hhy'>
