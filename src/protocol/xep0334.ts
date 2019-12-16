@@ -28,6 +28,7 @@ function processingHints(): FieldDefinition<ProcessingHints> {
             let found = false;
 
             for (const child of xml.children) {
+                /* istanbul ignore next */
                 if (typeof child === 'string') {
                     continue;
                 }

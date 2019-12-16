@@ -32,7 +32,9 @@ const Protocol: DefinitionOptions = {
                 return stanza !== 'message';
             },
             exporter(xml: XMLElement, data: boolean, context: TranslationContext) {
-                attribute('stanza').exporter(xml, data ? 'iq' : 'message', context);
+                if (data === false) {
+                    attribute('stanza').exporter(xml, 'message', context);
+                }
             }
         },
         blockSize: integerAttribute('block-size'),

@@ -73,7 +73,7 @@
 | [XEP-0249](https://xmpp.org/extensions/xep-0249.html) | Direct MUC Invitations                             | 1.2     | [Source](../src/protocol/xep0045.ts) | [Test Cases](../test/protocol-cases/xep0045) |
 | [XEP-0256](https://xmpp.org/extensions/xep-0256.html) | Last Activity in Presence                          | 1.1     | [Source](../src/protocol/xep0012.ts) | [Test Cases](../test/protocol-cases/xep0012) |
 | [XEP-0260](https://xmpp.org/extensions/xep-0260.html) | Jingle SOCKS5 Bytestreams Transport Method         | 1.0.1   | [Source](../src/protocol/xep0260.ts) |                                              |
-| [XEP-0261](https://xmpp.org/extensions/xep-0261.html) | Jingle In-Band Bytestreams Transport Method        | 1.0     | [Source](../src/protocol/xep0261.ts) |                                              |
+| [XEP-0261](https://xmpp.org/extensions/xep-0261.html) | Jingle In-Band Bytestreams Transport Method        | 1.0     | [Source](../src/protocol/xep0261.ts) | [Test Cases](../test/protocol-cases/xep0261) |
 | [XEP-0261](https://xmpp.org/extensions/xep-0262.html) | Use of ZRTP in Jingle RTP Sessions                 | 1.0     | [Source](../src/protocol/xep0167.ts) |                                              |
 | [XEP-0264](https://xmpp.org/extensions/xep-0264.html) | Jingle Content Thumbnails                          | 0.4     | [Source](../src/protocol/xep0264.ts) |                                              |
 | [XEP-0280](https://xmpp.org/extensions/xep-0280.html) | Message Carbons                                    | 0.12.0  | [Source](../src/protocol/xep0280.ts) |                                              |

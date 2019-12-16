@@ -363,7 +363,7 @@ export const NS_REFERENCE_0 = 'urn:xmpp:reference:0';
 export const NS_EME_0 = 'urn:xmpp:eme:0';
 
 // XEP-0382
-export const NS_SPOILER_0 = 'urn:xmppp:spoiler:0';
+export const NS_SPOILER_0 = 'urn:xmpp:spoiler:0';
 
 // XEP-0384
 export const NS_OMEMO_AXOLOTL = 'eu.siacs.conversations.axolotl';

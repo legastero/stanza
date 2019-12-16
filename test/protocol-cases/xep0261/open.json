@@ -1,0 +1,33 @@
+[
+    "iq",
+    {
+        "from": "romeo@montague.lit/orchard",
+        "id": "xn28s7gk",
+        "jingle": {
+            "action": "session-initiate",
+            "contents": [
+                {
+                    "application": {
+                        "applicationType": "urn:xmpp:jingle:apps:file-transfer:5"
+                    },
+                    "creator": "initiator",
+                    "disposition": "session",
+                    "name": "ex",
+                    "senders": "both",
+                    "transport": {
+                        "ack": true,
+                        "blockSize": 4096,
+                        "sid": "ch3d9s71",
+                        "transportType": "urn:xmpp:jingle:transports:ibb:1"
+                    }
+                }
+            ],
+            "initiator": "romeo@montague.lit/orchard",
+            "sid": "a73sjjvkla37jfea"
+        },
+        "lang": "",
+        "payloadType": "jingle",
+        "to": "juliet@capulet.lit/balcony",
+        "type": "set"
+    }
+]

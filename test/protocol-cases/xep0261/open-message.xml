@@ -1,0 +1,17 @@
+<iq from='romeo@montague.lit/orchard'
+    id='xn28s7gk'
+    to='juliet@capulet.lit/balcony'
+    type='set'>
+  <jingle xmlns='urn:xmpp:jingle:1'
+          action='session-initiate'
+          initiator='romeo@montague.lit/orchard'
+          sid='a73sjjvkla37jfea'>
+    <content creator='initiator' name='ex'>
+      <description xmlns='urn:xmpp:jingle:apps:file-transfer:5'/>
+      <transport xmlns='urn:xmpp:jingle:transports:ibb:1'
+                 block-size='4096'
+                 sid='ch3d9s71'
+                 stanza='message' />
+    </content>
+  </jingle>
+</iq>
