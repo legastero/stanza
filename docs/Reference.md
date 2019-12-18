@@ -336,6 +336,14 @@
 
 <p></p>
 
+<h3 id="getLastActivity">getLastActivity</h3>
+
+```
+(jid: string) => Promise
+```
+
+<p></p>
+
 <h3 id="getNodeAffiliations">getNodeAffiliations</h3>
 
 ```
