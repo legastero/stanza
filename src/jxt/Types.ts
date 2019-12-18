@@ -566,7 +566,7 @@ export function childBoolean(namespace: string | null, element: string): FieldDe
     };
 }
 
-const deepChildExpoter = (path: ElementPath, xml: XMLElement, value: any) => {
+const deepChildExporter = (path: ElementPath, xml: XMLElement, value: any) => {
     if (!value) {
         return;
     }
@@ -591,7 +591,7 @@ export function deepChildText(path: ElementPath, defaultValue?: string): FieldDe
             return current.getText() || defaultValue;
         },
         exporter(xml, value) {
-            deepChildExpoter(path, xml, value);
+            deepChildExporter(path, xml, value);
         }
     };
 }
@@ -617,7 +617,7 @@ export function deepChildInteger(
             }
         },
         exporter(xml, value) {
-            deepChildExpoter(path, xml, value);
+            deepChildExporter(path, xml, value);
         }
     };
 }
