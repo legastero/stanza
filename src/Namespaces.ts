@@ -369,6 +369,8 @@ export const NS_SPOILER_0 = 'urn:xmpp:spoiler:0';
 export const NS_OMEMO_AXOLOTL = 'eu.siacs.conversations.axolotl';
 export const NS_OMEMO_AXOLOTL_DEVICELIST = 'eu.siacs.conversations.axolotl.devicelist';
 export const NS_OMEMO_AXOLOTL_BUNDLES = 'eu.siacs.conversations.axolotl.bundles';
+
+// istanbul ignore next
 export const NS_OMEMO_AXOLOTL_BUNDLE = (deviceId: string) =>
     `${NS_OMEMO_AXOLOTL_BUNDLES}:${deviceId}`;
 

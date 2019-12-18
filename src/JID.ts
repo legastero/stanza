@@ -144,7 +144,7 @@ export function allowedResponders(jid1?: JID, jid2?: JID): Set<JID | undefined> 
     return allowed;
 }
 
-export function equal(jid1: JID, jid2: JID): boolean {
+export function equal(jid1?: JID, jid2?: JID): boolean {
     if (!jid1 || !jid2) {
         return false;
     }

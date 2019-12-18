@@ -416,3 +416,73 @@ test('Nasty examples from RFC', () => {
         'nasty!#$%()*+,-.;=?[\\]^_`{|}~node@example.com/repulsive !#"$%&\'()*+,-./:;<=>?@[\\]^_`{|}~resource'
     );
 });
+
+test('Allowed responders', () => {
+    const responders = JID.allowedResponders(
+        'user@domain/resource',
+        'remote-user@remote-domain/other-resource'
+    );
+    expect(responders).toContain('remote-user@remote-domain/other-resource');
+    expect(responders).toContain('remote-user@remote-domain');
+    expect(responders).toContain('remote-domain');
+    expect(responders).toContain('user@domain/resource');
+    expect(responders).toContain('user@domain');
+    expect(responders).toContain('domain');
+    expect(responders).toContain('');
+    expect(responders).toContain(undefined);
+    expect(responders.size).toBe(8);
+});
+
+test('Get localpart', () => {
+    expect(JID.getLocal('user@domain')).toBe('user');
+});
+
+test('Get domain', () => {
+    expect(JID.getDomain('user@domain')).toBe('domain');
+});
+
+test('Get resource', () => {
+    expect(JID.getResource('user@domain/resource')).toBe('resource');
+});
+
+test('Compare undefined', () => {
+    expect(JID.equal('user@domain', undefined)).toBe(false);
+});
+
+test('Compare bare undefined', () => {
+    expect(JID.equalBare('user@domain', undefined)).toBe(false);
+});
+
+test('To bare', () => {
+    expect(JID.toBare('user@domain/resource')).toBe('user@domain');
+});
+
+test('To domain URI', () => {
+    expect(
+        JID.toURI({
+            jid: 'domain'
+        })
+    ).toBe('xmpp:domain');
+});
+
+test('Multi-value parameter URI', () => {
+    expect(
+        JID.toURI({
+            jid: 'domain',
+            action: 'foo',
+            parameters: {
+                bar: ['1', '2', '3']
+            }
+        })
+    ).toBe('xmpp:domain?foo;bar=1;bar=2;bar=3');
+});
+
+test('Parse multi-value parameter URI', () => {
+    expect(JID.parseURI('xmpp:domain?foo;bar=1;bar=2;bar=3')).toMatchObject({
+        action: 'foo',
+        jid: 'domain',
+        parameters: {
+            bar: ['1', '2', '3']
+        }
+    });
+});
