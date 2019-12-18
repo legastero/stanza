@@ -58,10 +58,7 @@ const sanitizeCSS = (css: string): string | false => {
     const declarations = `;${css}` // Declarations are ; delimited, not terminated
         .replace(/\/\*[^*]*\*+([^\/*][^*]*\*+)*\//g, '') // Strip comments
         .replace(/\/\*.*/, '') // Strip unclosed comments
-        .replace(/\\([a-fA-F0-9]{1,6})\s?/, (_, x) => {
-            // Decode escape sequences
-            return String.fromCharCode(parseInt(x, 16));
-        })
+        .replace(/\\([a-fA-F0-9]{1,6})\s?/, (_, x) => String.fromCharCode(parseInt(x, 16))) // Decode escape sequences
         .match(/;\s*([a-z\-]+)\s*:\s*([^;]*[^\s;])\s*/g); // Split into declarations
 
     const rules: string[] = [];
@@ -115,7 +112,7 @@ const stripElement = (input: JSONElement): Array<string | JSONElement> => {
     for (const child of input.children) {
         if (typeof child === 'string') {
             results.push(child);
-        } else if (child) {
+        } else {
             const sanitized = sanitizeInterior(child);
             if (sanitized) {
                 if (Array.isArray(sanitized)) {
