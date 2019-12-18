@@ -34,7 +34,7 @@ test('[Sanitizer]', () => {
         `);
     const data = registry.import(msgXML)!;
 
-    expect(data.body).toMatchObject({
+    expect(data.body).toStrictEqual({
         attributes: {
             xmlns: NS_XHTML
         },
