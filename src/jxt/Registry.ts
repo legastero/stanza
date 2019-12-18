@@ -39,9 +39,9 @@ export default class Registry {
 
         if (!context.acceptLanguages) {
             context.acceptLanguages = [];
-        } else {
-            context.acceptLanguages = context.acceptLanguages.map(lang => lang.toLowerCase());
         }
+        context.acceptLanguages = context.acceptLanguages.map(lang => lang.toLowerCase());
+
         if (context.lang) {
             context.lang = context.lang.toLowerCase();
         }
@@ -70,9 +70,9 @@ export default class Registry {
     ): XMLElement | undefined {
         if (!context.acceptLanguages) {
             context.acceptLanguages = [];
-        } else {
-            context.acceptLanguages = context.acceptLanguages.map(lang => lang.toLowerCase());
         }
+        context.acceptLanguages = context.acceptLanguages.map(lang => lang.toLowerCase());
+
         if (context.lang) {
             context.lang = context.lang.toLowerCase();
         }
