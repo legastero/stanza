@@ -70,8 +70,6 @@ test('Wildcard accept languages', () => {
     )! as Message;
 
     expect(data.body).toBe('Hallo verden');
-    console.log(data);
-    console.log(registry.export('message', data, opts)!.toString());
 });
 
 test('Private use lang tags', () => {

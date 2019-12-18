@@ -68,10 +68,10 @@ for (const [testSuite, testCases] of testSuites) {
         const jsonIn = json.length === 2 ? json[1] : json[2];
 
         test(`${testSuite}/${testCase}`, () => {
-            const imported = registry.import(xml);
+            const imported = registry.import(xml, { acceptLanguages: ['*'] });
             expect(imported).toEqual(jsonIn);
 
-            const exported = registry.export(json[0], jsonOut)!;
+            const exported = registry.export(json[0], jsonOut, { acceptLanguages: ['*'] })!;
             expect(exported.toJSON()).toEqual(xml.toJSON());
         });
     }

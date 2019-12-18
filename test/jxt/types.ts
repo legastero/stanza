@@ -39,7 +39,8 @@ import {
     Registry,
     staticValue,
     text,
-    textBuffer
+    textBuffer,
+    childTimezoneOffset
 } from '../../src/jxt';
 
 interface Tester {
@@ -113,6 +114,7 @@ function setupRegistry(): Registry {
             childJSON: childJSON('test', 'json'),
             childLanguageAttribute: childLanguageAttribute('test', 'child'),
             childText: childText('test', 'ca'),
+            childTimezoneOffset: childTimezoneOffset('test', 'tzo'),
             dateAttribute: dateAttribute('e'),
             deepChildBoolean: deepChildBoolean([
                 { namespace: 'test', element: 'dcb1' },
@@ -122,7 +124,11 @@ function setupRegistry(): Registry {
             hexText: textBuffer('hex'),
             integerAttribute: integerAttribute('c'),
             languageAttribute: languageAttribute(),
-            mappedChildEnum: childEnum('test', [['one', 'O'], ['two', 'TW'], ['three', 'TH']]),
+            mappedChildEnum: childEnum('test', [
+                ['one', 'O'],
+                ['two', 'TW'],
+                ['three', 'TH']
+            ]),
             multipleChildAlternateLanguageText: multipleChildAlternateLanguageText('test', 'ci'),
             multipleChildAttribute: multipleChildAttribute('test', 'ch', 'attr'),
             multipleChildEnum: multipleChildEnum('test', ['foo', 'bar', 'baz']),
