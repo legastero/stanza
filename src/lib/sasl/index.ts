@@ -1,4 +1,5 @@
 import * as Hashes from 'stanza-shims';
+import { saslprep } from '../stringprep';
 
 export interface Credentials {
     username?: string;
@@ -512,7 +513,7 @@ export class SCRAM implements Mechanism {
             serverKey = HMAC(saltedPassword, SERVER_KEY, this.algorithm);
         } else {
             saltedPassword = Hi(
-                Buffer.from(credentials.password || ''),
+                Buffer.from(saslprep(credentials.password || '')),
                 this.salt,
                 this.iterationCount,
                 this.algorithm
