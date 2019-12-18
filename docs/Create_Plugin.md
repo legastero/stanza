@@ -1,7 +1,7 @@
 # Creating a StanzaJS Plugin
 
 ```javascript
-import { Agent, jxt } from 'stanza';
+import { Agent, JXT } from 'stanza';
 
 
 // 1. Declare our new custom stanza extension type
@@ -35,14 +35,14 @@ declare module 'stanza' {
 
 
 // 7. Create a plugin function
-export default function (client: Agent, stanzas: jxt.Registry) {
+export default function (client: Agent, stanzas: JXT.Registry) {
 
     // 8. Create and register our custom `mystanza` stanza definition
     stanzas.define({
         element: 'foo',
         fields: {
-            type: jxt.attribute('type'),
-            value: jxt.text()
+            type: JXT.attribute('type'),
+            value: JXT.text()
         },
         namespace: 'http://example.com/p/foo',
         path: 'message.mystanza'
