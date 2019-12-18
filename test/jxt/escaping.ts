@@ -148,11 +148,56 @@ test('[Parser] Prohibit processing instructions', () => {
     ).toThrow();
 });
 
+test('[Parser] Prohibit processing instructions', () => {
+    expect(() =>
+        parse(`
+            <message xmlns="jabber:client" id="123">
+                <?processing-instruction?>
+                <body>test</body>
+            </message>`)
+    ).toThrow();
+});
+
+test('[Parser] Always prohibit non-comment instructions', () => {
+    expect(() =>
+        parse(`
+            <message xmlns="jabber:client" id="123">
+                <!x>
+                <body>test</body>
+            </message>`)
+    ).toThrow();
+});
+
+test('[Parser] Always prohibit non-comment instructions', () => {
+    expect(() =>
+        parse(`
+            <message xmlns="jabber:client" id="123">
+                <!->
+                <body>test</body>
+            </message>`)
+    ).toThrow();
+});
+
 test('[Parser] Allow XML declaration when prohibiting processing instructions', () => {
     const registry = setupRegistry();
 
     const messageXML = parse(`
         <?xml version="1.0"?>
+        <message xmlns="jabber:client" id="123">
+            <body>test</body>
+        </message>`);
+
+    const msg = registry.import(messageXML) as Message;
+
+    expect(msg).toBeTruthy();
+    expect(msg.body).toBe('test');
+});
+
+test('[Parser] Allow XML declaration to be uppercase', () => {
+    const registry = setupRegistry();
+
+    const messageXML = parse(`
+        <?XML version="1.0"?>
         <message xmlns="jabber:client" id="123">
             <body>test</body>
         </message>`);
@@ -197,7 +242,7 @@ test('[Parser] Prohibit non-predefined entities', () => {
     ).toThrow();
 });
 
-test('[Parser] Parse correctly even when insufficient data available for lookahead', () => {
+test('[Parser] Parse correctly even when fed a character at a time', () => {
     const registry = setupRegistry();
     const parser = new StreamParser({
         registry
@@ -265,4 +310,38 @@ test('[Parser] Prohibit multiple attributes with same name', () => {
                 <body>test</body>
             </message>`)
     ).toThrow();
+});
+
+test('[Parser] CDATA only ends at ]]>', () => {
+    const registry = setupRegistry();
+
+    const messageXML = parse(`
+        <message xmlns="jabber:client" id="123">
+          <body><![CDATA[Test 1 ] Test 2 ]] Done]]></body>
+        </message>`);
+
+    const msg = registry.import(messageXML) as Message;
+
+    expect(msg).toBeTruthy();
+    expect(msg.body).toBe('Test 1 ] Test 2 ]] Done');
+});
+
+test('[Parser] Comment only ends at -->', () => {
+    const registry = setupRegistry();
+
+    const messageXML = parse(
+        `
+        <message xmlns="jabber:client" id="123">
+          <!-- a - b -- c -->
+          <body>test</body>
+        </message>`,
+        {
+            allowComments: true
+        }
+    );
+
+    const msg = registry.import(messageXML) as Message;
+
+    expect(msg).toBeTruthy();
+    expect(msg.body).toBe('test');
 });

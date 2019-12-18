@@ -118,7 +118,7 @@ export default class Translator {
         field: FieldName | undefined,
         xid: XName,
         value: Type,
-        implied: boolean = false
+        implied: boolean
     ): void {
         if (selector) {
             path = `${path}[${selector}]`;

@@ -17,11 +17,12 @@ import Translator from './Translator';
 export default class Registry {
     public root: Translator;
     public translators: Map<XName, Translator>;
-    private languageResolver: LanguageResolver = basicLanguageResolver;
+    private languageResolver!: LanguageResolver;
 
     constructor() {
         this.translators = new Map();
         this.root = new Translator();
+        this.setLanguageResolver(basicLanguageResolver);
     }
 
     public setLanguageResolver(resolver: LanguageResolver): void {
@@ -137,13 +138,7 @@ export default class Registry {
             definition.aliases.push(definition.path);
         }
         const aliases = definition.aliases
-            .map(alias => {
-                if (typeof alias === 'string') {
-                    return { path: alias };
-                } else {
-                    return alias;
-                }
-            })
+            .map(alias => (typeof alias === 'string' ? { path: alias } : alias))
             .sort((a, b) => {
                 const aLen = a.path.split('.').length;
                 const bLen = b.path.split('.').length;
@@ -228,20 +223,16 @@ export default class Registry {
         });
 
         for (const link of aliases) {
-            if (typeof link === 'string') {
-                this.alias(definition.namespace, definition.element, link);
-            } else {
-                this.alias(
-                    definition.namespace,
-                    definition.element,
-                    link.path,
-                    link.multiple,
-                    link.selector,
-                    link.contextField,
-                    definition.type,
-                    link.impliedType
-                );
-            }
+            this.alias(
+                definition.namespace,
+                definition.element,
+                link.path,
+                link.multiple,
+                link.selector,
+                link.contextField,
+                definition.type,
+                link.impliedType
+            );
         }
 
         for (const alias of aliases) {
