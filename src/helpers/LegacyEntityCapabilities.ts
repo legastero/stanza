@@ -4,7 +4,7 @@ import { octetCompare } from '../Utils';
 import { DataForm, DataFormField, DiscoInfo, DiscoInfoIdentity } from '../protocol';
 
 function escape(value: string): Buffer {
-    return new Buffer(value.replace(/</g, '&lt;'), 'utf-8');
+    return Buffer.from(value.replace(/</g, '&lt;'), 'utf-8');
 }
 
 function encodeIdentities(identities: DiscoInfoIdentity[] = []): Buffer[] | null {
@@ -116,7 +116,7 @@ function encodeFields(fields: DataFormField[] = []): Buffer[] {
 
 export function generate(info: DiscoInfo, hashName: string): string | null {
     const S: Buffer[] = [];
-    const separator = new Buffer('<');
+    const separator = Buffer.from('<', 'utf8');
 
     const append = (b1: Buffer, b2?: Buffer) => {
         S.push(b1);
