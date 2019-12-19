@@ -1,0 +1,8 @@
+<iq type='get'
+    from='hamlet@denmark.lit/elsinore'
+    to='pubsub.shakespeare.lit'
+    id='def1'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub#owner'>
+    <default/>
+  </pubsub>
+</iq>

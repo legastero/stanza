@@ -89,6 +89,7 @@ export interface PubsubDefaultConfiguration {
 }
 
 export interface PubsubDefaultSubscriptionOptions {
+    node?: string;
     form?: DataForm;
 }
 
@@ -288,7 +289,7 @@ const Protocol: DefinitionOptions[] = [
         'iq.pubsub.configure.form',
         'iq.pubsub.defaultConfiguration.form',
         'iq.pubsub.defaultSubscriptionOptions.form',
-        'iq.pubsub.subscriptionOptions.forms',
+        'iq.pubsub.subscriptionOptions.form',
         'message.pubsub.configuration.form'
     ]),
     addAlias(NS_RSM, 'set', ['iq.pubsub.fetch.paging']),
@@ -347,7 +348,21 @@ const Protocol: DefinitionOptions[] = [
     },
     {
         aliases: [
-            'iq.pubsub.subscription',
+            { path: 'iq.pubsub.subscription', selector: 'owner' },
+            {
+                impliedType: true,
+                multiple: true,
+                path: 'iq.pubsub.subscriptions.items',
+                selector: 'owner'
+            }
+        ],
+        element: 'subscription',
+        fields: SubscriptionFields,
+        namespace: NS_PUBSUB
+    },
+    {
+        aliases: [
+            { path: 'iq.pubsub.subscription', selector: 'user' },
             {
                 impliedType: true,
                 multiple: true,
@@ -357,7 +372,8 @@ const Protocol: DefinitionOptions[] = [
         ],
         element: 'subscription',
         fields: SubscriptionFields,
-        namespace: NS_PUBSUB
+        namespace: NS_PUBSUB,
+        type: 'user'
     },
     {
         aliases: [
@@ -370,7 +386,8 @@ const Protocol: DefinitionOptions[] = [
         ],
         element: 'subscription',
         fields: SubscriptionFields,
-        namespace: NS_PUBSUB_OWNER
+        namespace: NS_PUBSUB_OWNER,
+        type: 'owner'
     },
     {
         aliases: [
@@ -462,7 +479,9 @@ const Protocol: DefinitionOptions[] = [
     },
     {
         element: 'default',
-        fields: {},
+        fields: {
+            node: attribute('node')
+        },
         namespace: NS_PUBSUB,
         path: 'iq.pubsub.defaultSubscriptionOptions'
     },
@@ -552,6 +571,7 @@ const Protocol: DefinitionOptions[] = [
         path: 'message.pubsub.delete'
     },
     {
+        aliases: [{ path: 'message.pubsub.subscription', selector: 'event', impliedType: true }],
         element: 'subscription',
         fields: {
             expires: dateOrPresenceAttribute('expiry'),
@@ -561,7 +581,7 @@ const Protocol: DefinitionOptions[] = [
             type: attribute('subscription')
         },
         namespace: NS_PUBSUB_EVENT,
-        path: 'message.pubsub.subscription'
+        type: 'event'
     },
     {
         element: 'configuration',
@@ -573,7 +593,7 @@ const Protocol: DefinitionOptions[] = [
         element: 'items',
         fields: {
             node: attribute('node'),
-            retracted: multipleChildAttribute(null, 'retracted', 'id')
+            retracted: multipleChildAttribute(null, 'retract', 'id')
         },
         namespace: NS_PUBSUB_EVENT,
         path: 'message.pubsub.items'

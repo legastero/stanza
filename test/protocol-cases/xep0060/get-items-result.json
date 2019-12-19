@@ -1,0 +1,113 @@
+[
+    "iq",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "items1",
+        "lang": "",
+        "pubsub": {
+            "fetch": {
+                "items": [
+                    {
+                        "content": {
+                            "id": "tag:denmark.lit,2003:entry-32396",
+                            "itemType": "http://www.w3.org/2005/Atom",
+                            "links": [
+                                {
+                                    "href": "http://denmark.lit/2003/12/13/atom03",
+                                    "mediaType": "text/html",
+                                    "rel": "alternate"
+                                }
+                            ],
+                            "published": "2003-12-12T17:47:23.000Z",
+                            "summary": {
+                                "text": "O, that this too too solid flesh would melt\nThaw and resolve itself into a dew!",
+                                "type": "text"
+                            },
+                            "title": {
+                                "text": "The Uses of This World",
+                                "type": "text"
+                            },
+                            "updated": "2003-12-12T17:47:23.000Z"
+                        },
+                        "id": "368866411b877c30064a5f62b917cffe"
+                    },
+                    {
+                        "content": {
+                            "id": "tag:denmark.lit,2003:entry-32396",
+                            "itemType": "http://www.w3.org/2005/Atom",
+                            "links": [
+                                {
+                                    "href": "http://denmark.lit/2003/12/13/atom03",
+                                    "mediaType": "text/html",
+                                    "rel": "alternate"
+                                }
+                            ],
+                            "published": "2003-12-12T23:21:34.000Z",
+                            "summary": {
+                                "text": "O all you host of heaven! O earth! what else?\nAnd shall I couple hell? O, fie! Hold, hold, my heart;\nAnd you, my sinews, grow not instant old,\nBut bear me stiffly up. Remember thee!",
+                                "type": "text"
+                            },
+                            "title": {
+                                "text": "Ghostly Encounters",
+                                "type": "text"
+                            },
+                            "updated": "2003-12-12T23:21:34.000Z"
+                        },
+                        "id": "3300659945416e274474e469a1f0154c"
+                    },
+                    {
+                        "content": {
+                            "id": "tag:denmark.lit,2003:entry-32396",
+                            "itemType": "http://www.w3.org/2005/Atom",
+                            "links": [
+                                {
+                                    "href": "http://denmark.lit/2003/12/13/atom03",
+                                    "mediaType": "text/html",
+                                    "rel": "alternate"
+                                }
+                            ],
+                            "published": "2003-12-13T11:09:53.000Z",
+                            "summary": {
+                                "text": "Now I am alone.\nO, what a rogue and peasant slave am I!",
+                                "type": "text"
+                            },
+                            "title": {
+                                "text": "Alone",
+                                "type": "text"
+                            },
+                            "updated": "2003-12-13T11:09:53.000Z"
+                        },
+                        "id": "4e30f35051b7b8b42abe083742187228"
+                    },
+                    {
+                        "content": {
+                            "id": "tag:denmark.lit,2003:entry-32397",
+                            "itemType": "http://www.w3.org/2005/Atom",
+                            "links": [
+                                {
+                                    "href": "http://denmark.lit/2003/12/13/atom03",
+                                    "mediaType": "text/html",
+                                    "rel": "alternate"
+                                }
+                            ],
+                            "published": "2003-12-13T18:30:02.000Z",
+                            "summary": {
+                                "text": "To be, or not to be: that is the question:\nWhether 'tis nobler in the mind to suffer\nThe slings and arrows of outrageous fortune,\nOr to take arms against a sea of troubles,\nAnd by opposing end them?",
+                                "type": "text"
+                            },
+                            "title": {
+                                "text": "Soliloquy",
+                                "type": "text"
+                            },
+                            "updated": "2003-12-13T18:30:02.000Z"
+                        },
+                        "id": "ae890ac52d0df67ed7cfdf51b644e901"
+                    }
+                ],
+                "node": "princely_musings"
+            }
+        },
+        "to": "francisco@denmark.lit/barracks",
+        "type": "result"
+    }
+]

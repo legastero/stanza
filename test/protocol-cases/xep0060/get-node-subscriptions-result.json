@@ -1,0 +1,40 @@
+[
+    "iq",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "subman1",
+        "lang": "",
+        "pubsub": {
+            "context": "owner",
+            "subscriptions": {
+                "items": [
+                    {
+                        "configurationRequired": false,
+                        "jid": "hamlet@denmark.lit",
+                        "state": "subscribed"
+                    },
+                    {
+                        "configurationRequired": false,
+                        "jid": "polonius@denmark.lit",
+                        "state": "unconfigured"
+                    },
+                    {
+                        "configurationRequired": false,
+                        "jid": "bernardo@denmark.lit",
+                        "state": "subscribed",
+                        "subid": "123-abc"
+                    },
+                    {
+                        "configurationRequired": false,
+                        "jid": "bernardo@denmark.lit",
+                        "state": "subscribed",
+                        "subid": "004-yyy"
+                    }
+                ],
+                "node": "princely_musings"
+            }
+        },
+        "to": "hamlet@denmark.lit/elsinore",
+        "type": "result"
+    }
+]

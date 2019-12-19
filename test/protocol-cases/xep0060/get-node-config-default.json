@@ -1,0 +1,15 @@
+[
+    "iq",
+    {
+        "from": "hamlet@denmark.lit/elsinore",
+        "id": "def1",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "context": "owner",
+            "defaultConfiguration": {}
+        },
+        "to": "pubsub.shakespeare.lit",
+        "type": "get"
+    }
+]

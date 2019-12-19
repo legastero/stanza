@@ -1,0 +1,30 @@
+[
+    "message",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "foo",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "delete": {
+                "node": "princely_musings",
+                "redirect": "xmpp:hamlet@denmark.lit?;node=blog"
+            }
+        },
+        "to": "francisco@denmark.lit"
+    },
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "foo",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "delete": {
+                "node": "princely_musings",
+                "redirect": "xmpp:hamlet@denmark.lit?;node=blog"
+            },
+            "eventType": "delete"
+        },
+        "to": "francisco@denmark.lit"
+    }
+]

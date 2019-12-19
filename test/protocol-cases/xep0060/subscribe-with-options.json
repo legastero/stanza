@@ -1,0 +1,102 @@
+[
+    "iq",
+    {
+        "from": "francisco@denmark.lit/barracks",
+        "id": "sub1",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "subscribe": {
+                "jid": "francisco@denmark.lit",
+                "node": "princely_musings"
+            },
+            "subscriptionOptions": {
+                "form": {
+                    "fields": [
+                        {
+                            "name": "FORM_TYPE",
+                            "rawValues": ["http://jabber.org/protocol/pubsub#subscribe_options"],
+                            "type": "hidden",
+                            "value": "http://jabber.org/protocol/pubsub#subscribe_options"
+                        },
+                        {
+                            "name": "pubsub#deliver",
+                            "type": "boolean",
+                            "value": true
+                        },
+                        {
+                            "name": "pubsub#digest",
+                            "type": "boolean",
+                            "value": false
+                        },
+                        {
+                            "name": "pubsub#include_body",
+                            "type": "boolean",
+                            "value": false
+                        },
+                        {
+                            "name": "pubsub#show-values",
+                            "type": "list-multi",
+                            "value": ["chat", "online", "away"]
+                        }
+                    ],
+                    "type": "submit"
+                }
+            }
+        },
+        "to": "pubsub.shakespeare.lit",
+        "type": "set"
+    },
+    {
+        "from": "francisco@denmark.lit/barracks",
+        "id": "sub1",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "subscribe": {
+                "jid": "francisco@denmark.lit",
+                "node": "princely_musings"
+            },
+            "subscriptionOptions": {
+                "form": {
+                    "fields": [
+                        {
+                            "name": "FORM_TYPE",
+                            "rawValues": ["http://jabber.org/protocol/pubsub#subscribe_options"],
+                            "type": "hidden",
+                            "value": "http://jabber.org/protocol/pubsub#subscribe_options"
+                        },
+                        {
+                            "name": "pubsub#deliver",
+                            "type": "boolean",
+                            "value": true,
+                            "rawValues": ["1"]
+                        },
+                        {
+                            "name": "pubsub#digest",
+                            "type": "boolean",
+                            "value": false,
+                            "rawValues": ["0"]
+                        },
+                        {
+                            "name": "pubsub#include_body",
+                            "type": "boolean",
+                            "value": false,
+                            "rawValues": ["0"]
+                        },
+                        {
+                            "name": "pubsub#show-values",
+                            "type": "list-multi",
+                            "rawValues": ["chat", "online", "away"],
+                            "value": ["chat", "online", "away"]
+                        }
+                    ],
+                    "instructions": [],
+                    "type": "submit"
+                }
+            }
+        },
+        "to": "pubsub.shakespeare.lit",
+        "type": "set"
+    }
+]

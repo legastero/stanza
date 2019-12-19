@@ -1,0 +1,94 @@
+[
+    "iq",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "def1",
+        "lang": "",
+        "pubsub": {
+            "defaultSubscriptionOptions": {
+                "form": {
+                    "fields": [
+                        {
+                            "name": "FORM_TYPE",
+                            "rawValues": ["http://jabber.org/protocol/pubsub#subscribe_options"],
+                            "type": "hidden",
+                            "value": "http://jabber.org/protocol/pubsub#subscribe_options"
+                        },
+                        {
+                            "name": "pubsub#deliver",
+                            "type": "boolean",
+                            "value": true
+                        },
+                        {
+                            "name": "pubsub#digest",
+                            "type": "boolean",
+                            "value": false
+                        },
+                        {
+                            "name": "pubsub#include_body",
+                            "type": "boolean",
+                            "value": false
+                        },
+                        {
+                            "name": "pubsub#show-values",
+                            "type": "list-multi",
+                            "value": ["chat", "online", "away"]
+                        }
+                    ],
+                    "type": "result"
+                },
+                "node": "princely_musings"
+            }
+        },
+        "to": "francisco@denmark.lit/barracks",
+        "type": "result"
+    },
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "def1",
+        "lang": "",
+        "pubsub": {
+            "defaultSubscriptionOptions": {
+                "form": {
+                    "fields": [
+                        {
+                            "name": "FORM_TYPE",
+                            "rawValues": ["http://jabber.org/protocol/pubsub#subscribe_options"],
+                            "type": "hidden",
+                            "value": "http://jabber.org/protocol/pubsub#subscribe_options"
+                        },
+                        {
+                            "name": "pubsub#deliver",
+                            "type": "boolean",
+                            "value": true,
+                            "rawValues": ["1"]
+                        },
+                        {
+                            "name": "pubsub#digest",
+                            "type": "boolean",
+                            "value": false,
+                            "rawValues": ["0"]
+                        },
+                        {
+                            "name": "pubsub#include_body",
+                            "type": "boolean",
+                            "value": false,
+                            "rawValues": ["0"]
+                        },
+                        {
+                            "name": "pubsub#show-values",
+                            "type": "list-multi",
+                            "rawValues": ["chat", "online", "away"],
+                            "value": ["chat", "online", "away"]
+                        }
+                    ],
+                    "instructions": [],
+                    "type": "result"
+                },
+                "node": "princely_musings"
+            }
+        },
+        "to": "francisco@denmark.lit/barracks",
+        "type": "result"
+    }
+]

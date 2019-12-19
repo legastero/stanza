@@ -1,0 +1,15 @@
+<iq type='result'
+    from='pubsub.shakespeare.lit'
+    to='francisco@denmark.lit/barracks'
+    id='sub1'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+    <subscription
+        node='princely_musings'
+        jid='francisco@denmark.lit'
+        subscription='unconfigured'>
+      <subscribe-options>
+        <required/>
+      </subscribe-options>
+    </subscription>
+  </pubsub>
+</iq>

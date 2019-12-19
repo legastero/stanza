@@ -1,0 +1,14 @@
+[
+    "iq",
+    {
+        "from": "francisco@denmark.lit/barracks",
+        "id": "affil1",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "affiliations": {}
+        },
+        "to": "pubsub.shakespeare.lit",
+        "type": "get"
+    }
+]

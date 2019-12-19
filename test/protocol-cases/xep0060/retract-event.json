@@ -1,0 +1,30 @@
+[
+    "message",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "bar",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "items": {
+                "node": "princely_musings",
+                "retracted": ["ae890ac52d0df67ed7cfdf51b644e901"]
+            }
+        },
+        "to": "bernardo@denmark.lit"
+    },
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "bar",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "eventType": "items",
+            "items": {
+                "node": "princely_musings",
+                "retracted": ["ae890ac52d0df67ed7cfdf51b644e901"]
+            }
+        },
+        "to": "bernardo@denmark.lit"
+    }
+]

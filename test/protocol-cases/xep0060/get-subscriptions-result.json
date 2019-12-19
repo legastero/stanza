@@ -1,0 +1,48 @@
+[
+    "iq",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "subscriptions1",
+        "lang": "",
+        "pubsub": {
+            "subscriptions": {
+                "items": [
+                    {
+                        "configurationRequired": false,
+                        "jid": "francisco@denmark.lit",
+                        "node": "node1",
+                        "state": "subscribed"
+                    },
+                    {
+                        "configurationRequired": false,
+                        "jid": "francisco@denmark.lit",
+                        "node": "node2",
+                        "state": "subscribed"
+                    },
+                    {
+                        "configurationRequired": false,
+                        "jid": "francisco@denmark.lit",
+                        "node": "node5",
+                        "state": "unconfigured"
+                    },
+                    {
+                        "configurationRequired": false,
+                        "jid": "francisco@denmark.lit",
+                        "node": "node6",
+                        "state": "subscribed",
+                        "subid": "123-abc"
+                    },
+                    {
+                        "configurationRequired": false,
+                        "jid": "francisco@denmark.lit",
+                        "node": "node6",
+                        "state": "subscribed",
+                        "subid": "004-yyy"
+                    }
+                ]
+            }
+        },
+        "to": "francisco@denmark.lit",
+        "type": "result"
+    }
+]

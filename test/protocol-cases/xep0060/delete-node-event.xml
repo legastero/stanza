@@ -1,0 +1,7 @@
+<message from='pubsub.shakespeare.lit' to='francisco@denmark.lit' id='foo'>
+  <event xmlns='http://jabber.org/protocol/pubsub#event'>
+    <delete node='princely_musings'>
+      <redirect uri='xmpp:hamlet@denmark.lit?;node=blog'/>
+    </delete>
+  </event>
+</message>

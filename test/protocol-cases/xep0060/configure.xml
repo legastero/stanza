@@ -1,0 +1,15 @@
+<iq type='set'
+    from='hamlet@denmark.lit/elsinore'
+    to='pubsub.shakespeare.lit'
+    id='config2'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub#owner'>
+    <configure node='princely_musings'>
+      <x xmlns='jabber:x:data' type='submit'>
+        <field var='FORM_TYPE' type='hidden'>
+          <value>http://jabber.org/protocol/pubsub#node_config</value>
+        </field>
+        <field var='pubsub#access_model'><value>whitelist</value></field>
+      </x>
+    </configure>
+  </pubsub>
+</iq>

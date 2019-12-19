@@ -1,0 +1,8 @@
+<iq type='set'
+    from='hamlet@denmark.lit/elsinore'
+    to='pubsub.shakespeare.lit'
+    id='create1'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+    <create node='princely_musings'/>
+  </pubsub>
+</iq>

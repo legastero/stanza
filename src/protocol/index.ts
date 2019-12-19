@@ -1,6 +1,7 @@
 import { DefinitionOptions } from '../jxt';
 
 export * from './rfc3921';
+export * from './rfc4287';
 export * from './rfc6120';
 export * from './rfc6121';
 export * from './rfc7395';
@@ -82,6 +83,7 @@ export * from './xep0384';
 export * from './xrd';
 
 import RFC3921 from './rfc3921';
+import RFC4287 from './rfc4287';
 import RFC6120 from './rfc6120';
 import RFC6121 from './rfc6121';
 import RFC7395 from './rfc7395';
@@ -164,6 +166,7 @@ import XRD from './xrd';
 
 const Protocol: Array<DefinitionOptions | DefinitionOptions[]> = [
     RFC3921,
+    RFC4287,
     RFC6120,
     RFC6121,
     RFC7395,

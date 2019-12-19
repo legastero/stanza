@@ -1,0 +1,34 @@
+[
+    "message",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "subscription": {
+                "expires": "presence",
+                "jid": "francisco@denmark.lit",
+                "node": "princely_musings",
+                "subid": "ba49252aaa4f5d320c24d3766f0bdcade78c78d3",
+                "type": "subscribed"
+            }
+        },
+        "to": "francisco@denmark.lit/barracks"
+    },
+    {
+        "from": "pubsub.shakespeare.lit",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "eventType": "subscription",
+            "subscription": {
+                "expires": "presence",
+                "jid": "francisco@denmark.lit",
+                "node": "princely_musings",
+                "subid": "ba49252aaa4f5d320c24d3766f0bdcade78c78d3",
+                "type": "subscribed"
+            }
+        },
+        "to": "francisco@denmark.lit/barracks"
+    }
+]

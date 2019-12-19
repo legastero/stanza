@@ -1,0 +1,13 @@
+<iq type='result'
+    from='pubsub.shakespeare.lit'
+    to='hamlet@denmark.lit/elsinore'
+    id='subman1'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub#owner'>
+    <subscriptions node='princely_musings'>
+      <subscription jid='hamlet@denmark.lit' subscription='subscribed'/>
+      <subscription jid='polonius@denmark.lit' subscription='unconfigured'/>
+      <subscription jid='bernardo@denmark.lit' subscription='subscribed' subid='123-abc'/>
+      <subscription jid='bernardo@denmark.lit' subscription='subscribed' subid='004-yyy'/>
+    </subscriptions>
+  </pubsub>
+</iq>

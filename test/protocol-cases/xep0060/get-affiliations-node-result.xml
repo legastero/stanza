@@ -1,0 +1,10 @@
+<iq type='result'
+    from='pubsub.shakespeare.lit'
+    to='francisco@denmark.lit'
+    id='affil2'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+    <affiliations>
+      <affiliation node='node6' affiliation='owner'/>
+    </affiliations>
+  </pubsub>
+</iq>

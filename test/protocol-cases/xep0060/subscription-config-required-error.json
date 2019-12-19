@@ -1,0 +1,113 @@
+[
+    "iq",
+    {
+        "error": {
+            "condition": "not-acceptable",
+            "pubsubError": "configuration-required",
+            "type": "modify"
+        },
+        "from": "pubsub.shakespeare.lit",
+        "id": "sub1",
+        "lang": "",
+        "pubsub": {
+            "subscribe": {
+                "jid": "francisco@denmark.lit",
+                "node": "princely_musings"
+            },
+            "subscriptionOptions": {
+                "form": {
+                    "fields": [
+                        {
+                            "name": "FORM_TYPE",
+                            "type": "hidden",
+                            "value": "http://jabber.org/protocol/pubsub#subscribe_options"
+                        },
+                        {
+                            "name": "pubsub#deliver",
+                            "type": "boolean",
+                            "value": true
+                        },
+                        {
+                            "name": "pubsub#digest",
+                            "type": "boolean",
+                            "value": false
+                        },
+                        {
+                            "name": "pubsub#include_body",
+                            "type": "boolean",
+                            "value": false
+                        },
+                        {
+                            "name": "pubsub#show-values",
+                            "type": "list-multi",
+                            "value": ["chat", "online", "away"]
+                        }
+                    ],
+                    "type": "submit"
+                },
+                "jid": "francisco@denmark.lit",
+                "node": "princely_musings"
+            }
+        },
+        "to": "francisco@denmark.lit/barracks",
+        "type": "error"
+    },
+    {
+        "error": {
+            "condition": "not-acceptable",
+            "pubsubError": "configuration-required",
+            "type": "modify"
+        },
+        "from": "pubsub.shakespeare.lit",
+        "id": "sub1",
+        "lang": "",
+        "pubsub": {
+            "subscribe": {
+                "jid": "francisco@denmark.lit",
+                "node": "princely_musings"
+            },
+            "subscriptionOptions": {
+                "form": {
+                    "fields": [
+                        {
+                            "name": "FORM_TYPE",
+                            "rawValues": ["http://jabber.org/protocol/pubsub#subscribe_options"],
+                            "type": "hidden",
+                            "value": "http://jabber.org/protocol/pubsub#subscribe_options"
+                        },
+                        {
+                            "name": "pubsub#deliver",
+                            "type": "boolean",
+                            "value": true,
+                            "rawValues": ["1"]
+                        },
+                        {
+                            "name": "pubsub#digest",
+                            "type": "boolean",
+                            "value": false,
+                            "rawValues": ["0"]
+                        },
+                        {
+                            "name": "pubsub#include_body",
+                            "type": "boolean",
+                            "value": false,
+                            "rawValues": ["0"]
+                        },
+                        {
+                            "name": "pubsub#show-values",
+                            "type": "list-multi",
+                            "value": ["chat", "online", "away"],
+                            "rawValues": ["chat", "online", "away"]
+                        }
+                    ],
+                    "instructions": [],
+                    "type": "submit"
+                },
+                "jid": "francisco@denmark.lit",
+                "node": "princely_musings"
+            }
+        },
+        "to": "francisco@denmark.lit/barracks",
+        "type": "error"
+    }
+]

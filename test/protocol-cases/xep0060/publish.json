@@ -1,0 +1,40 @@
+[
+    "iq",
+    {
+        "from": "hamlet@denmark.lit/blogbot",
+        "id": "publish1",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "publish": {
+                "item": {
+                    "content": {
+                        "id": "tag:denmark.lit,2003:entry-32397",
+                        "itemType": "http://www.w3.org/2005/Atom",
+                        "links": [
+                            {
+                                "href": "http://denmark.lit/2003/12/13/atom03",
+                                "mediaType": "text/html",
+                                "rel": "alternate"
+                            }
+                        ],
+                        "published": "2003-12-13T18:30:02.000Z",
+                        "summary": {
+                            "text": "To be, or not to be: that is the question:\nWhether 'tis nobler in the mind to suffer\nThe slings and arrows of outrageous fortune,\nOr to take arms against a sea of troubles,\nAnd by opposing end them?",
+                            "type": "text"
+                        },
+                        "title": {
+                            "text": "Soliloquy",
+                            "type": "text"
+                        },
+                        "updated": "2003-12-13T18:30:02.000Z"
+                    },
+                    "id": "bnd81g37d61f49fgn581"
+                },
+                "node": "princely_musings"
+            }
+        },
+        "to": "pubsub.shakespeare.lit",
+        "type": "set"
+    }
+]

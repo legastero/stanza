@@ -1,0 +1,17 @@
+[
+    "iq",
+    {
+        "from": "hamlet@denmark.lit/elsinore",
+        "id": "retract1",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "retract": {
+                "id": "ae890ac52d0df67ed7cfdf51b644e901",
+                "node": "princely_musings"
+            }
+        },
+        "to": "pubsub.shakespeare.lit",
+        "type": "set"
+    }
+]

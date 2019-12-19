@@ -1,0 +1,14 @@
+<iq type='result'
+    from='pubsub.shakespeare.lit'
+    to='francisco@denmark.lit'
+    id='subscriptions1'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+    <subscriptions>
+      <subscription node='node1' jid='francisco@denmark.lit' subscription='subscribed'/>
+      <subscription node='node2' jid='francisco@denmark.lit' subscription='subscribed'/>
+      <subscription node='node5' jid='francisco@denmark.lit' subscription='unconfigured'/>
+      <subscription node='node6' jid='francisco@denmark.lit' subscription='subscribed' subid='123-abc'/>
+      <subscription node='node6' jid='francisco@denmark.lit' subscription='subscribed' subid='004-yyy'/>
+    </subscriptions>
+  </pubsub>
+</iq>

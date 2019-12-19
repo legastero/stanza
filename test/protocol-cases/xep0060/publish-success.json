@@ -1,0 +1,18 @@
+[
+    "iq",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "publish1",
+        "lang": "",
+        "pubsub": {
+            "publish": {
+                "item": {
+                    "id": "ae890ac52d0df67ed7cfdf51b644e901"
+                },
+                "node": "princely_musings"
+            }
+        },
+        "to": "hamlet@denmark.lit/blogbot",
+        "type": "result"
+    }
+]

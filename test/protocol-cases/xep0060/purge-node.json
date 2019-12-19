@@ -1,0 +1,15 @@
+[
+    "iq",
+    {
+        "from": "hamlet@denmark.lit/elsinore",
+        "id": "purge1",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "context": "owner",
+            "purge": "princely_musings"
+        },
+        "to": "pubsub.shakespeare.lit",
+        "type": "set"
+    }
+]

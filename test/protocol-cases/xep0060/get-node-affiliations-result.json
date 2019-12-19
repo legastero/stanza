@@ -1,0 +1,26 @@
+[
+    "iq",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "ent1",
+        "lang": "",
+        "pubsub": {
+            "affiliations": {
+                "items": [
+                    {
+                        "affiliation": "owner",
+                        "jid": "hamlet@denmark.lit"
+                    },
+                    {
+                        "affiliation": "outcast",
+                        "jid": "polonius@denmark.lit"
+                    }
+                ],
+                "node": "princely_musings"
+            },
+            "context": "owner"
+        },
+        "to": "hamlet@denmark.lit/elsinore",
+        "type": "result"
+    }
+]

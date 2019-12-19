@@ -1,0 +1,32 @@
+[
+    "message",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "approvalnotify1",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "subscription": {
+                "jid": "horatio@denmark.lit",
+                "node": "princely_musings",
+                "type": "subscribed"
+            }
+        },
+        "to": "horatio@denmark.lit"
+    },
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "approvalnotify1",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "eventType": "subscription",
+            "subscription": {
+                "jid": "horatio@denmark.lit",
+                "node": "princely_musings",
+                "type": "subscribed"
+            }
+        },
+        "to": "horatio@denmark.lit"
+    }
+]

@@ -2,6 +2,9 @@
 // RFCS
 // ================================================================
 
+// RFC 4287
+export const NS_ATOM = 'http://www.w3.org/2005/Atom';
+
 // RFC 6120
 export const NS_BIND = 'urn:ietf:params:xml:ns:xmpp-bind';
 export const NS_CLIENT = 'jabber:client';

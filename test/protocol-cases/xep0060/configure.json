@@ -1,0 +1,62 @@
+[
+    "iq",
+    {
+        "from": "hamlet@denmark.lit/elsinore",
+        "id": "config2",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "configure": {
+                "form": {
+                    "fields": [
+                        {
+                            "name": "FORM_TYPE",
+                            "type": "hidden",
+                            "value": "http://jabber.org/protocol/pubsub#node_config"
+                        },
+                        {
+                            "name": "pubsub#access_model",
+                            "value": "whitelist"
+                        }
+                    ],
+                    "type": "submit"
+                },
+                "node": "princely_musings"
+            },
+            "context": "owner"
+        },
+        "to": "pubsub.shakespeare.lit",
+        "type": "set"
+    },
+    {
+        "from": "hamlet@denmark.lit/elsinore",
+        "id": "config2",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "configure": {
+                "form": {
+                    "fields": [
+                        {
+                            "name": "FORM_TYPE",
+                            "rawValues": ["http://jabber.org/protocol/pubsub#node_config"],
+                            "type": "hidden",
+                            "value": "http://jabber.org/protocol/pubsub#node_config"
+                        },
+                        {
+                            "name": "pubsub#access_model",
+                            "rawValues": ["whitelist"],
+                            "value": "whitelist"
+                        }
+                    ],
+                    "instructions": [],
+                    "type": "submit"
+                },
+                "node": "princely_musings"
+            },
+            "context": "owner"
+        },
+        "to": "pubsub.shakespeare.lit",
+        "type": "set"
+    }
+]

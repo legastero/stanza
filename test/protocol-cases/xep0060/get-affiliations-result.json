@@ -1,0 +1,32 @@
+[
+    "iq",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "affil1",
+        "lang": "",
+        "pubsub": {
+            "affiliations": {
+                "items": [
+                    {
+                        "affiliation": "owner",
+                        "node": "node1"
+                    },
+                    {
+                        "affiliation": "publisher",
+                        "node": "node2"
+                    },
+                    {
+                        "affiliation": "outcast",
+                        "node": "node5"
+                    },
+                    {
+                        "affiliation": "owner",
+                        "node": "node6"
+                    }
+                ]
+            }
+        },
+        "to": "francisco@denmark.lit",
+        "type": "result"
+    }
+]

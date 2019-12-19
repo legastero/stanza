@@ -237,42 +237,56 @@ const _StanzaError: DefinitionOptions[] = Object.values(StreamType).map(streamNS
 // --------------------------------------------------------------------
 
 const baseIQFields = new Set(['from', 'id', 'lang', 'to', 'type', 'payloadType', 'error']);
-const _IQ: DefinitionOptions[] = Object.values(StreamType).map(streamNS => ({
-    defaultType: NS_CLIENT,
-    element: 'iq',
-    fields: {
-        from: JIDAttribute('from'),
-        id: attribute('id'),
-        lang: languageAttribute(),
-        payloadType: {
-            order: -10000,
-            importer(xml, context) {
-                if ((context.data! as IQ).type !== 'get' && (context.data! as IQ).type !== 'set') {
-                    return;
+const _IQ: DefinitionOptions[] = Object.values(StreamType).map(
+    (streamNS: string): DefinitionOptions => ({
+        childrenExportOrder: {
+            error: 200000
+        },
+        defaultType: NS_CLIENT,
+        element: 'iq',
+        fields: {
+            from: JIDAttribute('from'),
+            id: attribute('id'),
+            lang: languageAttribute(),
+            payloadType: {
+                order: -10000,
+                importer(xml, context) {
+                    if (
+                        (context.data! as IQ).type !== 'get' &&
+                        (context.data! as IQ).type !== 'set'
+                    ) {
+                        return;
+                    }
+                    const childCount = xml.children.filter(child => typeof child !== 'string')
+                        .length;
+                    if (childCount !== 1) {
+                        return 'invalid-payload-count';
+                    }
+                    const extensions = Object.keys(context.data!).filter(
+                        key => !baseIQFields.has(key)
+                    );
+                    if (extensions.length !== 1) {
+                        return 'unknown-payload';
+                    }
+                    return extensions[0];
                 }
-                const childCount = xml.children.filter(child => typeof child !== 'string').length;
-                if (childCount !== 1) {
-                    return 'invalid-payload-count';
-                }
-                const extensions = Object.keys(context.data!).filter(key => !baseIQFields.has(key));
-                if (extensions.length !== 1) {
-                    return 'unknown-payload';
-                }
-                return extensions[0];
-            }
-        } as FieldDefinition<string>,
-        to: JIDAttribute('to'),
-        type: attribute('type')
-    },
-    namespace: streamNS,
-    path: 'iq',
-    type: streamNS,
-    typeField: 'streamType'
-}));
+            } as FieldDefinition<string>,
+            to: JIDAttribute('to'),
+            type: attribute('type')
+        },
+        namespace: streamNS,
+        path: 'iq',
+        type: streamNS,
+        typeField: 'streamType'
+    })
+);
 
 // --------------------------------------------------------------------
 
 const _Message: DefinitionOptions[] = Object.values(StreamType).map(streamNS => ({
+    childrenExportOrder: {
+        error: 200000
+    },
     defaultType: NS_CLIENT,
     element: 'message',
     fields: {
@@ -290,6 +304,9 @@ const _Message: DefinitionOptions[] = Object.values(StreamType).map(streamNS => 
 // --------------------------------------------------------------------
 
 const _Presence = Object.values(StreamType).map(streamNS => ({
+    childrenExportOrder: {
+        error: 200000
+    },
     defaultType: NS_CLIENT,
     element: 'presence',
     fields: {

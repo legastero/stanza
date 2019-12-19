@@ -1,0 +1,31 @@
+[
+    "iq",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "subscriptions2",
+        "lang": "",
+        "pubsub": {
+            "subscriptions": {
+                "items": [
+                    {
+                        "configurationRequired": false,
+                        "jid": "francisco@denmark.lit",
+                        "node": "node6",
+                        "state": "subscribed",
+                        "subid": "123-abc"
+                    },
+                    {
+                        "configurationRequired": false,
+                        "jid": "francisco@denmark.lit",
+                        "node": "node6",
+                        "state": "subscribed",
+                        "subid": "004-yyy"
+                    }
+                ],
+                "node": "node6"
+            }
+        },
+        "to": "francisco@denmark.lit",
+        "type": "result"
+    }
+]

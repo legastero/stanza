@@ -1,0 +1,17 @@
+[
+    "iq",
+    {
+        "from": "hamlet@denmark.lit/elsinore",
+        "id": "ent1",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "affiliations": {
+                "node": "princely_musings"
+            },
+            "context": "owner"
+        },
+        "to": "pubsub.shakespeare.lit",
+        "type": "get"
+    }
+]

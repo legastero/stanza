@@ -57,22 +57,30 @@ for (const [testSuite, testCases] of testSuites) {
             xml.attributes.xmlns = 'jabber:client';
         }
 
-        const json = JSON.parse(
-            FS.readFileSync(
-                __dirname + '/protocol-cases/' + testSuite + '/' + testCase + '.json'
-            ).toString(),
-            reviveData
-        );
+        let json: any;
+        try {
+            json = JSON.parse(
+                FS.readFileSync(
+                    __dirname + '/protocol-cases/' + testSuite + '/' + testCase + '.json'
+                ).toString(),
+                reviveData
+            );
+        } catch (err) {
+            console.error(`Failed to parse JSON test case: ${testSuite}/${testCase}`);
+        }
+        if (!json) {
+            break;
+        }
 
         const jsonOut = json[1];
         const jsonIn = json.length === 2 ? json[1] : json[2];
 
         test(`${testSuite}/${testCase}`, () => {
             const imported = registry.import(xml, { acceptLanguages: ['*'] });
-            expect(imported).toEqual(jsonIn);
+            expect(imported).toStrictEqual(jsonIn);
 
             const exported = registry.export(json[0], jsonOut, { acceptLanguages: ['*'] })!;
-            expect(exported.toJSON()).toEqual(xml.toJSON());
+            expect(exported.toJSON()).toStrictEqual(xml.toJSON());
         });
     }
 }

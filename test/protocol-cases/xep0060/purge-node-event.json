@@ -1,0 +1,28 @@
+[
+    "message",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "foo",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "purge": {
+                "node": "princely_musings"
+            }
+        },
+        "to": "francisco@denmark.lit"
+    },
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "foo",
+        "lang": "",
+        "pubsub": {
+            "context": "event",
+            "eventType": "purge",
+            "purge": {
+                "node": "princely_musings"
+            }
+        },
+        "to": "francisco@denmark.lit"
+    }
+]

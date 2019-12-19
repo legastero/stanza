@@ -1,0 +1,5 @@
+<message from='pubsub.shakespeare.lit' to='francisco@denmark.lit' id='foo'>
+  <event xmlns='http://jabber.org/protocol/pubsub#event'>
+    <configuration node='princely_musings'/>
+  </event>
+</message>

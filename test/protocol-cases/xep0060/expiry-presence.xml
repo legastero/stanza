@@ -1,0 +1,11 @@
+<message xmlns="jabber:client" from="pubsub.shakespeare.lit" to="francisco@denmark.lit/barracks">
+    <event xmlns="http://jabber.org/protocol/pubsub#event">
+        <subscription
+            expiry="presence"
+            jid="francisco@denmark.lit"
+            node="princely_musings"
+            subid="ba49252aaa4f5d320c24d3766f0bdcade78c78d3"
+            subscription="subscribed"
+        />
+    </event>
+</message>

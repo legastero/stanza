@@ -1,0 +1,17 @@
+[
+    "iq",
+    {
+        "from": "francisco@denmark.lit/barracks",
+        "id": "sub1",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "subscribe": {
+                "jid": "francisco@denmark.lit",
+                "node": "princely_musings"
+            }
+        },
+        "to": "pubsub.shakespeare.lit",
+        "type": "set"
+    }
+]

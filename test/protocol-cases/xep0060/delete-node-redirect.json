@@ -1,0 +1,18 @@
+[
+    "iq",
+    {
+        "from": "hamlet@denmark.lit/elsinore",
+        "id": "delete1",
+        "lang": "",
+        "payloadType": "pubsub",
+        "pubsub": {
+            "context": "owner",
+            "destroy": {
+                "node": "princely_musings",
+                "redirect": "xmpp:hamlet@denmark.lit?;node=blog"
+            }
+        },
+        "to": "pubsub.shakespeare.lit",
+        "type": "set"
+    }
+]

@@ -1,0 +1,11 @@
+<iq type='result'
+    from='pubsub.shakespeare.lit'
+    to='hamlet@denmark.lit/elsinore'
+    id='ent1'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub#owner'>
+    <affiliations node='princely_musings'>
+      <affiliation jid='hamlet@denmark.lit' affiliation='owner'/>
+      <affiliation jid='polonius@denmark.lit' affiliation='outcast'/>
+    </affiliations>
+  </pubsub>
+</iq>

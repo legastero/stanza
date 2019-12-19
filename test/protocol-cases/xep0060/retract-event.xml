@@ -1,0 +1,8 @@
+
+<message from='pubsub.shakespeare.lit' to='bernardo@denmark.lit' id='bar'>
+  <event xmlns='http://jabber.org/protocol/pubsub#event'>
+    <items node='princely_musings'>
+      <retract id='ae890ac52d0df67ed7cfdf51b644e901'/>
+    </items>
+  </event>
+</message>

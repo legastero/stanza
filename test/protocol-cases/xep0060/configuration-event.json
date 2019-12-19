@@ -1,0 +1,28 @@
+[
+    "message",
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "foo",
+        "lang": "",
+        "pubsub": {
+            "configuration": {
+                "node": "princely_musings"
+            },
+            "context": "event"
+        },
+        "to": "francisco@denmark.lit"
+    },
+    {
+        "from": "pubsub.shakespeare.lit",
+        "id": "foo",
+        "lang": "",
+        "pubsub": {
+            "configuration": {
+                "node": "princely_musings"
+            },
+            "context": "event",
+            "eventType": "configuration"
+        },
+        "to": "francisco@denmark.lit"
+    }
+]

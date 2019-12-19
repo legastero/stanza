@@ -1,0 +1,11 @@
+<iq type='get'
+    from='francisco@denmark.lit/barracks'
+    to='pubsub.shakespeare.lit'
+    id='items3'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+    <items node='princely_musings'>
+      <item id='368866411b877c30064a5f62b917cffe'/>
+      <item id='4e30f35051b7b8b42abe083742187228'/>
+    </items>
+  </pubsub>
+</iq>
