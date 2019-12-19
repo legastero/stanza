@@ -39,9 +39,9 @@ export interface Mechanism {
     getExpectedCredentials(): ExpectedCredentials;
     getCacheableCredentials(): CacheableCredentials | null;
     processChallenge(challenge: Buffer): void;
-    processSuccess(challenge: Buffer): void;
-    createResponse(credentials: Credentials): Buffer | null;
-    finalize(credentials: Credentials): MechanismResult;
+    processSuccess(challenge?: Buffer): void;
+    createResponse(credentials: Credentials & CacheableCredentials): Buffer | null;
+    finalize(credentials?: Credentials): MechanismResult;
 }
 
 export type MechanismConstructor = new (name: string) => Mechanism;
@@ -59,15 +59,13 @@ export abstract class SimpleMech {
         return null;
     }
 
+    // istanbul ignore next
     public processChallenge(challenge: Buffer): void {
         return;
     }
 
     public processSuccess(success?: Buffer): void {
         this.authenticated = true;
-        if (success) {
-            this.processChallenge(success);
-        }
     }
 
     public finalize(): MechanismResult {
@@ -121,35 +119,34 @@ export class Factory {
 // Utility helpers
 // ====================================================================
 
+// istanbul ignore next
+export function createClientNonce(length: number = 32): string {
+    return Hashes.randomBytes(length).toString('hex');
+}
+
 // tslint:disable no-bitwise
-function XOR(a: Buffer, b: Buffer) {
+export function XOR(a: Buffer, b: Buffer) {
     const res: number[] = [];
-    if (a.length > b.length) {
-        for (let i = 0; i < b.length; i++) {
-            res.push(a[i] ^ b[i]);
-        }
-    } else {
-        for (let i = 0; i < a.length; i++) {
-            res.push(a[i] ^ b[i]);
-        }
+    for (let i = 0; i < a.length; i++) {
+        res.push(a[i] ^ b[i]);
     }
     return Buffer.from(res);
 }
 // tslint:enable no-bitwise
 
-function H(text: Buffer, alg = 'sha-1'): Buffer {
+export function H(text: Buffer, alg: string): Buffer {
     return Hashes.createHash(alg)
         .update(text)
         .digest();
 }
 
-function HMAC(key: Buffer, msg: Buffer, alg = 'sha-1'): Buffer {
+export function HMAC(key: Buffer, msg: Buffer, alg: string): Buffer {
     return Hashes.createHmac(alg, key)
         .update(msg)
         .digest() as Buffer;
 }
 
-function Hi(text: Buffer, salt: Buffer, iterations: number, alg = 'sha-1') {
+export function Hi(text: Buffer, salt: Buffer, iterations: number, alg: string) {
     let ui1 = HMAC(text, Buffer.concat([salt, Buffer.from('00000001', 'hex')]), alg);
     let ui = ui1;
     for (let i = 0; i < iterations - 1; i++) {
@@ -158,10 +155,6 @@ function Hi(text: Buffer, salt: Buffer, iterations: number, alg = 'sha-1') {
     }
 
     return ui;
-}
-
-function createClientNonce(length: number = 32): string {
-    return Hashes.randomBytes(length).toString('hex');
 }
 
 function parse(challenge: Buffer): { [key: string]: string } {
@@ -262,6 +255,7 @@ export class DIGEST extends SimpleMech implements Mechanism {
     private nonce?: string;
     private realm?: string;
     private charset?: string;
+    private state: 'INITIAL' | 'CHALLENGE' = 'INITIAL';
 
     constructor(name: string) {
         super(name);
@@ -269,6 +263,8 @@ export class DIGEST extends SimpleMech implements Mechanism {
     }
 
     public processChallenge(challenge: Buffer): void {
+        this.state = 'CHALLENGE';
+
         interface Challenge {
             rspauth?: string;
             charset?: string;
@@ -285,13 +281,13 @@ export class DIGEST extends SimpleMech implements Mechanism {
 
     public getExpectedCredentials(): ExpectedCredentials {
         return {
-            optional: ['authzid', 'realm', 'clientNonce'],
+            optional: ['authzid', 'clientNonce', 'realm'],
             required: ['host', 'password', 'serviceName', 'serviceType', 'username']
         };
     }
 
     public createResponse(credentials: Credentials): Buffer | null {
-        if (this.authenticated) {
+        if (this.state === 'INITIAL' || this.authenticated) {
             return null;
         }
         let uri = credentials.serviceType + '/' + credentials.host;
@@ -351,7 +347,7 @@ export class DIGEST extends SimpleMech implements Mechanism {
             str += ',charset=utf-8';
         }
         if (credentials.authzid) {
-            str += 'authzid="' + credentials.authzid + '"';
+            str += ',authzid="' + credentials.authzid + '"';
         }
         return Buffer.from(str);
     }
@@ -391,7 +387,7 @@ export class SCRAM implements Mechanism {
     }
 
     public getExpectedCredentials(): ExpectedCredentials {
-        const optional = ['authzid'];
+        const optional = ['authzid', 'clientNonce'];
         const required = ['username', 'password'];
         if (this.useChannelBinding) {
             required.push('tlsUnique');
@@ -407,13 +403,10 @@ export class SCRAM implements Mechanism {
     }
 
     public createResponse(credentials: Credentials): Buffer | null {
-        switch (this.state) {
-            case 'INITIAL':
-                return this.initialResponse(credentials);
-            case 'CHALLENGE':
-                return this.challengeResponse(credentials);
+        if (this.state === 'INITIAL') {
+            return this.initialResponse(credentials);
         }
-        return null;
+        return this.challengeResponse(credentials);
     }
 
     public processChallenge(challenge: Buffer): void {
@@ -438,7 +431,7 @@ export class SCRAM implements Mechanism {
         this.processChallenge(success);
     }
 
-    public finalize(credentials: Credentials): MechanismResult {
+    public finalize(): MechanismResult {
         if (!this.verifier) {
             return {
                 authenticated: false,
@@ -461,8 +454,8 @@ export class SCRAM implements Mechanism {
     }
 
     private initialResponse(credentials: Credentials): Buffer {
-        const authzid = this.escapeUsername(credentials.authzid);
-        const username = this.escapeUsername(credentials.username);
+        const authzid = this.escapeUsername(saslprep(credentials.authzid));
+        const username = this.escapeUsername(saslprep(credentials.username));
 
         this.clientNonce = credentials.clientNonce || createClientNonce();
 
@@ -513,7 +506,7 @@ export class SCRAM implements Mechanism {
             serverKey = HMAC(saltedPassword, SERVER_KEY, this.algorithm);
         } else {
             saltedPassword = Hi(
-                Buffer.from(saslprep(credentials.password || '')),
+                Buffer.from(saslprep(credentials.password)),
                 this.salt,
                 this.iterationCount,
                 this.algorithm
@@ -554,7 +547,7 @@ export class SCRAM implements Mechanism {
         return result;
     }
 
-    private escapeUsername(name: string = ''): string {
+    private escapeUsername(name: string): string {
         const escaped: string[] = [];
         for (const curr of name) {
             if (curr === ',') {

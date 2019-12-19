@@ -118,7 +118,7 @@ interface StringPrepProfile {
 export function prepare(
     profile: StringPrepProfile,
     allowUnassigned: boolean,
-    input: string
+    input: string = ''
 ): string {
     const inputCodePoints = Punycode.ucs2.decode(input);
     let mappedCodePoints: number[] = [];
@@ -197,7 +197,7 @@ const NamePrepProfile: StringPrepProfile = {
     prohibited: [C12, C22, C3, C4, C5, C6, C7, C8, C9],
     unassigned: A1
 };
-export function nameprep(str: string, allowUnassigned: boolean = true): string {
+export function nameprep(str?: string, allowUnassigned: boolean = true): string {
     return prepare(NamePrepProfile, allowUnassigned, str);
 }
 
@@ -218,7 +218,7 @@ const NodePrepProfile: StringPrepProfile = {
     prohibited: [C11, C12, C21, C22, C3, C4, C5, C6, C7, C8, C9, NodePrepProhibited],
     unassigned: A1
 };
-export function nodeprep(str: string, allowUnassigned: boolean = true): string {
+export function nodeprep(str?: string, allowUnassigned: boolean = true): string {
     return prepare(NodePrepProfile, allowUnassigned, str);
 }
 
@@ -229,7 +229,7 @@ const ResourcePrepProfile: StringPrepProfile = {
     prohibited: [C12, C21, C22, C3, C4, C5, C6, C7, C8, C9],
     unassigned: A1
 };
-export function resourceprep(str: string, allowUnassigned: boolean = true): string {
+export function resourceprep(str?: string, allowUnassigned: boolean = true): string {
     return prepare(ResourcePrepProfile, allowUnassigned, str);
 }
 
@@ -240,6 +240,6 @@ const SASLPrepProfile: StringPrepProfile = {
     prohibited: [C12, C21, C22, C3, C4, C5, C6, C7, C8, C9],
     unassigned: A1
 };
-export function saslprep(str: string, allowUnassigned: boolean = false): string {
+export function saslprep(str?: string, allowUnassigned: boolean = false): string {
     return prepare(SASLPrepProfile, allowUnassigned, str);
 }
