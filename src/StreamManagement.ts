@@ -1,3 +1,5 @@
+import { nextTick } from 'async';
+
 import { Agent } from './';
 import {
     IQ,
@@ -136,8 +138,10 @@ export default class StreamManagement {
 
     public request() {
         this.pendingAck = true;
-        this.client.send('sm', {
-            type: 'request'
+        nextTick(() => {
+            this.client.send('sm', {
+                type: 'request'
+            });
         });
     }
 
