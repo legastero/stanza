@@ -48,13 +48,15 @@ function encodeForms(extensions: DataForm[] = []): Buffer[] | null {
         let type: Buffer | undefined;
 
         for (const field of form.fields || []) {
-            if (
-                field.name === 'FORM_TYPE' &&
-                field.type === 'hidden' &&
-                field.rawValues &&
-                field.rawValues.length === 1
-            ) {
+            if (!(field.name === 'FORM_TYPE' && field.type === 'hidden')) {
+                continue;
+            }
+            if (field.rawValues && field.rawValues.length === 1) {
                 type = escape(field.rawValues[0]);
+                break;
+            }
+            if (field.value && typeof field.value === 'string') {
+                type = escape(field.value);
                 break;
             }
         }
@@ -94,10 +96,27 @@ function encodeFields(fields: DataFormField[] = []): Buffer[] {
         if (field.name === 'FORM_TYPE') {
             continue;
         }
-        sortedFields.push({
-            name: escape(field.name!),
-            values: (field.rawValues || []).map(val => escape(val)).sort(octetCompare)
-        });
+        if (field.rawValues) {
+            sortedFields.push({
+                name: escape(field.name!),
+                values: field.rawValues.map(val => escape(val)).sort(octetCompare)
+            });
+        } else if (Array.isArray(field.value)) {
+            sortedFields.push({
+                name: escape(field.name!),
+                values: field.value.map(val => escape(val)).sort(octetCompare)
+            });
+        } else if (field.value === true || field.value === false) {
+            sortedFields.push({
+                name: escape(field.name!),
+                values: [escape(field.value ? '1' : '0')]
+            });
+        } else {
+            sortedFields.push({
+                name: escape(field.name!),
+                values: [escape(field.value || '')]
+            });
+        }
     }
 
     sortedFields.sort((a, b) => octetCompare(a.name, b.name));
@@ -118,12 +137,9 @@ export function generate(info: DiscoInfo, hashName: string): string | null {
     const S: Buffer[] = [];
     const separator = Buffer.from('<', 'utf8');
 
-    const append = (b1: Buffer, b2?: Buffer) => {
+    const append = (b1: Buffer) => {
         S.push(b1);
         S.push(separator);
-        if (b2) {
-            S.push(b2);
-        }
     };
 
     const identities = encodeIdentities(info.identities);
@@ -144,19 +160,9 @@ export function generate(info: DiscoInfo, hashName: string): string | null {
         append(form);
     }
 
-    let version = Hashes.createHash(hashName)
+    return Hashes.createHash(hashName)
         .update(Buffer.concat(S))
         .digest('base64');
-
-    let padding = 4 - (version.length % 4);
-    if (padding === 4) {
-        padding = 0;
-    }
-    for (let i = 0; i < padding; i++) {
-        version += '=';
-    }
-
-    return version;
 }
 
 export function verify(info: DiscoInfo, hashName: string, check: string): boolean {

@@ -1,5 +1,5 @@
 import DiscoManager from '../../src/DiscoManager';
-import { DataForm, DiscoItem, DiscoInfoIdentity } from '../../src/protocol';
+import { DataForm, DiscoInfoIdentity } from '../../src/protocol';
 
 test('Disco - add identity', () => {
     const disco = new DiscoManager();
