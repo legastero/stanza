@@ -124,7 +124,7 @@ export function prepare(
     let mappedCodePoints: number[] = [];
     for (const codePoint of inputCodePoints) {
         if (!allowUnassigned && profile.unassigned.contains(codePoint)) {
-            throw new Error('Unassigned codepoint: x' + codePoint.toString(16));
+            throw new Error('Unassigned code point: x' + codePoint.toString(16));
         }
 
         let hasMapping = false;
@@ -164,6 +164,7 @@ export function prepare(
             }
         }
         if (!allowUnassigned && profile.unassigned.contains(codePoint)) {
+            // istanbul ignore next
             throw new Error('Prohibited code point: x' + codePoint.toString(16));
         }
         if (profile.bidirectional) {
