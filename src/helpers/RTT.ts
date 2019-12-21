@@ -77,11 +77,12 @@ export class DisplayBuffer {
     public synced: boolean = false;
     public onStateChange: (state: DisplayBufferState) => void;
     public cursorPosition: number = 0;
+    public ignoreWaits: boolean = false;
 
     private buffer: UnicodeBuffer;
+    private timeDeficit: number = 0;
     private sequenceNumber: number = 0;
     private actionQueue!: AsyncPriorityQueue<RTTAction>;
-    private ignoreWaits: boolean = false;
 
     constructor(onStateChange?: (state: DisplayBufferState) => void, ignoreWaits: boolean = false) {
         this.onStateChange =
@@ -124,9 +125,10 @@ export class DisplayBuffer {
     public process(event: RTT): void {
         if (event.event === 'cancel' || event.event === 'init') {
             this.resetActionQueue();
+            return;
         } else if (event.event === 'reset' || event.event === 'new') {
             this.resetActionQueue();
-            if (event.seq) {
+            if (event.seq !== undefined) {
                 this.sequenceNumber = event.seq;
             }
         } else if (event.seq !== this.sequenceNumber) {
@@ -205,8 +207,7 @@ export class DisplayBuffer {
         this.sequenceNumber = 0;
         this.synced = true;
         this.buffer = [];
-
-        this.emitState();
+        this.timeDeficit = 0;
 
         this.actionQueue = priorityQueue((action: RTTAction, done: () => void) => {
             const currentTime = Date.now();
@@ -226,15 +227,21 @@ export class DisplayBuffer {
                     action.duration = 700;
                 }
 
-                if (currentTime >= action.baseTime! + action.duration) {
+                const waitTime =
+                    action.duration - (currentTime - action.baseTime!) + this.timeDeficit;
+                if (waitTime <= 0) {
+                    this.timeDeficit = waitTime;
                     return done();
                 } else {
-                    setTimeout(() => done(), action.duration);
+                    this.timeDeficit = 0;
+                    setTimeout(() => done(), waitTime);
                 }
             } else {
                 return done();
             }
         }, 1);
+
+        this.emitState();
     }
 }
 
@@ -244,13 +251,13 @@ export class DisplayBuffer {
 export class InputBuffer {
     public onStateChange: (state: InputBufferState) => void;
     public resetInterval: number = 10000;
+    public ignoreWaits: boolean = false;
+    public sequenceNumber: number;
 
-    private ignoreWaits: boolean = false;
     private isStarting: boolean = false;
     private isReset: boolean = false;
     private buffer: UnicodeBuffer;
     private actionQueue: RTTAction[];
-    private sequenceNumber: number;
     private lastActionTime?: number;
     private lastResetTime?: number;
     private changedBetweenResets: boolean = false;
@@ -283,11 +290,9 @@ export class InputBuffer {
         let actions: RTTAction[] = [];
 
         if (text !== undefined) {
-            if (text.normalize) {
-                text = text.normalize('NFC');
-            }
+            text = text.normalize('NFC');
 
-            const newBuffer = Punycode.ucs2.decode(text || '');
+            const newBuffer = Punycode.ucs2.decode(text);
             actions = diff(this.buffer, newBuffer.slice());
 
             this.buffer = newBuffer;
@@ -319,6 +324,8 @@ export class InputBuffer {
             }
             this.lastActionTime = now;
             this.changedBetweenResets = true;
+        } else {
+            this.lastActionTime = now;
         }
     }
 

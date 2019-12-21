@@ -28,9 +28,7 @@ export async function timeoutPromise<T>(
             timeoutRef = setTimeout(() => reject(rejectValue()), delay);
         })
     ]);
-    if (timeoutRef) {
-        clearTimeout(timeoutRef);
-    }
+    clearTimeout(timeoutRef);
     return result;
 }
 

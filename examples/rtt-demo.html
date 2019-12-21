@@ -1,0 +1,41 @@
+<script src="../dist/stanza.browser.js"></script>
+
+<h2>Input Buffer:</h2>
+<textarea id="textInput" rows="5" cols="72"></textarea>
+
+<h2>Display Buffer:</h2>
+<p id="textOutput"></p>
+
+<script>
+    const inputBuffer = new XMPP.RTT.InputBuffer();
+    inputBuffer.start();
+
+    // Use oninput to capture updates from non-keypress actions,
+    // such as copy/pasting or autocorrect
+    textInput.oninput = function(e) {
+        inputBuffer.update(e.target.value);
+    };
+
+    const displayBuffer = new XMPP.RTT.DisplayBuffer(state => {
+        console.log(state);
+        textOutput.textContent = state.text;
+    });
+
+    setInterval(() => {
+        const diff = inputBuffer.diff();
+        if (diff) {
+            console.log(diff);
+
+            // To send diff to peer:
+            // client.sendMessage({ rtt: diff, to: ... });
+
+            // Upon receiving diff from peer:
+            // client.on('rtt', msg => { displayBuffer.process(msg.rtt); });
+
+            // To reset the display buffer after the final message is received:
+            // client.on('chat', msg => { displayBuffer.commit(); });
+
+            displayBuffer.process(diff);
+        }
+    }, 700);
+</script>
