@@ -157,9 +157,7 @@ export class DisplayBuffer {
      * @param position The position to start the insertion
      */
     private insert(text: string = '', position: number = this.buffer.length): void {
-        if (text.normalize) {
-            text = text.normalize('NFC');
-        }
+        text = text.normalize('NFC');
 
         const insertedText = Punycode.ucs2.decode(text);
 
