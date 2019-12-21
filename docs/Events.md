@@ -472,6 +472,22 @@ ReceivedPresence
 
 <p></p>
 
+<h3 id="presence:error">presence:error</h3>
+
+```
+ReceivedPresence
+```
+
+<p></p>
+
+<h3 id="probe">probe</h3>
+
+```
+ReceivedPresence
+```
+
+<p></p>
+
 <h3 id="pubsub:affiliations">pubsub:affiliations</h3>
 
 ```
@@ -728,6 +744,22 @@ Stream
 
 <p></p>
 
+<h3 id="subscribe">subscribe</h3>
+
+```
+ReceivedPresence
+```
+
+<p></p>
+
+<h3 id="subscribed">subscribed</h3>
+
+```
+ReceivedPresence
+```
+
+<p></p>
+
 <h3 id="tune">tune</h3>
 
 ```
@@ -748,6 +780,22 @@ ReceivedPresence
 
 ```
 { jids: string[] }
+```
+
+<p></p>
+
+<h3 id="unsubscribe">unsubscribe</h3>
+
+```
+ReceivedPresence
+```
+
+<p></p>
+
+<h3 id="unsubscribed">unsubscribed</h3>
+
+```
+ReceivedPresence
 ```
 
 <p></p>

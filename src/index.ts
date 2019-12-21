@@ -56,6 +56,12 @@ export interface AgentEvents {
 
     available: Stanzas.ReceivedPresence;
     unavailable: Stanzas.ReceivedPresence;
+    subscribe: Stanzas.ReceivedPresence;
+    subscribed: Stanzas.ReceivedPresence;
+    unsubscribe: Stanzas.ReceivedPresence;
+    unsubscribed: Stanzas.ReceivedPresence;
+    probe: Stanzas.ReceivedPresence;
+    'presence:error': Stanzas.ReceivedPresence;
 
     'session:started': string | void;
     'session:prebind': string;
