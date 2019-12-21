@@ -81,7 +81,7 @@
 | [XEP-0294](https://xmpp.org/extensions/xep-0294.html) | Jingle RTP Header Extensions Negotiation           | 1.0     | [Source](../src/protocol/xep0167.ts) | [Test Cases](../test/protocol-cases/xep0167) |
 | [XEP-0297](https://xmpp.org/extensions/xep-0297.html) | Stanza Forwarding                                  | 1.0     | [Source](../src/protocol/xep0297.ts) |                                              |
 | [XEP-0300](https://xmpp.org/extensions/xep-0300.html) | Use of Cryptographic Hash Functions in XMPP        | 0.5.3   | [Source](../src/protocol/xep0300.ts) |                                              |
-| [XEP-0301](https://xmpp.org/extensions/xep-0301.html) | In-Band Real Time Text                             | 1.0     | [Source](../src/protocol/xep0301.ts) |                                              |
+| [XEP-0301](https://xmpp.org/extensions/xep-0301.html) | In-Band Real Time Text                             | 1.0     | [Source](../src/protocol/xep0301.ts) | [Test Cases](../test/protocol-cases/xep0301) |
 | [XEP-0307](https://xmpp.org/extensions/xep-0307.html) | Unique Room Names for Multi-User Chat              | 0.1     | [Source](../src/protocol/xep0045.ts) |                                              |
 | [XEP-0308](https://xmpp.org/extensions/xep-0308.html) | Last Message Correction                            | 1.0     | [Source](../src/protocol/xep0308.ts) |                                              |
 | [XEP-0313](https://xmpp.org/extensions/xep-0313.html) | Message Archive Management                         | 0.6.1   | [Source](../src/protocol/xep0313.ts) |                                              |

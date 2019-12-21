@@ -1,0 +1,5 @@
+<message to='juliet@capulet.lit' from='romeo@montague.lit/orchard' type='chat' id='a01'>
+  <rtt xmlns='urn:xmpp:rtt:0' seq='0' event='new'>
+    <t>Hello, </t>
+  </rtt>
+</message>

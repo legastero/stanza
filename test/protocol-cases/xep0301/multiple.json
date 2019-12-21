@@ -1,0 +1,46 @@
+[
+    "message",
+    {
+        "from": "alice@example.com/home",
+        "id": "a01",
+        "lang": "",
+        "rtt": {
+            "actions": [
+                {
+                    "text": "Helo",
+                    "type": "insert"
+                },
+                {
+                    "length": 1,
+                    "type": "erase"
+                },
+                {
+                    "text": "lo...planet",
+                    "type": "insert"
+                },
+                {
+                    "length": 6,
+                    "type": "erase"
+                },
+                {
+                    "text": " World",
+                    "type": "insert"
+                },
+                {
+                    "length": 3,
+                    "position": 8,
+                    "type": "erase"
+                },
+                {
+                    "position": 5,
+                    "text": " there,",
+                    "type": "insert"
+                }
+            ],
+            "event": "new",
+            "seq": 123001
+        },
+        "to": "bob@example.com",
+        "type": "chat"
+    }
+]

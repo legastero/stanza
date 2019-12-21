@@ -1,0 +1,56 @@
+[
+    "message",
+    {
+        "from": "alice@example.com/home",
+        "id": "a01",
+        "lang": "",
+        "rtt": {
+            "actions": [
+                {
+                    "text": "H",
+                    "type": "insert"
+                },
+                {
+                    "duration": 115,
+                    "type": "wait"
+                },
+                {
+                    "text": "e",
+                    "type": "insert"
+                },
+                {
+                    "duration": 154,
+                    "type": "wait"
+                },
+                {
+                    "text": "l",
+                    "type": "insert"
+                },
+                {
+                    "duration": 151,
+                    "type": "wait"
+                },
+                {
+                    "text": "l",
+                    "type": "insert"
+                },
+                {
+                    "duration": 115,
+                    "type": "wait"
+                },
+                {
+                    "text": "o",
+                    "type": "insert"
+                },
+                {
+                    "duration": 165,
+                    "type": "wait"
+                }
+            ],
+            "event": "new",
+            "seq": 123001
+        },
+        "to": "bob@example.com",
+        "type": "chat"
+    }
+]

@@ -1,0 +1,7 @@
+<message to='bob@example.com' from='alice@example.com/home' type='chat' id='a01'>
+  <rtt xmlns='urn:xmpp:rtt:0' seq='123001' event='new'>
+    <t>HLL</t>
+    <e/><e/>
+    <t>ELLO</t>
+  </rtt>
+</message>

@@ -1,0 +1,32 @@
+[
+    "message",
+    {
+        "from": "alice@example.com/home",
+        "id": "a01",
+        "lang": "",
+        "rtt": {
+            "actions": [
+                {
+                    "text": "HLL",
+                    "type": "insert"
+                },
+                {
+                    "length": 1,
+                    "type": "erase"
+                },
+                {
+                    "length": 1,
+                    "type": "erase"
+                },
+                {
+                    "text": "ELLO",
+                    "type": "insert"
+                }
+            ],
+            "event": "new",
+            "seq": 123001
+        },
+        "to": "bob@example.com",
+        "type": "chat"
+    }
+]

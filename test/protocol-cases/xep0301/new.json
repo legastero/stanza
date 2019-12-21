@@ -1,0 +1,20 @@
+[
+    "message",
+    {
+        "from": "romeo@montague.lit/orchard",
+        "id": "a01",
+        "lang": "",
+        "rtt": {
+            "actions": [
+                {
+                    "text": "Hello, ",
+                    "type": "insert"
+                }
+            ],
+            "event": "new",
+            "seq": 0
+        },
+        "to": "juliet@capulet.lit",
+        "type": "chat"
+    }
+]
