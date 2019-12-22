@@ -4,13 +4,13 @@ import { JingleAction, JingleReasonCondition, JingleSessionRole } from '../Const
 import { NS_JINGLE_ICE_UDP_1 } from '../Namespaces';
 import { Jingle, JingleContent, JingleIce, JingleReason } from '../protocol';
 
-import { exportToSDP, importFromSDP } from './lib/Intermediate';
+import { exportToSDP, importFromSDP } from './sdp/Intermediate';
 import {
     convertCandidateToIntermediate,
     convertIntermediateToTransport,
     convertIntermediateToTransportInfo,
     convertRequestToIntermediate
-} from './lib/Protocol';
+} from './sdp/Protocol';
 import BaseSession, { ActionCallback } from './Session';
 
 export default class ICESession extends BaseSession {

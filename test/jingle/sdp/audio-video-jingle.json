@@ -1,0 +1,692 @@
+{
+    "contents": [
+        {
+            "application": {
+                "applicationType": "urn:xmpp:jingle:apps:rtp:1",
+                "codecs": [
+                    {
+                        "channels": 2,
+                        "clockRate": 48000,
+                        "id": "111",
+                        "name": "opus",
+                        "parameters": {
+                            "minptime": "10",
+                            "useinbandfec": "1"
+                        },
+                        "rtcpFeedback": [
+                            {
+                                "parameter": "",
+                                "type": "transport-cc"
+                            }
+                        ]
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 16000,
+                        "id": "103",
+                        "name": "ISAC",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 32000,
+                        "id": "104",
+                        "name": "ISAC",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 8000,
+                        "id": "9",
+                        "name": "G722",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 8000,
+                        "id": "0",
+                        "name": "PCMU",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 8000,
+                        "id": "8",
+                        "name": "PCMA",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 32000,
+                        "id": "106",
+                        "name": "CN",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 16000,
+                        "id": "105",
+                        "name": "CN",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 8000,
+                        "id": "13",
+                        "name": "CN",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 48000,
+                        "id": "110",
+                        "name": "telephone-event",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 32000,
+                        "id": "112",
+                        "name": "telephone-event",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 16000,
+                        "id": "113",
+                        "name": "telephone-event",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 8000,
+                        "id": "126",
+                        "name": "telephone-event",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    }
+                ],
+                "headerExtensions": [
+                    {
+                        "id": 1,
+                        "uri": "urn:ietf:params:rtp-hdrext:ssrc-audio-level"
+                    },
+                    {
+                        "id": 2,
+                        "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
+                    },
+                    {
+                        "id": 3,
+                        "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
+                    },
+                    {
+                        "id": 4,
+                        "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
+                    },
+                    {
+                        "id": 5,
+                        "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
+                    },
+                    {
+                        "id": 6,
+                        "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
+                    }
+                ],
+                "media": "audio",
+                "rtcpMux": true,
+                "rtcpReducedSize": false,
+                "sourceGroups": [],
+                "sources": [
+                    {
+                        "parameters": {
+                            "cname": "bKLU9TQ6es9PZkmw"
+                        },
+                        "ssrc": "3460590050"
+                    }
+                ],
+                "ssrc": "3460590050",
+                "streams": [
+                    {
+                        "id": "-",
+                        "track": "f6b6f52d-11ee-46e9-9b8f-617b4b5139e7"
+                    }
+                ]
+            },
+            "creator": "initiator",
+            "name": "0",
+            "senders": "both",
+            "transport": {
+                "candidates": [],
+                "fingerprints": [
+                    {
+                        "algorithm": "sha-256",
+                        "setup": "actpass",
+                        "value": "90:58:4F:9D:0D:67:0C:5A:7E:81:B9:17:5B:A2:AF:69:FD:AF:56:F0:9E:C6:4F:4D:81:76:B1:F2:B0:89:D0:E6"
+                    }
+                ],
+                "password": "nP9v9ockctNqwtcyGO53tIPL",
+                "transportType": "urn:xmpp:jingle:transports:ice-udp:1",
+                "usernameFragment": "mG1k"
+            }
+        },
+        {
+            "application": {
+                "applicationType": "urn:xmpp:jingle:apps:rtp:1",
+                "codecs": [
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "96",
+                        "name": "VP8",
+                        "parameters": {},
+                        "rtcpFeedback": [
+                            {
+                                "parameter": "",
+                                "type": "goog-remb"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "transport-cc"
+                            },
+                            {
+                                "parameter": "fir",
+                                "type": "ccm"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "nack"
+                            },
+                            {
+                                "parameter": "pli",
+                                "type": "nack"
+                            }
+                        ]
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "97",
+                        "name": "rtx",
+                        "parameters": {
+                            "apt": "96"
+                        },
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "98",
+                        "name": "VP9",
+                        "parameters": {
+                            "profile-id": "0"
+                        },
+                        "rtcpFeedback": [
+                            {
+                                "parameter": "",
+                                "type": "goog-remb"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "transport-cc"
+                            },
+                            {
+                                "parameter": "fir",
+                                "type": "ccm"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "nack"
+                            },
+                            {
+                                "parameter": "pli",
+                                "type": "nack"
+                            }
+                        ]
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "99",
+                        "name": "rtx",
+                        "parameters": {
+                            "apt": "98"
+                        },
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "100",
+                        "name": "VP9",
+                        "parameters": {
+                            "profile-id": "2"
+                        },
+                        "rtcpFeedback": [
+                            {
+                                "parameter": "",
+                                "type": "goog-remb"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "transport-cc"
+                            },
+                            {
+                                "parameter": "fir",
+                                "type": "ccm"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "nack"
+                            },
+                            {
+                                "parameter": "pli",
+                                "type": "nack"
+                            }
+                        ]
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "101",
+                        "name": "rtx",
+                        "parameters": {
+                            "apt": "100"
+                        },
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "102",
+                        "name": "H264",
+                        "parameters": {
+                            "level-asymmetry-allowed": "1",
+                            "packetization-mode": "1",
+                            "profile-level-id": "42001f"
+                        },
+                        "rtcpFeedback": [
+                            {
+                                "parameter": "",
+                                "type": "goog-remb"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "transport-cc"
+                            },
+                            {
+                                "parameter": "fir",
+                                "type": "ccm"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "nack"
+                            },
+                            {
+                                "parameter": "pli",
+                                "type": "nack"
+                            }
+                        ]
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "122",
+                        "name": "rtx",
+                        "parameters": {
+                            "apt": "102"
+                        },
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "127",
+                        "name": "H264",
+                        "parameters": {
+                            "level-asymmetry-allowed": "1",
+                            "packetization-mode": "0",
+                            "profile-level-id": "42001f"
+                        },
+                        "rtcpFeedback": [
+                            {
+                                "parameter": "",
+                                "type": "goog-remb"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "transport-cc"
+                            },
+                            {
+                                "parameter": "fir",
+                                "type": "ccm"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "nack"
+                            },
+                            {
+                                "parameter": "pli",
+                                "type": "nack"
+                            }
+                        ]
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "121",
+                        "name": "rtx",
+                        "parameters": {
+                            "apt": "127"
+                        },
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "125",
+                        "name": "H264",
+                        "parameters": {
+                            "level-asymmetry-allowed": "1",
+                            "packetization-mode": "1",
+                            "profile-level-id": "42e01f"
+                        },
+                        "rtcpFeedback": [
+                            {
+                                "parameter": "",
+                                "type": "goog-remb"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "transport-cc"
+                            },
+                            {
+                                "parameter": "fir",
+                                "type": "ccm"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "nack"
+                            },
+                            {
+                                "parameter": "pli",
+                                "type": "nack"
+                            }
+                        ]
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "107",
+                        "name": "rtx",
+                        "parameters": {
+                            "apt": "125"
+                        },
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "108",
+                        "name": "H264",
+                        "parameters": {
+                            "level-asymmetry-allowed": "1",
+                            "packetization-mode": "0",
+                            "profile-level-id": "42e01f"
+                        },
+                        "rtcpFeedback": [
+                            {
+                                "parameter": "",
+                                "type": "goog-remb"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "transport-cc"
+                            },
+                            {
+                                "parameter": "fir",
+                                "type": "ccm"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "nack"
+                            },
+                            {
+                                "parameter": "pli",
+                                "type": "nack"
+                            }
+                        ]
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "109",
+                        "name": "rtx",
+                        "parameters": {
+                            "apt": "108"
+                        },
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "124",
+                        "name": "H264",
+                        "parameters": {
+                            "level-asymmetry-allowed": "1",
+                            "packetization-mode": "1",
+                            "profile-level-id": "4d0032"
+                        },
+                        "rtcpFeedback": [
+                            {
+                                "parameter": "",
+                                "type": "goog-remb"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "transport-cc"
+                            },
+                            {
+                                "parameter": "fir",
+                                "type": "ccm"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "nack"
+                            },
+                            {
+                                "parameter": "pli",
+                                "type": "nack"
+                            }
+                        ]
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "120",
+                        "name": "rtx",
+                        "parameters": {
+                            "apt": "124"
+                        },
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "123",
+                        "name": "H264",
+                        "parameters": {
+                            "level-asymmetry-allowed": "1",
+                            "packetization-mode": "1",
+                            "profile-level-id": "640032"
+                        },
+                        "rtcpFeedback": [
+                            {
+                                "parameter": "",
+                                "type": "goog-remb"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "transport-cc"
+                            },
+                            {
+                                "parameter": "fir",
+                                "type": "ccm"
+                            },
+                            {
+                                "parameter": "",
+                                "type": "nack"
+                            },
+                            {
+                                "parameter": "pli",
+                                "type": "nack"
+                            }
+                        ]
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "119",
+                        "name": "rtx",
+                        "parameters": {
+                            "apt": "123"
+                        },
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "114",
+                        "name": "red",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "115",
+                        "name": "rtx",
+                        "parameters": {
+                            "apt": "114"
+                        },
+                        "rtcpFeedback": []
+                    },
+                    {
+                        "channels": 1,
+                        "clockRate": 90000,
+                        "id": "116",
+                        "name": "ulpfec",
+                        "parameters": {},
+                        "rtcpFeedback": []
+                    }
+                ],
+                "headerExtensions": [
+                    {
+                        "id": 14,
+                        "uri": "urn:ietf:params:rtp-hdrext:toffset"
+                    },
+                    {
+                        "id": 2,
+                        "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
+                    },
+                    {
+                        "id": 13,
+                        "uri": "urn:3gpp:video-orientation"
+                    },
+                    {
+                        "id": 3,
+                        "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
+                    },
+                    {
+                        "id": 12,
+                        "uri": "http://www.webrtc.org/experiments/rtp-hdrext/playout-delay"
+                    },
+                    {
+                        "id": 11,
+                        "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-content-type"
+                    },
+                    {
+                        "id": 7,
+                        "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-timing"
+                    },
+                    {
+                        "id": 8,
+                        "uri": "http://tools.ietf.org/html/draft-ietf-avtext-framemarking-07"
+                    },
+                    {
+                        "id": 9,
+                        "uri": "http://www.webrtc.org/experiments/rtp-hdrext/color-space"
+                    },
+                    {
+                        "id": 4,
+                        "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
+                    },
+                    {
+                        "id": 5,
+                        "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
+                    },
+                    {
+                        "id": 6,
+                        "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
+                    }
+                ],
+                "media": "video",
+                "rtcpMux": true,
+                "rtcpReducedSize": true,
+                "sourceGroups": [
+                    {
+                        "semantics": "FID",
+                        "sources": ["1008403138", "74402439"]
+                    }
+                ],
+                "sources": [
+                    {
+                        "parameters": {
+                            "cname": "bKLU9TQ6es9PZkmw"
+                        },
+                        "ssrc": "1008403138"
+                    }
+                ],
+                "ssrc": "1008403138",
+                "streams": [
+                    {
+                        "id": "-",
+                        "track": "0839a642-a6e2-4383-be6f-ef110c7a9da3"
+                    }
+                ]
+            },
+            "creator": "initiator",
+            "name": "1",
+            "senders": "both",
+            "transport": {
+                "candidates": [],
+                "fingerprints": [
+                    {
+                        "algorithm": "sha-256",
+                        "setup": "actpass",
+                        "value": "90:58:4F:9D:0D:67:0C:5A:7E:81:B9:17:5B:A2:AF:69:FD:AF:56:F0:9E:C6:4F:4D:81:76:B1:F2:B0:89:D0:E6"
+                    }
+                ],
+                "password": "nP9v9ockctNqwtcyGO53tIPL",
+                "transportType": "urn:xmpp:jingle:transports:ice-udp:1",
+                "usernameFragment": "mG1k"
+            }
+        }
+    ],
+    "groups": [
+        {
+            "contents": ["0", "1"],
+            "semantics": "BUNDLE"
+        }
+    ]
+}

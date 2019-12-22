@@ -1,0 +1,37 @@
+{
+    "contents": [
+        {
+            "application": {
+                "applicationType": "datachannel",
+                "protocol": "UDP/DTLS/SCTP"
+            },
+            "creator": "initiator",
+            "name": "0",
+            "senders": "both",
+            "transport": {
+                "candidates": [],
+                "fingerprints": [
+                    {
+                        "algorithm": "sha-256",
+                        "setup": "actpass",
+                        "value": "36:5A:66:D2:82:88:D6:0E:5C:12:FD:AB:DE:97:67:AF:10:62:BD:1D:91:63:91:51:95:91:5F:95:FA:5A:6C:89"
+                    }
+                ],
+                "password": "3A/lKtURhKGeqq03DRPQ+nJX",
+                "sctp": {
+                    "maxMessageSize": 262144,
+                    "port": 5000,
+                    "protocol": "webrtc-datachannel"
+                },
+                "transportType": "urn:xmpp:jingle:transports:ice-udp:1",
+                "usernameFragment": "f1tB"
+            }
+        }
+    ],
+    "groups": [
+        {
+            "contents": ["0"],
+            "semantics": "BUNDLE"
+        }
+    ]
+}

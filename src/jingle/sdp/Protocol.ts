@@ -9,7 +9,8 @@ import {
     JingleIce,
     JingleIceCandidate,
     JingleRtpCodec,
-    JingleRtpDescription
+    JingleRtpDescription,
+    JingleRtpHeaderExtension
 } from '../../protocol';
 
 import {
@@ -45,14 +46,14 @@ export function convertIntermediateToApplication(
     };
 
     for (const ext of rtp.headerExtensions || []) {
-        application.headerExtensions!.push({
+        const header: JingleRtpHeaderExtension = {
             id: ext.id,
-            senders:
-                ext.direction && ext.direction !== 'sendrecv'
-                    ? directionToSenders(role, ext.direction)
-                    : undefined,
             uri: ext.uri
-        });
+        };
+        if (ext.direction && ext.direction !== 'sendrecv') {
+            header.senders = directionToSenders(role, ext.direction);
+        }
+        application.headerExtensions!.push(header);
     }
 
     if (rtcp.ssrc && rtcp.cname) {
@@ -90,11 +91,13 @@ export function convertIntermediateToApplication(
             channels: codec.channels,
             clockRate: codec.clockRate,
             id: codec.payloadType.toString(),
-            maxptime: codec.maxptime ? codec.maxptime.toString() : undefined,
             name: codec.name,
             parameters: codec.parameters,
             rtcpFeedback: codec.rtcpFeedback
         };
+        if (codec.maxptime) {
+            payload.maxptime = codec.maxptime.toString();
+        }
 
         for (const key of Object.keys(codec.parameters || {})) {
             if (key === 'ptime') {
@@ -228,6 +231,7 @@ export function convertContentToIntermediate(
 
     if (isRTP) {
         media.rtcpParameters = {
+            compound: !application.rtcpReducedSize,
             mux: application.rtcpMux,
             reducedSize: application.rtcpReducedSize
         };
@@ -243,7 +247,8 @@ export function convertContentToIntermediate(
         media.rtpParameters = {
             codecs: [],
             fecMechanisms: [],
-            headerExtensions: []
+            headerExtensions: [],
+            rtcp: []
         };
 
         if (application.streams) {
@@ -272,6 +277,8 @@ export function convertContentToIntermediate(
             }
         }
 
+        let hasRED = false;
+        let hasULPFEC = false;
         for (const payload of application.codecs || []) {
             const parameters: SDP.SDPCodecAdditionalParameters = payload.parameters || {};
 
@@ -281,6 +288,16 @@ export function convertContentToIntermediate(
                     parameter: fb.parameter!,
                     type: fb.type
                 });
+            }
+
+            if (payload.name === 'red' || payload.name === 'ulpfec') {
+                hasRED = hasRED || payload.name === 'red';
+                hasULPFEC = hasULPFEC || payload.name === 'ulpfec';
+
+                const fec = payload.name.toUpperCase();
+                if (!media.rtpParameters.fecMechanisms.includes(fec)) {
+                    media.rtpParameters.fecMechanisms.push(fec);
+                }
             }
 
             media.rtpParameters.codecs.push({
@@ -296,10 +313,7 @@ export function convertContentToIntermediate(
 
         for (const ext of application.headerExtensions || []) {
             media.rtpParameters.headerExtensions.push({
-                direction:
-                    ext.senders && ext.senders !== 'both'
-                        ? sendersToDirection(role, ext.senders)
-                        : undefined,
+                direction: sendersToDirection(role, ext.senders || 'both'),
                 id: ext.id,
                 uri: ext.uri
             });
@@ -313,7 +327,6 @@ export function convertContentToIntermediate(
                 usernameFragment: transport.usernameFragment
             };
         }
-
         if (transport.fingerprints && transport.fingerprints.length) {
             media.dtlsParameters = {
                 fingerprints: [],
@@ -333,6 +346,8 @@ export function convertContentToIntermediate(
 
             media.setup = transport.fingerprints[0].setup;
         }
+
+        media.candidates = (transport.candidates || []).map(convertCandidateToIntermediate);
     }
 
     return media;

@@ -129,6 +129,7 @@ declare module 'sdp' {
         codecs: SDPCodec[];
         headerExtensions: SDPHeaderExtension[];
         fecMechanisms: string[];
+        rtcp?: SDPRtcpParameters[];
     }
 
     export interface SDPSctpDescription {

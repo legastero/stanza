@@ -13,8 +13,8 @@ import {
 } from '../protocol';
 
 import ICESession from './ICESession';
-import { exportToSDP, importFromSDP } from './lib/Intermediate';
-import { convertIntermediateToRequest, convertRequestToIntermediate } from './lib/Protocol';
+import { exportToSDP, importFromSDP } from './sdp/Intermediate';
+import { convertIntermediateToRequest, convertRequestToIntermediate } from './sdp/Protocol';
 import { ActionCallback } from './Session';
 
 export class Sender extends EventEmitter {

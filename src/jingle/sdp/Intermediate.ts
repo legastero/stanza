@@ -78,11 +78,7 @@ export function importFromSDP(sdp: SDP.SDPBlob): IntermediateSessionDescription 
             media.rtpEncodingParameters = SDP.parseRtpEncodingParameters(mediaSection);
             media.rtcpParameters = SDP.parseRtcpParameters(mediaSection);
             const msid = SDP.parseMsid(mediaSection);
-            if (msid) {
-                media.streams = [msid];
-            } else {
-                media.streams = [];
-            }
+            media.streams = msid ? [msid] : [];
         } else if (kind === 'application') {
             media.sctp = SDP.parseSctpDescription(mediaSection);
         }
@@ -107,10 +103,6 @@ export function exportToSDP(session: IntermediateSessionDescription) {
         'a=msid-semantic:WMS *\r\n'
     );
 
-    if (session.iceLite) {
-        output.push('a=ice-lite\r\n');
-    }
-
     for (const group of session.groups || []) {
         output.push(`a=group:${group.semantics} ${group.mids.join(' ')}\r\n`);
     }
@@ -131,16 +123,21 @@ export function exportToSDP(session: IntermediateSessionDescription) {
             for (const stream of media.streams || []) {
                 output.push(`a=msid:${stream.stream} ${stream.track}\r\n`);
             }
-            if (media.rtcpParameters && media.rtcpParameters.cname) {
-                output.push(
-                    `a=ssrc:${media.rtcpParameters.ssrc} cname:${media.rtcpParameters.cname}\r\n`
-                );
-                if (media.rtpEncodingParameters && media.rtpEncodingParameters[0].rtx) {
-                    const params = media.rtpEncodingParameters[0];
-                    output.push(`a=ssrc-group:FID ${params.ssrc} ${params.rtx!.ssrc}\r\n`);
+            if (media.rtcpParameters) {
+                if (media.rtcpParameters.reducedSize && mline.indexOf('a=rtcp-rsize') === -1) {
+                    output.push('a=rtcp-rsize\r\n');
+                }
+                if (media.rtcpParameters.cname) {
                     output.push(
-                        `a=ssrc:${params.rtx!.ssrc} cname:${media.rtcpParameters.cname}\r\n`
+                        `a=ssrc:${media.rtcpParameters.ssrc} cname:${media.rtcpParameters.cname}\r\n`
                     );
+                    if (media.rtpEncodingParameters && media.rtpEncodingParameters[0].rtx) {
+                        const params = media.rtpEncodingParameters[0];
+                        output.push(`a=ssrc-group:FID ${params.ssrc} ${params.rtx!.ssrc}\r\n`);
+                        output.push(
+                            `a=ssrc:${params.rtx!.ssrc} cname:${media.rtcpParameters.cname}\r\n`
+                        );
+                    }
                 }
             }
         }
