@@ -57,6 +57,9 @@
         "testRegex": "test/.*\\.ts$",
         "testMatch": null,
         "collectCoverage": true,
+        "collectCoverageFrom": [
+            "./src/**/*.ts"
+        ],
         "coverageDirectory": "./coverage",
         "coverageReporters": [
             "text",
