@@ -1,12 +1,12 @@
 import * as SASL from '../../src/lib/sasl';
 
-test('SASL - OAUTH', () => {
+test('SASL - X-OAUTH2', () => {
     const factory = new SASL.Factory();
-    factory.register('OAUTHBEARER', SASL.OAUTH, 10);
+    factory.register('X-OAUTH2', SASL.OAUTH, 10);
 
-    const mech = factory.createMechanism(['OAUTHBEARER'])!;
+    const mech = factory.createMechanism(['X-OAUTH2'])!;
 
-    expect(mech.name).toBe('OAUTHBEARER');
+    expect(mech.name).toBe('X-OAUTH2');
     expect(mech.providesMutualAuthentication).toBeFalsy();
 
     const neededCreds = mech.getExpectedCredentials();

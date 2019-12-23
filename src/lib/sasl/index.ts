@@ -8,6 +8,7 @@ export interface Credentials {
     authzid?: string;
     realm?: string;
     host?: string;
+    port?: number;
     serviceType?: string;
     serviceName?: string;
     trace?: string;
@@ -31,6 +32,7 @@ export interface MechanismResult {
     authenticated?: boolean;
     mutuallyAuthenticated?: boolean;
     error?: string;
+    errorData?: { [key: string]: string };
 }
 
 export interface Mechanism {
@@ -50,6 +52,7 @@ export abstract class SimpleMech {
     public name: string;
     protected authenticated: boolean = false;
     protected mutuallyAuthenticated: boolean = false;
+    protected errorData?: { [key: string]: string };
 
     constructor(name: string) {
         this.name = name;
@@ -69,10 +72,14 @@ export abstract class SimpleMech {
     }
 
     public finalize(): MechanismResult {
-        return {
+        const result: MechanismResult = {
             authenticated: this.authenticated,
             mutuallyAuthenticated: this.mutuallyAuthenticated
         };
+        if (this.errorData) {
+            result.errorData = this.errorData;
+        }
+        return result;
     }
 }
 
@@ -171,6 +178,20 @@ function parse(challenge: Buffer): { [key: string]: string } {
     return directives;
 }
 
+function escapeUsername(name: string): string {
+    const escaped: string[] = [];
+    for (const curr of name) {
+        if (curr === ',') {
+            escaped.push('=2C');
+        } else if (curr === '=') {
+            escaped.push('=3D');
+        } else {
+            escaped.push(curr);
+        }
+    }
+    return escaped.join('');
+}
+
 // ====================================================================
 // ANONYMOUS
 // ====================================================================
@@ -224,6 +245,40 @@ export class PLAIN extends SimpleMech implements Mechanism {
 
 // ====================================================================
 // OAUTHBEARER
+// ====================================================================
+
+export class OAUTHBEARER extends SimpleMech implements Mechanism {
+    private failed: boolean = false;
+
+    constructor(name: string) {
+        super(name);
+        this.name = name;
+    }
+
+    public getExpectedCredentials(): ExpectedCredentials {
+        return {
+            optional: ['authzid'],
+            required: ['token']
+        };
+    }
+
+    public createResponse(credentials: Credentials): Buffer {
+        if (this.failed) {
+            return Buffer.from('\u0001');
+        }
+        const gs2header = `n,${escapeUsername(saslprep(credentials.authzid))},`;
+        const auth = `auth=Bearer ${credentials.token!}\u0001`;
+        return Buffer.from(gs2header + '\u0001' + auth + '\u0001', 'utf8');
+    }
+
+    public processChallenge(challenge: Buffer): void {
+        this.failed = true;
+        this.errorData = JSON.parse(challenge.toString('utf8'));
+    }
+}
+
+// ====================================================================
+// X-OAUTH2
 // ====================================================================
 
 export class OAUTH extends SimpleMech implements Mechanism {
@@ -454,8 +509,8 @@ export class SCRAM implements Mechanism {
     }
 
     private initialResponse(credentials: Credentials): Buffer {
-        const authzid = this.escapeUsername(saslprep(credentials.authzid));
-        const username = this.escapeUsername(saslprep(credentials.username));
+        const authzid = escapeUsername(saslprep(credentials.authzid));
+        const username = escapeUsername(saslprep(credentials.username));
 
         this.clientNonce = credentials.clientNonce || createClientNonce();
 
@@ -545,19 +600,5 @@ export class SCRAM implements Mechanism {
         };
 
         return result;
-    }
-
-    private escapeUsername(name: string): string {
-        const escaped: string[] = [];
-        for (const curr of name) {
-            if (curr === ',') {
-                escaped.push('=2C');
-            } else if (curr === '=') {
-                escaped.push('=3D');
-            } else {
-                escaped.push(curr);
-            }
-        }
-        return escaped.join('');
     }
 }
