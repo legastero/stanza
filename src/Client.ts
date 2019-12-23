@@ -1,13 +1,12 @@
 import { EventEmitter } from 'events';
 
-import { Agent, AgentConfig, AgentEvents, Transport, TransportConfig } from './';
+import { Agent, AgentConfig, Transport } from './';
+import StreamManagement from './helpers/StreamManagement';
 import * as JID from './JID';
 import * as JXT from './jxt';
 import * as SASL from './lib/sasl';
 import { core as corePlugins } from './plugins';
-import { IQ, Message, Presence, StreamError } from './protocol';
-import Protocol from './protocol';
-import StreamManagement from './StreamManagement';
+import Protocol, { IQ, Message, Presence, StreamError } from './protocol';
 import BOSH from './transports/bosh';
 import WebSocket from './transports/websocket';
 import { timeoutPromise, uuid } from './Utils';
@@ -54,7 +53,17 @@ export default class Client extends EventEmitter {
         this.stanzas.define(Protocol);
         this.use(corePlugins);
 
-        this.sm = new StreamManagement((this as unknown) as Agent);
+        this.sm = new StreamManagement();
+        this.sm.on('prebound', jid => {
+            this.jid = jid;
+            this.emit('session:bound', jid);
+        });
+        this.sm.on('send', sm => this.send('sm', sm));
+        this.sm.on('acked', acked => this.emit('stanza:acked', acked));
+        this.sm.on('failed', failed => this.emit('stanza:failed', failed));
+        this.sm.on('resend', ({ kind, stanza }) => this.send(kind, stanza));
+        this.on('session:bound', jid => this.sm.bind(jid));
+
         this.transports = {
             bosh: BOSH,
             websocket: WebSocket

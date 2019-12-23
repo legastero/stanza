@@ -1,4 +1,4 @@
-import DiscoManager from '../../src/DiscoManager';
+import DiscoManager from '../../src/helpers/DiscoManager';
 import { DataForm, DiscoInfoIdentity } from '../../src/protocol';
 
 test('Disco - add identity', () => {

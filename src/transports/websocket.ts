@@ -3,9 +3,9 @@ import { WebSocket } from 'stanza-shims';
 
 import { Agent, Transport, TransportConfig } from '../';
 import { StreamErrorCondition } from '../Constants';
+import StreamManagement from '../helpers/StreamManagement';
 import { ParsedData, Registry, StreamParser } from '../jxt';
 import { Stream } from '../protocol';
-import StreamManagement from '../StreamManagement';
 
 const WS_OPEN = 1;
 

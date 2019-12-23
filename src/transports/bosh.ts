@@ -2,9 +2,9 @@ import { fetch } from 'stanza-shims';
 
 import { Agent, Transport, TransportConfig } from '../';
 import { StreamErrorCondition } from '../Constants';
+import StreamManagement from '../helpers/StreamManagement';
 import { ParsedData, Registry, StreamParser } from '../jxt';
 import { BOSH, Stream } from '../protocol';
-import StreamManagement from '../StreamManagement';
 import { sleep, timeoutPromise } from '../Utils';
 
 async function retryRequest(

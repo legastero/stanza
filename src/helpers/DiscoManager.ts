@@ -1,5 +1,6 @@
-import * as EntityCaps from './helpers/LegacyEntityCapabilities';
-import { DataForm, DiscoInfo, DiscoInfoIdentity, DiscoItem, LegacyEntityCaps } from './protocol';
+import { DataForm, DiscoInfo, DiscoInfoIdentity, DiscoItem, LegacyEntityCaps } from '../protocol';
+
+import * as EntityCaps from './LegacyEntityCapabilities';
 
 export interface DiscoNodeInfo {
     features: string[];

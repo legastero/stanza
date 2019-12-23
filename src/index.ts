@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 import Client from './Client';
 import * as Constants from './Constants';
 import * as RTT from './helpers/RTT';
+import SM from './helpers/StreamManagement';
 import * as JID from './JID';
 import * as Jingle from './jingle';
 import * as JXT from './jxt';
@@ -21,10 +22,9 @@ import {
     StreamFeatures,
     StreamManagement
 } from './protocol';
-import SM from './StreamManagement';
 import * as Utils from './Utils';
 
-export * from './StreamManagement';
+export * from './helpers/StreamManagement';
 
 export interface TopLevelElements {
     message: Message;

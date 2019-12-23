@@ -1,5 +1,5 @@
 import { Agent } from '../';
-import Disco, { DiscoNodeInfo } from '../DiscoManager';
+import Disco, { DiscoNodeInfo } from '../helpers/DiscoManager';
 import * as JID from '../JID';
 import { NS_DISCO_INFO, NS_DISCO_ITEMS } from '../Namespaces';
 import {

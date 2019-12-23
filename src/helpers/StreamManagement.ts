@@ -1,6 +1,6 @@
 import { nextTick } from 'async';
+import { EventEmitter } from 'events';
 
-import { Agent } from './';
 import {
     IQ,
     Message,
@@ -9,7 +9,7 @@ import {
     StreamManagementEnabled,
     StreamManagementFailed,
     StreamManagementResume
-} from './protocol';
+} from '../protocol';
 
 const MAX_SEQ = Math.pow(2, 32);
 const mod = (v: number, n: number) => ((v % n) + n) % n;
@@ -24,23 +24,23 @@ interface SMState {
     unacked: Unacked[];
 }
 
-export default class StreamManagement {
+export default class StreamManagement extends EventEmitter {
     public id?: string;
+    public jid?: string;
     public allowResume: boolean = true;
     public lastAck: number = 0;
     public handled: number = 0;
-    public windowSize: number = 1;
     public unacked: Unacked[] = [];
 
-    private pendingAck: boolean = false;
+    private pendingRequest: boolean = false;
     private inboundStarted: boolean = false;
     private outboundStarted: boolean = false;
-    private client: Agent;
     private cacheHandler: (state: SMState) => void;
 
-    constructor(client: Agent) {
-        this.client = client;
+    constructor() {
+        super();
         this.id = undefined;
+        this.jid = undefined;
         this.allowResume = true;
         this.started = false;
         this.cacheHandler = () => null;
@@ -64,33 +64,34 @@ export default class StreamManagement {
         this.handled = opts.handled;
         this.lastAck = opts.lastAck;
         this.unacked = opts.unacked;
-        if (opts.jid) {
-            this.client.jid = opts.jid;
-            this.client.emit('session:bound', opts.jid);
-        }
+
+        this.emit('prebound', opts.jid);
     }
 
     public cache(handler: (data: SMState) => void) {
         this.cacheHandler = handler;
     }
 
+    public bind(jid: string) {
+        this.jid = jid;
+        this._cache();
+    }
+
     public enable() {
-        this.client.send('sm', {
+        this.emit('send', {
             allowResumption: this.allowResume,
             type: 'enable'
         });
         this.handled = 0;
-        this.pendingAck = false;
         this.outboundStarted = true;
     }
 
     public resume() {
-        this.client.send('sm', {
+        this.emit('send', {
             handled: this.handled,
             previousSession: this.id!,
             type: 'resume'
         });
-        this.pendingAck = false;
         this.outboundStarted = true;
     }
 
@@ -104,10 +105,9 @@ export default class StreamManagement {
 
     public resumed(resp: StreamManagementResume) {
         this.id = resp.previousSession;
-        if (resp.handled !== undefined) {
-            this.process(resp, true);
-        }
         this.inboundStarted = true;
+
+        this.process(resp, true);
 
         this._cache();
     }
@@ -115,14 +115,12 @@ export default class StreamManagement {
     public failed(resp: StreamManagementFailed) {
         // Resumption might fail, but the server can still tell us how far
         // the old session progressed.
-        if (resp.handled !== undefined) {
-            this.process(resp);
-        }
+        this.process(resp);
 
         // We alert that any remaining unacked stanzas failed to send. It has
         // been too long for auto-retrying these to be the right thing to do.
         for (const [kind, stanza] of this.unacked) {
-            this.client.emit('stanza:failed', { kind, stanza } as any);
+            this.emit('failed', { kind, stanza } as any);
         }
 
         this._reset();
@@ -130,16 +128,20 @@ export default class StreamManagement {
     }
 
     public ack() {
-        this.client.send('sm', {
+        this.emit('send', {
             handled: this.handled,
             type: 'ack'
         });
     }
 
     public request() {
-        this.pendingAck = true;
+        if (this.pendingRequest) {
+            return;
+        }
+        this.pendingRequest = true;
         nextTick(() => {
-            this.client.send('sm', {
+            this.pendingRequest = false;
+            this.emit('send', {
                 type: 'request'
             });
         });
@@ -154,10 +156,9 @@ export default class StreamManagement {
         }
 
         const numAcked = mod(ack.handled - this.lastAck, MAX_SEQ);
-        this.pendingAck = false;
         for (let i = 0; i < numAcked && this.unacked.length > 0; i++) {
             const [kind, stanza] = this.unacked.shift()!;
-            this.client.emit('stanza:acked', { kind, stanza } as any);
+            this.emit('acked', { kind, stanza } as any);
         }
         this.lastAck = ack.handled;
 
@@ -165,15 +166,11 @@ export default class StreamManagement {
             const resendUnacked = this.unacked;
             this.unacked = [];
             for (const [kind, stanza] of resendUnacked) {
-                this.client.send(kind, stanza);
+                this.emit('resend', { kind, stanza } as any);
             }
         }
 
         this._cache();
-
-        if (this.needAck()) {
-            this.request();
-        }
     }
 
     public track(kind: string, stanza: Message | Presence | IQ) {
@@ -184,10 +181,7 @@ export default class StreamManagement {
         if (this.outboundStarted) {
             this.unacked.push([kind, stanza] as Unacked);
             this._cache();
-
-            if (this.needAck()) {
-                this.request();
-            }
+            this.request();
         }
     }
 
@@ -198,15 +192,11 @@ export default class StreamManagement {
         }
     }
 
-    public needAck() {
-        return !this.pendingAck && this.unacked.length >= this.windowSize;
-    }
-
     private _cache() {
         this.cacheHandler({
             handled: this.handled,
             id: this.id,
-            jid: this.client.jid,
+            jid: this.jid,
             lastAck: this.lastAck,
             unacked: this.unacked
         });
@@ -218,6 +208,5 @@ export default class StreamManagement {
         this.lastAck = 0;
         this.handled = 0;
         this.unacked = [];
-        this.pendingAck = false;
     }
 }
