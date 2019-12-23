@@ -238,7 +238,7 @@ export class PLAIN extends SimpleMech implements Mechanism {
                 '\x00' +
                 credentials.username +
                 '\x00' +
-                credentials.password
+                (credentials.password || credentials.token)
         );
     }
 }
@@ -247,7 +247,7 @@ export class PLAIN extends SimpleMech implements Mechanism {
 // OAUTHBEARER
 // ====================================================================
 
-export class OAUTHBEARER extends SimpleMech implements Mechanism {
+export class OAUTH extends SimpleMech implements Mechanism {
     private failed: boolean = false;
 
     constructor(name: string) {
@@ -274,28 +274,6 @@ export class OAUTHBEARER extends SimpleMech implements Mechanism {
     public processChallenge(challenge: Buffer): void {
         this.failed = true;
         this.errorData = JSON.parse(challenge.toString('utf8'));
-    }
-}
-
-// ====================================================================
-// X-OAUTH2
-// ====================================================================
-
-export class OAUTH extends SimpleMech implements Mechanism {
-    constructor(name: string) {
-        super(name);
-        this.name = name;
-    }
-
-    public getExpectedCredentials(): ExpectedCredentials {
-        return {
-            optional: [],
-            required: ['token']
-        };
-    }
-
-    public createResponse(credentials: Credentials): Buffer {
-        return Buffer.from(credentials.token!);
     }
 }
 

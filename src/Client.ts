@@ -45,8 +45,8 @@ export default class Client extends EventEmitter {
         this.sasl.register('SCRAM-SHA-1-PLUS', SASL.SCRAM, 250);
         this.sasl.register('SCRAM-SHA-1', SASL.SCRAM, 200);
         this.sasl.register('DIGEST-MD5', SASL.DIGEST, 100);
-        this.sasl.register('OAUTHBEARER', SASL.OAUTHBEARER, 100);
-        this.sasl.register('X-OAUTH2', SASL.OAUTH, 50);
+        this.sasl.register('OAUTHBEARER', SASL.OAUTH, 100);
+        this.sasl.register('X-OAUTH2', SASL.PLAIN, 50);
         this.sasl.register('PLAIN', SASL.PLAIN, 1);
         this.sasl.register('ANONYMOUS', SASL.ANONYMOUS, 0);
 

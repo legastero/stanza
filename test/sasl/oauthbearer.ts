@@ -2,7 +2,7 @@ import * as SASL from '../../src/lib/sasl';
 
 test('SASL - OAUTHBEARER', () => {
     const factory = new SASL.Factory();
-    factory.register('OAUTHBEARER', SASL.OAUTHBEARER, 10);
+    factory.register('OAUTHBEARER', SASL.OAUTH, 10);
 
     const mech = factory.createMechanism(['OAUTHBEARER'])!;
 
@@ -36,7 +36,7 @@ test('SASL - OAUTHBEARER', () => {
 
 test('SASL - OAUTHBEARER, failed', () => {
     const factory = new SASL.Factory();
-    factory.register('OAUTHBEARER', SASL.OAUTHBEARER, 10);
+    factory.register('OAUTHBEARER', SASL.OAUTH, 10);
 
     const mech = factory.createMechanism(['OAUTHBEARER'])!;
 
