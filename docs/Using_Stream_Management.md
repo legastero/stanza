@@ -19,6 +19,18 @@ const client = XMPP.createClient({
 });
 ```
 
+Stream resumption is also enabled by default, if available. It can be disabled in the client configuration:
+
+```typescript
+import * as XMPP from 'stanza';
+
+const client = XMPP.createClient({
+    ...opts,
+    allowResumption: false,
+    useStreamManagement: true
+});
+```
+
 ## Caching State
 
 In order for stream management to recover from a connection loss, the state of unacked stanzas must be
@@ -51,6 +63,8 @@ client.sm.cache(state => {
     sessionStorage.cachedSM = JSON.stringify(state);
 });
 ```
+
+You can also return a promise if your caching process needs to be async.
 
 ## Detecting Message Failures
 
@@ -147,5 +161,7 @@ client.on('stanza:failed', (stanza, kind) => {
     }
 });
 ```
+
+The `stanza:failed` event will also be emitted if a stanza is attempted to be sent, but the client has disconnected and stream resumption was not enabled.
 
 These messages will need to be resent. Probably via a direct user interaction to confirm resending, as the messages could be old and no longer needed.

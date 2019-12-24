@@ -708,7 +708,7 @@
 <h3 id="send">send</h3>
 
 ```
-(path: <T>, data: TopLevelElements[T]) => void
+(path: <T>, data: TopLevelElements[T]) => Promise
 ```
 
 <p></p>

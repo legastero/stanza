@@ -67,7 +67,7 @@ const Protocol: DefinitionOptions[] = [
     {
         element: 'a',
         fields: {
-            handled: integerAttribute('h', 0)
+            handled: integerAttribute('h')
         },
         namespace: NS_SMACKS_3,
         path: 'sm',
@@ -105,7 +105,7 @@ const Protocol: DefinitionOptions[] = [
     {
         element: 'resume',
         fields: {
-            handled: integerAttribute('h', 0),
+            handled: integerAttribute('h'),
             previousSession: attribute('previd')
         },
         namespace: NS_SMACKS_3,
@@ -116,7 +116,7 @@ const Protocol: DefinitionOptions[] = [
     {
         element: 'resumed',
         fields: {
-            handled: integerAttribute('h', 0),
+            handled: integerAttribute('h'),
             previousSession: attribute('previd')
         },
         namespace: NS_SMACKS_3,
@@ -127,7 +127,7 @@ const Protocol: DefinitionOptions[] = [
     {
         element: 'failed',
         fields: {
-            handled: integerAttribute('h', 0)
+            handled: integerAttribute('h')
         },
         namespace: NS_SMACKS_3,
         path: 'sm',

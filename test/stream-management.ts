@@ -15,6 +15,8 @@ test('Handled unacked on resume', () => {
 
     sm1.bind('test-jid');
     sm1.enable();
+    sm1.track('sm', { type: 'enable' });
+
     sm1.enabled({ id: 'test', resume: true, type: 'enabled' });
 
     sm1.track('message', { body: 'message 1' });
@@ -59,6 +61,8 @@ test('Handled failed with known handled', () => {
     sm1.on('acked', data => acked.push(data));
 
     sm1.enable();
+    sm1.track('sm', { type: 'enable' });
+
     sm1.enabled({ id: 'test', resume: true, type: 'enabled' });
 
     sm1.track('message', { body: 'message 1' });
@@ -101,12 +105,16 @@ test('Handled failed with unknown handled', () => {
     sm1.on('acked', data => acked.push(data));
 
     sm1.enable();
+    sm1.track('sm', { type: 'enable' });
+
     sm1.enabled({ id: 'test', resume: true, type: 'enabled' });
 
     sm1.track('message', { body: 'message 1' });
     sm1.track('message', { body: 'message 2' });
     sm1.track('message', { body: 'message 3' });
     sm1.track('message', { body: 'message 4' });
+
+    sm1.request();
     sm1.process({ type: 'ack', handled: 1 });
     // -- sm1 disconnect --
 
@@ -125,59 +133,5 @@ test('Handled failed with unknown handled', () => {
         { kind: 'message', stanza: { body: 'message 2' } },
         { kind: 'message', stanza: { body: 'message 3' } },
         { kind: 'message', stanza: { body: 'message 4' } }
-    ]);
-});
-
-test('Only have one pending request for stanzas sent in same tick', async () => {
-    let sent: any[] = [];
-
-    const sm1 = new StreamManagement();
-    sm1.bind('test-jid');
-    sm1.enable();
-    sm1.enabled({ id: 'test', resume: true, type: 'enabled' });
-
-    sm1.on('send', data => sent.push(data));
-
-    sm1.track('message', { body: 'message 1' });
-    sm1.track('message', { body: 'message 2' });
-    sm1.track('message', { body: 'message 3' });
-    sm1.track('message', { body: 'message 4' });
-    sm1.track('message', { body: 'message 5' });
-    await sleep(50);
-
-    expect(sent).toStrictEqual([{ type: 'request' }]);
-});
-
-test('Have a request per stanza not sent in same tick', async () => {
-    let sent: any[] = [];
-
-    const sm1 = new StreamManagement();
-    sm1.bind('test-jid');
-    sm1.enable();
-    sm1.enabled({ id: 'test', resume: true, type: 'enabled' });
-
-    sm1.on('send', data => sent.push(data));
-
-    sm1.track('message', { body: 'message 1' });
-    await sleep(50);
-
-    sm1.track('message', { body: 'message 2' });
-    await sleep(50);
-
-    sm1.track('message', { body: 'message 3' });
-    await sleep(50);
-
-    sm1.track('message', { body: 'message 4' });
-    await sleep(50);
-
-    sm1.track('message', { body: 'message 5' });
-    await sleep(50);
-
-    expect(sent).toStrictEqual([
-        { type: 'request' },
-        { type: 'request' },
-        { type: 'request' },
-        { type: 'request' },
-        { type: 'request' }
     ]);
 });
