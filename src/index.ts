@@ -119,6 +119,16 @@ export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
 
 export interface AgentConfig {
     /**
+     * Allow Stream Management Resumption
+     *
+     * When true (along with useStreamManagement), the session will be resumable after a disconnect.
+     *
+     * However, this means that the session will still appear as alive for a few minutes after a connection loss.
+     *
+     * @default true
+     */
+    allowResumption?: boolean;
+    /**
      * User JID
      */
     jid?: string;

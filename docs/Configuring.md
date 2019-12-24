@@ -14,7 +14,7 @@ It is possible to inspect the configuration later by using `client.config`.
 
 ## Available Settings
 
-<ul><li><a href="#acceptLanguages">acceptLanguages</a></li><li><a href="#capsNode">capsNode</a></li><li><a href="#chatMarkers">chatMarkers</a></li><li><a href="#credentials">credentials</a></li><li><a href="#jid">jid</a></li><li><a href="#lang">lang</a></li><li><a href="#password">password</a></li><li><a href="#resource">resource</a></li><li><a href="#rosterVer">rosterVer</a></li><li><a href="#sendReceipts">sendReceipts</a></li><li><a href="#server">server</a></li><li><a href="#softwareVersion">softwareVersion</a></li><li><a href="#timeout">timeout</a></li><li><a href="#transports">transports</a></li><li><a href="#useStreamManagement">useStreamManagement</a></li></ul>
+<ul><li><a href="#acceptLanguages">acceptLanguages</a></li><li><a href="#allowResumption">allowResumption</a></li><li><a href="#capsNode">capsNode</a></li><li><a href="#chatMarkers">chatMarkers</a></li><li><a href="#credentials">credentials</a></li><li><a href="#jid">jid</a></li><li><a href="#lang">lang</a></li><li><a href="#password">password</a></li><li><a href="#resource">resource</a></li><li><a href="#rosterVer">rosterVer</a></li><li><a href="#sendReceipts">sendReceipts</a></li><li><a href="#server">server</a></li><li><a href="#softwareVersion">softwareVersion</a></li><li><a href="#timeout">timeout</a></li><li><a href="#transports">transports</a></li><li><a href="#useStreamManagement">useStreamManagement</a></li></ul>
 <h3 id="acceptLanguages">Accepted Languages</h3>
 <table>
   <tr><th>Name</th><th>Type</th><th>Default Value</th></tr>
@@ -25,6 +25,17 @@ It is possible to inspect the configuration later by using `client.config`.
   </tr>
 </table>
 <p>A list of language codes acceptable to the user.</p>
+
+<h3 id="allowResumption">Allow Stream Management Resumption</h3>
+<table>
+  <tr><th>Name</th><th>Type</th><th>Default Value</th></tr>
+  <tr>
+     <td><code>allowResumption</code></td>
+     <td><code>false</code> | <code>true</code></td>
+     <td><code>true</code></td>
+  </tr>
+</table>
+<p>When true (along with useStreamManagement), the session will be resumable after a disconnect.</p><p>However, this means that the session will still appear as alive for a few minutes after a connection loss.</p>
 
 <h3 id="capsNode">Entity Caps Disco Node</h3>
 <table>

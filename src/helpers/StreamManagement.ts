@@ -1,4 +1,3 @@
-import { nextTick } from 'async';
 import { EventEmitter } from 'events';
 
 import {
@@ -6,6 +5,7 @@ import {
     Message,
     Presence,
     StreamManagementAck,
+    StreamManagementEnable,
     StreamManagementEnabled,
     StreamManagementFailed,
     StreamManagementResume
@@ -32,7 +32,6 @@ export default class StreamManagement extends EventEmitter {
     public handled: number = 0;
     public unacked: Unacked[] = [];
 
-    private pendingRequest: boolean = false;
     private inboundStarted: boolean = false;
     private outboundStarted: boolean = false;
     private cacheHandler: (state: SMState) => Promise<void> | void;
@@ -82,10 +81,6 @@ export default class StreamManagement extends EventEmitter {
             allowResumption: this.allowResume,
             type: 'enable'
         });
-        this.handled = 0;
-        this.outboundStarted = true;
-
-        await this._cache();
     }
 
     public async resume() {
@@ -94,9 +89,6 @@ export default class StreamManagement extends EventEmitter {
             previousSession: this.id!,
             type: 'resume'
         });
-        this.outboundStarted = true;
-
-        await this._cache();
     }
 
     public async enabled(resp: StreamManagementEnabled) {
@@ -139,15 +131,8 @@ export default class StreamManagement extends EventEmitter {
     }
 
     public request() {
-        if (this.pendingRequest) {
-            return;
-        }
-        this.pendingRequest = true;
-        nextTick(() => {
-            this.pendingRequest = false;
-            this.emit('send', {
-                type: 'request'
-            });
+        this.emit('send', {
+            type: 'request'
         });
     }
 
@@ -177,16 +162,28 @@ export default class StreamManagement extends EventEmitter {
         await this._cache();
     }
 
-    public async track(kind: string, stanza: Message | Presence | IQ) {
-        if (kind !== 'message' && kind !== 'presence' && kind !== 'iq') {
-            return;
+    public async track(
+        kind: string,
+        stanza: StreamManagementEnable | StreamManagementResume | Message | Presence | IQ
+    ): Promise<boolean> {
+        if (kind === 'sm' && (stanza.type === 'enable' || stanza.type === 'resume')) {
+            this.handled = 0;
+            this.outboundStarted = true;
+
+            await this._cache();
+            return false;
         }
 
-        if (this.outboundStarted) {
-            this.unacked.push([kind, stanza] as Unacked);
-            await this._cache();
-            this.request();
+        if (!this.outboundStarted) {
+            return false;
         }
+        if (kind !== 'message' && kind !== 'presence' && kind !== 'iq') {
+            return false;
+        }
+
+        this.unacked.push([kind, stanza] as Unacked);
+        await this._cache();
+        return true;
     }
 
     public async handle() {
@@ -197,13 +194,19 @@ export default class StreamManagement extends EventEmitter {
     }
 
     private async _cache() {
-        await this.cacheHandler({
-            handled: this.handled,
-            id: this.id,
-            jid: this.jid,
-            lastAck: this.lastAck,
-            unacked: this.unacked
-        });
+        try {
+            await this.cacheHandler({
+                handled: this.handled,
+                id: this.id,
+                jid: this.jid,
+                lastAck: this.lastAck,
+                unacked: this.unacked
+            });
+        } catch (err) {
+            // TODO: Is there a good way to handle this?
+            // istanbul ignore next
+            console.error('Failed to cache stream state', err);
+        }
     }
 
     private _reset() {

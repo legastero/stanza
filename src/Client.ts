@@ -62,6 +62,9 @@ export default class Client extends EventEmitter {
         this.use(corePlugins);
 
         this.sm = new StreamManagement();
+        if (this.config.allowResumption !== undefined) {
+            this.sm.allowResume = this.config.allowResumption;
+        }
         this.sm.on('prebound', jid => {
             this.jid = jid;
             this.emit('session:bound', jid);
@@ -104,14 +107,18 @@ export default class Client extends EventEmitter {
 
         this.outgoingDataQueue = priorityQueue<StreamData>(async (task, done) => {
             const { kind, stanza } = task;
-            await this.sm.track(kind, stanza);
+            const ackRequest = await this.sm.track(kind, stanza);
 
             if (kind === 'message') {
                 this.emit('message:sent', stanza, false);
             }
-
             if (this.transport) {
                 this.transport.send(kind, stanza);
+                if (ackRequest) {
+                    this.transport.send('sm', { type: 'request' });
+                }
+            } else if (!this.sm.started) {
+                this.emit('stanza:failed', { kind, stanza });
             }
 
             if (done) {
@@ -195,6 +202,7 @@ export default class Client extends EventEmitter {
     public updateConfig(opts: AgentConfig = {}) {
         const currConfig = this.config || {};
         this.config = {
+            allowResumption: true,
             jid: '',
             transports: {
                 bosh: true,
