@@ -203,6 +203,7 @@ export default class StreamManagement extends EventEmitter {
     }
 
     private _reset() {
+        this.id = '';
         this.inboundStarted = false;
         this.outboundStarted = false;
         this.lastAck = 0;
