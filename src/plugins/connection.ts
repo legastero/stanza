@@ -83,7 +83,7 @@ export default function(client: Agent) {
         client.sendIQResult(iq);
     });
 
-    client.on('disconnected', () => {
+    client.on('--reset-stream-features', () => {
         client.disableKeepAlive();
         client.features.negotiated.streamManagement = false;
         client.features.negotiated.clientStateIndication = false;

@@ -87,6 +87,10 @@ export interface AgentEvents {
 
     'bosh:terminate': any;
 
+    // Any "--" prefixed events are for internal use only
+    '--reset-stream-features': void;
+    '--transport-disconnected': void;
+
     '*': (...args: any[]) => void;
 }
 

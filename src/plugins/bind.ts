@@ -58,7 +58,7 @@ export default function(client: Agent) {
         client.emit('session:bound', client.jid);
     });
 
-    client.on('disconnected', () => {
+    client.on('--reset-stream-features', () => {
         client.sessionStarted = false;
         client.features.negotiated.bind = false;
         client.features.negotiated.session = false;

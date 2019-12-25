@@ -125,7 +125,7 @@ export default class BOSHConnection implements Transport {
             this.stream = undefined;
             this.sid = undefined;
             this.rid = undefined;
-            this.client.emit('disconnected', undefined);
+            this.client.emit('--transport-disconnected');
         }
     }
 
@@ -230,7 +230,7 @@ export default class BOSHConnection implements Transport {
                             this.sid = undefined;
                             this.client.emit('bosh:terminate', e.stanza);
                             this.client.emit('stream:end');
-                            this.client.emit('disconnected', undefined);
+                            this.client.emit('--transport-disconnected');
                             return;
                         }
                         if (!this.hasStream) {
