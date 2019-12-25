@@ -72,7 +72,7 @@ export default class Client extends EventEmitter {
         this.sm.on('send', sm => this.send('sm', sm));
         this.sm.on('acked', acked => this.emit('stanza:acked', acked));
         this.sm.on('failed', failed => this.emit('stanza:failed', failed));
-        this.sm.on('resend', ({ kind, stanza }) => this.send(kind, stanza));
+        this.sm.on('resend', ({ kind, stanza }) => this.send(kind, stanza, true));
         this.on('session:bound', jid => this.sm.bind(jid));
 
         this.transports = {
@@ -136,13 +136,22 @@ export default class Client extends EventEmitter {
             );
         });
 
-        this.on('disconnected', () => {
-            this.outgoingDataQueue.kill();
-            this.incomingDataQueue.kill();
-
+        this.on('--transport-disconnected', async () => {
             if (this.transport) {
                 delete this.transport;
             }
+
+            const drains: Promise<void>[] = [];
+            if (!this.incomingDataQueue.idle()) {
+                drains.push(this.incomingDataQueue.drain());
+            }
+            if (!this.outgoingDataQueue.idle()) {
+                drains.push(this.outgoingDataQueue.drain());
+            }
+            await Promise.all(drains);
+
+            this.emit('--reset-stream-features');
+            this.emit('disconnected');
         });
 
         this.on('iq', (iq: IQ) => {
@@ -258,6 +267,8 @@ export default class Client extends EventEmitter {
     }
 
     public async connect(): Promise<void> {
+        this.emit('--reset-stream-features');
+
         const transportPref = ['websocket', 'bosh'];
         let endpoints: { [key: string]: string[] } | undefined;
         for (const name of transportPref) {
@@ -313,17 +324,18 @@ export default class Client extends EventEmitter {
             // stream management to keep the session alive.
             this.emit('session:end');
         }
+        this.emit('--reset-stream-features');
         this.sessionStarted = false;
         if (this.transport) {
             this.transport.disconnect();
         } else {
-            this.emit('disconnected');
+            this.emit('--transport-disconnected');
         }
     }
 
-    public async send(kind: string, stanza: object): Promise<void> {
+    public async send(kind: string, stanza: object, replay: boolean = false): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.outgoingDataQueue.push({ kind, stanza }, 1, err =>
+            this.outgoingDataQueue.push({ kind, stanza }, replay ? 0 : 1, err =>
                 err ? reject(err) : resolve()
             );
         });

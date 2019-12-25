@@ -102,7 +102,7 @@ export default function(client: Agent) {
         }
 
         client.on('sasl', saslHandler);
-        client.once('disconnected', () => {
+        client.once('--reset-stream-features', () => {
             client.features.negotiated.sasl = false;
             client.off('sasl', saslHandler);
         });

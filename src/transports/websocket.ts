@@ -88,7 +88,7 @@ export default class WSConnection implements Transport {
             console.error(e);
         };
         this.conn.onclose = (e: any) => {
-            this.client.emit('disconnected', e);
+            this.client.emit('--transport-disconnected');
         };
         this.conn.onopen = () => {
             this.sm.started = false;
