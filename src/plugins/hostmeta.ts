@@ -14,7 +14,10 @@ async function promiseAny(promises: Array<Promise<any>>) {
     try {
         const errors = await Promise.all(
             promises.map(p => {
-                return p.then(val => Promise.reject(val), err => Promise.resolve(err));
+                return p.then(
+                    val => Promise.reject(val),
+                    err => Promise.resolve(err)
+                );
             })
         );
         return Promise.reject(errors);

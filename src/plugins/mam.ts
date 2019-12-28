@@ -47,7 +47,7 @@ export default function(client: Agent) {
     };
 
     client.searchHistory = async (
-        jidOrOpts: string | Partial<MAMQueryOptions> & { to?: string },
+        jidOrOpts: string | (Partial<MAMQueryOptions> & { to?: string }),
         opts: Partial<MAMQueryOptions> = {}
     ) => {
         const queryid = client.nextId();

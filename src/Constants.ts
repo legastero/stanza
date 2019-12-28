@@ -25,7 +25,7 @@ export const StreamType = {
     Component: NS_COMPONENT,
     Server: NS_SERVER
 } as const;
-export type StreamType = (typeof SASLFailureCondition)[keyof typeof SASLFailureCondition];
+export type StreamType = typeof SASLFailureCondition[keyof typeof SASLFailureCondition];
 
 export const SASLFailureCondition = {
     AccountDisabled: 'account-disabled',
@@ -39,7 +39,7 @@ export const SASLFailureCondition = {
     NotAuthorized,
     TemporaryAuthFailure: 'temporary-auth-failure'
 } as const;
-export type SASLFailureCondition = (typeof SASLFailureCondition)[keyof typeof SASLFailureCondition];
+export type SASLFailureCondition = typeof SASLFailureCondition[keyof typeof SASLFailureCondition];
 
 export const StreamErrorCondition = {
     BadFormat: 'bad-format',
@@ -68,7 +68,7 @@ export const StreamErrorCondition = {
     UnsupportedStanzaType: 'unsupported-stanza-type',
     UnsupportedVersion: 'unsupported-version'
 } as const;
-export type StreamErrorCondition = (typeof StreamErrorCondition)[keyof typeof StreamErrorCondition];
+export type StreamErrorCondition = typeof StreamErrorCondition[keyof typeof StreamErrorCondition];
 
 export const StanzaErrorCondition = {
     BadRequest: 'bad-request',
@@ -94,7 +94,7 @@ export const StanzaErrorCondition = {
     UndefinedCondition: 'undefined-condition',
     UnexpectedRequest: 'unexpected-request'
 } as const;
-export type StanzaErrorCondition = (typeof StanzaErrorCondition)[keyof typeof StanzaErrorCondition];
+export type StanzaErrorCondition = typeof StanzaErrorCondition[keyof typeof StanzaErrorCondition];
 
 export const MessageType = {
     Chat: 'chat',
@@ -103,7 +103,7 @@ export const MessageType = {
     Headline: 'headline',
     Normal: 'normal'
 } as const;
-export type MessageType = (typeof MessageType)[keyof typeof MessageType];
+export type MessageType = typeof MessageType[keyof typeof MessageType];
 
 export const PresenceType = {
     Available: undefined,
@@ -115,7 +115,7 @@ export const PresenceType = {
     Unsubscribe: 'unsubscribe',
     Unsubscribed: 'unsubscribed'
 } as const;
-export type PresenceType = (typeof PresenceType)[keyof typeof PresenceType];
+export type PresenceType = typeof PresenceType[keyof typeof PresenceType];
 
 export const IQType = {
     Error: 'error',
@@ -123,7 +123,7 @@ export const IQType = {
     Result: 'result',
     Set: 'set'
 } as const;
-export type IQType = (typeof IQType)[keyof typeof IQType];
+export type IQType = typeof IQType[keyof typeof IQType];
 
 export const PresenceShow = {
     Away: 'away',
@@ -131,7 +131,7 @@ export const PresenceShow = {
     DoNotDisturb: 'dnd',
     ExtendedAway: 'xa'
 } as const;
-export type PresenceShow = (typeof PresenceShow)[keyof typeof PresenceShow];
+export type PresenceShow = typeof PresenceShow[keyof typeof PresenceShow];
 
 export const RosterSubscription = {
     Both: 'both',
@@ -143,7 +143,7 @@ export const RosterSubscription = {
     SendPresenceOnly: 'from',
     To: 'to'
 } as const;
-export type RosterSubscription = (typeof RosterSubscription)[keyof typeof RosterSubscription];
+export type RosterSubscription = typeof RosterSubscription[keyof typeof RosterSubscription];
 
 export const DataFormType = {
     Cancel: 'cancel',
@@ -151,7 +151,7 @@ export const DataFormType = {
     Result: 'result',
     Submit: 'submit'
 } as const;
-export type DataFormType = (typeof DataFormType)[keyof typeof DataFormType];
+export type DataFormType = typeof DataFormType[keyof typeof DataFormType];
 
 export const DataFormFieldType = {
     Boolean: 'boolean',
@@ -166,7 +166,7 @@ export const DataFormFieldType = {
     TextMultiple: 'text-multi',
     TextPrivate: 'text-private'
 } as const;
-export type DataFormFieldType = (typeof DataFormFieldType)[keyof typeof DataFormFieldType];
+export type DataFormFieldType = typeof DataFormFieldType[keyof typeof DataFormFieldType];
 
 export const MUCAffiliation = {
     Admin: 'admin',
@@ -176,7 +176,7 @@ export const MUCAffiliation = {
     Outcast: 'outcast',
     Owner: 'owner'
 } as const;
-export type MUCAffiliation = (typeof MUCAffiliation)[keyof typeof MUCAffiliation];
+export type MUCAffiliation = typeof MUCAffiliation[keyof typeof MUCAffiliation];
 
 export const MUCRole = {
     Moderator: 'moderator',
@@ -184,7 +184,7 @@ export const MUCRole = {
     Participant: 'participant',
     Visitor: 'visitor'
 } as const;
-export type MUCRole = (typeof MUCRole)[keyof typeof MUCRole];
+export type MUCRole = typeof MUCRole[keyof typeof MUCRole];
 
 export const MUCStatusCode = {
     AffiliationChanged: '101',
@@ -207,7 +207,7 @@ export const MUCStatusCode = {
     UnavailableMembersListed: '102',
     UnavailableMembersNotListed: '103'
 } as const;
-export type MUCStatusCode = (typeof MUCStatusCode)[keyof typeof MUCStatusCode];
+export type MUCStatusCode = typeof MUCStatusCode[keyof typeof MUCStatusCode];
 
 export const PubsubErrorCondition = {
     ClosedNode: 'closed-node',
@@ -233,7 +233,7 @@ export const PubsubErrorCondition = {
     Unsupported: 'unsupported',
     UnsupportedAccessModel: 'unsupported-access-model'
 } as const;
-export type PubsubErrorCondition = (typeof PubsubErrorCondition)[keyof typeof PubsubErrorCondition];
+export type PubsubErrorCondition = typeof PubsubErrorCondition[keyof typeof PubsubErrorCondition];
 
 export const ChatState = {
     Active: 'active',
@@ -242,13 +242,13 @@ export const ChatState = {
     Inactive: 'inactive',
     Paused: 'paused'
 } as const;
-export type ChatState = (typeof ChatState)[keyof typeof ChatState];
+export type ChatState = typeof ChatState[keyof typeof ChatState];
 
 export const JingleSessionRole = {
     Initiator: 'initiator',
     Responder: 'responder'
 } as const;
-export type JingleSessionRole = (typeof JingleSessionRole)[keyof typeof JingleSessionRole];
+export type JingleSessionRole = typeof JingleSessionRole[keyof typeof JingleSessionRole];
 
 export const JingleApplicationDirection = {
     Inactive: 'inactive',
@@ -256,7 +256,7 @@ export const JingleApplicationDirection = {
     Send: 'sendonly',
     SendReceive: 'sendrecv'
 } as const;
-export type JingleApplicationDirection = (typeof JingleApplicationDirection)[keyof typeof JingleApplicationDirection];
+export type JingleApplicationDirection = typeof JingleApplicationDirection[keyof typeof JingleApplicationDirection];
 
 export const JingleContentSenders = {
     Both: 'both',
@@ -264,7 +264,7 @@ export const JingleContentSenders = {
     None: 'none',
     Responder: 'responder'
 } as const;
-export type JingleContentSenders = (typeof JingleContentSenders)[keyof typeof JingleContentSenders];
+export type JingleContentSenders = typeof JingleContentSenders[keyof typeof JingleContentSenders];
 
 export const JingleAction = {
     ContentAccept: 'content-accept',
@@ -283,7 +283,7 @@ export const JingleAction = {
     TransportReject: 'transport-reject',
     TransportReplace: 'transport-replace'
 } as const;
-export type JingleAction = (typeof JingleAction)[keyof typeof JingleAction];
+export type JingleAction = typeof JingleAction[keyof typeof JingleAction];
 
 export const JingleErrorCondition = {
     OutOfOrder: 'out-of-order',
@@ -292,7 +292,7 @@ export const JingleErrorCondition = {
     UnknownSession: 'unknown-session',
     UnsupportedInfo: 'unsupported-info'
 } as const;
-export type JingleErrorCondition = (typeof JingleErrorCondition)[keyof typeof JingleErrorCondition];
+export type JingleErrorCondition = typeof JingleErrorCondition[keyof typeof JingleErrorCondition];
 
 export const JingleReasonCondition = {
     AlternativeSession: 'alternative-session',
@@ -313,7 +313,7 @@ export const JingleReasonCondition = {
     UnsupportedApplications: 'unsupported-applications',
     UnsupportedTransports: 'unsupported-transports'
 } as const;
-export type JingleReasonCondition = (typeof JingleReasonCondition)[keyof typeof JingleReasonCondition];
+export type JingleReasonCondition = typeof JingleReasonCondition[keyof typeof JingleReasonCondition];
 
 // ====================================================================
 // Standalone Constants

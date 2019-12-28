@@ -130,7 +130,10 @@ test('[Type: childAlternateLanguageRawElement] Export with duplicate language', 
     const ex = registry.export<Example>(
         'example',
         {
-            foo: [{ lang: 'en', value: 'test en' }, { lang: 'no', value: 'test no' }]
+            foo: [
+                { lang: 'en', value: 'test en' },
+                { lang: 'no', value: 'test no' }
+            ]
         },
         {
             lang: 'en'

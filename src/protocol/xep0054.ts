@@ -226,7 +226,10 @@ const Protocol: DefinitionOptions[] = [
         fields: {
             lines: multipleChildText(null, 'LINE'),
             preferred: childBoolean(null, 'PREF'),
-            types: multipleChildEnum(null, [['home', 'HOME'], ['work', 'WORK']])
+            types: multipleChildEnum(null, [
+                ['home', 'HOME'],
+                ['work', 'WORK']
+            ])
         },
         namespace: NS_VCARD_TEMP,
         type: 'addressLabel',
