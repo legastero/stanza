@@ -740,7 +740,7 @@
 <h3 id="sendMessage">sendMessage</h3>
 
 ```
-(msg: Message) => void
+(msg: Message) => string
 ```
 
 <p></p>
@@ -748,7 +748,7 @@
 <h3 id="sendPresence">sendPresence</h3>
 
 ```
-(pres: Presence) => void
+(pres: Presence) => string
 ```
 
 <p></p>
