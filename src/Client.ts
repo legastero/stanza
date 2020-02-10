@@ -273,7 +273,7 @@ export default class Client extends EventEmitter {
         return msg.id;
     }
 
-    public sendPresence(data: Presence = {}) {
+    public sendPresence(data: Presence = {}): string {
         const pres = {
             id: this.nextId(),
             ...data

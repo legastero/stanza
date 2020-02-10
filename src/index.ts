@@ -112,7 +112,7 @@ export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
     sendIQResult(orig: IQ, result?: Partial<IQ>): void;
     sendIQError(orig: IQ, err?: Partial<IQ>): void;
     sendMessage(msg: Message): string;
-    sendPresence(pres?: Presence): void;
+    sendPresence(pres?: Presence): string;
     sendStreamError(err: StreamError): void;
 }
 
