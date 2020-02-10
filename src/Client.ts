@@ -261,7 +261,7 @@ export default class Client extends EventEmitter {
         }
     }
 
-    public sendMessage(data: Message) {
+    public sendMessage(data: Message): string {
         const id = data.id || this.nextId();
         const msg = {
             id,
