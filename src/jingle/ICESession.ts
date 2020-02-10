@@ -205,6 +205,7 @@ export default class ICESession extends BaseSession {
 
                     this.end(JingleReasonCondition.FailedTransport);
                 }
+                return;
             }
         }
 
@@ -212,7 +213,7 @@ export default class ICESession extends BaseSession {
             const sdpMid = content.name;
             const results = ((content.transport! as JingleIce).candidates || []).map(async json => {
                 const candidate = SDPUtils.writeCandidate(convertCandidateToIntermediate(json));
-                if (this.pc.signalingState === 'stable') {
+                if (this.pc.remoteDescription && this.pc.signalingState === 'stable') {
                     try {
                         await this.pc.addIceCandidate({ sdpMid, candidate });
                     } catch (err) {
