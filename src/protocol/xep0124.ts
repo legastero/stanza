@@ -100,8 +100,22 @@ const Protocol: DefinitionOptions = {
         type: attribute('type'),
         version: attribute('ver'),
         // XEP-0206
-        xmppRestart: namespacedBooleanAttribute('xmpp', NS_BOSH_XMPP, 'restart'),
-        xmppRestartLogic: namespacedBooleanAttribute('xmpp', NS_BOSH_XMPP, 'restartlogic'),
+        xmppRestart: namespacedBooleanAttribute('xmpp', NS_BOSH_XMPP, 'restart', undefined, {
+            writeValue: (value: boolean) => {
+                return value ? 'true' : 'false';
+            }
+        }),
+        xmppRestartLogic: namespacedBooleanAttribute(
+            'xmpp',
+            NS_BOSH_XMPP,
+            'restartlogic',
+            undefined,
+            {
+                writeValue: (value: boolean) => {
+                    return value ? 'true' : 'false';
+                }
+            }
+        ),
         xmppVersion: namespacedAttribute('xmpp', NS_BOSH_XMPP, 'version')
     },
     namespace: NS_BOSH,
