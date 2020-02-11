@@ -1,4 +1,4 @@
-import { priorityQueue } from 'async';
+import { AsyncPriorityQueue, priorityQueue } from 'async';
 
 import {
     JingleAction,
@@ -52,7 +52,7 @@ export default class JingleSession {
     public pendingApplicationTypes?: string[];
     public pendingAction?: JingleAction;
 
-    public processingQueue: async.AsyncPriorityQueue<any>;
+    public processingQueue: AsyncPriorityQueue<any>;
 
     private _sessionState: string;
     private _connectionState: string;
