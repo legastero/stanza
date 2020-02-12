@@ -20,7 +20,7 @@ declare module '../' {
         getHistoryPreferences(): Promise<MAMPrefs>;
         setHistoryPreferences(opts: Partial<MAMPrefs>): Promise<IQ>;
         searchHistory(opts: Partial<MAMQueryOptions>): Promise<MAMFin>;
-        searchHistory(jid: string, opts: MAMQuery): Promise<MAMFin>;
+        searchHistory(jid: string, opts: Partial<MAMQueryOptions>): Promise<MAMFin>;
     }
 
     export interface AgentEvents {
