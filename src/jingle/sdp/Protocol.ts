@@ -96,12 +96,12 @@ export function convertIntermediateToApplication(
             rtcpFeedback: codec.rtcpFeedback
         };
         if (codec.maxptime) {
-            payload.maxptime = codec.maxptime.toString();
+            payload.maxptime = codec.maxptime;
         }
 
         for (const key of Object.keys(codec.parameters || {})) {
             if (key === 'ptime') {
-                payload.ptime = codec.parameters![key].toString();
+                payload.ptime = parseInt(codec.parameters![key], 10);
             }
         }
 
