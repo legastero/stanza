@@ -378,6 +378,7 @@ export default class SessionManager extends EventEmitter {
     }
 
     private _log(level: string, message: string, ...args: any[]) {
+        this.emit('log', level, message, ...args);
         this.emit('log:' + level, message, ...args);
     }
 }

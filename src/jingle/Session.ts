@@ -290,6 +290,7 @@ export default class JingleSession {
     protected _log(level: string, message: string, ...data: any[]) {
         if (this.parent) {
             message = this.sid + ': ' + message;
+            this.parent.emit('log', level, message, ...data);
             this.parent.emit('log:' + level, message, ...data);
         }
     }
