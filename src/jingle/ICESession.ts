@@ -294,6 +294,7 @@ export default class ICESession extends BaseSession {
             await Promise.all(all);
             cb();
         } catch (err) {
+            this._log('error', `Could not process transport-info: ${err}`);
             cb(err);
         }
     }
