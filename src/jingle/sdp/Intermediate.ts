@@ -153,7 +153,7 @@ export function exportToSDP(session: IntermediateSessionDescription) {
         }
         if (media.candidates && media.candidates.length) {
             for (const candidate of media.candidates) {
-                output.push(`a=${SDP.writeCandidate(candidate)}`);
+                output.push(`a=${SDP.writeCandidate(candidate)}\r\n`);
             }
         }
     }
