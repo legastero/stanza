@@ -111,7 +111,9 @@ export function convertIntermediateToApplication(
     return application;
 }
 
-function convertIntermediateToCandidate(candidate: IntermediateCandidate): JingleIceCandidate {
+export function convertIntermediateToCandidate(
+    candidate: IntermediateCandidate
+): JingleIceCandidate {
     return {
         component: candidate.component,
         foundation: candidate.foundation,
@@ -374,24 +376,4 @@ export function convertRequestToIntermediate(
     }
 
     return session;
-}
-
-export function convertIntermediateToTransportInfo(
-    mid: string,
-    candidate: IntermediateCandidate,
-    transportType: JingleIce['transportType']
-): Partial<Jingle> {
-    return {
-        contents: [
-            {
-                creator: JingleSessionRole.Initiator,
-                name: mid,
-                transport: {
-                    candidates: [convertIntermediateToCandidate(candidate)],
-                    transportType,
-                    usernameFragment: candidate.usernameFragment || undefined
-                } as JingleIce
-            }
-        ]
-    };
 }

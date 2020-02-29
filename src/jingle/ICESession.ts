@@ -7,8 +7,8 @@ import { Jingle, JingleContent, JingleIce, JingleReason } from '../protocol';
 import { exportToSDP, importFromSDP } from './sdp/Intermediate';
 import {
     convertCandidateToIntermediate,
+    convertIntermediateToCandidate,
     convertIntermediateToTransport,
-    convertIntermediateToTransportInfo,
     convertRequestToIntermediate
 } from './sdp/Protocol';
 import BaseSession, { ActionCallback } from './Session';
@@ -328,23 +328,35 @@ export default class ICESession extends BaseSession {
     // ----------------------------------------------------------------
 
     protected onIceCandidate(e: RTCPeerConnectionIceEvent) {
-        if (!e.candidate!.candidate) {
+        if (!e.candidate || !e.candidate.candidate) {
             return;
         }
-        const candidate = SDPUtils.parseCandidate(e.candidate!.candidate);
-        const jingle = convertIntermediateToTransportInfo(
-            e.candidate!.sdpMid!,
-            candidate,
-            this.transportType
-        );
+        const candidate = SDPUtils.parseCandidate(e.candidate.candidate);
+        let usernameFragment: string | undefined = candidate.usernameFragment;
+
         /* monkeypatch ufrag in Firefox */
-        jingle.contents!.forEach((content, idx) => {
-            const transport = content.transport as JingleIce;
-            if (!transport.usernameFragment) {
-                const json = importFromSDP(this.pc.localDescription!.sdp);
-                transport.usernameFragment = json.media[idx].iceParameters!.usernameFragment;
+        if (!usernameFragment) {
+            const json = importFromSDP(this.pc.localDescription!.sdp);
+            for (const media of json.media) {
+                if (media.mid === e.candidate.sdpMid && media.iceParameters) {
+                    usernameFragment = media.iceParameters.usernameFragment;
+                }
             }
-        });
+        }
+
+        const jingle: Partial<Jingle> = {
+            contents: [
+                {
+                    creator: JingleSessionRole.Initiator,
+                    name: e.candidate.sdpMid!,
+                    transport: {
+                        candidates: [convertIntermediateToCandidate(candidate)],
+                        transportType: this.transportType,
+                        usernameFragment
+                    } as JingleIce
+                }
+            ]
+        };
 
         this._log('info', 'Discovered new ICE candidate', jingle);
         this.send(JingleAction.TransportInfo, jingle);
