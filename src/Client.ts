@@ -33,7 +33,7 @@ export default class Client extends EventEmitter {
         // Some EventEmitter shims don't include off()
         this.off = this.removeListener;
 
-        this._initConfig(opts);
+        this.updateConfig(opts);
 
         this.jid = '';
 
@@ -154,6 +154,29 @@ export default class Client extends EventEmitter {
             }
             this.emit(presType as any, pres);
         });
+    }
+
+    public updateConfig(opts: AgentConfig = {}) {
+        const currConfig = this.config || {};
+        this.config = {
+            jid: '',
+            transports: {
+                bosh: true,
+                websocket: true
+            },
+            useStreamManagement: true,
+            ...currConfig,
+            ...opts
+        };
+
+        if (!this.config.server) {
+            this.config.server = JID.getDomain(this.config.jid!);
+        }
+        if (this.config.password) {
+            this.config.credentials = this.config.credentials || {};
+            this.config.credentials.password = this.config.password;
+            delete this.config.password;
+        }
     }
 
     get stream() {
@@ -361,28 +384,5 @@ export default class Client extends EventEmitter {
             username,
             ...creds
         };
-    }
-
-    private _initConfig(opts: AgentConfig = {}) {
-        const currConfig = this.config || {};
-        this.config = {
-            jid: '',
-            transports: {
-                bosh: true,
-                websocket: true
-            },
-            useStreamManagement: true,
-            ...currConfig,
-            ...opts
-        };
-
-        if (!this.config.server) {
-            this.config.server = JID.getDomain(this.config.jid!);
-        }
-        if (this.config.password) {
-            this.config.credentials = this.config.credentials || {};
-            this.config.credentials.password = this.config.password;
-            delete this.config.password;
-        }
     }
 }

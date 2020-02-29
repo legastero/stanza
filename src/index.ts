@@ -104,6 +104,7 @@ export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
 
     nextId(): string;
 
+    updateConfig(opts?: AgentConfig): void;
     connect(opts?: AgentConfig): void;
     disconnect(): void;
     send<T extends keyof TopLevelElements>(path: T, data: TopLevelElements[T]): void;
