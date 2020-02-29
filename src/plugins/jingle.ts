@@ -68,9 +68,7 @@ export default function(client: Agent) {
             NS_JINGLE_RTP_1,
             NS_JINGLE_RTP_RTCP_FB_0,
             NS_JINGLE_RTP_HDREXT_0,
-            NS_JINGLE_RTP_SSMA_0,
             NS_JINGLE_DTLS_0,
-            NS_JINGLE_GROUPING_0,
             NS_JINGLE_ICE_0,
             NS_JINGLE_ICE_UDP_1,
             NS_JINGLE_RTP_AUDIO,
@@ -78,9 +76,9 @@ export default function(client: Agent) {
             NS_JINGLE_FILE_TRANSFER_4,
             NS_JINGLE_FILE_TRANSFER_5,
             NS_JINGLE_DTLS_SCTP_1,
-            'urn:ietf:rfc:3264',
-            'urn:ietf:rfc:5576',
-            'urn:ietf:rfc:5888'
+            'urn:ietf:rfc:3264', // ICE prefer batched candidates
+            'urn:ietf:rfc:5576', // Jingle Source Specific Media Attributes
+            'urn:ietf:rfc:5888' // Jingle Grouping Framework
         ];
         for (const cap of caps) {
             client.disco.addFeature(cap);
