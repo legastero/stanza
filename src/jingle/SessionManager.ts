@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import { RTCPeerConnection } from 'stanza-shims';
 
 import { JingleAction, JingleReasonCondition } from '../Constants';
 import { NS_JINGLE_FILE_TRANSFER_5, NS_JINGLE_RTP_1 } from '../Namespaces';
@@ -25,9 +26,11 @@ export interface SessionManagerConfig {
         rtcpMuxPolicy?: string;
         sdpSemantics?: string;
     };
+    hasRTCPeerConnection?: boolean;
     peerConnectionConstraints?: any;
     performTieBreak?: (session: BaseSession, req: IQ & { jingle: Jingle }) => boolean;
     prepareSession?: (opts: any, req?: IQ & { jingle: Jingle }) => BaseSession | undefined;
+    createPeerConnection?: () => RTCPeerConnection | undefined;
 }
 
 export default class SessionManager extends EventEmitter {
@@ -39,6 +42,7 @@ export default class SessionManager extends EventEmitter {
 
     public performTieBreak: (session: BaseSession, req: IQ & { jingle: Jingle }) => boolean;
     public prepareSession: (opts: any, req?: IQ & { jingle: Jingle }) => BaseSession | undefined;
+    public createPeerConnection: (opts?: RTCConfiguration) => RTCPeerConnection | undefined;
 
     constructor(conf: SessionManagerConfig = {}) {
         super();
@@ -47,11 +51,14 @@ export default class SessionManager extends EventEmitter {
         this.selfID = conf.selfID;
         this.sessions = {};
         this.peers = {};
-        this.iceServers = conf.iceServers || [{ urls: 'stun:stun.l.google.com:19302' }];
+        this.iceServers = conf.iceServers || [];
 
         this.prepareSession =
             conf.prepareSession ||
             (opts => {
+                if (!this.config.hasRTCPeerConnection) {
+                    return;
+                }
                 if (opts.applicationTypes.indexOf(NS_JINGLE_RTP_1) >= 0) {
                     return new MediaSession(opts);
                 }
@@ -74,8 +81,17 @@ export default class SessionManager extends EventEmitter {
                 return intersection.length > 0;
             });
 
+        this.createPeerConnection =
+            conf.createPeerConnection ||
+            ((opts?: RTCConfiguration) => {
+                if (!!RTCPeerConnection) {
+                    return new (RTCPeerConnection as any)(opts);
+                }
+            });
+
         this.config = {
             debug: false,
+            hasRTCPeerConnection: !!RTCPeerConnection,
             peerConnectionConfig: {
                 bundlePolicy: conf.bundlePolicy || 'balanced',
                 iceTransportPolicy: conf.iceTransportPolicy || 'all',

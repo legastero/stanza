@@ -1,3 +1,4 @@
+import { RTCPeerConnection } from 'stanza-shims';
 import { Agent } from '../';
 import * as Jingle from '../jingle';
 import {
@@ -6,14 +7,12 @@ import {
     NS_JINGLE_DTLS_SCTP_1,
     NS_JINGLE_FILE_TRANSFER_4,
     NS_JINGLE_FILE_TRANSFER_5,
-    NS_JINGLE_GROUPING_0,
     NS_JINGLE_ICE_0,
     NS_JINGLE_ICE_UDP_1,
     NS_JINGLE_RTP_1,
     NS_JINGLE_RTP_AUDIO,
     NS_JINGLE_RTP_HDREXT_0,
     NS_JINGLE_RTP_RTCP_FB_0,
-    NS_JINGLE_RTP_SSMA_0,
     NS_JINGLE_RTP_VIDEO
 } from '../Namespaces';
 import {
@@ -23,13 +22,6 @@ import {
     Jingle as JingleRequest,
     Presence
 } from '../protocol';
-
-let root: any;
-try {
-    root = window;
-} catch (err) {
-    root = global;
-}
 
 declare module '../' {
     export interface Agent {
@@ -57,32 +49,78 @@ declare module '../' {
         'jingle:resumed': (session: Jingle.Session, info?: JingleRequest['info']) => void;
         'jingle:ringing': (session: Jingle.Session, info?: JingleRequest['info']) => void;
     }
+
+    export interface AgentConfig {
+        jingle?: JinglePluginConfig;
+    }
+}
+
+interface JinglePluginConfig {
+    advertiseAudio?: boolean;
+    advertiseVideo?: boolean;
+    advertiseFileTransfer?: boolean;
+    hasRTCPeerConnection?: boolean;
+    trickleIce: boolean;
+    bundlePolicy?: string;
+    iceTransportPolicy?: string;
+    rtcpMuxPolicy?: string;
+    iceServers?: RTCIceServer[];
+    sdpSemantics?: string;
 }
 
 export default function(client: Agent) {
-    const jingle = (client.jingle = new Jingle.SessionManager());
+    const hasNativePeerConnection = !!RTCPeerConnection;
+    const defaultConfig: JinglePluginConfig = {
+        advertiseAudio: hasNativePeerConnection,
+        advertiseFileTransfer: hasNativePeerConnection,
+        advertiseVideo: hasNativePeerConnection,
+        bundlePolicy: 'balanced',
+        hasRTCPeerConnection: hasNativePeerConnection,
+        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+        iceTransportPolicy: 'all',
+        rtcpMuxPolicy: 'require',
+        trickleIce: true
+    };
+    const providedConfig = client.config.jingle;
+    const config = {
+        ...defaultConfig,
+        ...providedConfig
+    };
 
-    client.disco.addFeature(NS_JINGLE_1);
-    if (root.RTCPeerConnection) {
-        const caps = [
-            NS_JINGLE_RTP_1,
-            NS_JINGLE_RTP_RTCP_FB_0,
-            NS_JINGLE_RTP_HDREXT_0,
-            NS_JINGLE_DTLS_0,
+    const jingle = (client.jingle = new Jingle.SessionManager(config));
+
+    const caps: string[] = [NS_JINGLE_1];
+    if (config.hasRTCPeerConnection) {
+        caps.push(
             NS_JINGLE_ICE_0,
             NS_JINGLE_ICE_UDP_1,
-            NS_JINGLE_RTP_AUDIO,
-            NS_JINGLE_RTP_VIDEO,
-            NS_JINGLE_FILE_TRANSFER_4,
-            NS_JINGLE_FILE_TRANSFER_5,
             NS_JINGLE_DTLS_SCTP_1,
-            'urn:ietf:rfc:3264', // ICE prefer batched candidates
-            'urn:ietf:rfc:5576', // Jingle Source Specific Media Attributes
+            NS_JINGLE_DTLS_0,
             'urn:ietf:rfc:5888' // Jingle Grouping Framework
-        ];
-        for (const cap of caps) {
-            client.disco.addFeature(cap);
+        );
+        if (config.trickleIce === false) {
+            caps.push('urn:ietf:rfc:3264'); // ICE prefer batched candidates
         }
+        if (config.advertiseAudio || config.advertiseVideo) {
+            caps.push(
+                NS_JINGLE_RTP_1,
+                NS_JINGLE_RTP_RTCP_FB_0,
+                NS_JINGLE_RTP_HDREXT_0,
+                'urn:ietf:rfc:5576' // Jingle Source Specific Media Attributes
+            );
+        }
+        if (config.advertiseAudio) {
+            caps.push(NS_JINGLE_RTP_AUDIO);
+        }
+        if (config.advertiseVideo) {
+            caps.push(NS_JINGLE_RTP_VIDEO);
+        }
+        if (config.advertiseFileTransfer) {
+            caps.push(NS_JINGLE_FILE_TRANSFER_4, NS_JINGLE_FILE_TRANSFER_5);
+        }
+    }
+    for (const cap of caps) {
+        client.disco.addFeature(cap);
     }
 
     const mappedEvents = [

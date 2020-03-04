@@ -111,8 +111,6 @@
                     transports: transports
                 });
 
-                client.jingle.config.debug = true;
-
                 client.on('raw:incoming', function(data) {
                     inlog(data);
                 });

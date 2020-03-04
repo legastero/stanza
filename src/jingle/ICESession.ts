@@ -14,18 +14,17 @@ import {
 import BaseSession, { ActionCallback } from './Session';
 
 export default class ICESession extends BaseSession {
-    public pc: RTCPeerConnection;
-    public bitrateLimit: number;
+    public pc!: RTCPeerConnection;
+    public bitrateLimit: number = 0;
     public maximumBitrate?: number;
     public currentBitrate?: number;
     public maxRelayBandwidth: number;
     public candidateBuffer: Array<{
-        sdpMLineIndex: number;
         sdpMid: string;
         candidate: string;
-    } | null>;
+    } | null> = [];
     public transportType: JingleIce['transportType'] = NS_JINGLE_ICE_UDP_1;
-    public restartingIce: boolean;
+    public restartingIce: boolean = false;
 
     private _maybeRestartingIce: any;
     private _firstTimeConnected?: boolean;
@@ -33,32 +32,26 @@ export default class ICESession extends BaseSession {
     constructor(opts: any) {
         super(opts);
 
-        this.pc = new (RTCPeerConnection as any)(
-            {
-                ...opts.config,
-                iceServers: opts.iceServers
-            },
-            opts.constraints
-        );
+        this.maxRelayBandwidth = opts.maxRelayBandwidth;
 
-        this.pc.addEventListener('iceconnectionstatechange', () => {
+        this.pc = this.parent.createPeerConnection({
+            ...opts.config,
+            iceServers: opts.iceServers
+        })!;
+
+        this.pc.oniceconnectionstatechange = () => {
             this.onIceStateChange();
-        });
+        };
 
-        this.pc.addEventListener('icecandidate', e => {
+        this.pc.onicecandidate = e => {
             if (e.candidate) {
                 this.onIceCandidate(e);
             } else {
                 this.onIceEndOfCandidates();
             }
-        });
+        };
 
         this.restrictRelayBandwidth();
-
-        this.bitrateLimit = 0;
-        this.maxRelayBandwidth = opts.maxRelayBandwidth;
-        this.candidateBuffer = [];
-        this.restartingIce = false;
     }
 
     public end(reason: JingleReasonCondition | JingleReason = 'success', silent: boolean = false) {
@@ -107,76 +100,30 @@ export default class ICESession extends BaseSession {
             maximumBitrate = Math.min(maximumBitrate, this.maximumBitrate);
         }
         this.currentBitrate = maximumBitrate;
-        if (
-            !(
-                (window as any).RTCRtpSender &&
-                'getParameters' in (window as any).RTCRtpSender.prototype
-            )
-        ) {
-            return;
-        }
+
         // changes the maximum bandwidth using RTCRtpSender.setParameters.
         const sender = this.pc.getSenders().find(s => !!s.track && s.track.kind === 'video');
-        if (!sender) {
+        if (!sender || !sender.getParameters) {
             return;
-        }
-
-        let browser = '';
-        if (window.navigator && (window.navigator as any).mozGetUserMedia) {
-            browser = 'firefox';
-        } else if (window.navigator && (window.navigator as any).webkitGetUserMedia) {
-            browser = 'chrome';
-        }
-
-        const parameters = sender.getParameters();
-        if (browser === 'firefox' && !parameters.encodings) {
-            parameters.encodings = [{}];
-        }
-        if (maximumBitrate === 0) {
-            delete parameters.encodings[0].maxBitrate;
-        } else {
-            if (!parameters.encodings.length) {
-                parameters.encodings[0] = {};
-            }
-            parameters.encodings[0].maxBitrate = maximumBitrate;
         }
 
         try {
             await this.processLocal('set-bitrate', async () => {
-                if (browser === 'chrome') {
-                    await sender.setParameters(parameters);
-                } else if (browser === 'firefox') {
-                    // Firefox needs renegotiation:
-                    // https://bugzilla.mozilla.org/show_bug.cgi?id=1253499
-                    // but we do not want to intefere with our queue so we
-                    // just hope this gets picked up.
-                    if (this.pc.signalingState !== 'stable') {
-                        await sender.setParameters(parameters);
-                    } else if (
-                        this.pc.localDescription &&
-                        this.pc.localDescription.type === 'offer'
-                    ) {
-                        await sender.setParameters(parameters);
-
-                        const offer = await this.pc.createOffer();
-                        await this.pc.setLocalDescription(offer);
-                        await this.pc.setRemoteDescription(this.pc.remoteDescription!);
-                        await this.processBufferedCandidates();
-                    } else if (
-                        this.pc.localDescription &&
-                        this.pc.localDescription.type === 'answer'
-                    ) {
-                        await sender.setParameters(parameters);
-                        await this.pc.setRemoteDescription(this.pc.remoteDescription!);
-                        await this.processBufferedCandidates();
-
-                        const answer = await this.pc.createAnswer();
-                        await this.pc.setLocalDescription(answer);
-                    }
+                const parameters = sender.getParameters();
+                if (!parameters.encodings || !parameters.encodings.length) {
+                    parameters.encodings = [{}];
                 }
+
+                if (maximumBitrate === 0) {
+                    delete parameters.encodings[0].maxBitrate;
+                } else {
+                    parameters.encodings[0].maxBitrate = maximumBitrate;
+                }
+
+                await sender.setParameters(parameters);
             });
         } catch (err) {
-            this._log('error', 'setParameters failed', err);
+            this._log('error', 'Set maximumBitrate failed', err);
         }
     }
 
@@ -265,26 +212,14 @@ export default class ICESession extends BaseSession {
             const sdpMid = content.name;
             const results = ((content.transport! as JingleIce).candidates || []).map(async json => {
                 const candidate = SDPUtils.writeCandidate(convertCandidateToIntermediate(json));
-
-                let sdpMLineIndex!: number;
-                // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1456417
-                const remoteSDP = this.pc.remoteDescription!.sdp;
-                const mediaSections = SDPUtils.getMediaSections(remoteSDP);
-                for (let i = 0; i < mediaSections.length; i++) {
-                    if (SDPUtils.getMid(mediaSections[i]) === sdpMid) {
-                        sdpMLineIndex = i;
-                        break;
-                    }
-                }
-
                 if (this.pc.signalingState === 'stable') {
                     try {
-                        await this.pc.addIceCandidate({ sdpMid, sdpMLineIndex, candidate });
+                        await this.pc.addIceCandidate({ sdpMid, candidate });
                     } catch (err) {
                         this._log('error', 'Could not add ICE candidate', err);
                     }
                 } else {
-                    this.candidateBuffer.push({ sdpMid, sdpMLineIndex, candidate });
+                    this.candidateBuffer.push({ sdpMid, candidate });
                 }
             });
             return Promise.all(results);
@@ -332,18 +267,6 @@ export default class ICESession extends BaseSession {
             return;
         }
         const candidate = SDPUtils.parseCandidate(e.candidate.candidate);
-        let usernameFragment: string | undefined = candidate.usernameFragment;
-
-        /* monkeypatch ufrag in Firefox */
-        if (!usernameFragment) {
-            const json = importFromSDP(this.pc.localDescription!.sdp);
-            for (const media of json.media) {
-                if (media.mid === e.candidate.sdpMid && media.iceParameters) {
-                    usernameFragment = media.iceParameters.usernameFragment;
-                }
-            }
-        }
-
         const jingle: Partial<Jingle> = {
             contents: [
                 {
@@ -352,7 +275,7 @@ export default class ICESession extends BaseSession {
                     transport: {
                         candidates: [convertIntermediateToCandidate(candidate)],
                         transportType: this.transportType,
-                        usernameFragment
+                        usernameFragment: candidate.usernameFragment
                     } as JingleIce
                 }
             ]
@@ -440,15 +363,6 @@ export default class ICESession extends BaseSession {
      * the TURN server.
      */
     private restrictRelayBandwidth() {
-        if (
-            !(
-                (window as any).RTCRtpSender &&
-                'getParameters' in (window as any).RTCRtpSender.prototype
-            )
-        ) {
-            return;
-        }
-
         this.pc.addEventListener('iceconnectionstatechange', async () => {
             if (
                 this.pc.iceConnectionState !== 'completed' &&
@@ -519,7 +433,7 @@ export default class ICESession extends BaseSession {
             clearTimeout(this._maybeRestartingIce);
         }
         this._maybeRestartingIce = setTimeout(() => {
-            delete this._maybeRestartingIce;
+            this._maybeRestartingIce = undefined;
             if (this.pc.iceConnectionState === 'disconnected') {
                 this.restartIce();
             }

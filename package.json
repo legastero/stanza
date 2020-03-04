@@ -20,7 +20,7 @@
         "react-native-randombytes": "^3.5.3",
         "readable-stream": "^2.3.6",
         "sdp": "^2.10.0",
-        "stanza-shims": "^1.0.0",
+        "stanza-shims": "^1.1.1",
         "tslib": "^1.9.3",
         "ws": "^7.2.1"
     },
