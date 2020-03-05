@@ -34,7 +34,7 @@ export default class ICESession extends BaseSession {
 
         this.maxRelayBandwidth = opts.maxRelayBandwidth;
 
-        this.pc = this.parent.createPeerConnection({
+        this.pc = this.parent.createPeerConnection(this, {
             ...opts.config,
             iceServers: opts.iceServers
         })!;

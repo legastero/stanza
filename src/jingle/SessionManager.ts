@@ -30,7 +30,10 @@ export interface SessionManagerConfig {
     peerConnectionConstraints?: any;
     performTieBreak?: (session: BaseSession, req: IQ & { jingle: Jingle }) => boolean;
     prepareSession?: (opts: any, req?: IQ & { jingle: Jingle }) => BaseSession | undefined;
-    createPeerConnection?: () => RTCPeerConnection | undefined;
+    createPeerConnection?: (
+        session: BaseSession,
+        opts?: RTCConfiguration
+    ) => RTCPeerConnection | undefined;
 }
 
 export default class SessionManager extends EventEmitter {
@@ -42,7 +45,10 @@ export default class SessionManager extends EventEmitter {
 
     public performTieBreak: (session: BaseSession, req: IQ & { jingle: Jingle }) => boolean;
     public prepareSession: (opts: any, req?: IQ & { jingle: Jingle }) => BaseSession | undefined;
-    public createPeerConnection: (opts?: RTCConfiguration) => RTCPeerConnection | undefined;
+    public createPeerConnection: (
+        session: BaseSession,
+        opts?: RTCConfiguration
+    ) => RTCPeerConnection | undefined;
 
     constructor(conf: SessionManagerConfig = {}) {
         super();
@@ -83,7 +89,7 @@ export default class SessionManager extends EventEmitter {
 
         this.createPeerConnection =
             conf.createPeerConnection ||
-            ((opts?: RTCConfiguration) => {
+            ((session: BaseSession, opts?: RTCConfiguration) => {
                 if (!!RTCPeerConnection) {
                     return new (RTCPeerConnection as any)(opts);
                 }
