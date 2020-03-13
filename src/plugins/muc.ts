@@ -379,7 +379,7 @@ export default function(client: Agent) {
         });
     };
 
-    client.getRoomMembers = (room: string, opts: MUCUserItem = {}) => {
+    client.getRoomMembers = (room: string, opts: MUCUserItem = { affiliation: 'member' }) => {
         return client.sendIQ({
             muc: {
                 type: 'user-list',
