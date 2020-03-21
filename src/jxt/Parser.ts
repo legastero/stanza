@@ -212,7 +212,7 @@ export default class Parser extends EventEmitter {
     private state: State = State.TEXT;
     private tagName?: string = '';
     private haveDeclaration: boolean = false;
-    private recordBuffer: number[] = [];
+    private recordBuffer: string[] = [];
 
     constructor(opts: ParserOptions = {}) {
         super();
@@ -241,7 +241,7 @@ export default class Parser extends EventEmitter {
                         this.transition(State.TAG_START);
                         continue;
                     } else {
-                        this.record(c);
+                        this.record(char);
                         continue;
                     }
                 }
@@ -265,7 +265,7 @@ export default class Parser extends EventEmitter {
                     }
                     if (isNameStart(c)) {
                         this.transition(State.TAG_NAME);
-                        this.startRecord(c);
+                        this.startRecord(char);
                         continue;
                     }
 
@@ -274,7 +274,7 @@ export default class Parser extends EventEmitter {
 
                 case State.TAG_NAME: {
                     if (isName(c)) {
-                        this.record(c);
+                        this.record(char);
                         continue;
                     }
                     if (isWhitespace(c)) {
@@ -329,7 +329,7 @@ export default class Parser extends EventEmitter {
                         continue;
                     }
                     if (isNameStart(c)) {
-                        this.startRecord(c);
+                        this.startRecord(char);
                         this.transition(State.ATTR_NAME);
                         continue;
                     }
@@ -347,7 +347,7 @@ export default class Parser extends EventEmitter {
 
                 case State.CLOSING_TAG_START: {
                     if (isNameStart(c)) {
-                        this.startRecord(c);
+                        this.startRecord(char);
                         this.transition(State.CLOSING_TAG_NAME);
                         continue;
                     }
@@ -356,7 +356,7 @@ export default class Parser extends EventEmitter {
 
                 case State.CLOSING_TAG_NAME: {
                     if (isName(c)) {
-                        this.record(c);
+                        this.record(char);
                         continue;
                     }
                     if (isWhitespace(c)) {
@@ -391,7 +391,7 @@ export default class Parser extends EventEmitter {
 
                 case State.ATTR_NAME: {
                     if (isName(c)) {
-                        this.record(c);
+                        this.record(char);
                         continue;
                     }
                     if (c === Character.Equal) {
@@ -454,7 +454,7 @@ export default class Parser extends EventEmitter {
                         return this.notWellFormed();
                     }
 
-                    this.record(c);
+                    this.record(char);
                     continue;
                 }
 
@@ -577,15 +577,15 @@ export default class Parser extends EventEmitter {
                         continue;
                     }
 
-                    this.record(c);
+                    this.record(char);
                     continue;
                 }
                 case State.END_CDATA_RB: {
                     if (c === Character.RightBracket) {
                         this.transition(State.END_CDATA_RB_RB);
                     } else {
-                        this.record(Character.RightBracket);
-                        this.record(c);
+                        this.record(String.fromCodePoint(Character.RightBracket));
+                        this.record(char);
                         this.transition(State.CDATA);
                     }
                     continue;
@@ -598,9 +598,9 @@ export default class Parser extends EventEmitter {
                         }
                         this.transition(State.TEXT);
                     } else {
-                        this.record(Character.RightBracket);
-                        this.record(Character.RightBracket);
-                        this.record(c);
+                        this.record(String.fromCodePoint(Character.RightBracket));
+                        this.record(String.fromCodePoint(Character.RightBracket));
+                        this.record(char);
                         this.transition(State.CDATA);
                     }
                     continue;
@@ -616,21 +616,21 @@ export default class Parser extends EventEmitter {
         this.write = () => undefined;
     }
 
-    private record(c: number): void {
-        this.recordBuffer.push(c);
+    private record(char: string): void {
+        this.recordBuffer.push(char);
     }
 
-    private startRecord(c?: number): void {
+    private startRecord(char?: string): void {
         this.recordBuffer = [];
-        if (c) {
-            this.recordBuffer.push(c);
+        if (char) {
+            this.recordBuffer.push(char);
         }
     }
 
     private endRecord(): string {
         const data = this.recordBuffer;
         this.recordBuffer = [];
-        return String.fromCodePoint(...data);
+        return data.join('');
     }
 
     private startTag(): void {
