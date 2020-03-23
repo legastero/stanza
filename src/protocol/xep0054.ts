@@ -51,24 +51,63 @@ export interface VCardTempLogo {
     url?: string;
 }
 
+type VCardTempAddressType =
+    | 'home'
+    | 'work'
+    | 'domestic'
+    | 'international'
+    | 'postal'
+    | 'parcel';
+
 export interface VCardTempAddress {
     type: 'address';
+    city?: string;
+    code?: string;
+    country?: string;
+    pobox?: string;
+    preferred?: boolean;
+    region?: string;
+    street?: string;
+    street2?: string;
+    types?: VCardTempAddressType[];
 }
 
+type VCardTempAddressLabelType =
+    | 'home'
+    | 'work';
+    
 export interface VCardTempAddressLabel {
     type: 'addressLabel';
+    lines?: string;
+    preferred?: boolean;
+    types?: VCardTempAddressLabelType[];
 }
+
+type VCardTempPhoneType =
+    | 'home'
+    | 'work'
+    | 'cell'
+    | 'fax'
+    | 'voice'
+    | 'msg';
 
 export interface VCardTempPhone {
     type: 'tel';
+    value?: string;
+    preferred?: boolean;
+    types?: VCardTempPhoneType[];
 }
+
+type VCardTempEmailType =
+    | 'home'
+    | 'internet'
+    | 'work';
 
 export interface VCardTempEmail {
     type: 'email';
     value?: string;
-    home?: boolean;
     preferred?: boolean;
-    work?: boolean;
+    types?: VCardTempEmailType[];
 }
 
 export interface VCardTempJID {
@@ -114,7 +153,8 @@ export type VCardTempRecord =
     | VCardTempEmail
     | VCardTempOrg
     | VCardTempLogo
-    | VCardTempCategories;
+    | VCardTempCategories
+    | VCardTempField;
 
 const path = 'vcardTemp.records';
 
