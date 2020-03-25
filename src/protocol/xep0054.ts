@@ -142,7 +142,7 @@ export interface VCardTempField {
 export interface VCardTempOrg {
     type: 'organization';
     value?: string;
-    unit?: string;
+    units?: string[];
 }
 
 export type VCardTempRecord =
@@ -228,7 +228,7 @@ const Protocol: DefinitionOptions[] = [
         aliases: [{ path, multiple: true }],
         element: 'ORG',
         fields: {
-            unit: { ...childText(null, 'ORGUNIT'), order: 2 },
+            units: { ...multipleChildText(null, 'ORGUNIT'), order: 2 },
             value: { ...childText(null, 'ORGNAME'), order: 1 }
         },
         namespace: NS_VCARD_TEMP,
