@@ -228,7 +228,7 @@ const Protocol: DefinitionOptions[] = [
         aliases: [{ path, multiple: true }],
         element: 'ORG',
         fields: {
-            units: { ...multipleChildText(null, 'ORGUNIT'), order: 2 },
+            unit: { ...childText(null, 'ORGUNIT'), order: 2 },
             value: { ...childText(null, 'ORGNAME'), order: 1 }
         },
         namespace: NS_VCARD_TEMP,
