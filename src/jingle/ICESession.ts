@@ -25,9 +25,9 @@ export default class ICESession extends BaseSession {
     } | null> = [];
     public transportType: JingleIce['transportType'] = NS_JINGLE_ICE_UDP_1;
     public restartingIce: boolean = false;
+    public usingRelay: boolean = false;
 
     private _maybeRestartingIce: any;
-    private _firstTimeConnected?: boolean;
 
     constructor(opts: any) {
         super(opts);
@@ -371,11 +371,6 @@ export default class ICESession extends BaseSession {
                 return;
             }
 
-            if (this._firstTimeConnected) {
-                return;
-            }
-            this._firstTimeConnected = true;
-
             const stats = await this.pc.getStats();
             let activeCandidatePair: any;
             stats.forEach(report => {
@@ -392,27 +387,45 @@ export default class ICESession extends BaseSession {
                     }
                 });
             }
-            if (activeCandidatePair) {
-                let isRelay = false;
-                if (activeCandidatePair.remoteCandidateId) {
-                    const remoteCandidate = (stats as any).get(
-                        activeCandidatePair.remoteCandidateId
-                    );
-                    if (remoteCandidate && remoteCandidate.candidateType === 'relay') {
-                        isRelay = true;
-                    }
+
+            if (!activeCandidatePair) {
+                return;
+            }
+
+            let isRelay = false;
+            let localCandidateType: string = '';
+            let remoteCandidateType: string = '';
+
+            if (activeCandidatePair.remoteCandidateId) {
+                const remoteCandidate = (stats as any).get(activeCandidatePair.remoteCandidateId);
+                if (remoteCandidate) {
+                    remoteCandidateType = remoteCandidate.candidateType;
                 }
-                if (activeCandidatePair.localCandidateId) {
-                    const localCandidate = (stats as any).get(activeCandidatePair.localCandidateId);
-                    if (localCandidate && localCandidate.candidateType === 'relay') {
-                        isRelay = true;
-                    }
+            }
+            if (activeCandidatePair.localCandidateId) {
+                const localCandidate = (stats as any).get(activeCandidatePair.localCandidateId);
+                if (localCandidate) {
+                    localCandidateType = localCandidate.candidateType;
                 }
-                if (isRelay) {
-                    this.maximumBitrate = this.maxRelayBandwidth;
-                    if (this.currentBitrate) {
-                        this.setMaximumBitrate(Math.min(this.currentBitrate, this.maximumBitrate));
-                    }
+            }
+
+            if (localCandidateType === 'relay' || remoteCandidateType === 'relay') {
+                isRelay = true;
+            }
+
+            this.usingRelay = isRelay;
+            this.parent.emit('iceConnectionType', this, {
+                localCandidateType,
+                relayed: isRelay,
+                remoteCandidateType
+            });
+
+            if (isRelay) {
+                this.maximumBitrate = this.maxRelayBandwidth;
+                if (this.currentBitrate) {
+                    this.setMaximumBitrate(Math.min(this.currentBitrate, this.maximumBitrate));
+                } else {
+                    this.setMaximumBitrate(this.maximumBitrate);
                 }
             }
         });
