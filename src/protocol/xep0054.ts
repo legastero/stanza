@@ -51,13 +51,7 @@ export interface VCardTempLogo {
     url?: string;
 }
 
-type VCardTempAddressType =
-    | 'home'
-    | 'work'
-    | 'domestic'
-    | 'international'
-    | 'postal'
-    | 'parcel';
+type VCardTempAddressType = 'home' | 'work' | 'domestic' | 'international' | 'postal' | 'parcel';
 
 export interface VCardTempAddress {
     type: 'address';
@@ -72,10 +66,8 @@ export interface VCardTempAddress {
     types?: VCardTempAddressType[];
 }
 
-type VCardTempAddressLabelType =
-    | 'home'
-    | 'work';
-    
+type VCardTempAddressLabelType = 'home' | 'work';
+
 export interface VCardTempAddressLabel {
     type: 'addressLabel';
     lines?: string;
@@ -83,13 +75,7 @@ export interface VCardTempAddressLabel {
     types?: VCardTempAddressLabelType[];
 }
 
-type VCardTempPhoneType =
-    | 'home'
-    | 'work'
-    | 'cell'
-    | 'fax'
-    | 'voice'
-    | 'msg';
+type VCardTempPhoneType = 'home' | 'work' | 'cell' | 'fax' | 'voice' | 'msg';
 
 export interface VCardTempPhone {
     type: 'tel';
@@ -98,10 +84,7 @@ export interface VCardTempPhone {
     types?: VCardTempPhoneType[];
 }
 
-type VCardTempEmailType =
-    | 'home'
-    | 'internet'
-    | 'work';
+type VCardTempEmailType = 'home' | 'internet' | 'work';
 
 export interface VCardTempEmail {
     type: 'email';
