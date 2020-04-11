@@ -279,6 +279,7 @@ export default class FileTransferSession extends ICESession {
                 this.send('session-accept', jingle);
 
                 await this.pc.setLocalDescription(answer);
+                await this.processBufferedCandidates();
             });
 
             next();

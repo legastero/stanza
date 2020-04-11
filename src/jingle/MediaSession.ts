@@ -147,6 +147,7 @@ export default class MediaSession extends ICESession {
                     content.creator = 'initiator';
                 }
                 await this.pc.setLocalDescription(answer);
+                await this.processBufferedCandidates();
 
                 this.send('session-accept', jingle);
             });

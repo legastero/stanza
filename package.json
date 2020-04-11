@@ -78,7 +78,9 @@
         "tabWidth": 4,
         "printWidth": 100,
         "semi": true,
-        "singleQuote": true
+        "singleQuote": true,
+        "trailingComma": "none",
+        "arrowParens": "avoid"
     },
     "private": true,
     "repository": {
