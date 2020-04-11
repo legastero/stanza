@@ -4,6 +4,7 @@
         "exclude": ["build", "lib"]
     },
     "rules": {
+        "array-type": [true, "array-simple"],
         "quotemark": [true, "single", "jsx-double", "avoid-escape"],
         "trailing-comma": [true, "never"],
         "no-consecutive-blank-lines": [true, 2],
