@@ -22,14 +22,14 @@ declare module '../' {
 
 type FeatureHandler = (data: StreamFeatures, done: (cmd?: string, msg?: string) => void) => void;
 
-export default function(client: Agent) {
+export default function (client: Agent) {
     client.features = {
-        handlers: {},
-        negotiated: {},
+        handlers: Object.create(null),
+        negotiated: Object.create(null),
         order: []
     };
 
-    client.registerFeature = function(name, priority, handler) {
+    client.registerFeature = function (name, priority, handler) {
         this.features.order.push({
             name,
             priority
@@ -40,37 +40,39 @@ export default function(client: Agent) {
     };
 
     client.on('features', async features => {
-        const series: Array<() => Promise<null | { command: string; message?: string }>> = [];
         const negotiated = client.features.negotiated;
         const handlers = client.features.handlers;
+        const processingOrder: string[] = [];
 
-        for (const feature of client.features.order) {
-            const name = feature.name;
+        for (const { name } of client.features.order) {
             if ((features as any)[name] && handlers[name] && !negotiated[name]) {
-                series.push(
-                    () =>
-                        new Promise(resolve => {
-                            if (!negotiated[name]) {
-                                handlers[name](features, (command, message) => {
-                                    if (command) {
-                                        resolve({ command, message });
-                                    } else {
-                                        resolve();
-                                    }
-                                });
-                            } else {
-                                resolve();
-                            }
-                        })
-                );
+                processingOrder.push(name);
             }
         }
 
-        for (const item of series) {
+        function processFeature(
+            featureName: string
+        ): Promise<null | { command: string; message?: string }> {
+            return new Promise(resolve => {
+                handlers[featureName](features, (command, message) => {
+                    if (command) {
+                        resolve({ command, message });
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+        }
+
+        for (const item of processingOrder) {
+            if (negotiated[item]) {
+                continue;
+            }
+
             let cmd = '';
             let msg = '';
             try {
-                const res = await item();
+                const res = await processFeature(item);
                 if (res) {
                     cmd = res.command;
                     msg = res.message || '';
