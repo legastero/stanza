@@ -9,6 +9,12 @@ import { Stream } from '../protocol';
 
 const WS_OPEN = 1;
 
+interface OutputData {
+    kind?: string;
+    stanza?: any;
+    data: string;
+}
+
 export default class WSConnection implements Transport {
     public hasStream?: boolean;
     public stream?: Stream;
@@ -18,7 +24,7 @@ export default class WSConnection implements Transport {
     private sm: StreamManagement;
     private stanzas: Registry;
     private closing: boolean;
-    private sendQueue: AsyncPriorityQueue<string>;
+    private sendQueue: AsyncPriorityQueue<OutputData>;
     private conn?: WebSocket;
     private parser?: StreamParser;
 
@@ -28,16 +34,20 @@ export default class WSConnection implements Transport {
         this.closing = false;
         this.client = client;
 
-        this.sendQueue = priorityQueue((data, cb) => {
-            if (this.conn) {
+        this.sendQueue = priorityQueue<OutputData>(({ kind, stanza, data }, cb) => {
+            if (this.conn && this.conn.readyState === WS_OPEN) {
                 data = Buffer.from(data, 'utf8').toString();
                 this.client.emit('raw', 'outgoing', data);
-                if (this.conn.readyState === WS_OPEN) {
-                    this.conn.send(data);
-                }
+                this.conn.send(data);
+            } else if (!this.sm.started && ['message', 'presence', 'iq'].includes(kind!)) {
+                this.client.emit('stanza:failed', {
+                    kind: kind as any,
+                    stanza
+                });
             }
             cb();
         }, 1);
+        this.sendQueue.pause();
     }
 
     public connect(opts: TransportConfig) {
@@ -93,6 +103,7 @@ export default class WSConnection implements Transport {
         this.conn.onopen = () => {
             this.sm.started = false;
             this.client.emit('connected');
+            this.sendQueue.resume();
             this.send(this.startHeader());
         };
         this.conn.onmessage = wsMsg => {
@@ -122,10 +133,22 @@ export default class WSConnection implements Transport {
         if (data) {
             const output = this.stanzas.export(dataOrName, data);
             if (output) {
-                this.sendQueue.push(output.toString(), 0);
+                this.sendQueue.push(
+                    {
+                        kind: dataOrName,
+                        stanza: data,
+                        data: output.toString()
+                    },
+                    0
+                );
             }
         } else {
-            this.sendQueue.push(dataOrName, 0);
+            this.sendQueue.push(
+                {
+                    data: dataOrName
+                },
+                0
+            );
         }
     }
 
