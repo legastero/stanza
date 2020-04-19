@@ -196,9 +196,7 @@ export default class BOSHConnection implements Transport {
             this.lastResponseTime = Date.now();
 
             if (respBody) {
-                const rawData = Buffer.from(respBody, 'utf8')
-                    .toString()
-                    .trim();
+                const rawData = Buffer.from(respBody, 'utf8').toString().trim();
                 if (rawData === '') {
                     return;
                 }

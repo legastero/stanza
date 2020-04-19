@@ -141,7 +141,7 @@ export default class Client extends EventEmitter {
                 delete this.transport;
             }
 
-            const drains: Promise<void>[] = [];
+            const drains: Array<Promise<void>> = [];
             if (!this.incomingDataQueue.idle()) {
                 drains.push(this.incomingDataQueue.drain());
             }
