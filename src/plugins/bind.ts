@@ -1,6 +1,6 @@
 import { Agent } from '../';
 
-export default function(client: Agent) {
+export default function (client: Agent) {
     client.registerFeature('bind', 300, async (features, cb) => {
         try {
             const resp = await client.sendIQ({
