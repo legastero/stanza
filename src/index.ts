@@ -4,7 +4,7 @@ import Client from './Client';
 import * as Constants from './Constants';
 import * as RTT from './helpers/RTT';
 import SM from './helpers/StreamManagement';
-import HookEmitter, { HookEvents, Logger } from './HookEmitter';
+import HookEmitter, { HookEvents, Logger } from './lib/HookEmitter';
 import * as JID from './JID';
 import * as Jingle from './jingle';
 import * as JXT from './jxt';

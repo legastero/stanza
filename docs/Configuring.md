@@ -14,7 +14,7 @@ It is possible to inspect the configuration later by using `client.config`.
 
 ## Available Settings
 
-<ul><li><a href="#acceptLanguages">acceptLanguages</a></li><li><a href="#allowResumption">allowResumption</a></li><li><a href="#capsNode">capsNode</a></li><li><a href="#chatMarkers">chatMarkers</a></li><li><a href="#credentials">credentials</a></li><li><a href="#jid">jid</a></li><li><a href="#lang">lang</a></li><li><a href="#password">password</a></li><li><a href="#resource">resource</a></li><li><a href="#rosterVer">rosterVer</a></li><li><a href="#sendReceipts">sendReceipts</a></li><li><a href="#server">server</a></li><li><a href="#softwareVersion">softwareVersion</a></li><li><a href="#timeout">timeout</a></li><li><a href="#transports">transports</a></li><li><a href="#useStreamManagement">useStreamManagement</a></li></ul>
+<ul><li><a href="#acceptLanguages">acceptLanguages</a></li><li><a href="#allowResumption">allowResumption</a></li><li><a href="#capsNode">capsNode</a></li><li><a href="#chatMarkers">chatMarkers</a></li><li><a href="#credentials">credentials</a></li><li><a href="#jid">jid</a></li><li><a href="#jingle">jingle</a></li><li><a href="#lang">lang</a></li><li><a href="#maxAuthAttempts">maxAuthAttempts</a></li><li><a href="#password">password</a></li><li><a href="#resource">resource</a></li><li><a href="#rosterVer">rosterVer</a></li><li><a href="#sendReceipts">sendReceipts</a></li><li><a href="#server">server</a></li><li><a href="#softwareVersion">softwareVersion</a></li><li><a href="#timeout">timeout</a></li><li><a href="#transports">transports</a></li><li><a href="#useStreamManagement">useStreamManagement</a></li></ul>
 <h3 id="acceptLanguages">Accepted Languages</h3>
 <table>
   <tr><th>Name</th><th>Type</th><th>Default Value</th></tr>
@@ -81,6 +81,17 @@ It is possible to inspect the configuration later by using `client.config`.
 </table>
 <p></p>
 
+<h3 id="jingle">jingle</h3>
+<table>
+  <tr><th>Name</th><th>Type</th><th>Default Value</th></tr>
+  <tr>
+     <td><code>jingle</code></td>
+     <td><code>JinglePluginConfig</code></td>
+     <td><code>undefined</code></td>
+  </tr>
+</table>
+<p></p>
+
 <h3 id="lang">User Language</h3>
 <table>
   <tr><th>Name</th><th>Type</th><th>Default Value</th></tr>
@@ -91,6 +102,17 @@ It is possible to inspect the configuration later by using `client.config`.
   </tr>
 </table>
 <p>The associated language code for content created by the user.</p>
+
+<h3 id="maxAuthAttempts">Maximum Authentication Attempts</h3>
+<table>
+  <tr><th>Name</th><th>Type</th><th>Default Value</th></tr>
+  <tr>
+     <td><code>maxAuthAttempts</code></td>
+     <td><code>number</code></td>
+     <td><code>5</code></td>
+  </tr>
+</table>
+<p>The number of times to allow an authentication failure before aborting and disconnectig. This number should be at least 2, and no more than 5.</p>
 
 <h3 id="password">Account Password</h3>
 <table>

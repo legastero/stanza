@@ -80,8 +80,10 @@
                 <label
                     >JID: <input id="jid" type="text" name="jid" value="stanzaio@lance.im"
                 /></label>
-                <label>Password: <input id="password" type="password" name="password"/></label>
-                <label>WebSocket/BOSH URL: <input id="url" type="text" name="url" value=""/></label>
+                <label>Password: <input id="password" type="password" name="password" /></label>
+                <label
+                    >WebSocket/BOSH URL: <input id="url" type="text" name="url" value=""
+                /></label>
                 <input id="connect" type="submit" value="Connect" />
             </form>
         </div>
@@ -120,7 +122,7 @@
 
             var client;
             var loginInfo = document.getElementById('loginInfo');
-            loginInfo.onsubmit = function(e) {
+            loginInfo.onsubmit = function (e) {
                 if (e.preventDefault) e.preventDefault();
 
                 var jid = document.getElementById('jid').value;

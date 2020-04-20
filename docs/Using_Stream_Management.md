@@ -152,7 +152,6 @@ In the event that you lose connection, there are two possibilities:
 1. Stream resumption works, and messages get resent as needed, automatically.
 2. Stream resumption fails.
 
-
 If stream resumption was enabled, the event `message:hibernated` is emitted instead if the client is disconnected when it attempts to send the message:
 
 ```typescript
@@ -176,7 +175,6 @@ client.on('message:resent', msg => {
     }
 });
 ```
-
 
 If stream resumption fails (or was never enabled), then any still-pending messages _never_ made it to the server:
 

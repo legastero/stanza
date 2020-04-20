@@ -142,15 +142,11 @@ export function XOR(a: Buffer, b: Buffer) {
 // tslint:enable no-bitwise
 
 export function H(text: Buffer, alg: string): Buffer {
-    return Hashes.createHash(alg)
-        .update(text)
-        .digest();
+    return Hashes.createHash(alg).update(text).digest();
 }
 
 export function HMAC(key: Buffer, msg: Buffer, alg: string): Buffer {
-    return Hashes.createHmac(alg, key)
-        .update(msg)
-        .digest() as Buffer;
+    return Hashes.createHmac(alg, key).update(msg).digest() as Buffer;
 }
 
 export function Hi(text: Buffer, salt: Buffer, iterations: number, alg: string) {
@@ -358,9 +354,7 @@ export class DIGEST extends SimpleMech implements Mechanism {
             ha1.update(':').update(credentials.authzid);
         }
         const dha1 = ha1.digest('hex');
-        const ha2 = Hashes.createHash('md5')
-            .update('AUTHENTICATE:')
-            .update(uri);
+        const ha2 = Hashes.createHash('md5').update('AUTHENTICATE:').update(uri);
         const dha2 = ha2.digest('hex');
         const digest = Hashes.createHash('md5')
             .update(dha1)
@@ -413,10 +407,7 @@ export class SCRAM implements Mechanism {
         this.name = name;
         this.state = 'INITIAL';
         this.useChannelBinding = this.name.toLowerCase().endsWith('-plus');
-        this.algorithm = this.name
-            .toLowerCase()
-            .split('scram-')[1]
-            .split('-plus')[0];
+        this.algorithm = this.name.toLowerCase().split('scram-')[1].split('-plus')[0];
     }
 
     public getExpectedCredentials(): ExpectedCredentials {

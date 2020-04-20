@@ -207,7 +207,10 @@ export class HookEmitter<H extends HookEvents> {
                 if (event._destroy) {
                     this.hooks.delete(name);
                 } else if (handlerDestroyed) {
-                    this.hooks.set(name, hooks.filter(handler => !handler.destroy));
+                    this.hooks.set(
+                        name,
+                        hooks.filter(handler => !handler.destroy)
+                    );
                 }
             }
 

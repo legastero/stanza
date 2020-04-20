@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 
 import { Agent, AgentConfig, AgentEvents, AgentHooks, Transport } from './';
 import StreamManagement from './helpers/StreamManagement';
-import HookEmitter, { Logger } from './HookEmitter';
+import HookEmitter, { Logger } from './lib/HookEmitter';
 import * as JID from './JID';
 import * as JXT from './jxt';
 import * as SASL from './lib/sasl';

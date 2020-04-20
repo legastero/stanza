@@ -14,6 +14,22 @@ Unlike events, hooks are async, and handlers can be chained, running in a defina
 
 <p></p>
 
+<h3 id="--reset-stream-features">--reset-stream-features</h3>
+
+```
+void
+```
+
+<p></p>
+
+<h3 id="--transport-disconnected">--transport-disconnected</h3>
+
+```
+void
+```
+
+<p></p>
+
 <h3 id="activity">activity</h3>
 
 ```
@@ -350,7 +366,31 @@ ReceivedMessage
 
 <p></p>
 
+<h3 id="message:acked">message:acked</h3>
+
+```
+Message
+```
+
+<p></p>
+
 <h3 id="message:error">message:error</h3>
+
+```
+Message
+```
+
+<p></p>
+
+<h3 id="message:failed">message:failed</h3>
+
+```
+Message
+```
+
+<p></p>
+
+<h3 id="message:retry">message:retry</h3>
 
 ```
 Message
@@ -695,6 +735,14 @@ Message | Presence | IQ
 <p></p>
 
 <h3 id="stanza:failed">stanza:failed</h3>
+
+```
+{ kind: message; stanza: Message } | { kind: presence; stanza: Presence } | { kind: iq; stanza: IQ }
+```
+
+<p></p>
+
+<h3 id="stanza:hibernated">stanza:hibernated</h3>
 
 ```
 { kind: message; stanza: Message } | { kind: presence; stanza: Presence } | { kind: iq; stanza: IQ }
