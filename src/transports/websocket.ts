@@ -39,8 +39,8 @@ export default class WSConnection implements Transport {
                 data = Buffer.from(data, 'utf8').toString();
                 this.client.emit('raw', 'outgoing', data);
                 this.conn.send(data);
-            } else if (!this.sm.started && ['message', 'presence', 'iq'].includes(kind!)) {
-                this.client.emit('stanza:failed', {
+            } else if (['message', 'presence', 'iq'].includes(kind!)) {
+                this.client.emit(this.sm.resumable ? 'stanza:hibernated' : 'stanza:failed', {
                     kind: kind as any,
                     stanza
                 });
