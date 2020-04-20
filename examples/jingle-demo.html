@@ -108,7 +108,8 @@
                 client = XMPP.createClient({
                     jid: jid,
                     password: document.getElementById('password').value,
-                    transports: transports
+                    transports: transports,
+                    allowResumption: false
                 });
 
                 client.on('raw:incoming', function(data) {

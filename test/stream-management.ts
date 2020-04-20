@@ -1,7 +1,7 @@
 import StreamManagement from '../src/helpers/StreamManagement';
 import { sleep } from '../src/Utils';
 
-test('Handled unacked on resume', () => {
+test('Handled unacked on resume', async () => {
     let cache: any;
     let acked: any[] = [];
     let resent: any[] = [];
@@ -14,16 +14,16 @@ test('Handled unacked on resume', () => {
     sm1.on('acked', data => acked.push(data));
 
     sm1.bind('test-jid');
-    sm1.enable();
-    sm1.track('sm', { type: 'enable' });
+    await sm1.enable();
+    await sm1.track('sm', { type: 'enable' });
 
-    sm1.enabled({ id: 'test', resume: true, type: 'enabled' });
+    await sm1.enabled({ id: 'test', resume: true, type: 'enabled' });
 
-    sm1.track('message', { body: 'message 1' });
-    sm1.track('message', { body: 'message 2' });
-    sm1.track('message', { body: 'message 3' });
-    sm1.track('message', { body: 'message 4' });
-    sm1.process({ type: 'ack', handled: 1 });
+    await sm1.track('message', { body: 'message 1' });
+    await sm1.track('message', { body: 'message 2' });
+    await sm1.track('message', { body: 'message 3' });
+    await sm1.track('message', { body: 'message 4' });
+    await sm1.process({ type: 'ack', handled: 1 });
     // -- sm1 disconnect --
 
     // -- resume with sm2 --
@@ -35,8 +35,8 @@ test('Handled unacked on resume', () => {
     sm2.on('acked', data => acked.push(data));
     sm2.on('resend', data => resent.push(data));
 
-    sm2.resume();
-    sm2.resumed({ type: 'resumed', handled: 2, previousSession: 'test' });
+    await sm2.resume();
+    await sm2.resumed({ type: 'resumed', handled: 2, previousSession: 'test' });
 
     expect(acked).toStrictEqual([
         { kind: 'message', stanza: { body: 'message 1' } },
@@ -48,7 +48,7 @@ test('Handled unacked on resume', () => {
     ]);
 });
 
-test('Handled failed with known handled', () => {
+test('Handled failed with known handled', async () => {
     let cache: any;
     let acked: any[] = [];
     let failed: any[] = [];
@@ -60,16 +60,16 @@ test('Handled failed with known handled', () => {
 
     sm1.on('acked', data => acked.push(data));
 
-    sm1.enable();
-    sm1.track('sm', { type: 'enable' });
+    await sm1.enable();
+    await sm1.track('sm', { type: 'enable' });
 
-    sm1.enabled({ id: 'test', resume: true, type: 'enabled' });
+    await sm1.enabled({ id: 'test', resume: true, type: 'enabled' });
 
-    sm1.track('message', { body: 'message 1' });
-    sm1.track('message', { body: 'message 2' });
-    sm1.track('message', { body: 'message 3' });
-    sm1.track('message', { body: 'message 4' });
-    sm1.process({ type: 'ack', handled: 1 });
+    await sm1.track('message', { body: 'message 1' });
+    await sm1.track('message', { body: 'message 2' });
+    await sm1.track('message', { body: 'message 3' });
+    await sm1.track('message', { body: 'message 4' });
+    await sm1.process({ type: 'ack', handled: 1 });
     // -- sm1 disconnect --
 
     // -- resume with sm2 --
@@ -79,8 +79,8 @@ test('Handled failed with known handled', () => {
     sm2.on('acked', data => acked.push(data));
     sm2.on('failed', data => failed.push(data));
 
-    sm2.resume();
-    sm2.failed({ type: 'failed', handled: 2 });
+    await sm2.resume();
+    await sm2.failed({ type: 'failed', handled: 2 });
 
     expect(acked).toStrictEqual([
         { kind: 'message', stanza: { body: 'message 1' } },
@@ -92,7 +92,7 @@ test('Handled failed with known handled', () => {
     ]);
 });
 
-test('Handled failed with unknown handled', () => {
+test('Handled failed with unknown handled', async () => {
     let cache: any;
     let acked: any[] = [];
     let failed: any[] = [];
@@ -104,18 +104,18 @@ test('Handled failed with unknown handled', () => {
 
     sm1.on('acked', data => acked.push(data));
 
-    sm1.enable();
-    sm1.track('sm', { type: 'enable' });
+    await sm1.enable();
+    await sm1.track('sm', { type: 'enable' });
 
-    sm1.enabled({ id: 'test', resume: true, type: 'enabled' });
+    await sm1.enabled({ id: 'test', resume: true, type: 'enabled' });
 
-    sm1.track('message', { body: 'message 1' });
-    sm1.track('message', { body: 'message 2' });
-    sm1.track('message', { body: 'message 3' });
-    sm1.track('message', { body: 'message 4' });
+    await sm1.track('message', { body: 'message 1' });
+    await sm1.track('message', { body: 'message 2' });
+    await sm1.track('message', { body: 'message 3' });
+    await sm1.track('message', { body: 'message 4' });
 
     sm1.request();
-    sm1.process({ type: 'ack', handled: 1 });
+    await sm1.process({ type: 'ack', handled: 1 });
     // -- sm1 disconnect --
 
     // -- resume with sm2 --
@@ -125,8 +125,8 @@ test('Handled failed with unknown handled', () => {
     sm2.on('acked', data => acked.push(data));
     sm2.on('failed', data => failed.push(data));
 
-    sm2.resume();
-    sm2.failed({ type: 'failed' });
+    await sm2.resume();
+    await sm2.failed({ type: 'failed' });
 
     expect(acked).toStrictEqual([{ kind: 'message', stanza: { body: 'message 1' } }]);
     expect(failed).toStrictEqual([

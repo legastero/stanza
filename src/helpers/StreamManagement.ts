@@ -57,6 +57,10 @@ export default class StreamManagement extends EventEmitter {
         }
     }
 
+    get resumable() {
+        return this.started && this.allowResume;
+    }
+
     public load(opts: SMState): void {
         this.id = opts.id;
         this.allowResume = true;
@@ -103,7 +107,7 @@ export default class StreamManagement extends EventEmitter {
         this.id = resp.previousSession;
         this.inboundStarted = true;
 
-        this.process(resp, true);
+        await this.process(resp, true);
 
         await this._cache();
     }
@@ -111,7 +115,7 @@ export default class StreamManagement extends EventEmitter {
     public async failed(resp: StreamManagementFailed) {
         // Resumption might fail, but the server can still tell us how far
         // the old session progressed.
-        this.process(resp);
+        await this.process(resp);
 
         // We alert that any remaining unacked stanzas failed to send. It has
         // been too long for auto-retrying these to be the right thing to do.
@@ -154,8 +158,12 @@ export default class StreamManagement extends EventEmitter {
         if (resend) {
             const resendUnacked = this.unacked;
             this.unacked = [];
-            for (const [kind, stanza] of resendUnacked) {
-                this.emit('resend', { kind, stanza } as any);
+            if (resendUnacked.length) {
+                this.emit('begin-resend');
+                for (const [kind, stanza] of resendUnacked) {
+                    this.emit('resend', { kind, stanza } as any);
+                }
+                this.emit('end-resend');
             }
         }
 
@@ -191,6 +199,10 @@ export default class StreamManagement extends EventEmitter {
             this.handled = mod(this.handled + 1, MAX_SEQ);
             await this._cache();
         }
+    }
+
+    public async shutdown() {
+        return this.failed({ type: 'failed' });
     }
 
     private async _cache() {

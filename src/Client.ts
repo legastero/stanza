@@ -15,6 +15,7 @@ import { timeoutPromise, uuid } from './Utils';
 interface StreamData {
     kind: string;
     stanza: any;
+    replay?: boolean;
 }
 
 export default class Client extends EventEmitter {
@@ -69,11 +70,26 @@ export default class Client extends EventEmitter {
             this.jid = jid;
             this.emit('session:bound', jid);
         });
+        this.on('session:bound', jid => this.sm.bind(jid));
+
         this.sm.on('send', sm => this.send('sm', sm));
         this.sm.on('acked', acked => this.emit('stanza:acked', acked));
         this.sm.on('failed', failed => this.emit('stanza:failed', failed));
+
+        // We disable outgoing processing while stanza resends are queued up
+        // to prevent any interleaving.
+        this.sm.on('begin-resend', () => this.outgoingDataQueue.pause());
         this.sm.on('resend', ({ kind, stanza }) => this.send(kind, stanza, true));
-        this.on('session:bound', jid => this.sm.bind(jid));
+        this.sm.on('end-resend', () => this.outgoingDataQueue.resume());
+
+        // Create message:* flavors of stanza:* SM events
+        ['acked', 'hibernated', 'failed'].forEach(type => {
+            this.on(`stanza:${type}`, (data: StreamData) => {
+                if (data.kind === 'message') {
+                    this.emit(`message:${type}`, data.stanza);
+                }
+            });
+        });
 
         this.transports = {
             bosh: BOSH,
@@ -106,19 +122,26 @@ export default class Client extends EventEmitter {
         }, 1);
 
         this.outgoingDataQueue = priorityQueue<StreamData>(async (task, done) => {
-            const { kind, stanza } = task;
-            const ackRequest = await this.sm.track(kind, stanza);
+            const { kind, stanza, replay } = task;
+            const ackRequest = replay || (await this.sm.track(kind, stanza));
 
             if (kind === 'message') {
-                this.emit('message:sent', stanza, false);
+                if (replay) {
+                    this.emit('message:retry', stanza);
+                } else {
+                    this.emit('message:sent', stanza, false);
+                }
             }
             if (this.transport) {
                 this.transport.send(kind, stanza);
                 if (ackRequest) {
                     this.transport.send('sm', { type: 'request' });
                 }
-            } else if (!this.sm.started) {
-                this.emit('stanza:failed', { kind, stanza });
+            } else if (['message', 'presence', 'iq'].includes(kind)) {
+                this.emit(this.sm.resumable ? 'stanza:hibernated' : 'stanza:failed', {
+                    kind,
+                    stanza
+                });
             }
 
             if (done) {
@@ -318,7 +341,8 @@ export default class Client extends EventEmitter {
         return this.disconnect();
     }
 
-    public disconnect() {
+    public async disconnect() {
+        this.outgoingDataQueue.pause();
         if (this.sessionStarted && !this.sm.started) {
             // Only emit session:end if we had a session, and we aren't using
             // stream management to keep the session alive.
@@ -331,11 +355,16 @@ export default class Client extends EventEmitter {
         } else {
             this.emit('--transport-disconnected');
         }
+        this.outgoingDataQueue.resume();
+        if (!this.outgoingDataQueue.idle()) {
+            await this.outgoingDataQueue.drain();
+        }
+        await this.sm.shutdown();
     }
 
     public async send(kind: string, stanza: object, replay: boolean = false): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.outgoingDataQueue.push({ kind, stanza }, replay ? 0 : 1, err =>
+            this.outgoingDataQueue.push({ kind, stanza, replay }, replay ? 0 : 1, err =>
                 err ? reject(err) : resolve()
             );
         });

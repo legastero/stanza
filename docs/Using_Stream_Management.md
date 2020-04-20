@@ -64,7 +64,13 @@ client.sm.cache(state => {
 });
 ```
 
-You can also return a promise if your caching process needs to be async.
+You can also return a promise if your caching process needs to be async:
+
+```typescript
+client.sm.cache(async state => {
+    await someExternalDataStorage.save(state);
+});
+```
 
 ## Detecting Message Failures
 
@@ -84,7 +90,9 @@ client.on('message:sent', (msg, viaCarbon) => {
     messageStorage.set(msg.id, {
         serverReceived: viaCarbon,
         mucReceived: false,
-        failedToSend: false
+        hibernated: false,
+        failedToSend: false,
+        retrying: false
     });
 });
 ```
@@ -97,11 +105,13 @@ You might notice that the `message:sent` event gets fired _immediately_ when cal
 
 Second, we are looking at the `viaCarbon` flag to distinguish if this was a message sent locally, or it came from a [XEP-0280 message carbon](https://xmpp.org/extensions/xep-0280.html). If it came from a carbon, then the server has clearly received the original message.
 
-Third, we are storing three flags to represent multiple situations:
+Third, we are storing four flags to represent multiple situations:
 
 -   The server has received our message.
 -   If we are sending a message to a MUC, the MUC service has received our message.
+-   The network connection was down when we tried to send the message.
 -   The message failed to send entirely.
+-   We are attempting to (automatically) resend the message.
 
 Since MUCs are a very common use case, tracking that your message made it to the room, and not just
 to your server, is a good practice. MUCs reflect the messages you send back to you, so that state
@@ -122,16 +132,12 @@ client.on('groupchat', msg => {
 
 We can set multiple states to `true` here, since if the MUC has received your message, then your server must have as well.
 
-To detect that your server has received your message, we use the `stanza:acked` event:
+To detect that your server has received your message, we use the `message:acked` event:
 
 ```typescript
-client.on('stanza:acked', (stanza, kind) => {
-    if (kind !== 'message') {
-        return;
-    }
-
-    if (messageStorage.has(stanza.id)) {
-        messageStorage.set(stanza.id, {
+client.on('message:acked', msg => {
+    if (messageStorage.has(msg.id)) {
+        messageStorage.set(msg.id, {
             serverReceived: true,
             mucReceived: false
         });
@@ -139,29 +145,49 @@ client.on('stanza:acked', (stanza, kind) => {
 });
 ```
 
-The `stanza:acked` event fires for all stanza types, not just messages. So we filter to make sure we are only updating message state.
+We are using the `message:acked` event, which is a special case of the more general `stanza:acked` event. The `stanza:acked` event fires for all stanza types, not just messages.
 
 In the event that you lose connection, there are two possibilities:
 
 1. Stream resumption works, and messages get resent as needed, automatically.
 2. Stream resumption fails.
 
-If stream resumption fails, then any still-pending messages _never_ made it to the server:
+
+If stream resumption was enabled, the event `message:hibernated` is emitted instead if the client is disconnected when it attempts to send the message:
 
 ```typescript
-client.on('stanza:failed', (stanza, kind) => {
-    if (kind !== 'message') {
-        return;
-    }
-
-    if (messageStorage.has(stanza.id)) {
-        messageStorage.set(stanza.id, {
-            failedToSend: true
+client.on('message:hibernated', msg => {
+    if (messageStorage.has(msg.id)) {
+        messageStorage.set(msg.id, {
+            hibernated: true
         });
     }
 });
 ```
 
-The `stanza:failed` event will also be emitted if a stanza is attempted to be sent, but the client has disconnected and stream resumption was not enabled.
+Hibernated messages will be resent automatically if the session is resumed, and a `message:retry` event is emitted when that happens:
+
+```typescript
+client.on('message:resent', msg => {
+    if (messageStorage.has(msg.id)) {
+        messageStorage.set(msg.id, {
+            retrying: true
+        });
+    }
+});
+```
+
+
+If stream resumption fails (or was never enabled), then any still-pending messages _never_ made it to the server:
+
+```typescript
+client.on('message:failed', msg => {
+    if (messageStorage.has(msg.id)) {
+        messageStorage.set(msg.id, {
+            failedToSend: true
+        });
+    }
+});
+```
 
 These messages will need to be resent. Probably via a direct user interaction to confirm resending, as the messages could be old and no longer needed.

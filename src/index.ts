@@ -51,6 +51,10 @@ export interface AgentEvents {
 
     'message:sent': (msg: Stanzas.Message, viaCarbon: boolean) => void;
     'message:error': Stanzas.Message;
+    'message:failed': Stanzas.Message;
+    'message:acked': Stanzas.Message;
+    'message:retry': Stanzas.Message;
+
     chat: Stanzas.ReceivedMessage;
     groupchat: Stanzas.ReceivedMessage;
 
@@ -69,6 +73,10 @@ export interface AgentEvents {
     'session:end': undefined;
 
     'stanza:failed':
+        | { kind: 'message'; stanza: Stanzas.Message }
+        | { kind: 'presence'; stanza: Stanzas.Presence }
+        | { kind: 'iq'; stanza: Stanzas.IQ };
+    'stanza:hibernated':
         | { kind: 'message'; stanza: Stanzas.Message }
         | { kind: 'presence'; stanza: Stanzas.Presence }
         | { kind: 'iq'; stanza: Stanzas.IQ };
