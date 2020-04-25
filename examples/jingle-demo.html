@@ -21,7 +21,7 @@
                 <label
                     >JID: <input id="jid" type="text" name="jid" placeholder="me@example.com"
                 /></label>
-                <label>Password: <input id="password" type="password" name="password"/></label>
+                <label>Password: <input id="password" type="password" name="password" /></label>
                 <label
                     >WebSocket URL:
                     <input
@@ -85,7 +85,7 @@
             var inlog = console.log.bind(console, '<<in');
             var outlog = console.log.bind(console, 'out>>');
 
-            loginInfo.onsubmit = function(e) {
+            loginInfo.onsubmit = function (e) {
                 if (e.preventDefault) e.preventDefault();
 
                 var jid = document.getElementById('jid').value;
@@ -112,21 +112,21 @@
                     allowResumption: false
                 });
 
-                client.on('raw:incoming', function(data) {
+                client.on('raw:incoming', function (data) {
                     inlog(data);
                 });
-                client.on('raw:outgoing', function(data) {
+                client.on('raw:outgoing', function (data) {
                     outlog(data.toString());
                 });
 
-                client.on('session:started', function() {
+                client.on('session:started', function () {
                     client.getRoster();
                     client.sendPresence();
                     client.discoverICEServers();
                     document.getElementById('myJID').textContent = client.jid;
                 });
 
-                client.jingle.on('peerTrackAdded', function(session, track, stream) {
+                client.jingle.on('peerTrackAdded', function (session, track, stream) {
                     if (track.kind === 'video') {
                         const vid = document.getElementById('remoteVideo');
                         vid.srcObject = stream;
@@ -135,7 +135,7 @@
                     }
                 });
 
-                client.on('jingle:incoming', function(session) {
+                client.on('jingle:incoming', function (session) {
                     if (session.addTrack) {
                         for (const stream of localMedia) {
                             for (const track of stream.getTracks()) {
@@ -147,10 +147,10 @@
                 });
 
                 client.jingle.on('log', console.log);
-                client.jingle.on('sentFile', function(session, metadata) {
+                client.jingle.on('sentFile', function (session, metadata) {
                     console.log('sent', metadata);
                 });
-                client.jingle.on('receivedFile', function(session, file, metadata) {
+                client.jingle.on('receivedFile', function (session, file, metadata) {
                     //saveAs(file, metadata.name); // -- https://github.com/eligrey/FileSaver.js
                     var href = document.getElementById('received');
                     href.href = URL.createObjectURL(file);
@@ -172,7 +172,7 @@
                 client.connect();
 
                 var callInfo = document.getElementById('callInfo');
-                callInfo.onsubmit = function(e) {
+                callInfo.onsubmit = function (e) {
                     e.preventDefault();
                     var jid = document.getElementById('peer').value;
                     var session = client.jingle.createMediaSession(jid);
@@ -222,7 +222,7 @@
                 return new Blob([arr], { type: data[1] });
             }
             var snapshot = document.getElementById('snapshot');
-            snapshot.onsubmit = function(e) {
+            snapshot.onsubmit = function (e) {
                 e.preventDefault();
                 var file = takeSnapshot();
                 file.name = 'snapshot-' + new Date().getTime() + '.png';
