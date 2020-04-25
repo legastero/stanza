@@ -59,7 +59,7 @@ declare module '../' {
     }
 }
 
-export default function(client: Agent) {
+export default function (client: Agent) {
     client.on('iq:set:roster', iq => {
         const allowed = JID.allowedResponders(client.jid);
         if (!allowed.has(iq.from)) {
@@ -76,6 +76,16 @@ export default function(client: Agent) {
     });
 
     client.on('iq:set:blockList', iq => {
+        const allowed = JID.allowedResponders(client.jid);
+        if (!allowed.has(iq.from)) {
+            return client.sendIQError(iq, {
+                error: {
+                    condition: 'service-unavailable',
+                    type: 'cancel'
+                }
+            });
+        }
+
         const blockList = iq.blockList;
         client.emit(blockList.action, {
             jids: blockList.jids || []
