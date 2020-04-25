@@ -7,9 +7,9 @@
 
 import { JID } from '../JID';
 import { addAlias, childText, DefinitionOptions, JIDAttribute } from '../jxt';
-import { NS_DATAFORM, NS_SEARCH } from '../Namespaces';
+import { NS_DATAFORM, NS_RSM, NS_SEARCH } from '../Namespaces';
 
-import { DataForm } from './';
+import { DataForm, Paging } from './';
 
 declare module './' {
     export interface IQPayload {
@@ -25,6 +25,7 @@ export interface Search {
     email?: string;
     items?: SearchResultItem[];
     form?: DataForm;
+    paging?: Paging;
 }
 
 export interface SearchResultItem {
@@ -37,6 +38,7 @@ export interface SearchResultItem {
 
 const Protocol: DefinitionOptions[] = [
     addAlias(NS_DATAFORM, 'x', ['iq.search.form']),
+    addAlias(NS_RSM, 'set', ['iq.search.paging']),
     {
         element: 'query',
         fields: {
