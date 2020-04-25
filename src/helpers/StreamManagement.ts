@@ -201,6 +201,12 @@ export default class StreamManagement extends EventEmitter {
         }
     }
 
+    public async hibernate() {
+        for (const [kind, stanza] of this.unacked) {
+            this.emit('hibernated', { kind, stanza });
+        }
+    }
+
     public async shutdown() {
         return this.failed({ type: 'failed' });
     }

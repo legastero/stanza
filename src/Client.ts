@@ -75,6 +75,7 @@ export default class Client extends EventEmitter {
         this.sm.on('send', sm => this.send('sm', sm));
         this.sm.on('acked', acked => this.emit('stanza:acked', acked));
         this.sm.on('failed', failed => this.emit('stanza:failed', failed));
+        this.sm.on('hibernated', data => this.emit('stanza:hibernated', data));
 
         // We disable outgoing processing while stanza resends are queued up
         // to prevent any interleaving.
@@ -172,6 +173,8 @@ export default class Client extends EventEmitter {
                 drains.push(this.outgoingDataQueue.drain());
             }
             await Promise.all(drains);
+
+            await this.sm.hibernate();
 
             this.emit('--reset-stream-features');
             this.emit('disconnected');
