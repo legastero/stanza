@@ -77,9 +77,22 @@ export function uuid() {
     ].join('');
 }
 
+const DATE_FIELDS = new Set([
+    'date',
+    'expires',
+    'httpUploadRetry',
+    'idleSince',
+    'published',
+    'since',
+    'stamp',
+    'timestamp',
+    'updated',
+    'utc'
+]);
+
 const ISO_DT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:Z|((\+|-)([\d|:]*)))?$/;
 export function reviveData(key: string, value: any): any {
-    if (value && typeof value === 'string' && ISO_DT.test(value)) {
+    if (DATE_FIELDS.has(key) && value && typeof value === 'string' && ISO_DT.test(value)) {
         return new Date(value);
     }
     if (

@@ -1,6 +1,6 @@
 <x xmlns='jabber:x:data' type='form' xmlns:xdv='http://jabber.org/protocol/xdata-validate'>
   <field label='Event Date/Time' var='evt.date' type='text-single'>
-    <value>X2003-10-06T11:22:00-07:00</value>
+    <value>2003-10-06T11:22:00-07:00</value>
     <xdv:validate datatype='xs:dateTime'>
       <xdv:basic />
     </xdv:validate>
@@ -16,10 +16,10 @@
     <option><value>appointment</value></option>
   </field>
   <field var='evt.rsvp' type='text-single' label='RSVP Date/Time'>
-    <value>X2003-10-06T11:22:00-07:00</value>
+    <value>2003-10-06T11:22:00-07:00</value>
     <xdv:validate datatype='xs:dateTime'>
-      <xdv:range min='X2003-10-05T00:00:00-07:00'
-                 max='X2003-10-24T23:59:59-07:00'/>
+      <xdv:range min='2003-10-05T00:00:00-07:00'
+                 max='2003-10-24T23:59:59-07:00'/>
     </xdv:validate>
   </field>
   <field var='ssn' type='text-single' label='Social Security Number'>
