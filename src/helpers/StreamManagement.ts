@@ -17,6 +17,7 @@ const mod = (v: number, n: number) => ((v % n) + n) % n;
 type Unacked = ['message', Message] | ['presence', Presence] | ['iq', IQ];
 
 interface SMState {
+    allowResume: boolean;
     handled: number;
     id?: string;
     jid?: string;
@@ -63,7 +64,7 @@ export default class StreamManagement extends EventEmitter {
 
     public load(opts: SMState): void {
         this.id = opts.id;
-        this.allowResume = true;
+        this.allowResume = opts.allowResume ?? true;
         this.handled = opts.handled;
         this.lastAck = opts.lastAck;
         this.unacked = opts.unacked;
@@ -202,6 +203,10 @@ export default class StreamManagement extends EventEmitter {
     }
 
     public async hibernate() {
+        if (!this.resumable) {
+            return this.shutdown();
+        }
+
         for (const [kind, stanza] of this.unacked) {
             this.emit('hibernated', { kind, stanza });
         }
@@ -214,6 +219,7 @@ export default class StreamManagement extends EventEmitter {
     private async _cache() {
         try {
             await this.cacheHandler({
+                allowResume: this.allowResume,
                 handled: this.handled,
                 id: this.id,
                 jid: this.jid,
