@@ -173,7 +173,7 @@ export default class BOSH extends Duplex implements Transport {
                         this.isEnded = true;
                         this.client.emit('bosh:terminate', e.stanza);
                         this.client.emit('stream:end');
-                        this.end();
+                        this.push(null);
                     }
                 } else if (!this.hasStream) {
                     this.hasStream = true;
@@ -183,7 +183,6 @@ export default class BOSH extends Duplex implements Transport {
 
                     this.client.emit('stream:start', e.stanza);
                 }
-
                 return;
             }
 
@@ -252,15 +251,18 @@ export default class BOSH extends Duplex implements Transport {
         }
     }
 
-    public send(dataOrName: string, data?: object): void {
+    public async send(dataOrName: string, data?: object): Promise<void> {
+        let output: string | undefined;
         if (data) {
-            const output = this.stanzas.export(dataOrName, data);
-            if (output) {
-                this.write(output.toString());
-            }
-        } else {
-            this.write(dataOrName);
+            output = this.stanzas.export(dataOrName, data)?.toString();
         }
+        if (!output) {
+            return;
+        }
+
+        return new Promise<void>((resolve, reject) => {
+            this.write(output, 'utf8', err => (err ? reject(err) : resolve()));
+        });
     }
 
     private async _send(boshData: any, payload: string = ''): Promise<void> {

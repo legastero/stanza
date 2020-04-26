@@ -133,16 +133,22 @@ export default class Client extends EventEmitter {
                     this.emit('message:sent', stanza, false);
                 }
             }
-            if (this.transport) {
-                this.transport.send(kind, stanza);
-                if (ackRequest) {
-                    this.transport.send('sm', { type: 'request' });
+
+            try {
+                if (!this.transport) {
+                    throw new Error('Missing transport');
                 }
-            } else if (['message', 'presence', 'iq'].includes(kind)) {
-                this.emit(this.sm.resumable ? 'stanza:hibernated' : 'stanza:failed', {
-                    kind,
-                    stanza
-                });
+                await this.transport.send(kind, stanza);
+                if (ackRequest) {
+                    this.transport?.send('sm', { type: 'request' });
+                }
+            } catch (err) {
+                if (!this.sm.started && ['message', 'presence', 'iq'].includes(kind)) {
+                    this.emit('stanza:failed', {
+                        kind,
+                        stanza
+                    });
+                }
             }
 
             if (done) {

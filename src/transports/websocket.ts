@@ -1,4 +1,4 @@
-import { AsyncPriorityQueue, priorityQueue } from 'async';
+import { Duplex } from 'readable-stream';
 import { WebSocket } from 'stanza-shims';
 
 import { Agent, Transport, TransportConfig } from '../';
@@ -9,13 +9,7 @@ import { Stream } from '../protocol';
 
 const WS_OPEN = 1;
 
-interface OutputData {
-    kind?: string;
-    stanza?: any;
-    data: string;
-}
-
-export default class WSConnection implements Transport {
+export default class WSConnection extends Duplex implements Transport {
     public hasStream?: boolean;
     public stream?: Stream;
 
@@ -24,30 +18,42 @@ export default class WSConnection implements Transport {
     private sm: StreamManagement;
     private stanzas: Registry;
     private closing: boolean;
-    private sendQueue: AsyncPriorityQueue<OutputData>;
-    private conn?: WebSocket;
     private parser?: StreamParser;
+    private socket?: WebSocket;
 
     constructor(client: Agent, sm: StreamManagement, stanzas: Registry) {
+        super({ objectMode: true });
         this.sm = sm;
         this.stanzas = stanzas;
         this.closing = false;
         this.client = client;
 
-        this.sendQueue = priorityQueue<OutputData>(({ kind, stanza, data }, cb) => {
-            if (this.conn && this.conn.readyState === WS_OPEN) {
-                data = Buffer.from(data, 'utf8').toString();
-                this.client.emit('raw', 'outgoing', data);
-                this.conn.send(data);
-            } else if (['message', 'presence', 'iq'].includes(kind!)) {
-                this.client.emit(this.sm.resumable ? 'stanza:hibernated' : 'stanza:failed', {
-                    kind: kind as any,
-                    stanza
-                });
-            }
-            cb();
-        }, 1);
-        this.sendQueue.pause();
+        this.on('data', e => {
+            this.client.emit('stream:data', e.stanza, e.kind);
+        });
+
+        this.on('error', e => {
+            this.end();
+        });
+
+        this.on('end', () => {
+            this.client.emit('--transport-disconnected');
+        });
+    }
+
+    public _read() {
+        return;
+    }
+
+    public _write(chunk: any, encoding: any, done: (err?: Error) => void) {
+        if (!this.socket || this.socket.readyState !== WS_OPEN) {
+            return done(new Error('Socket closed'));
+        }
+
+        const data = Buffer.from(chunk, 'utf8').toString();
+        this.client.emit('raw', 'outgoing', data);
+        this.socket.send(data);
+        done();
     }
 
     public connect(opts: TransportConfig) {
@@ -78,7 +84,8 @@ export default class WSConnection implements Transport {
                     return this.disconnect();
                 }
             }
-            this.client.emit('stream:data', stanzaObj, name);
+
+            this.push({ kind: e.kind, stanza: e.stanza });
         });
 
         this.parser.on('error', (err: any) => {
@@ -86,75 +93,60 @@ export default class WSConnection implements Transport {
                 condition: StreamErrorCondition.InvalidXML
             };
             this.client.emit('stream:error', streamError, err);
-            this.send(this.stanzas.export('error', streamError)!.toString());
+            this.write(this.stanzas.export('error', streamError)!.toString());
             return this.disconnect();
         });
 
-        this.conn = new WebSocket(opts.url, 'xmpp');
-        this.conn.onerror = (e: any) => {
-            if (e.preventDefault) {
-                e.preventDefault();
-            }
-            console.error(e);
-        };
-        this.conn.onclose = (e: any) => {
-            this.client.emit('--transport-disconnected');
-        };
-        this.conn.onopen = () => {
+        this.socket = new WebSocket(opts.url, 'xmpp');
+        this.socket.onopen = e => {
+            this.emit('connect');
             this.sm.started = false;
             this.client.emit('connected');
-            this.sendQueue.resume();
-            this.send(this.startHeader());
+            this.write(this.startHeader());
         };
-        this.conn.onmessage = wsMsg => {
+        this.socket.onmessage = wsMsg => {
             const data = Buffer.from(wsMsg.data as string, 'utf8').toString();
             this.client.emit('raw', 'incoming', data);
             if (this.parser) {
                 this.parser.write(data);
             }
         };
+        this.socket.onclose = e => {
+            this.push(null);
+        };
     }
 
     public disconnect() {
-        if (this.conn && !this.closing && this.hasStream) {
+        if (this.socket && !this.closing && this.hasStream) {
             this.closing = true;
-            this.send(this.closeHeader());
+            this.write(this.closeHeader());
         } else {
             this.hasStream = false;
             this.stream = undefined;
-            if (this.conn && this.conn.readyState === WS_OPEN) {
-                this.conn.close();
+            if (this.socket) {
+                this.end();
             }
-            this.conn = undefined;
+            this.socket = undefined;
         }
     }
 
-    public send(dataOrName: string, data?: object): void {
+    public async send(dataOrName: string, data?: object): Promise<void> {
+        let output: string | undefined;
         if (data) {
-            const output = this.stanzas.export(dataOrName, data);
-            if (output) {
-                this.sendQueue.push(
-                    {
-                        kind: dataOrName,
-                        stanza: data,
-                        data: output.toString()
-                    },
-                    0
-                );
-            }
-        } else {
-            this.sendQueue.push(
-                {
-                    data: dataOrName
-                },
-                0
-            );
+            output = this.stanzas.export(dataOrName, data)?.toString();
         }
+        if (!output) {
+            return;
+        }
+
+        return new Promise<void>((resolve, reject) => {
+            this.write(output, 'utf8', err => (err ? reject(err) : resolve()));
+        });
     }
 
     public restart() {
         this.hasStream = false;
-        this.send(this.startHeader());
+        this.write(this.startHeader());
     }
 
     private startHeader() {

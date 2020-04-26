@@ -217,7 +217,7 @@ export interface Transport {
     connect(opts: TransportConfig): void;
     disconnect(): void;
     restart(): void;
-    send(name: string, data?: object): void;
+    send(name: string, data?: object): Promise<void>;
 }
 
 export interface TransportConfig {
