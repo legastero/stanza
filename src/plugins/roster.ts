@@ -59,7 +59,7 @@ declare module '../' {
     }
 }
 
-export default function (client: Agent) {
+export default function(client: Agent) {
     client.on('iq:set:roster', iq => {
         const allowed = JID.allowedResponders(client.jid);
         if (!allowed.has(iq.from)) {

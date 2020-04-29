@@ -34,11 +34,11 @@ class RequestChannel {
             try {
                 const res = await timeoutPromise(
                     fetch(this.stream.url, {
-                        method: 'POST',
+                        body,
                         headers: {
                             'Content-Type': this.stream.contentType
                         },
-                        body
+                        method: 'POST'
                     }),
                     this.maxTimeout,
                     () => new Error('Request timed out')
@@ -73,28 +73,24 @@ export default class BOSH extends Duplex implements Transport {
     public hasStream?: boolean;
     public stream?: Stream;
     public authenticated?: boolean;
+    public url!: string;
+    public rid?: number = Math.floor(Math.random() * 0xffffffff);
+    public sid?: string = '';
+    public maxHoldOpen: number = 2;
+    public maxWaitTime: number = 30;
+    public contentType: string = 'text/xml; charset=utf-8';
 
+    private channels: RequestChannel[] = [new RequestChannel(this), new RequestChannel(this)];
+    private activeChannelID = 0;
     private client: Agent;
     private config!: TransportConfig;
     private sm: StreamManagement;
     private stanzas: Registry;
 
-    public url!: string;
-    public rid?: number = Math.floor(Math.random() * 0xffffffff);
-    public sid?: string = '';
-
-    public maxHoldOpen: number = 2;
-    public maxWaitTime: number = 30;
-
-    public contentType: string = 'text/xml; charset=utf-8';
-
     private idleTimeout: any;
     private queue: Array<[any, (err?: Error) => void]> = [];
 
     private isEnded: boolean = false;
-
-    public channels: RequestChannel[] = [new RequestChannel(this), new RequestChannel(this)];
-    public activeChannelID = 0;
 
     constructor(client: Agent, sm: StreamManagement, stanzas: Registry) {
         super({
@@ -129,18 +125,6 @@ export default class BOSH extends Duplex implements Transport {
 
     public _read(): void {
         return;
-    }
-
-    private get sendingChannel() {
-        return this.channels[this.activeChannelID];
-    }
-
-    private get pollingChannel() {
-        return this.channels[this.activeChannelID === 0 ? 1 : 0];
-    }
-
-    private toggleChannel() {
-        this.activeChannelID = this.activeChannelID === 0 ? 1 : 0;
     }
 
     public process(result: string): void {
@@ -221,11 +205,11 @@ export default class BOSH extends Duplex implements Transport {
         }
 
         this._send({
-            to: opts.server,
             lang: opts.lang,
-            version: '1.6',
-            maxWaitTime: this.maxWaitTime,
             maxHoldOpen: this.maxHoldOpen,
+            maxWaitTime: this.maxWaitTime,
+            to: opts.server,
+            version: '1.6',
             xmppVersion: '1.0'
         });
     }
@@ -263,6 +247,18 @@ export default class BOSH extends Duplex implements Transport {
         return new Promise<void>((resolve, reject) => {
             this.write(output, 'utf8', err => (err ? reject(err) : resolve()));
         });
+    }
+
+    private get sendingChannel() {
+        return this.channels[this.activeChannelID];
+    }
+
+    private get pollingChannel() {
+        return this.channels[this.activeChannelID === 0 ? 1 : 0];
+    }
+
+    private toggleChannel() {
+        this.activeChannelID = this.activeChannelID === 0 ? 1 : 0;
     }
 
     private async _send(boshData: any, payload: string = ''): Promise<void> {
