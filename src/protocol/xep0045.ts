@@ -220,6 +220,7 @@ const Protocol: DefinitionOptions[] = [
         element: 'destroy',
         fields: {
             jid: JIDAttribute('jid'),
+            password: childText(null, 'password'),
             reason: childText(null, 'reason')
         },
         namespace: NS_MUC_USER,
