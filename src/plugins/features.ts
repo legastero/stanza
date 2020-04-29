@@ -22,14 +22,14 @@ declare module '../' {
 
 type FeatureHandler = (data: StreamFeatures, done: (cmd?: string, msg?: string) => void) => void;
 
-export default function (client: Agent) {
+export default function(client: Agent) {
     client.features = {
         handlers: Object.create(null),
         negotiated: Object.create(null),
         order: []
     };
 
-    client.registerFeature = function (name, priority, handler) {
+    client.registerFeature = function(name, priority, handler) {
         this.features.order.push({
             name,
             priority
