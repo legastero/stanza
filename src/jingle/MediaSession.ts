@@ -49,6 +49,10 @@ function applyStreamsCompatibility(content: JingleContent) {
 
 export default class MediaSession extends ICESession {
     public offerOptions: any;
+
+    public includesAudio: boolean = false;
+    public includesVideo: boolean = false;
+
     private _ringing: boolean = false;
 
     constructor(opts: any) {
@@ -232,6 +236,12 @@ export default class MediaSession extends ICESession {
     // ----------------------------------------------------------------
 
     public addTrack(track: MediaStreamTrack, stream: MediaStream, cb?: ActionCallback) {
+        if (track.kind === 'audio') {
+            this.includesAudio = true;
+        }
+        if (track.kind === 'video') {
+            this.includesVideo = true;
+        }
         return this.processLocal('addtrack', async () => {
             if (this.pc.addTrack) {
                 this.pc.addTrack(track, stream);
@@ -281,6 +291,12 @@ export default class MediaSession extends ICESession {
 
         const json = convertRequestToIntermediate(changes, this.peerRole);
         json.media.forEach(media => {
+            if (media.kind === 'audio') {
+                this.includesAudio = true;
+            }
+            if (media.kind === 'video') {
+                this.includesVideo = true;
+            }
             if (!media.streams) {
                 media.streams = [{ stream: 'legacy', track: media.kind }];
             }
