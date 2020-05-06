@@ -102,6 +102,9 @@ export function exportToSDP(session: IntermediateSessionDescription) {
         SDP.writeSessionBoilerplate(session.sessionId, session.sessionVersion),
         'a=msid-semantic:WMS *\r\n'
     );
+    if (session.iceLite) {
+        output.push('a=ice-lite\r\n');
+    }
 
     for (const group of session.groups || []) {
         output.push(`a=group:${group.semantics} ${group.mids.join(' ')}\r\n`);
