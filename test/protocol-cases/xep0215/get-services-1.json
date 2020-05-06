@@ -1,0 +1,56 @@
+[
+    "iq",
+    {
+        "externalServices": {
+            "services": [
+                {
+                    "host": "stun.shakespeare.lit",
+                    "port": 9998,
+                    "transport": "udp",
+                    "type": "stun",
+                    "version": "1"
+                },
+                {
+                    "host": "relay.shakespeare.lit",
+                    "password": "jj929jkj5sadjfj93v3n",
+                    "port": 9999,
+                    "transport": "udp",
+                    "type": "turn",
+                    "username": "nb78932lkjlskjfdb7g8",
+                    "version": "1"
+                },
+                {
+                    "host": "192.0.2.1",
+                    "port": 8888,
+                    "transport": "udp",
+                    "type": "stun",
+                    "version": "1"
+                },
+                {
+                    "host": "192.0.2.1",
+                    "password": "93jn3bakj9s832lrjbbz",
+                    "port": 8889,
+                    "transport": "udp",
+                    "type": "turn",
+                    "username": "auu98sjl2wk3e9fjdsl7",
+                    "version": "1"
+                },
+                {
+                    "host": "ftp.shakespeare.lit",
+                    "name": "Shakespearean File Server",
+                    "password": "guest",
+                    "port": 20,
+                    "transport": "tcp",
+                    "type": "ftp",
+                    "username": "guest",
+                    "version": "1"
+                }
+            ],
+            "version": "1"
+        },
+        "id": "ul2bc7y6",
+        "lang": "",
+        "to": "bard@shakespeare.lit/globe",
+        "type": "result"
+    }
+]

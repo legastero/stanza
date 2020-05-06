@@ -1,5 +1,9 @@
 # Change Log
 
+## 12.9.0
+
+-   The default external service discovery namespace was changed to `urn:xmpp:extdisco:2`. Querying using the `:1` namespace can be done with `client.discoverICEServers({ version: '1' })`.
+
 ## 12.0.0
 
 **WARNING:** Unlike many previous major version bumps that were almost entirely backwards compatible, v12 is _not_ backwards compatible. Upgrading to v12 _will_ require modifications in existing code.

@@ -224,6 +224,7 @@ export const NS_BOSH_XMPP = 'urn:xmpp:xbosh';
 
 // XEP-0215
 export const NS_DISCO_EXTERNAL_1 = 'urn:xmpp:extdisco:1';
+export const NS_DISCO_EXTERNAL_2 = 'urn:xmpp:extdisco:2';
 
 // XEP-0221
 export const NS_DATAFORM_MEDIA = 'urn:xmpp:media-element';

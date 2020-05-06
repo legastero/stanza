@@ -1,0 +1,35 @@
+<iq xmlns="jabber:client"
+    from="shakespeare.lit"
+    id="ul2bc7y6"
+    to="bard@shakespeare.lit/globe"
+    type="result">
+  <services xmlns="urn:xmpp:extdisco:2">
+    <service host="stun.shakespeare.lit"
+             port="9998"
+             transport="udp"
+             type="stun"/>
+    <service host="relay.shakespeare.lit"
+             password="jj929jkj5sadjfj93v3n"
+             port="9999"
+             transport="udp"
+             type="turn"
+             username="nb78932lkjlskjfdb7g8"/>
+    <service host="192.0.2.1"
+             port="8888"
+             transport="udp"
+             type="stun"/>
+    <service host="192.0.2.1"
+             port="8889"
+             password="93jn3bakj9s832lrjbbz"
+             transport="udp"
+             type="turn"
+             username="auu98sjl2wk3e9fjdsl7"/>
+    <service host="ftp.shakespeare.lit"
+             name="Shakespearean File Server"
+             password="guest"
+             port="20"
+             transport="tcp"
+             type="ftp"
+             username="guest"/>
+  </services>
+</iq>

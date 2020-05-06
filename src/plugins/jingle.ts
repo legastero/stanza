@@ -27,13 +27,14 @@ declare module '../' {
     export interface Agent {
         jingle: Jingle.SessionManager;
 
-        discoverICEServers(): Promise<RTCIceServer[]>;
-        getServices(jid: string, type?: string): Promise<ExternalServiceList>;
+        discoverICEServers(opts?: { version?: '2' | '1' }): Promise<RTCIceServer[]>;
+        getServices(jid: string, type?: string, version?: '2' | '1'): Promise<ExternalServiceList>;
         getServiceCredentials(
             jid: string,
             host: string,
             type?: string,
-            port?: number
+            port?: number,
+            version?: '2' | '1'
         ): Promise<ExternalServiceCredentials>;
     }
 
@@ -182,10 +183,11 @@ export default function(client: Agent) {
         jingle.endPeerSessions(pres.from!, undefined, true);
     });
 
-    client.getServices = async (jid: string, type?: string) => {
+    client.getServices = async (jid: string, type?: string, version?: '2' | '1') => {
         const resp = await client.sendIQ({
             externalServices: {
-                type
+                type,
+                version
             } as ExternalServiceList,
             to: jid,
             type: 'get'
@@ -201,13 +203,15 @@ export default function(client: Agent) {
         jid: string,
         host: string,
         type?: string,
-        port?: number
+        port?: number,
+        version?: '2' | '1'
     ) => {
         const resp = await client.sendIQ({
             externalServiceCredentials: {
                 host,
                 port,
-                type
+                type,
+                version
             } as ExternalServiceCredentials,
             to: jid,
             type: 'get'
@@ -216,9 +220,11 @@ export default function(client: Agent) {
         return resp.externalServiceCredentials;
     };
 
-    client.discoverICEServers = async (): Promise<RTCIceServer[]> => {
+    client.discoverICEServers = async (
+        opts: { version?: '2' | '1' } = {}
+    ): Promise<RTCIceServer[]> => {
         try {
-            const resp = await client.getServices(client.config.server!);
+            const resp = await client.getServices(client.config.server!, undefined, opts.version);
             const services = resp.services || [];
             const discovered: RTCIceServer[] = [];
 

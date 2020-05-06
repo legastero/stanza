@@ -65,6 +65,7 @@
 | [XEP-0202](https://xmpp.org/extensions/xep-0202.html) | Entity Time                                        | 2.0     | [Source](../src/protocol/xep0202.ts) |                                              |
 | [XEP-0203](https://xmpp.org/extensions/xep-0203.html) | Delayed Delivery                                   | 2.0     | [Source](../src/protocol/xep0203.ts) |                                              |
 | [XEP-0206](https://xmpp.org/extensions/xep-0206.html) | XMPP over BOSH                                     | 1.4     | [Source](../src/protocol/xep0124.ts) |                                              |
+| [XEP-0206](https://xmpp.org/extensions/xep-0215.html) | External Service Discovery                         | 0.7     | [Source](../src/protocol/xep0215.ts) | [Test Cases](../test/protocol-cases/xep0215) |
 | [XEP-0221](https://xmpp.org/extensions/xep-0221.html) | Data Forms Media Element                           | 1.0     | [Source](../src/protocol/xep0221.ts) |                                              |
 | [XEP-0224](https://xmpp.org/extensions/xep-0224.html) | Attention                                          | 1.0     | [Source](../src/protocol/xep0224.ts) |                                              |
 | [XEP-0231](https://xmpp.org/extensions/xep-0231.html) | Bits of Binary                                     | 1.0     | [Source](../src/protocol/xep0231.ts) |                                              |

@@ -16,7 +16,7 @@ import {
     DefinitionOptions,
     integerAttribute
 } from '../jxt';
-import { NS_DISCO_EXTERNAL_1 } from '../Namespaces';
+import { NS_DISCO_EXTERNAL_1, NS_DISCO_EXTERNAL_2 } from '../Namespaces';
 
 import { DataForm } from './';
 
@@ -51,55 +51,59 @@ declare module './' {
     }
 }
 
-const Protocol: DefinitionOptions[] = [
-    {
-        aliases: ['iq.externalServiceCredentials'],
-        defaultType: '1',
-        element: 'credentials',
-        fields: {
-            expires: childDateAttribute(null, 'service', 'expires'),
-            host: childAttribute(null, 'service', 'host'),
-            name: childAttribute(null, 'service', 'name'),
-            password: childAttribute(null, 'service', 'password'),
-            port: childIntegerAttribute(null, 'service', 'port'),
-            restricuted: childBooleanAttribute(null, 'service', 'restricted'),
-            transport: childAttribute(null, 'service', 'transport'),
-            type: childAttribute(null, 'service', 'type'),
-            username: childAttribute(null, 'service', 'username')
+const Protocol: DefinitionOptions[] = [];
+for (const version of ['2', '1']) {
+    Protocol.push(
+        {
+            aliases: ['iq.externalServiceCredentials'],
+            defaultType: '2',
+            element: 'credentials',
+            fields: {
+                expires: childDateAttribute(null, 'service', 'expires'),
+                host: childAttribute(null, 'service', 'host'),
+                name: childAttribute(null, 'service', 'name'),
+                password: childAttribute(null, 'service', 'password'),
+                port: childIntegerAttribute(null, 'service', 'port'),
+                restricted: childBooleanAttribute(null, 'service', 'restricted'),
+                transport: childAttribute(null, 'service', 'transport'),
+                type: childAttribute(null, 'service', 'type'),
+                username: childAttribute(null, 'service', 'username')
+            },
+            namespace: version === '2' ? NS_DISCO_EXTERNAL_2 : NS_DISCO_EXTERNAL_1,
+            type: version,
+            typeField: 'version'
         },
-        namespace: NS_DISCO_EXTERNAL_1,
-        type: '1',
-        typeField: 'version'
-    },
-    {
-        aliases: ['iq.externalServices'],
-        defaultType: '1',
-        element: 'services',
-        fields: {
-            type: attribute('type')
+        {
+            aliases: ['iq.externalServices'],
+            defaultType: '2',
+            element: 'services',
+            fields: {
+                type: attribute('type')
+            },
+            namespace: version === '2' ? NS_DISCO_EXTERNAL_2 : NS_DISCO_EXTERNAL_1,
+            type: version,
+            typeField: 'version'
         },
-        namespace: NS_DISCO_EXTERNAL_1,
-        type: '1',
-        typeField: 'version'
-    },
-    {
-        aliases: [{ path: 'iq.externalServices.services', multiple: true }],
-        defaultType: '1',
-        element: 'service',
-        fields: {
-            expires: dateAttribute('expires'),
-            host: attribute('host'),
-            name: attribute('name'),
-            password: attribute('password'),
-            port: integerAttribute('port'),
-            restricuted: booleanAttribute('restricted'),
-            transport: attribute('transport'),
-            type: attribute('type'),
-            username: attribute('username')
-        },
-        namespace: NS_DISCO_EXTERNAL_1,
-        type: '1',
-        typeField: 'version'
-    }
-];
+        {
+            aliases: [{ path: 'iq.externalServices.services', multiple: true }],
+            defaultType: '2',
+            element: 'service',
+            fields: {
+                expires: dateAttribute('expires'),
+                host: attribute('host'),
+                name: attribute('name'),
+                password: attribute('password'),
+                port: integerAttribute('port'),
+                restricted: booleanAttribute('restricted'),
+                transport: attribute('transport'),
+                type: attribute('type'),
+                username: attribute('username')
+            },
+            namespace: version === '2' ? NS_DISCO_EXTERNAL_2 : NS_DISCO_EXTERNAL_1,
+            type: version,
+            typeField: 'version'
+        }
+    );
+}
+
 export default Protocol;
