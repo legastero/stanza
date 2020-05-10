@@ -17,6 +17,14 @@ Child('npm run compile:module');
 fileReplace('dist/cjs/Constants.js', '__STANZAJS_VERSION__', Pkg.version);
 fileReplace('dist/es/Constants.js', '__STANZAJS_VERSION__', Pkg.version);
 
+// Fix sdp module type references
+Child('cp -r src/typings dist/cjs/typings');
+fileReplace(
+    'dist/cjs/jingle/sdp/Intermediate.d.ts',
+    '../../../../src/typings/sdp.d.ts',
+    '../../typings/sdp.d.ts'
+);
+
 Child('npm run compile:rollup');
 
 Child('mkdir dist/npm');
