@@ -167,7 +167,7 @@ client.on('message:hibernated', msg => {
 Hibernated messages will be resent automatically if the session is resumed, and a `message:retry` event is emitted when that happens:
 
 ```typescript
-client.on('message:resent', msg => {
+client.on('message:retry', msg => {
     if (messageStorage.has(msg.id)) {
         messageStorage.set(msg.id, {
             retrying: true

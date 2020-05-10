@@ -54,6 +54,7 @@ export interface AgentEvents {
     'message:failed': Stanzas.Message;
     'message:acked': Stanzas.Message;
     'message:retry': Stanzas.Message;
+    'message:hibernated': Stanzas.Message;
 
     chat: Stanzas.ReceivedMessage;
     groupchat: Stanzas.ReceivedMessage;

@@ -163,7 +163,7 @@
 <h3 id="discoverICEServers">discoverICEServers</h3>
 
 ```
-() => Promise
+(opts: { version: 2 | 1 }) => Promise
 ```
 
 <p></p>
@@ -411,7 +411,7 @@
 <h3 id="getServiceCredentials">getServiceCredentials</h3>
 
 ```
-(jid: string, host: string, type: string, port: number) => Promise
+(jid: string, host: string, type: string, port: number, version: 2 | 1) => Promise
 ```
 
 <p></p>
@@ -419,7 +419,7 @@
 <h3 id="getServices">getServices</h3>
 
 ```
-(jid: string, type: string) => Promise
+(jid: string, type: string, version: 2 | 1) => Promise
 ```
 
 <p></p>
@@ -861,6 +861,14 @@
 
 ```
 () => LegacyEntityCaps[]
+```
+
+<p></p>
+
+<h3 id="updateConfig">updateConfig</h3>
+
+```
+(opts: AgentConfig) => void
 ```
 
 <p></p>
