@@ -12,6 +12,7 @@ export interface IntermediateMediaDescription {
     protocol: string;
     mid: string;
     iceParameters?: SDP.SDPIceParameters;
+    iceLite?: boolean;
     dtlsParameters?: SDP.SDPDtlsParameters;
     setup?: string;
     rtpParameters?: SDP.SDPRtpCapabilities;
@@ -44,6 +45,9 @@ export function importFromSDP(sdp: SDP.SDPBlob): IntermediateSessionDescription 
         groups: [],
         media: []
     };
+    if (SDP.matchPrefix(sessionPart, 'a=ice-lite').length > 0) {
+        session.iceLite = true;
+    }
 
     for (const groupLine of SDP.matchPrefix(sessionPart, 'a=group:')) {
         const parts = groupLine.split(' ');
@@ -68,6 +72,9 @@ export function importFromSDP(sdp: SDP.SDPBlob): IntermediateSessionDescription 
         };
 
         if (!isRejected) {
+            if (session.iceLite) {
+                media.iceLite = true;
+            }
             media.iceParameters = SDP.getIceParameters(mediaSection, sessionPart);
             media.dtlsParameters = SDP.getDtlsParameters(mediaSection, sessionPart);
             media.setup = SDP.matchPrefix(mediaSection, 'a=setup:')[0].substr(8);
@@ -102,7 +109,7 @@ export function exportToSDP(session: IntermediateSessionDescription) {
         SDP.writeSessionBoilerplate(session.sessionId, session.sessionVersion),
         'a=msid-semantic:WMS *\r\n'
     );
-    if (session.iceLite) {
+    if (session.iceLite || session.media.filter(m => m.iceLite).length > 0) {
         output.push('a=ice-lite\r\n');
     }
 

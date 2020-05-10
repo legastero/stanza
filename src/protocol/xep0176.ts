@@ -27,6 +27,7 @@ export interface JingleIce extends JingleTransport {
     gatheringComplete?: boolean;
     remoteCandidate?: JingleIceRemoteCandidate;
     candidates?: JingleIceCandidate[];
+    iceLite?: boolean;
 }
 
 export interface JingleIceCandidate {

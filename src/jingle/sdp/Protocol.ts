@@ -164,6 +164,9 @@ export function convertIntermediateToTransport(
     if (ice) {
         transport.usernameFragment = ice.usernameFragment;
         transport.password = ice.password;
+        if (media.iceLite) {
+            transport.iceLite = true;
+        }
     }
 
     if (dtls) {
@@ -328,6 +331,9 @@ export function convertContentToIntermediate(
                 password: transport.password,
                 usernameFragment: transport.usernameFragment
             };
+            if (transport.iceLite) {
+                media.iceLite = true;
+            }
         }
         if (transport.fingerprints && transport.fingerprints.length) {
             media.dtlsParameters = {
