@@ -59,7 +59,7 @@ export function extendStanzaError(fields: { [key: string]: FieldDefinition }): D
     };
 }
 
-export function pubsubItemContentAliases(impliedType?: string): LinkPath[] {
+export function pubsubItemContentAliases(): LinkPath[] {
     return [
         { path: 'pubsubcontent', contextField: 'itemType' },
         { path: 'pubsubitem.content', contextField: 'itemType' },

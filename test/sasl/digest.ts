@@ -1,5 +1,4 @@
 import * as SASL from '../../src/lib/sasl';
-import { saslprep } from '../../src/lib/stringprep';
 
 test('SASL - DIGEST-MD5', () => {
     const factory = new SASL.Factory();

@@ -90,7 +90,7 @@ export default class SessionManager extends EventEmitter {
         this.createPeerConnection =
             conf.createPeerConnection ||
             ((session: BaseSession, opts?: RTCConfiguration) => {
-                if (!!RTCPeerConnection) {
+                if (RTCPeerConnection) {
                     return new (RTCPeerConnection as any)(opts);
                 }
             });
@@ -177,7 +177,7 @@ export default class SessionManager extends EventEmitter {
     public endPeerSessions(
         peer: string,
         reason?: JingleReasonCondition | JingleReason,
-        silent: boolean = false
+        silent = false
     ) {
         const sessions = this.peers[peer] || [];
         delete this.peers[peer];
@@ -186,16 +186,15 @@ export default class SessionManager extends EventEmitter {
         });
     }
 
-    public endAllSessions(reason?: JingleReasonCondition | JingleReason, silent: boolean = false) {
+    public endAllSessions(reason?: JingleReasonCondition | JingleReason, silent = false) {
         Object.keys(this.peers).forEach(peer => {
             this.endPeerSessions(peer, reason, silent);
         });
     }
 
     public process(req: IQ & { jingle: Jingle }): void {
-        const self = this;
         // Extract the request metadata that we need to verify
-        const sid = !!req.jingle ? req.jingle.sid : undefined;
+        const sid = req.jingle ? req.jingle.sid : undefined;
         let session = sid ? this.sessions[sid] : undefined;
         const rid = req.id!;
         const sender = req.from;
@@ -327,7 +326,7 @@ export default class SessionManager extends EventEmitter {
         // We've now weeded out invalid requests, so we can process the action now.
         if (action === 'session-initiate') {
             if (!contents.length) {
-                return self._sendError(sender, rid, {
+                return this._sendError(sender, rid, {
                     condition: 'bad-request'
                 });
             }

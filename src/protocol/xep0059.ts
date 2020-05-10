@@ -5,14 +5,7 @@
 // Version: 1.0.0 (2006-09-20)
 // ====================================================================
 
-import {
-    attribute,
-    childInteger,
-    childIntegerAttribute,
-    childText,
-    DefinitionOptions,
-    integerAttribute
-} from '../jxt';
+import { childInteger, childIntegerAttribute, childText, DefinitionOptions } from '../jxt';
 
 import { NS_RSM } from '../Namespaces';
 

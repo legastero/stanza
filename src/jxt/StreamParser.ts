@@ -31,8 +31,8 @@ export interface ParsedData {
 }
 
 export default class StreamParser extends Transform {
-    private closedStream: boolean = false;
-    private wrappedStream: boolean = false;
+    private closedStream = false;
+    private wrappedStream = false;
     private registry: Registry;
     private lang?: string;
     private acceptLanguages: string[];

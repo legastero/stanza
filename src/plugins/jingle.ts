@@ -69,7 +69,7 @@ interface JinglePluginConfig {
     sdpSemantics?: string;
 }
 
-export default function(client: Agent) {
+export default function (client: Agent) {
     const hasNativePeerConnection = !!RTCPeerConnection;
     const defaultConfig: JinglePluginConfig = {
         advertiseAudio: hasNativePeerConnection,

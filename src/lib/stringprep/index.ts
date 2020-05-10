@@ -69,9 +69,7 @@ export class Table {
 
     public map(codePoint: number): number | number[] | null {
         if (this.contains(codePoint) && !this.mappings.has(codePoint)) {
-            return String.fromCodePoint(codePoint)
-                .toLowerCase()
-                .codePointAt(0)!;
+            return String.fromCodePoint(codePoint).toLowerCase().codePointAt(0)!;
         }
         return this.mappings.get(codePoint) || null;
     }
@@ -115,11 +113,7 @@ interface StringPrepProfile {
     prohibited: Table[];
 }
 
-export function prepare(
-    profile: StringPrepProfile,
-    allowUnassigned: boolean,
-    input: string = ''
-): string {
+export function prepare(profile: StringPrepProfile, allowUnassigned: boolean, input = ''): string {
     const inputCodePoints = Punycode.ucs2.decode(input);
     let mappedCodePoints: number[] = [];
     for (const codePoint of inputCodePoints) {
@@ -198,7 +192,7 @@ const NamePrepProfile: StringPrepProfile = {
     prohibited: [C12, C22, C3, C4, C5, C6, C7, C8, C9],
     unassigned: A1
 };
-export function nameprep(str?: string, allowUnassigned: boolean = true): string {
+export function nameprep(str?: string, allowUnassigned = true): string {
     return prepare(NamePrepProfile, allowUnassigned, str);
 }
 
@@ -219,7 +213,7 @@ const NodePrepProfile: StringPrepProfile = {
     prohibited: [C11, C12, C21, C22, C3, C4, C5, C6, C7, C8, C9, NodePrepProhibited],
     unassigned: A1
 };
-export function nodeprep(str?: string, allowUnassigned: boolean = true): string {
+export function nodeprep(str?: string, allowUnassigned = true): string {
     return prepare(NodePrepProfile, allowUnassigned, str);
 }
 
@@ -230,7 +224,7 @@ const ResourcePrepProfile: StringPrepProfile = {
     prohibited: [C12, C21, C22, C3, C4, C5, C6, C7, C8, C9],
     unassigned: A1
 };
-export function resourceprep(str?: string, allowUnassigned: boolean = true): string {
+export function resourceprep(str?: string, allowUnassigned = true): string {
     return prepare(ResourcePrepProfile, allowUnassigned, str);
 }
 
@@ -241,6 +235,6 @@ const SASLPrepProfile: StringPrepProfile = {
     prohibited: [C12, C21, C22, C3, C4, C5, C6, C7, C8, C9],
     unassigned: A1
 };
-export function saslprep(str?: string, allowUnassigned: boolean = false): string {
+export function saslprep(str?: string, allowUnassigned = false): string {
     return prepare(SASLPrepProfile, allowUnassigned, str);
 }

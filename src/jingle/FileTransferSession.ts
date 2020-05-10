@@ -54,6 +54,20 @@ export class Sender extends EventEmitter {
         let offset = 0;
         let pendingRead = false;
 
+        const sliceFile = () => {
+            if (pendingRead || offset >= file.size) {
+                return;
+            }
+            pendingRead = true;
+            const slice = file.slice(offset, offset + this.config.chunkSize);
+            fileReader.readAsArrayBuffer(slice);
+        };
+
+        channel.bufferedAmountLowThreshold = 8 * this.config.chunkSize;
+        channel.onbufferedamountlow = () => {
+            sliceFile();
+        };
+
         fileReader.addEventListener('load', (event: ProgressEvent) => {
             const data: ArrayBuffer = (event.target as FileReader).result! as ArrayBuffer;
 
@@ -79,20 +93,6 @@ export class Sender extends EventEmitter {
                 });
             }
         });
-
-        const sliceFile = () => {
-            if (pendingRead || offset >= file.size) {
-                return;
-            }
-            pendingRead = true;
-            const slice = file.slice(offset, offset + this.config.chunkSize);
-            fileReader.readAsArrayBuffer(slice);
-        };
-
-        channel.bufferedAmountLowThreshold = 8 * this.config.chunkSize;
-        channel.onbufferedamountlow = () => {
-            sliceFile();
-        };
 
         sliceFile();
     }

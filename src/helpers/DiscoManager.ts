@@ -36,28 +36,28 @@ export default class Disco {
         };
     }
 
-    public addFeature(feature: string, node: string = ''): void {
+    public addFeature(feature: string, node = ''): void {
         if (!this.features.has(node)) {
             this.features.set(node, new Set());
         }
         this.features.get(node)!.add(feature);
     }
 
-    public addIdentity(identity: DiscoInfoIdentity, node: string = ''): void {
+    public addIdentity(identity: DiscoInfoIdentity, node = ''): void {
         if (!this.identities.has(node)) {
             this.identities.set(node, []);
         }
         this.identities.get(node)!.push(identity);
     }
 
-    public addItem(item: DiscoItem, node: string = ''): void {
+    public addItem(item: DiscoItem, node = ''): void {
         if (!this.items.has(node)) {
             this.items.set(node, []);
         }
         this.items.get(node)!.push(item);
     }
 
-    public addExtension(form: DataForm, node: string = ''): void {
+    public addExtension(form: DataForm, node = ''): void {
         if (!this.extensions.has(node)) {
             this.extensions.set(node, []);
         }

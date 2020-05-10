@@ -1,7 +1,6 @@
 import {
     basicLanguageResolver,
     DefinitionOptions,
-    FieldDefinition,
     FieldExporter,
     FieldImporter,
     JSONData,
@@ -102,7 +101,7 @@ export default class Registry {
         });
     }
 
-    public getImportKey(xml: XMLElement, path: string = ''): string | undefined {
+    public getImportKey(xml: XMLElement, path = ''): string | undefined {
         const root = !path ? this.root : this.walkToTranslator(path.split('.'));
         if (!root) {
             return undefined;
@@ -247,11 +246,11 @@ export default class Registry {
         namespace: string,
         element: string,
         path: string,
-        multiple: boolean = false,
+        multiple = false,
         selector?: string,
         contextField?: string,
         contextType?: string,
-        contextImpliedType: boolean = false
+        contextImpliedType = false
     ): void {
         const linkedTranslator = this.getOrCreateTranslator(namespace, element);
         linkedTranslator.placeholder = false;
@@ -276,7 +275,7 @@ export default class Registry {
         translator.addChild(finalKey, linkedTranslator, multiple, selector, xid);
     }
 
-    private walkToTranslator(path: string[], vivify: boolean = false): Translator | undefined {
+    private walkToTranslator(path: string[], vivify = false): Translator | undefined {
         let translator = this.root;
         for (const key of path) {
             let next = translator.getChild(key);

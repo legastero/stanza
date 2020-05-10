@@ -246,14 +246,14 @@ export default class JingleSession {
         );
     }
 
-    public start(next?: ActionCallback): void;
-    public start(opts: any, next?: ActionCallback): void {
+    public start(_next?: ActionCallback): void;
+    public start(_opts: any, _next?: ActionCallback): void {
         this._log('error', 'Can not start base sessions');
         this.end('unsupported-applications', true);
     }
 
-    public accept(next?: ActionCallback): void;
-    public accept(opts?: any, next?: ActionCallback): void {
+    public accept(_next?: ActionCallback): void;
+    public accept(_opts?: any, _next?: ActionCallback): void {
         this._log('error', 'Can not accept base sessions');
         this.end('unsupported-applications');
     }
@@ -266,7 +266,7 @@ export default class JingleSession {
         this.end('decline');
     }
 
-    public end(reason: JingleReasonCondition | JingleReason = 'success', silent: boolean = false) {
+    public end(reason: JingleReasonCondition | JingleReason = 'success', silent = false) {
         this.state = 'ended';
 
         this.processingQueue.kill();

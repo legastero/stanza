@@ -485,7 +485,7 @@ export const childText = (
     namespace: string | null,
     element: string,
     defaultValue?: string,
-    emitEmpty: boolean = false
+    emitEmpty = false
 ) =>
     createChildTextField({
         element,
@@ -961,7 +961,7 @@ export function splicePath(
     namespace: string | null,
     element: string,
     path: string,
-    multiple: boolean = false
+    multiple = false
 ): FieldDefinition<JSONData | JSONData[]> {
     return {
         importer(xml, context) {
@@ -1171,8 +1171,9 @@ export function childAlternateLanguageRawElement(
 
                 if (typeof value === 'string') {
                     const wrapped = parse(
-                        `<${element} xmlns="${namespace ||
-                            xml.getNamespace()}">${value}</${element}>`
+                        `<${element} xmlns="${
+                            namespace || xml.getNamespace()
+                        }">${value}</${element}>`
                     );
                     value = wrapped.toJSON();
                 }

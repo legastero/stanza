@@ -65,7 +65,7 @@ export async function getHostMeta(
     ]);
 }
 
-export default function(client: Agent, stanzas: JXT.Registry) {
+export default function (client: Agent, stanzas: JXT.Registry) {
     client.discoverBindings = async (server: string) => {
         try {
             const data = await getHostMeta(stanzas, server);

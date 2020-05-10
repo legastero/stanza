@@ -152,7 +152,7 @@ function isPubsubAffiliation(
     return (!msg.pubsub.context || msg.pubsub.context === 'user') && !!msg.pubsub.affiliations;
 }
 
-export default function(client: Agent) {
+export default function (client: Agent) {
     client.disco.addFeature(`${NS_SHIM}#SubID`, NS_SHIM);
 
     client.on('message', msg => {
@@ -344,7 +344,7 @@ export default function(client: Agent) {
     client.createNode = async (jid: string, node?: string, config?: DataForm) => {
         const resp = await client.sendIQ({
             pubsub: {
-                configure: !!config
+                configure: config
                     ? {
                           form: config
                       }

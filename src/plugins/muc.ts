@@ -103,7 +103,7 @@ function isMUCPresence(pres: ReceivedPresence): pres is ReceivedMUCPresence {
     return !!pres.muc;
 }
 
-export default function(client: Agent) {
+export default function (client: Agent) {
     client.disco.addFeature(NS_MUC);
     client.disco.addFeature(NS_MUC_DIRECT_INVITE);
     client.disco.addFeature(NS_HATS_0);
@@ -429,7 +429,7 @@ export default function(client: Agent) {
         });
     };
 
-    client.getUniqueRoomName = async function(mucHost: string) {
+    client.getUniqueRoomName = async function (mucHost: string) {
         const result = await this.sendIQ({
             muc: {
                 type: 'unique'

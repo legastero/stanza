@@ -50,8 +50,8 @@ export type MechanismConstructor = new (name: string) => Mechanism;
 
 export abstract class SimpleMech {
     public name: string;
-    protected authenticated: boolean = false;
-    protected mutuallyAuthenticated: boolean = false;
+    protected authenticated = false;
+    protected mutuallyAuthenticated = false;
     protected errorData?: { [key: string]: string };
 
     constructor(name: string) {
@@ -63,11 +63,11 @@ export abstract class SimpleMech {
     }
 
     // istanbul ignore next
-    public processChallenge(challenge: Buffer): void {
+    public processChallenge(_challenge: Buffer): void {
         return;
     }
 
-    public processSuccess(success?: Buffer): void {
+    public processSuccess(_success?: Buffer): void {
         this.authenticated = true;
     }
 
@@ -127,7 +127,7 @@ export class Factory {
 // ====================================================================
 
 // istanbul ignore next
-export function createClientNonce(length: number = 32): string {
+export function createClientNonce(length = 32): string {
     return Hashes.randomBytes(length).toString('hex');
 }
 
@@ -142,15 +142,11 @@ export function XOR(a: Buffer, b: Buffer) {
 // tslint:enable no-bitwise
 
 export function H(text: Buffer, alg: string): Buffer {
-    return Hashes.createHash(alg)
-        .update(text)
-        .digest();
+    return Hashes.createHash(alg).update(text).digest();
 }
 
 export function HMAC(key: Buffer, msg: Buffer, alg: string): Buffer {
-    return Hashes.createHmac(alg, key)
-        .update(msg)
-        .digest() as Buffer;
+    return Hashes.createHmac(alg, key).update(msg).digest() as Buffer;
 }
 
 export function Hi(text: Buffer, salt: Buffer, iterations: number, alg: string) {
@@ -248,7 +244,7 @@ export class PLAIN extends SimpleMech implements Mechanism {
 // ====================================================================
 
 export class OAUTH extends SimpleMech implements Mechanism {
-    private failed: boolean = false;
+    private failed = false;
 
     constructor(name: string) {
         super(name);
@@ -283,7 +279,7 @@ export class OAUTH extends SimpleMech implements Mechanism {
 
 export class DIGEST extends SimpleMech implements Mechanism {
     public name: string;
-    public providesMutualAuthentication: boolean = false;
+    public providesMutualAuthentication = false;
 
     private nonce?: string;
     private realm?: string;
@@ -358,9 +354,7 @@ export class DIGEST extends SimpleMech implements Mechanism {
             ha1.update(':').update(credentials.authzid);
         }
         const dha1 = ha1.digest('hex');
-        const ha2 = Hashes.createHash('md5')
-            .update('AUTHENTICATE:')
-            .update(uri);
+        const ha2 = Hashes.createHash('md5').update('AUTHENTICATE:').update(uri);
         const dha2 = ha2.digest('hex');
         const digest = Hashes.createHash('md5')
             .update(dha1)
@@ -392,7 +386,7 @@ export class DIGEST extends SimpleMech implements Mechanism {
 
 export class SCRAM implements Mechanism {
     public name: string;
-    public providesMutualAuthentication: boolean = true;
+    public providesMutualAuthentication = true;
 
     private useChannelBinding: boolean;
     private algorithm: string;
@@ -413,10 +407,7 @@ export class SCRAM implements Mechanism {
         this.name = name;
         this.state = 'INITIAL';
         this.useChannelBinding = this.name.toLowerCase().endsWith('-plus');
-        this.algorithm = this.name
-            .toLowerCase()
-            .split('scram-')[1]
-            .split('-plus')[0];
+        this.algorithm = this.name.toLowerCase().split('scram-')[1].split('-plus')[0];
     }
 
     public getExpectedCredentials(): ExpectedCredentials {

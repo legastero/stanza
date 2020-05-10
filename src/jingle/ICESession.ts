@@ -15,7 +15,7 @@ import BaseSession, { ActionCallback } from './Session';
 
 export default class ICESession extends BaseSession {
     public pc!: RTCPeerConnection;
-    public bitrateLimit: number = 0;
+    public bitrateLimit = 0;
     public maximumBitrate?: number;
     public currentBitrate?: number;
     public maxRelayBandwidth: number;
@@ -24,8 +24,8 @@ export default class ICESession extends BaseSession {
         candidate: string;
     } | null> = [];
     public transportType: JingleIce['transportType'] = NS_JINGLE_ICE_UDP_1;
-    public restartingIce: boolean = false;
-    public usingRelay: boolean = false;
+    public restartingIce = false;
+    public usingRelay = false;
 
     private _maybeRestartingIce: any;
 
@@ -54,7 +54,7 @@ export default class ICESession extends BaseSession {
         this.restrictRelayBandwidth();
     }
 
-    public end(reason: JingleReasonCondition | JingleReason = 'success', silent: boolean = false) {
+    public end(reason: JingleReasonCondition | JingleReason = 'success', silent = false) {
         this.pc.close();
         super.end(reason, silent);
     }
@@ -394,8 +394,8 @@ export default class ICESession extends BaseSession {
             }
 
             let isRelay = false;
-            let localCandidateType: string = '';
-            let remoteCandidateType: string = '';
+            let localCandidateType = '';
+            let remoteCandidateType = '';
 
             if (activeCandidatePair.remoteCandidateId) {
                 const remoteCandidate = (stats as any).get(activeCandidatePair.remoteCandidateId);

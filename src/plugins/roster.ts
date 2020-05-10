@@ -59,7 +59,7 @@ declare module '../' {
     }
 }
 
-export default function(client: Agent) {
+export default function (client: Agent) {
     client.on('iq:set:roster', iq => {
         const allowed = JID.allowedResponders(client.jid);
         if (!allowed.has(iq.from)) {
@@ -168,7 +168,7 @@ export default function(client: Agent) {
     client.block = async (jid: string) => toggleBlock('block', jid);
     client.unblock = async (jid: string) => toggleBlock('unblock', jid);
 
-    client.goInvisible = async (probe: boolean = false) => {
+    client.goInvisible = async (probe = false) => {
         await client.sendIQ({
             type: 'set',
             visiblity: {

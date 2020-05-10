@@ -50,10 +50,10 @@ function applyStreamsCompatibility(content: JingleContent) {
 export default class MediaSession extends ICESession {
     public offerOptions: any;
 
-    public includesAudio: boolean = false;
-    public includesVideo: boolean = false;
+    public includesAudio = false;
+    public includesVideo = false;
 
-    private _ringing: boolean = false;
+    private _ringing = false;
 
     constructor(opts: any) {
         super(opts);
@@ -163,7 +163,7 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    public end(reason: JingleReasonCondition | JingleReason = 'success', silent: boolean = false) {
+    public end(reason: JingleReasonCondition | JingleReason = 'success', silent = false) {
         for (const receiver of this.pc.getReceivers()) {
             this.onRemoveTrack(receiver.track);
         }

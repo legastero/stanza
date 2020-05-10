@@ -56,10 +56,10 @@ const CSS_RULES = new Map([
 
 const sanitizeCSS = (css: string): string | false => {
     const declarations = `;${css}` // Declarations are ; delimited, not terminated
-        .replace(/\/\*[^*]*\*+([^\/*][^*]*\*+)*\//g, '') // Strip comments
+        .replace(/\/\*[^*]*\*+([^/*][^*]*\*+)*\//g, '') // Strip comments
         .replace(/\/\*.*/, '') // Strip unclosed comments
         .replace(/\\([a-fA-F0-9]{1,6})\s?/, (_, x) => String.fromCharCode(parseInt(x, 16))) // Decode escape sequences
-        .match(/;\s*([a-z\-]+)\s*:\s*([^;]*[^\s;])\s*/g); // Split into declarations
+        .match(/;\s*([a-z-]+)\s*:\s*([^;]*[^\s;])\s*/g); // Split into declarations
 
     const rules: string[] = [];
     if (!declarations) {
@@ -67,7 +67,7 @@ const sanitizeCSS = (css: string): string | false => {
     }
 
     for (const declaration of declarations) {
-        const parts = declaration.match(/^;\s*([a-z\-]+)\s*:\s*([^;]*[^\s])\s*$/);
+        const parts = declaration.match(/^;\s*([a-z-]+)\s*:\s*([^;]*[^\s])\s*$/);
         if (!parts) {
             continue;
         }
@@ -107,7 +107,7 @@ const ATTRIBUTE_SANITIZERS: { [key: string]: (text: string) => string | false } 
     width: sanitizeNumber
 };
 
-const stripElement = (input: JSONElement): Array<string | JSONElement> => {
+function stripElement(input: JSONElement): Array<string | JSONElement> {
     let results: Array<string | JSONElement> = [];
     for (const child of input.children) {
         if (typeof child === 'string') {
@@ -124,9 +124,52 @@ const stripElement = (input: JSONElement): Array<string | JSONElement> => {
         }
     }
     return results;
-};
+}
 
-const sanitizeRoot = (input: JSONElement | string): JSONElement | string | undefined => {
+function sanitizeInterior(
+    input: JSONElement | string
+): JSONElement | string | Array<string | JSONElement> | undefined {
+    if (typeof input === 'string') {
+        return input;
+    }
+
+    if (!ALLOWED_ELEMENTS.has(input.name)) {
+        if (input.name === 'script') {
+            return;
+        }
+        return stripElement(input);
+    }
+
+    const children = input.children
+        .map(sanitizeInterior)
+        .filter(child => child !== undefined) as Array<JSONElement | string>;
+    const attributes: { [key: string]: string } = {};
+
+    for (const key of Object.keys(input.attributes)) {
+        const allowed = ALLOWED_ATTRIBUTES.get(input.name);
+        if (!allowed || !allowed.has(key)) {
+            continue;
+        }
+        let value: string | false | undefined = input.attributes[key];
+        if (!value) {
+            continue;
+        }
+        value = ATTRIBUTE_SANITIZERS[key](value);
+        if (!value) {
+            continue;
+        }
+
+        attributes[key] = value;
+    }
+
+    return {
+        attributes,
+        children,
+        name: input.name
+    };
+}
+
+function sanitizeRoot(input: JSONElement | string): JSONElement | string | undefined {
     if (typeof input === 'string') {
         return;
     }
@@ -170,49 +213,6 @@ const sanitizeRoot = (input: JSONElement | string): JSONElement | string | undef
         children,
         name: 'body'
     };
-};
-
-const sanitizeInterior = (
-    input: JSONElement | string
-): JSONElement | string | Array<string | JSONElement> | undefined => {
-    if (typeof input === 'string') {
-        return input;
-    }
-
-    if (!ALLOWED_ELEMENTS.has(input.name)) {
-        if (input.name === 'script') {
-            return;
-        }
-        return stripElement(input);
-    }
-
-    const children = input.children
-        .map(sanitizeInterior)
-        .filter(child => child !== undefined) as Array<JSONElement | string>;
-    const attributes: { [key: string]: string } = {};
-
-    for (const key of Object.keys(input.attributes)) {
-        const allowed = ALLOWED_ATTRIBUTES.get(input.name);
-        if (!allowed || !allowed.has(key)) {
-            continue;
-        }
-        let value: string | false | undefined = input.attributes[key];
-        if (!value) {
-            continue;
-        }
-        value = ATTRIBUTE_SANITIZERS[key](value);
-        if (!value) {
-            continue;
-        }
-
-        attributes[key] = value;
-    }
-
-    return {
-        attributes,
-        children,
-        name: input.name
-    };
-};
+}
 
 export default sanitizeRoot;

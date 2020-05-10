@@ -28,13 +28,13 @@ interface SMState {
 export default class StreamManagement extends EventEmitter {
     public id?: string;
     public jid?: string;
-    public allowResume: boolean = true;
-    public lastAck: number = 0;
-    public handled: number = 0;
+    public allowResume = true;
+    public lastAck = 0;
+    public handled = 0;
     public unacked: Unacked[] = [];
 
-    private inboundStarted: boolean = false;
-    private outboundStarted: boolean = false;
+    private inboundStarted = false;
+    private outboundStarted = false;
     private cacheHandler: (state: SMState) => Promise<void> | void;
 
     constructor() {
@@ -143,7 +143,7 @@ export default class StreamManagement extends EventEmitter {
 
     public async process(
         ack: StreamManagementAck | StreamManagementResume | StreamManagementFailed,
-        resend: boolean = false
+        resend = false
     ) {
         if (ack.handled === undefined) {
             return;

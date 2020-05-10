@@ -194,7 +194,7 @@ export function escapeXMLText(text: string) {
 export function basicLanguageResolver(
     available: string[],
     accept: string[] = [],
-    current: string = ''
+    current = ''
 ): string {
     const avail = new Set(available.map(a => a.toLowerCase()));
     for (let acceptLang of accept.map(a => a.toLowerCase())) {

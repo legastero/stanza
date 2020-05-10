@@ -20,11 +20,11 @@
 declare const assignmentCompatibilityHack: unique symbol;
 
 // Returns any keys of TRecord with the type of TMatch
-export type MatchingKeys<
-    TRecord,
-    TMatch,
-    K extends keyof TRecord = keyof TRecord
-> = K extends (TRecord[K] extends TMatch ? K : never) ? K : never;
+export type MatchingKeys<TRecord, TMatch, K extends keyof TRecord = keyof TRecord> = K extends (
+    TRecord[K] extends TMatch ? K : never
+)
+    ? K
+    : never;
 
 // Returns any property keys of Record with a void type
 export type VoidKeys<Record> = MatchingKeys<Record, void>;

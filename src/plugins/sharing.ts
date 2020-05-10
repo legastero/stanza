@@ -17,7 +17,7 @@ declare module '../' {
     }
 }
 
-export default function(client: Agent) {
+export default function (client: Agent) {
     client.disco.addFeature(NS_BOB);
 
     client.getBits = async (jid, cid) => {

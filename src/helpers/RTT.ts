@@ -74,17 +74,17 @@ export function diff(oldText: UnicodeBuffer, newText: UnicodeBuffer): RTTAction[
  * Class for processing RTT events and providing a renderable string of the resulting text.
  */
 export class DisplayBuffer {
-    public synced: boolean = false;
+    public synced = false;
     public onStateChange: (state: DisplayBufferState) => void;
-    public cursorPosition: number = 0;
-    public ignoreWaits: boolean = false;
+    public cursorPosition = 0;
+    public ignoreWaits = false;
 
     private buffer: UnicodeBuffer;
-    private timeDeficit: number = 0;
-    private sequenceNumber: number = 0;
+    private timeDeficit = 0;
+    private sequenceNumber = 0;
     private actionQueue!: AsyncPriorityQueue<RTTAction>;
 
-    constructor(onStateChange?: (state: DisplayBufferState) => void, ignoreWaits: boolean = false) {
+    constructor(onStateChange?: (state: DisplayBufferState) => void, ignoreWaits = false) {
         this.onStateChange =
             onStateChange ||
             function noop() {
@@ -158,7 +158,7 @@ export class DisplayBuffer {
      * @param text The raw text to insert
      * @param position The position to start the insertion
      */
-    private insert(text: string = '', position: number = this.buffer.length): void {
+    private insert(text = '', position: number = this.buffer.length): void {
         text = text.normalize('NFC');
 
         const insertedText = Punycode.ucs2.decode(text);
@@ -176,7 +176,7 @@ export class DisplayBuffer {
      * @param length The number of code points to erase from the buffer, starting at {position} and erasing to the left.
      * @param position The position to start erasing code points. Erasing continues to the left.
      */
-    private erase(length: number = 1, position: number = this.buffer.length): void {
+    private erase(length = 1, position: number = this.buffer.length): void {
         position = Math.max(Math.min(position, this.buffer.length), 0);
         length = Math.max(Math.min(length, this.text.length), 0);
 
@@ -250,19 +250,19 @@ export class DisplayBuffer {
  */
 export class InputBuffer {
     public onStateChange: (state: InputBufferState) => void;
-    public resetInterval: number = 10000;
-    public ignoreWaits: boolean = false;
+    public resetInterval = 10000;
+    public ignoreWaits = false;
     public sequenceNumber: number;
 
-    private isStarting: boolean = false;
-    private isReset: boolean = false;
+    private isStarting = false;
+    private isReset = false;
     private buffer: UnicodeBuffer;
     private actionQueue: RTTAction[];
     private lastActionTime?: number;
     private lastResetTime?: number;
-    private changedBetweenResets: boolean = false;
+    private changedBetweenResets = false;
 
-    constructor(onStateChange?: (state: InputBufferState) => void, ignoreWaits: boolean = false) {
+    constructor(onStateChange?: (state: InputBufferState) => void, ignoreWaits = false) {
         this.onStateChange =
             onStateChange ||
             function noop() {

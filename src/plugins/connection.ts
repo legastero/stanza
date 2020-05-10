@@ -48,24 +48,22 @@ declare module '../' {
     }
 }
 
-function checkConnection(client: Agent): Promise<void> {
-    return new Promise<void>(async (resolve, reject) => {
-        if (client.sm.started) {
+async function checkConnection(client: Agent): Promise<void> {
+    if (client.sm.started) {
+        return new Promise(resolve => {
             client.once('stream:management:ack', () => resolve());
             client.sm.request();
+        });
+    }
+    try {
+        await client.ping();
+    } catch (err) {
+        if (err.error && err.error.condition !== 'timeout') {
+            return;
         } else {
-            try {
-                await client.ping();
-                resolve();
-            } catch (err) {
-                if (err.error && err.error.condition !== 'timeout') {
-                    resolve();
-                } else {
-                    reject();
-                }
-            }
+            throw err;
         }
-    });
+    }
 }
 
 function sendCSI(client: Agent, type: 'active' | 'inactive') {
@@ -76,7 +74,7 @@ function sendCSI(client: Agent, type: 'active' | 'inactive') {
     }
 }
 
-export default function(client: Agent) {
+export default function (client: Agent) {
     client.disco.addFeature(NS_PING);
 
     client.on('iq:get:ping', iq => {

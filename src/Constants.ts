@@ -25,7 +25,7 @@ export const StreamType = {
     Component: NS_COMPONENT,
     Server: NS_SERVER
 } as const;
-export type StreamType = typeof SASLFailureCondition[keyof typeof SASLFailureCondition];
+export type StreamType = typeof StreamType[keyof typeof StreamType];
 
 export const SASLFailureCondition = {
     AccountDisabled: 'account-disabled',
@@ -492,7 +492,7 @@ export const USER_ACTIVITY_SPECIFIC = [
     'writing'
 ];
 
-export const JINGLE_INFO = (namespace: string, name: string) => `{${namespace}}${name}`;
+export const JINGLE_INFO = (namespace: string, name: string): string => `{${namespace}}${name}`;
 export const JINGLE_INFO_MUTE = JINGLE_INFO(NS_JINGLE_RTP_INFO_1, 'mute');
 export const JINGLE_INFO_UNMUTE = JINGLE_INFO(NS_JINGLE_RTP_INFO_1, 'unmute');
 export const JINGLE_INFO_HOLD = JINGLE_INFO(NS_JINGLE_RTP_INFO_1, 'hold');

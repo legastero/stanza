@@ -103,10 +103,6 @@ export interface ParserOptions {
     allowComments?: boolean;
 }
 
-function isNameStart(c: number): boolean {
-    return isBasicNameStart(c) || isExtendedNameStart(c);
-}
-
 function isBasicNameStart(c: number): boolean {
     return (
         (Character.a <= c && c <= Character.z) ||
@@ -132,6 +128,10 @@ function isExtendedNameStart(c: number): boolean {
     );
 }
 
+function isNameStart(c: number): boolean {
+    return isBasicNameStart(c) || isExtendedNameStart(c);
+}
+
 function isName(c: number): boolean {
     return (
         isBasicNameStart(c) ||
@@ -154,64 +154,13 @@ function isWhitespace(c: number): boolean {
     );
 }
 
-export function parse(data: string, opts: ParserOptions = {}): XMLElement {
-    const p = new Parser(opts);
-
-    let result: XMLElement | undefined;
-    let element: XMLElement | undefined;
-    let error = null;
-
-    p.on('text', (text: string) => {
-        if (element) {
-            element.children.push(text);
-        }
-    });
-
-    p.on('startElement', (name: string, attrs: Attributes) => {
-        const child = new XMLElement(name, attrs);
-        if (!result) {
-            result = child;
-        }
-        if (!element) {
-            element = child;
-        } else {
-            element = element.appendChild(child) as XMLElement;
-        }
-    });
-
-    p.on('endElement', (name: string) => {
-        if (!element) {
-            p.emit('error', JXTError.notWellFormed('a'));
-        } else if (name === element.name) {
-            if (element.parent) {
-                element = element.parent;
-            }
-        } else {
-            p.emit('error', JXTError.notWellFormed('b'));
-        }
-    });
-
-    p.on('error', (e: Error) => {
-        error = e;
-    });
-
-    p.write(data);
-    p.end();
-
-    if (error) {
-        throw error;
-    } else {
-        return result!;
-    }
-}
-
-export default class Parser extends EventEmitter {
+class Parser extends EventEmitter {
     private allowComments = true;
     private attributeName?: string;
     private attributes?: Attributes = {};
     private state: State = State.TEXT;
     private tagName?: string = '';
-    private haveDeclaration: boolean = false;
+    private haveDeclaration = false;
     private recordBuffer: string[] = [];
 
     constructor(opts: ParserOptions = {}) {
@@ -669,3 +618,56 @@ export default class Parser extends EventEmitter {
         this.emit('error', JXTError.restrictedXML(msg));
     }
 }
+
+export function parse(data: string, opts: ParserOptions = {}): XMLElement {
+    const p = new Parser(opts);
+
+    let result: XMLElement | undefined;
+    let element: XMLElement | undefined;
+    let error = null;
+
+    p.on('text', (text: string) => {
+        if (element) {
+            element.children.push(text);
+        }
+    });
+
+    p.on('startElement', (name: string, attrs: Attributes) => {
+        const child = new XMLElement(name, attrs);
+        if (!result) {
+            result = child;
+        }
+        if (!element) {
+            element = child;
+        } else {
+            element = element.appendChild(child) as XMLElement;
+        }
+    });
+
+    p.on('endElement', (name: string) => {
+        if (!element) {
+            p.emit('error', JXTError.notWellFormed('a'));
+        } else if (name === element.name) {
+            if (element.parent) {
+                element = element.parent;
+            }
+        } else {
+            p.emit('error', JXTError.notWellFormed('b'));
+        }
+    });
+
+    p.on('error', (e: Error) => {
+        error = e;
+    });
+
+    p.write(data);
+    p.end();
+
+    if (error) {
+        throw error;
+    } else {
+        return result!;
+    }
+}
+
+export default Parser;

@@ -371,7 +371,7 @@ export default class Client extends EventEmitter {
         await this.sm.shutdown();
     }
 
-    public async send(kind: string, stanza: object, replay: boolean = false): Promise<void> {
+    public async send(kind: string, stanza: object, replay = false): Promise<void> {
         return new Promise((resolve, reject) => {
             this.outgoingDataQueue.push({ kind, stanza, replay }, replay ? 0 : 1, err =>
                 err ? reject(err) : resolve()

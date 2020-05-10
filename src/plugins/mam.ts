@@ -34,7 +34,7 @@ export interface MAMQueryOptions extends MAMQuery {
     end?: Date;
 }
 
-export default function(client: Agent) {
+export default function (client: Agent) {
     client.getHistorySearchForm = async (jid: string) => {
         const res = await client.sendIQ<{ archive: MAMQuery }>({
             archive: {
@@ -52,7 +52,7 @@ export default function(client: Agent) {
     ) => {
         const queryid = client.nextId();
 
-        let jid: string = '';
+        let jid = '';
         if (typeof jidOrOpts === 'string') {
             jid = jidOrOpts;
         } else {

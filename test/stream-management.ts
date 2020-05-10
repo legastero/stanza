@@ -1,10 +1,9 @@
 import StreamManagement from '../src/helpers/StreamManagement';
-import { sleep } from '../src/Utils';
 
 test('Handled unacked on resume', async () => {
     let cache: any;
-    let acked: any[] = [];
-    let resent: any[] = [];
+    const acked: any[] = [];
+    const resent: any[] = [];
 
     const sm1 = new StreamManagement();
     sm1.cache(data => {
@@ -50,8 +49,8 @@ test('Handled unacked on resume', async () => {
 
 test('Handled failed with known handled', async () => {
     let cache: any;
-    let acked: any[] = [];
-    let failed: any[] = [];
+    const acked: any[] = [];
+    const failed: any[] = [];
 
     const sm1 = new StreamManagement();
     sm1.cache(data => {
@@ -94,8 +93,8 @@ test('Handled failed with known handled', async () => {
 
 test('Handled failed with unknown handled', async () => {
     let cache: any;
-    let acked: any[] = [];
-    let failed: any[] = [];
+    const acked: any[] = [];
+    const failed: any[] = [];
 
     const sm1 = new StreamManagement();
     sm1.cache(data => {

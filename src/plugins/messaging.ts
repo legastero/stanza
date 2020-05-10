@@ -125,7 +125,7 @@ function sendMarker(
     }
 }
 
-export default function(client: Agent) {
+export default function (client: Agent) {
     client.disco.addFeature(NS_ATTENTION_0);
     client.disco.addFeature(NS_CHAT_MARKERS_0);
     client.disco.addFeature(NS_CHAT_STATES);

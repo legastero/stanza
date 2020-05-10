@@ -32,7 +32,7 @@ export default class WSConnection extends Duplex implements Transport {
             this.client.emit('stream:data', e.stanza, e.kind);
         });
 
-        this.on('error', e => {
+        this.on('error', () => {
             this.end();
         });
 
@@ -98,7 +98,7 @@ export default class WSConnection extends Duplex implements Transport {
         });
 
         this.socket = new WebSocket(opts.url, 'xmpp');
-        this.socket.onopen = e => {
+        this.socket.onopen = () => {
             this.emit('connect');
             this.sm.started = false;
             this.client.emit('connected');
@@ -111,7 +111,7 @@ export default class WSConnection extends Duplex implements Transport {
                 this.parser.write(data);
             }
         };
-        this.socket.onclose = e => {
+        this.socket.onclose = () => {
             this.push(null);
         };
     }

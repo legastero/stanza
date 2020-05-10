@@ -40,6 +40,50 @@ function encodeFeatures(features: string[] = []): Buffer[] | null {
     return result;
 }
 
+function encodeFields(fields: DataFormField[] = []): Buffer[] {
+    const sortedFields: Array<{ name: Buffer; values: Buffer[] }> = [];
+
+    for (const field of fields) {
+        if (field.name === 'FORM_TYPE') {
+            continue;
+        }
+        if (field.rawValues) {
+            sortedFields.push({
+                name: escape(field.name!),
+                values: field.rawValues.map(val => escape(val)).sort(octetCompare)
+            });
+        } else if (Array.isArray(field.value)) {
+            sortedFields.push({
+                name: escape(field.name!),
+                values: field.value.map(val => escape(val)).sort(octetCompare)
+            });
+        } else if (field.value === true || field.value === false) {
+            sortedFields.push({
+                name: escape(field.name!),
+                values: [escape(field.value ? '1' : '0')]
+            });
+        } else {
+            sortedFields.push({
+                name: escape(field.name!),
+                values: [escape(field.value || '')]
+            });
+        }
+    }
+
+    sortedFields.sort((a, b) => octetCompare(a.name, b.name));
+
+    const result: Buffer[] = [];
+
+    for (const field of sortedFields) {
+        result.push(field.name);
+        for (const value of field.values) {
+            result.push(value);
+        }
+    }
+
+    return result;
+}
+
 function encodeForms(extensions: DataForm[] = []): Buffer[] | null {
     const forms: Array<{ type: Buffer; form: DataForm }> = [];
     const types = new Set<string>();
@@ -89,50 +133,6 @@ function encodeForms(extensions: DataForm[] = []): Buffer[] | null {
     return results;
 }
 
-function encodeFields(fields: DataFormField[] = []): Buffer[] {
-    const sortedFields: Array<{ name: Buffer; values: Buffer[] }> = [];
-
-    for (const field of fields) {
-        if (field.name === 'FORM_TYPE') {
-            continue;
-        }
-        if (field.rawValues) {
-            sortedFields.push({
-                name: escape(field.name!),
-                values: field.rawValues.map(val => escape(val)).sort(octetCompare)
-            });
-        } else if (Array.isArray(field.value)) {
-            sortedFields.push({
-                name: escape(field.name!),
-                values: field.value.map(val => escape(val)).sort(octetCompare)
-            });
-        } else if (field.value === true || field.value === false) {
-            sortedFields.push({
-                name: escape(field.name!),
-                values: [escape(field.value ? '1' : '0')]
-            });
-        } else {
-            sortedFields.push({
-                name: escape(field.name!),
-                values: [escape(field.value || '')]
-            });
-        }
-    }
-
-    sortedFields.sort((a, b) => octetCompare(a.name, b.name));
-
-    const result: Buffer[] = [];
-
-    for (const field of sortedFields) {
-        result.push(field.name);
-        for (const value of field.values) {
-            result.push(value);
-        }
-    }
-
-    return result;
-}
-
 export function generate(info: DiscoInfo, hashName: string): string | null {
     const S: Buffer[] = [];
     const separator = Buffer.from('<', 'utf8');
@@ -160,9 +160,7 @@ export function generate(info: DiscoInfo, hashName: string): string | null {
         append(form);
     }
 
-    return Hashes.createHash(hashName)
-        .update(Buffer.concat(S))
-        .digest('base64');
+    return Hashes.createHash(hashName).update(Buffer.concat(S)).digest('base64');
 }
 
 export function verify(info: DiscoInfo, hashName: string, check: string): boolean {

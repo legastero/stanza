@@ -74,6 +74,7 @@ function writeType(t: any, wrap = true): string | undefined {
                     .map((x: any) => `${x.name}: ${writeType(x.type, false)}`)
                     .join('; ')} }`;
             }
+            break;
         case 'union':
             return (t.types || [])
                 .map((x: any) => writeType(x, wrap))

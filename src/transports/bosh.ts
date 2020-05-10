@@ -13,10 +13,10 @@ import { sleep, timeoutPromise } from '../Utils';
 class RequestChannel {
     public rid!: number;
     public maxTimeout: number;
-    public active: boolean = false;
+    public active = false;
 
     private stream: BOSH;
-    private maxRetries: number = 5;
+    private maxRetries = 5;
 
     constructor(stream: BOSH) {
         this.stream = stream;
@@ -76,9 +76,9 @@ export default class BOSH extends Duplex implements Transport {
     public url!: string;
     public rid?: number = Math.floor(Math.random() * 0xffffffff);
     public sid?: string = '';
-    public maxHoldOpen: number = 2;
-    public maxWaitTime: number = 30;
-    public contentType: string = 'text/xml; charset=utf-8';
+    public maxHoldOpen = 2;
+    public maxWaitTime = 30;
+    public contentType = 'text/xml; charset=utf-8';
 
     private channels: RequestChannel[] = [new RequestChannel(this), new RequestChannel(this)];
     private activeChannelID = 0;
@@ -90,7 +90,7 @@ export default class BOSH extends Duplex implements Transport {
     private idleTimeout: any;
     private queue: Array<[any, (err?: Error) => void]> = [];
 
-    private isEnded: boolean = false;
+    private isEnded = false;
 
     constructor(client: Agent, sm: StreamManagement, stanzas: Registry) {
         super({
@@ -261,7 +261,7 @@ export default class BOSH extends Duplex implements Transport {
         this.activeChannelID = this.activeChannelID === 0 ? 1 : 0;
     }
 
-    private async _send(boshData: any, payload: string = ''): Promise<void> {
+    private async _send(boshData: any, payload = ''): Promise<void> {
         if (this.isEnded) {
             return;
         }

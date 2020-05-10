@@ -155,7 +155,7 @@ export default class XMLElement {
         return child;
     }
 
-    public setAttribute(attr: string, val: NullableString, force: boolean = false): void {
+    public setAttribute(attr: string, val: NullableString, force = false): void {
         this.attributes[attr] = val || undefined;
         if (val === '' && force) {
             this.attributes[attr] = val;
@@ -218,7 +218,7 @@ export default class XMLElement {
         return output;
     }
 
-    public openTag(allowSelfClose: boolean = false): string {
+    public openTag(allowSelfClose = false): string {
         let output = '';
 
         output += `<${this.name}`;

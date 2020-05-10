@@ -45,7 +45,7 @@ function setupRegistry(): JXT.Registry {
     return registry;
 }
 
-const htmlBody = (lang: string = '', message: string = 'hi!'): JXT.JSONElement => {
+const htmlBody = (lang = '', message = 'hi!'): JXT.JSONElement => {
     const body: JXT.JSONElement = {
         attributes: {
             xmlns: 'http://www.w3.org/1999/xhtml'

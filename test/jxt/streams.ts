@@ -185,7 +185,7 @@ test('[Stream Errors] Unknown element', done => {
         registry
     });
 
-    parser.on('error', err => {
+    parser.on('error', () => {
         done.fail();
     });
 
