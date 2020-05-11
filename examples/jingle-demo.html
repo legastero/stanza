@@ -31,6 +31,7 @@
                         value=""
                         placeholder="ws://localhost:5280/xmpp-websocket/"
                 /></label>
+                <label><input id="screen" type="checkbox" />Use screen</label>
                 <input id="connect" type="submit" value="Connect" />
             </form>
             <h2>My full JID:</h2>
@@ -39,7 +40,11 @@
             <form id="callInfo">
                 <label
                     >Peer JID:
-                    <input id="peer" type="text" name="peer" placeholder="otherperson@example.com"
+                    <input
+                        id="peer"
+                        type="text"
+                        name="peer"
+                        placeholder="otherperson@example.com/resource"
                 /></label>
                 <input id="call" type="submit" value="Call" />
             </form>
@@ -160,8 +165,13 @@
                     href.appendChild(document.createTextNode(text));
                     href.style.display = 'block';
                 });
-
-                navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(stream => {
+                var media;
+                if (document.getElementById('screen').checked) {
+                    media = navigator.mediaDevices.getDisplayMedia({ video: true });
+                } else {
+                    media = navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+                }
+                media.then(stream => {
                     const vid = document.getElementById('localVideo');
                     vid.srcObject = stream;
                     vid.muted = true;
