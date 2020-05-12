@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 /// <reference path="../../typings/sdp.d.ts" />
 
 import * as SDP from 'sdp';
