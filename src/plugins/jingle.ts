@@ -229,34 +229,7 @@ export default function (client: Agent) {
             const discovered: RTCIceServer[] = [];
 
             for (const service of services) {
-                const ice: RTCIceServer = {
-                    urls: []
-                };
-
-                const baseUrl = `${service.type}:${service.host}`;
-                const port = service.port ? `:${service.port}` : '';
-                const transport = service.transport ? `?transport=${service.transport}` : '';
-
-                if (service.type === 'stun' || service.type === 'stuns') {
-                    ice.urls = [`${baseUrl}${port}`];
-                }
-                if (service.type === 'turn' || service.type === 'turns') {
-                    if (service.username) {
-                        ice.username = service.username;
-                    }
-                    if (service.password) {
-                        ice.credential = service.password;
-                    }
-                    ice.urls = [`${baseUrl}${port}${transport}`];
-                }
-
-                if (ice.urls.length) {
-                    discovered.push(ice);
-                }
-            }
-
-            for (const ice of discovered) {
-                client.jingle.addICEServer(ice);
+                client.jingle.addICEServer(service);
             }
 
             return discovered;

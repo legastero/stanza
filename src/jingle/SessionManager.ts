@@ -3,7 +3,7 @@ import { RTCPeerConnection } from 'stanza-shims';
 
 import { JingleAction, JingleReasonCondition } from '../Constants';
 import { NS_JINGLE_FILE_TRANSFER_5, NS_JINGLE_RTP_1 } from '../Namespaces';
-import { IQ, Jingle, JingleReason, StanzaError } from '../protocol';
+import { IQ, Jingle, JingleReason, StanzaError, ExternalService } from '../protocol';
 import { octetCompare } from '../Utils';
 
 import FileTransferSession from './FileTransferSession';
@@ -11,6 +11,10 @@ import MediaSession from './MediaSession';
 import BaseSession from './Session';
 
 const MAX_RELAY_BANDWIDTH = 768 * 1024; // maximum bandwidth used via TURN.
+
+function isICEServer(val: any): val is RTCIceServer {
+    return !val.type && (val.urls || val.url);
+}
 
 export interface SessionManagerConfig {
     debug?: boolean;
@@ -111,11 +115,37 @@ export default class SessionManager extends EventEmitter {
         };
     }
 
-    public addICEServer(server: RTCIceServer | string): void {
+    public addICEServer(server: RTCIceServer | ExternalService | string): void {
         if (typeof server === 'string') {
-            server = { urls: server };
+            this.iceServers.push({ urls: server });
+            return;
         }
-        this.iceServers.push(server);
+        if (isICEServer(server)) {
+            this.iceServers.push(server);
+            return;
+        }
+
+        let host = server.host || '';
+        if (host.indexOf(':') >= 0) {
+            host = `[${host}]`;
+        }
+        let uri = `${server.type}:${host}`;
+        if (server.port) {
+            uri += `:${server.port}`;
+        }
+        if (server.transport) {
+            uri += `?transport=${server.transport}`;
+        }
+
+        if (server.type === 'turn' || server.type === 'turns') {
+            this.iceServers.push({
+                credential: server.password,
+                urls: [uri],
+                username: server.username
+            });
+        } else if (server.type === 'stun' || server.type === 'stuns') {
+            this.iceServers.push({ urls: [uri] });
+        }
     }
 
     public resetICEServers(): void {
