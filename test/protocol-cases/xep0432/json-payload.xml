@@ -1,0 +1,7 @@
+<message from="gamer@game-company.example"
+    to="match-maker.game-company.example"
+    id="12345">
+  <payload xmlns="urn:xmpp:json-msg:0" datatype="urn:example:foo">
+    <json xmlns="urn:xmpp:json:0">{"annoying-teenager-level":11}</json>
+  </payload>
+</message>

@@ -1,0 +1,17 @@
+[
+    "message",
+    {
+        "from": "gamer@game-company.example",
+        "to": "match-maker.game-company.example",
+        "id": "12345",
+        "lang": "",
+        "jsonPayloads": [
+            {
+                "type": "urn:example:foo",
+                "data": {
+                    "annoying-teenager-level": 11
+                }
+            }
+        ]
+    }
+]

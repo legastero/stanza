@@ -378,6 +378,9 @@ export const NS_OMEMO_AXOLOTL_BUNDLES = 'eu.siacs.conversations.axolotl.bundles'
 export const NS_OMEMO_AXOLOTL_BUNDLE = (deviceId: string) =>
     `${NS_OMEMO_AXOLOTL_BUNDLES}:${deviceId}`;
 
+// XEP-0432
+export const NS_JSON_MESSAGE_0 = 'urn:xmpp:json-msg:0';
+
 // ================================================================
 // Other Standards
 // ================================================================
