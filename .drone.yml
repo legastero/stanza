@@ -1,8 +1,0 @@
-pipeline:
-    test:
-        image: node:12
-        commands:
-            - npm install
-            - npm run lint
-            - npm run compile
-            - npm test
