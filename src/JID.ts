@@ -112,6 +112,14 @@ export function create(data: JIDParts, opts: PreparationOptions = {}): JID {
     return bareJID;
 }
 
+export function createFull(bare: string, resource?: string): JID {
+    if (resource) {
+        return `${toBare(bare)}/${resource}`;
+    } else {
+        return toBare(bare);
+    }
+}
+
 export function parse(jid: JID = ''): ParsedJID {
     let local = '';
     let domain = '';

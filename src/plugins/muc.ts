@@ -19,20 +19,22 @@ import {
     ReceivedMUCPresence,
     ReceivedPresence
 } from '../protocol';
+import { uuid } from '../Utils';
 
 declare module '../' {
     export interface Agent {
         joinedRooms: Map<string, string>;
         joiningRooms: Map<string, string>;
+        leavingRooms: Map<string, string>;
 
-        joinRoom(jid: string, nick: string, opts?: Presence): void;
-        leaveRoom(jid: string, nick: string, opts?: Presence): void;
+        joinRoom(jid: string, nick: string, opts?: Presence): Promise<ReceivedMUCPresence>;
+        leaveRoom(jid: string, nick?: string, opts?: Presence): Promise<ReceivedPresence>;
         ban(jid: string, occupant: string, reason?: string): Promise<IQ & { muc: MUCUserList }>;
         kick(jid: string, nick: string, reason?: string): Promise<IQ & { muc: MUCUserList }>;
         invite(room: string, invites: MUCInvite | MUCInvite[]): void;
         directInvite(room: string, to: string, opts?: Partial<MUCDirectInvite>): void;
         declineInvite(room: string, sender: string, reason?: string): void;
-        changeNick(room: string, nick: string): void;
+        changeNick(room: string, nick: string): Promise<ReceivedMUCPresence>;
         setSubject(room: string, subject: string): void;
         getReservedNick(room: string): Promise<string>;
         requestRoomVoice(room: string): void;
@@ -110,6 +112,7 @@ export default function (client: Agent) {
 
     client.joinedRooms = new Map();
     client.joiningRooms = new Map();
+    client.leavingRooms = new Map();
 
     function rejoinRooms() {
         const oldJoiningRooms = client.joiningRooms;
@@ -194,6 +197,9 @@ export default function (client: Agent) {
 
         const isSelf =
             pres.muc.statusCodes && pres.muc.statusCodes.indexOf(MUCStatusCode.SelfPresence) >= 0;
+        const isNickChange =
+            pres.muc.statusCodes && pres.muc.statusCodes.indexOf(MUCStatusCode.NickChanged) >= 0;
+
         if (pres.type === 'error') {
             client.emit('muc:error', pres);
             return;
@@ -201,8 +207,13 @@ export default function (client: Agent) {
         if (pres.type === 'unavailable') {
             client.emit('muc:unavailable', pres);
             if (isSelf) {
-                client.emit('muc:leave', pres);
-                client.joinedRooms.delete(room);
+                if (isNickChange) {
+                    client.joinedRooms.set(room, pres.muc.nick!);
+                } else {
+                    client.emit('muc:leave', pres);
+                    client.joinedRooms.delete(room);
+                    client.leavingRooms.delete(room);
+                }
             }
             if (pres.muc.destroy) {
                 client.emit('muc:destroyed', {
@@ -216,31 +227,104 @@ export default function (client: Agent) {
         }
 
         client.emit('muc:available', pres);
-        if (isSelf && !client.joinedRooms.has(room)) {
-            client.emit('muc:join', pres);
+        const isJoin = client.joiningRooms.has(room) || !client.joinedRooms.has(room);
+        if (isSelf) {
             client.joinedRooms.set(room, JID.getResource(pres.from)!);
-            client.joiningRooms.delete(room);
+            if (isJoin) {
+                client.joiningRooms.delete(room);
+                client.emit('muc:join', pres);
+            }
         }
     });
 
-    client.joinRoom = (room: string, nick: string, opts: MUCPresence = {}) => {
+    client.joinRoom = async (
+        room: string,
+        nick?: string,
+        opts: MUCPresence = {}
+    ): Promise<ReceivedMUCPresence> => {
         room = JID.toBare(room);
-        client.joiningRooms.set(room, nick);
-        client.sendPresence({
-            ...opts,
-            muc: {
-                ...opts.muc,
-                type: 'join'
-            },
-            to: `${room}/${nick}`
+        client.joiningRooms.set(room, nick || '');
+
+        if (!nick) {
+            try {
+                nick = await client.getReservedNick(room);
+                client.joiningRooms.set(room, nick!);
+            } catch (err) {
+                throw new Error('Room nick required');
+            }
+        }
+
+        return new Promise((resolve, reject) => {
+            function joined(pres: ReceivedMUCPresence) {
+                if (JID.equalBare(pres.from, room)) {
+                    client.off('muc:join', joined);
+                    client.off('muc:failed', failed);
+                    resolve(pres);
+                }
+            }
+            function failed(pres: Presence) {
+                if (JID.equalBare(pres.from, room)) {
+                    client.off('muc:join', joined);
+                    client.off('muc:failed', failed);
+                    reject(pres);
+                }
+            }
+
+            client.on('muc:join', joined);
+            client.on('muc:failed', failed);
+
+            client.sendPresence({
+                ...opts,
+                muc: {
+                    ...opts.muc,
+                    type: 'join'
+                },
+                to: JID.createFull(room, nick)
+            });
         });
     };
 
-    client.leaveRoom = (room: string, nick: string, opts: Presence = {}) => {
-        client.sendPresence({
-            ...opts,
-            to: `${room}/${nick}`,
-            type: 'unavailable'
+    client.leaveRoom = (
+        room: string,
+        nick?: string,
+        opts: Presence = {}
+    ): Promise<ReceivedPresence> => {
+        room = JID.toBare(room);
+        nick = nick || client.joinedRooms.get(room)!;
+
+        client.leavingRooms.set(room, nick);
+
+        return new Promise((resolve, reject) => {
+            const id = opts.id || uuid();
+
+            function leave(pres: ReceivedMUCPresence) {
+                if (JID.equalBare(pres.from, room)) {
+                    client.off('muc:leave', leave);
+                    client.off('presence:error', leaveError);
+                    resolve(pres);
+                }
+            }
+            function leaveError(pres: Presence) {
+                if (pres.id === id && JID.allowedResponders(room)) {
+                    if (!client.joinedRooms.has(room)) {
+                        client.leavingRooms.delete(room);
+                    }
+
+                    client.off('muc:leave', leave);
+                    client.off('presence:error', leaveError);
+                    reject(pres);
+                }
+            }
+
+            client.on('muc:leave', leave);
+            client.on('presence:error', leaveError);
+
+            client.sendPresence({
+                ...opts,
+                id,
+                to: JID.createFull(room, nick),
+                type: 'unavailable'
+            });
         });
     };
 
@@ -289,9 +373,49 @@ export default function (client: Agent) {
         });
     };
 
-    client.changeNick = (room: string, nick: string) => {
-        client.sendPresence({
-            to: `${JID.toBare(room)}/${nick}`
+    client.changeNick = (room: string, nick: string): Promise<ReceivedMUCPresence> => {
+        const id = uuid();
+        const newJID = JID.createFull(room, nick);
+        const allowed = JID.allowedResponders(room);
+
+        return new Promise((resolve, reject) => {
+            function success(pres: ReceivedMUCPresence) {
+                if (!allowed.has(JID.toBare(pres.from))) {
+                    return;
+                }
+                if (
+                    !pres.muc.statusCodes ||
+                    !pres.muc.statusCodes.includes(MUCStatusCode.SelfPresence)
+                ) {
+                    return;
+                }
+
+                client.off('muc:available', success);
+                client.off(`presence:id:${id}` as any, errorOrNoChange);
+                resolve(pres);
+            }
+            function errorOrNoChange(pres: ReceivedPresence) {
+                if (!allowed.has(JID.toBare(pres.from)) || pres.id !== id) {
+                    return;
+                }
+
+                client.off('muc:available', success);
+                client.off(`presence:id:${id}` as any, errorOrNoChange);
+
+                if (pres.type === 'error') {
+                    reject(pres);
+                } else {
+                    resolve(pres as ReceivedMUCPresence);
+                }
+            }
+
+            client.on('muc:available', success);
+            client.on(`presence:id:${id}` as any, errorOrNoChange);
+
+            client.sendPresence({
+                id,
+                to: newJID
+            });
         });
     };
 
