@@ -84,13 +84,13 @@ export default class Client extends EventEmitter {
         this.sm.on('end-resend', () => this.outgoingDataQueue.resume());
 
         // Create message:* flavors of stanza:* SM events
-        ['acked', 'hibernated', 'failed'].forEach(type => {
+        for (const type of ['acked', 'hibernated', 'failed']) {
             this.on(`stanza:${type}`, (data: StreamData) => {
                 if (data.kind === 'message') {
                     this.emit(`message:${type}`, data.stanza);
                 }
             });
-        });
+        }
 
         this.transports = {
             bosh: BOSH,

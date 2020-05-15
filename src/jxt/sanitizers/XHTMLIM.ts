@@ -145,21 +145,20 @@ function sanitizeInterior(
         .filter(child => child !== undefined) as Array<JSONElement | string>;
     const attributes: { [key: string]: string } = {};
 
-    for (const key of Object.keys(input.attributes)) {
+    for (const [key, value] of Object.entries(input.attributes)) {
         const allowed = ALLOWED_ATTRIBUTES.get(input.name);
         if (!allowed || !allowed.has(key)) {
             continue;
         }
-        let value: string | false | undefined = input.attributes[key];
         if (!value) {
             continue;
         }
-        value = ATTRIBUTE_SANITIZERS[key](value);
-        if (!value) {
+        const sanitized = ATTRIBUTE_SANITIZERS[key](value);
+        if (!sanitized) {
             continue;
         }
 
-        attributes[key] = value;
+        attributes[key] = sanitized;
     }
 
     return {

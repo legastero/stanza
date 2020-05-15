@@ -188,9 +188,9 @@ export default class XMLElement {
 
         // Strip any undefined/null attributes
         const attrs: { [key: string]: string | undefined } = {};
-        for (const key of Object.keys(this.attributes)) {
-            if (this.attributes[key] !== undefined && this.attributes[key] !== null) {
-                attrs[key] = this.attributes[key];
+        for (const [key, val] of Object.entries(this.attributes)) {
+            if (val !== undefined && val !== null) {
+                attrs[key] = val;
             }
         }
 
@@ -222,8 +222,7 @@ export default class XMLElement {
         let output = '';
 
         output += `<${this.name}`;
-        for (const key of Object.keys(this.attributes)) {
-            const value = this.attributes[key];
+        for (const [key, value] of Object.entries(this.attributes)) {
             if (value !== undefined) {
                 output += ` ${key}="${escapeXML(value.toString())}"`;
             }

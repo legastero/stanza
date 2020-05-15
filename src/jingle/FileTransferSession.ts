@@ -272,9 +272,9 @@ export default class FileTransferSession extends ICESession {
                 const jingle = convertIntermediateToRequest(json, this.role, this.transportType);
                 jingle.sid = this.sid;
                 jingle.action = 'session-accept';
-                jingle.contents!.forEach(content => {
+                for (const content of jingle.contents!) {
                     content.creator = 'initiator';
-                });
+                }
                 this.contentName = jingle.contents![0].name;
                 this.send('session-accept', jingle);
 

@@ -290,7 +290,7 @@ export default class MediaSession extends ICESession {
         this.transportType = (changes.contents![0].transport! as JingleIce).transportType;
 
         const json = convertRequestToIntermediate(changes, this.peerRole);
-        json.media.forEach(media => {
+        for (const media of json.media) {
             if (media.kind === 'audio') {
                 this.includesAudio = true;
             }
@@ -300,7 +300,7 @@ export default class MediaSession extends ICESession {
             if (!media.streams) {
                 media.streams = [{ stream: 'legacy', track: media.kind }];
             }
-        });
+        }
 
         const sdp = exportToSDP(json);
         try {

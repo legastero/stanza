@@ -189,8 +189,7 @@ export default class Registry {
             translator.languageField = definition.languageField;
         }
 
-        for (const key of Object.keys(fields)) {
-            const field = fields[key];
+        for (const [key, field] of Object.entries(fields)) {
             importers.set(key, field.importer);
             importerOrdering.set(key, field.importOrder || field.order || 0);
             exporters.set(key, field.exporter);

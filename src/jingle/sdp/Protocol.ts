@@ -98,11 +98,8 @@ export function convertIntermediateToApplication(
         if (codec.maxptime) {
             payload.maxptime = codec.maxptime;
         }
-
-        for (const key of Object.keys(codec.parameters || {})) {
-            if (key === 'ptime') {
-                payload.ptime = parseInt(codec.parameters![key], 10);
-            }
+        if (codec.parameters && codec.parameters.ptime) {
+            payload.ptime = parseInt(codec.parameters.ptime, 10);
         }
 
         application.codecs!.push(payload);

@@ -160,14 +160,14 @@ export default class ICESession extends BaseSession {
             const remoteUsernameFragment = (changes.contents![0].transport! as JingleIce)
                 .usernameFragment;
             if (remoteUsernameFragment && currentUsernameFragment !== remoteUsernameFragment) {
-                changes.contents!.forEach((content, idx) => {
+                for (const [idx, content] of changes.contents!.entries()) {
                     const transport = content.transport! as JingleIce;
                     remoteJSON.media[idx].iceParameters = {
                         password: transport.password!,
                         usernameFragment: transport.usernameFragment!
                     };
                     remoteJSON.media[idx].candidates = [];
-                });
+                }
                 if (remoteDescription.type === 'offer') {
                     try {
                         await this.pc.setRemoteDescription(remoteDescription);

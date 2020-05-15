@@ -211,15 +211,15 @@ export default class SessionManager extends EventEmitter {
     ) {
         const sessions = this.peers[peer] || [];
         delete this.peers[peer];
-        sessions.forEach(session => {
+        for (const session of sessions) {
             session.end(reason || 'gone', silent);
-        });
+        }
     }
 
     public endAllSessions(reason?: JingleReasonCondition | JingleReason, silent = false) {
-        Object.keys(this.peers).forEach(peer => {
+        for (const peer of Object.keys(this.peers)) {
             this.endPeerSessions(peer, reason, silent);
-        });
+        }
     }
 
     public process(req: IQ & { jingle: Jingle }): void {
