@@ -651,6 +651,64 @@ export function deepChildBoolean(path: ElementPath): FieldDefinition<boolean> {
     };
 }
 
+export function deepMultipleChildText(path: ElementPath): FieldDefinition<string[]> {
+    const finalChild = path.pop()!;
+    return {
+        importer(xml, context) {
+            let current: XMLElement | undefined = xml;
+
+            for (const node of path) {
+                current = current.getChild(node.element, node.namespace || current.getNamespace());
+                if (!current) {
+                    return [];
+                }
+            }
+
+            const result: string[] = [];
+            const children = findAll(
+                current,
+                finalChild.namespace || current.getNamespace(),
+                finalChild.element
+            );
+            const targetLanguage = getTargetLang(children, context);
+
+            for (const child of children) {
+                if (getLang(child, context.lang) === targetLanguage) {
+                    result.push(child.getText());
+                }
+            }
+
+            return result;
+        },
+        exporter(xml, values, context) {
+            if (!values.length) {
+                return;
+            }
+
+            let current = xml;
+            for (const node of path) {
+                current = findOrCreate(
+                    current,
+                    node.namespace || current.getNamespace(),
+                    node.element
+                );
+            }
+
+            const { namespace, element } = finalChild;
+            for (const value of values) {
+                const child = createElement(
+                    namespace || current.getNamespace(),
+                    element,
+                    context.namespace,
+                    current
+                );
+                child.children.push(value);
+                current.appendChild(child);
+            }
+        }
+    };
+}
+
 export function childEnum(
     namespace: string | null,
     elements: Array<string | [string, string]>,
