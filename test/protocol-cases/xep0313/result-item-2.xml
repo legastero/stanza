@@ -1,0 +1,10 @@
+<message id="aeb213" to="juliet@capulet.lit/chamber">
+    <result xmlns="urn:xmpp:mam:2" queryid="f27" id="28482-98726-73623">
+        <forwarded xmlns="urn:xmpp:forward:0">
+            <delay xmlns="urn:xmpp:delay" stamp="2010-07-10T23:08:25.000Z" />
+            <message xmlns="jabber:client" from="witch@shakespeare.lit" to="macbeth@shakespeare.lit">
+                <body>Hail to thee</body>
+            </message>
+        </forwarded>
+    </result>
+</message>

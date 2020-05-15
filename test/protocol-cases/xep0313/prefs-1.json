@@ -1,0 +1,16 @@
+[
+    "iq",
+    {
+        "archive": {
+            "always": ["romeo@montague.lit"],
+            "default": "roster",
+            "never": ["montague@montague.lit"],
+            "type": "preferences",
+            "version": "1"
+        },
+        "id": "juliet3",
+        "lang": "",
+        "payloadType": "archive",
+        "type": "set"
+    }
+]

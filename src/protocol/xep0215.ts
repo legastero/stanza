@@ -51,8 +51,13 @@ declare module './' {
     }
 }
 
+const versions = {
+    '2': NS_DISCO_EXTERNAL_2,
+    '1': NS_DISCO_EXTERNAL_1
+};
+
 const Protocol: DefinitionOptions[] = [];
-for (const version of ['2', '1']) {
+for (const [version, namespace] of Object.entries(versions)) {
     Protocol.push(
         {
             aliases: ['iq.externalServiceCredentials'],
@@ -69,7 +74,7 @@ for (const version of ['2', '1']) {
                 type: childAttribute(null, 'service', 'type'),
                 username: childAttribute(null, 'service', 'username')
             },
-            namespace: version === '2' ? NS_DISCO_EXTERNAL_2 : NS_DISCO_EXTERNAL_1,
+            namespace,
             type: version,
             typeField: 'version'
         },
@@ -80,7 +85,7 @@ for (const version of ['2', '1']) {
             fields: {
                 type: attribute('type')
             },
-            namespace: version === '2' ? NS_DISCO_EXTERNAL_2 : NS_DISCO_EXTERNAL_1,
+            namespace,
             type: version,
             typeField: 'version'
         },
@@ -99,7 +104,7 @@ for (const version of ['2', '1']) {
                 type: attribute('type'),
                 username: attribute('username')
             },
-            namespace: version === '2' ? NS_DISCO_EXTERNAL_2 : NS_DISCO_EXTERNAL_1,
+            namespace,
             type: version,
             typeField: 'version'
         }

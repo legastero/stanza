@@ -1,0 +1,48 @@
+[
+    "message",
+    {
+        "archive": {
+            "id": "28482-98726-73623",
+            "item": {
+                "delay": {
+                    "timestamp": "2010-07-10T23:08:25.000Z"
+                },
+                "message": {
+                    "body": "Hail to thee",
+                    "from": "witch@shakespeare.lit",
+                    "lang": "",
+                    "to": "macbeth@shakespeare.lit"
+                }
+            },
+            "queryId": "f27"
+        },
+        "id": "aeb213",
+        "to": "juliet@capulet.lit/chamber"
+    },
+    {
+        "archive": {
+            "id": "28482-98726-73623",
+            "item": {
+                "delay": {
+                    "timestamp": "2010-07-10T23:08:25.000Z"
+                },
+                "message": {
+                    "alternateLanguageBodies": [
+                        {
+                            "lang": "",
+                            "value": "Hail to thee"
+                        }
+                    ],
+                    "body": "Hail to thee",
+                    "from": "witch@shakespeare.lit",
+                    "lang": "",
+                    "to": "macbeth@shakespeare.lit"
+                }
+            },
+            "queryId": "f27"
+        },
+        "id": "aeb213",
+        "lang": "",
+        "to": "juliet@capulet.lit/chamber"
+    }
+]

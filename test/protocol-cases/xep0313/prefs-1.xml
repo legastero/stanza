@@ -1,0 +1,10 @@
+<iq type="set" id="juliet3">
+    <prefs xmlns="urn:xmpp:mam:1" default="roster">
+        <always>
+            <jid>romeo@montague.lit</jid>
+        </always>
+        <never>
+            <jid>montague@montague.lit</jid>
+        </never>
+    </prefs>
+</iq>

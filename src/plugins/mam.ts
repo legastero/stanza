@@ -35,10 +35,11 @@ export interface MAMQueryOptions extends MAMQuery {
 }
 
 export default function (client: Agent) {
-    client.getHistorySearchForm = async (jid: string) => {
+    client.getHistorySearchForm = async (jid: string, opts: MAMQuery = {}) => {
         const res = await client.sendIQ<{ archive: MAMQuery }>({
             archive: {
-                type: 'query'
+                type: 'query',
+                version: opts.version
             },
             to: jid,
             type: 'get'

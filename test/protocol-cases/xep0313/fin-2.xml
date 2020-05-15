@@ -1,0 +1,8 @@
+<iq type="result" id="juliet1">
+    <fin xmlns="urn:xmpp:mam:2">
+        <set xmlns="http://jabber.org/protocol/rsm">
+            <first index="0">28482-98726-73623</first>
+            <last>09af3-cc343-b409f</last>
+        </set>
+    </fin>
+</iq>
