@@ -85,7 +85,7 @@
 | [XEP-0301](https://xmpp.org/extensions/xep-0301.html) | In-Band Real Time Text                             | 1.0     | [Source](../src/protocol/xep0301.ts) | [Test Cases](../test/protocol-cases/xep0301) |
 | [XEP-0307](https://xmpp.org/extensions/xep-0307.html) | Unique Room Names for Multi-User Chat              | 0.1     | [Source](../src/protocol/xep0045.ts) |                                              |
 | [XEP-0308](https://xmpp.org/extensions/xep-0308.html) | Last Message Correction                            | 1.0     | [Source](../src/protocol/xep0308.ts) |                                              |
-| [XEP-0313](https://xmpp.org/extensions/xep-0313.html) | Message Archive Management                         | 0.6.1   | [Source](../src/protocol/xep0313.ts) |                                              |
+| [XEP-0313](https://xmpp.org/extensions/xep-0313.html) | Message Archive Management                         | 0.6.1   | [Source](../src/protocol/xep0313.ts) | [Test Cases](../test/protocol-cases/xep0313) |
 | [XEP-0317](https://xmpp.org/extensions/xep-0317.html) | Hats                                               | 0.1     | [Source](../src/protocol/xep0317.ts) |                                              |
 | [XEP-0319](https://xmpp.org/extensions/xep-0319.html) | Last User Interaction in Presence                  | 1.0.2   | [Source](../src/protocol/xep0319.ts) |                                              |
 | [XEP-0320](https://xmpp.org/extensions/xep-0320.html) | Use of DTLS-SRTP in Jingle Sessions                | 0.3.1   | [Source](../src/protocol/xep0320.ts) |                                              |
