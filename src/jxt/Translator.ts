@@ -8,7 +8,9 @@ import {
     PathContext,
     TranslationContext,
     Type,
-    XName
+    XName,
+    VersionType,
+    Version
 } from './Definitions';
 import XMLElement from './Element';
 import { createElement } from './Types';
@@ -16,12 +18,14 @@ import { createElement } from './Types';
 export default class Translator {
     public placeholder: boolean;
     public typeField: FieldName;
-    public typeValues: Map<XName, Type>;
+    public versionField: FieldName;
+    public typeValues: Map<XName, VersionType>;
     public typeOrders: Map<Type, number>;
     public defaultType: Type;
+    public defaultVersion: Version;
     public languageField: FieldName;
     public importers: Map<XName, Importer>;
-    public exporters: Map<Type, Exporter>;
+    public exporters: Map<VersionType, Exporter>;
     public children: Map<FieldName, ChildTranslator>;
     public childrenIndex: Map<XName, FieldName>;
     public implicitChildren: Set<XName>;
@@ -31,7 +35,9 @@ export default class Translator {
     constructor() {
         this.placeholder = false;
         this.typeField = '';
+        this.versionField = '';
         this.defaultType = '';
+        this.defaultVersion = '';
         this.languageField = 'lang';
         this.typeValues = new Map();
         this.typeOrders = new Map();
@@ -81,6 +87,7 @@ export default class Translator {
         }
 
         for (const [xid, importer] of translator.importers) {
+            const [type, version] = (existing.typeValues.get(xid) || '').split('__v__');
             existing.updateDefinition({
                 contexts: translator.contexts,
                 element: importer.element,
@@ -90,7 +97,8 @@ export default class Translator {
                 importers: importer.fields,
                 namespace: importer.namespace,
                 optionalNamespaces: new Map(),
-                type: existing.typeValues.get(xid)
+                type,
+                version
             });
             if (!this.implicitChildren.has(xid)) {
                 this.childrenIndex.set(xid, name);
@@ -98,6 +106,8 @@ export default class Translator {
         }
 
         for (const [exportType, exporter] of translator.exporters) {
+            const [type, version] = exportType.split('__v__');
+
             existing.updateDefinition({
                 contexts: translator.contexts,
                 element: exporter.element,
@@ -107,7 +117,8 @@ export default class Translator {
                 importers: new Map(),
                 namespace: exporter.namespace,
                 optionalNamespaces: exporter.optionalNamespaces,
-                type: exportType
+                type,
+                version
             });
         }
     }
@@ -127,6 +138,7 @@ export default class Translator {
         if (!context) {
             context = {
                 typeField: '',
+                versionField: '',
                 typeValues: new Map()
             };
         }
@@ -152,6 +164,9 @@ export default class Translator {
 
     public updateDefinition(opts: DefinitionUpdateOptions) {
         const xid = `{${opts.namespace}}${opts.element}`;
+        const type = opts.type || this.defaultType;
+        const version = opts.version || this.defaultVersion;
+        const versionType = version ? `${type}__v__${version}` : type;
 
         const importer: Importer =
             this.importers.get(xid) ||
@@ -170,7 +185,7 @@ export default class Translator {
         this.importers.set(xid, importer);
 
         const exporter =
-            this.exporters.get(opts.type || this.defaultType) ||
+            this.exporters.get(versionType) ||
             ({
                 element: opts.element,
                 fieldOrders: new Map(),
@@ -187,16 +202,20 @@ export default class Translator {
         for (const [prefix, namespace] of opts.optionalNamespaces) {
             exporter.optionalNamespaces.set(prefix, namespace);
         }
-        this.exporters.set(opts.type || this.defaultType, exporter);
+        this.exporters.set(versionType, exporter);
 
         for (const [path, newContext] of opts.contexts) {
             const context: PathContext = this.contexts.get(path) || {
                 impliedType: undefined,
                 typeField: newContext.typeField,
+                versionField: newContext.versionField,
                 typeValues: new Map()
             };
             if (!context.typeField) {
                 context.typeField = newContext.typeField;
+            }
+            if (!context.versionField) {
+                context.versionField = newContext.versionField;
             }
             if (!context.impliedType) {
                 context.impliedType = newContext.impliedType;
@@ -208,8 +227,8 @@ export default class Translator {
         }
 
         if (opts.type) {
-            this.typeValues.set(xid, opts.type);
-            if (opts.typeOrder) {
+            this.typeValues.set(xid, versionType);
+            if (opts.typeOrder && opts.type) {
                 this.typeOrders.set(opts.type, opts.typeOrder);
             }
         } else if (this.typeField && !opts.type) {
@@ -265,7 +284,8 @@ export default class Translator {
             return;
         }
 
-        const typeValue = this.typeValues.get(xid);
+        const versionTypeValue = this.typeValues.get(xid) || '';
+        const [typeValue, versionValue] = versionTypeValue.split('__v__');
 
         const path = parentContext.path || '';
         let implied: PathContext | undefined;
@@ -277,13 +297,18 @@ export default class Translator {
         }
         if (implied) {
             if (!implied.impliedType) {
-                const impliedTypeValue = implied.typeValues.get(xid);
+                const impliedTypeValue = implied.typeValues.get(xid) || '';
+
                 if (impliedTypeValue) {
                     output[implied.typeField] = impliedTypeValue;
                 }
             }
         } else if (this.typeField && typeValue && typeValue !== this.defaultType) {
             output[this.typeField] = typeValue;
+        }
+
+        if (this.versionField && versionValue && versionValue !== this.defaultVersion) {
+            output[this.versionField] = versionValue;
         }
 
         const context: TranslationContext = {
@@ -366,6 +391,7 @@ export default class Translator {
         }
 
         let exportType = this.defaultType;
+        let exportVersion = this.defaultVersion;
         const path = parentContext.path || '';
         let implied: PathContext | undefined;
         if (parentContext.pathSelector) {
@@ -381,7 +407,13 @@ export default class Translator {
             exportType = data[this.typeField] || this.defaultType;
         }
 
-        const exporter = this.exporters.get(exportType);
+        if (this.versionField) {
+            exportVersion = data[this.versionField] || this.defaultVersion;
+        }
+
+        const exportVersionType = exportVersion ? `${exportType}__v__${exportVersion}` : exportType;
+
+        const exporter = this.exporters.get(exportVersionType);
         if (!exporter) {
             return;
         }

@@ -12,6 +12,8 @@ export interface JSONData {
 export type FieldName = string;
 export type XName = string;
 export type Type = string;
+export type Version = string;
+export type VersionType = string;
 export type FieldImporter<T = any> = (
     xml: XMLElement,
     context: TranslationContext
@@ -61,6 +63,7 @@ export interface DefinitionUpdateOptions {
     namespace: string;
     element: string;
     type?: string;
+    version?: string;
     importerOrdering: Map<FieldName, number>;
     importers: Map<FieldName, FieldImporter>;
     exporterOrdering: Map<FieldName, number>;
@@ -77,6 +80,9 @@ export interface DefinitionOptions {
     languageField?: string;
     type?: string;
     defaultType?: string;
+    version?: string;
+    defaultVersion?: string;
+    versionField?: string;
     fields?: { [key: string]: FieldDefinition };
     path?: string;
     aliases?: Array<string | LinkPath>;
@@ -104,7 +110,8 @@ export interface LinkOptions {
 export interface PathContext {
     impliedType?: Type;
     typeField: FieldName;
-    typeValues: Map<XName, Type>;
+    typeValues: Map<XName, VersionType>;
+    versionField: FieldName;
 }
 
 export interface TranslationContext {

@@ -185,6 +185,12 @@ export default class Registry {
         if (definition.defaultType) {
             translator.defaultType = definition.defaultType;
         }
+        if (definition.versionField) {
+            translator.versionField = definition.versionField;
+        }
+        if (definition.defaultVersion) {
+            translator.defaultVersion = definition.defaultVersion;
+        }
         if (definition.languageField) {
             translator.languageField = definition.languageField;
         }
@@ -217,6 +223,7 @@ export default class Registry {
             namespace: definition.namespace,
             optionalNamespaces,
             type: definition.type,
+            version: definition.version,
             typeOrder: definition.typeOrder
         });
 
