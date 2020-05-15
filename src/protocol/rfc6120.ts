@@ -11,8 +11,7 @@ import {
     SASLFailureCondition,
     StanzaErrorCondition,
     StreamErrorCondition,
-    StreamType,
-    toList
+    StreamType
 } from '../Constants';
 import {
     attribute,
@@ -200,7 +199,7 @@ const _StreamError: DefinitionOptions = {
         alternateLanguageText: childAlternateLanguageText(NS_STREAMS, 'text'),
         condition: childEnum(
             NS_STREAMS,
-            toList(StreamErrorCondition),
+            Object.values(StreamErrorCondition),
             StreamErrorCondition.UndefinedCondition
         ),
         seeOtherHost: childText(NS_STREAMS, StreamErrorCondition.SeeOtherHost),
@@ -221,7 +220,7 @@ const _StanzaError: DefinitionOptions[] = Object.values(StreamType).map(streamNS
         by: JIDAttribute('by'),
         condition: childEnum(
             NS_STANZAS,
-            toList(StanzaErrorCondition),
+            Object.values(StanzaErrorCondition),
             StanzaErrorCondition.UndefinedCondition
         ),
         gone: childText(NS_STANZAS, StanzaErrorCondition.Gone),
@@ -384,7 +383,7 @@ const _SASL: DefinitionOptions[] = [
         element: 'failure',
         fields: {
             alternateLanguageText: childAlternateLanguageText(NS_SASL, 'text'),
-            condition: childEnum(NS_SASL, toList(SASLFailureCondition)),
+            condition: childEnum(NS_SASL, Object.values(SASLFailureCondition)),
             text: childText(NS_SASL, 'text')
         },
         namespace: NS_SASL,

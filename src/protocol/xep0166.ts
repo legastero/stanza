@@ -13,8 +13,7 @@ import {
     JingleContentSenders,
     JingleErrorCondition,
     JingleReasonCondition,
-    JingleSessionRole,
-    toList
+    JingleSessionRole
 } from '../Constants';
 import { JID } from '../JID';
 import {
@@ -83,7 +82,7 @@ export interface JingleInfo {
 
 const Protocol: DefinitionOptions[] = [
     extendStanzaError({
-        jingleError: childEnum(NS_JINGLE_ERRORS_1, toList(JingleErrorCondition))
+        jingleError: childEnum(NS_JINGLE_ERRORS_1, Object.values(JingleErrorCondition))
     }),
     {
         element: 'jingle',
@@ -116,7 +115,7 @@ const Protocol: DefinitionOptions[] = [
         element: 'reason',
         fields: {
             alternativeSession: childText(null, 'alternative-session'),
-            condition: childEnum(null, toList(JingleReasonCondition)),
+            condition: childEnum(null, Object.values(JingleReasonCondition)),
             text: childText(null, 'text')
         },
         namespace: NS_JINGLE_1,

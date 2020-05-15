@@ -5,7 +5,7 @@
 // Version: 1.15.1 (2018-02-02)
 // ====================================================================
 
-import { PubsubErrorCondition, toList } from '../Constants';
+import { PubsubErrorCondition } from '../Constants';
 import { JID } from '../JID';
 import {
     addAlias,
@@ -294,7 +294,7 @@ const Protocol: DefinitionOptions[] = [
     ]),
     addAlias(NS_RSM, 'set', ['iq.pubsub.fetch.paging']),
     extendStanzaError({
-        pubsubError: childEnum(NS_PUBSUB_ERRORS, toList(PubsubErrorCondition)),
+        pubsubError: childEnum(NS_PUBSUB_ERRORS, Object.values(PubsubErrorCondition)),
         pubsubUnsupportedFeature: childAttribute(NS_PUBSUB_ERRORS, 'unsupported', 'feature')
     }),
     {

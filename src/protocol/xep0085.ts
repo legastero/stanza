@@ -5,7 +5,7 @@
 // Version: 2.1 (2009-09-23)
 // ====================================================================
 
-import { ChatState, toList } from '../Constants';
+import { ChatState } from '../Constants';
 import { childEnum, extendMessage } from '../jxt';
 import { NS_CHAT_STATES } from '../Namespaces';
 
@@ -16,5 +16,5 @@ declare module './' {
 }
 
 export default extendMessage({
-    chatState: childEnum(NS_CHAT_STATES, toList(ChatState))
+    chatState: childEnum(NS_CHAT_STATES, Object.values(ChatState))
 });
