@@ -233,6 +233,10 @@ export default class SessionManager extends EventEmitter {
             return;
         }
         if (req.type === 'error') {
+            if (session && req.error && req.error.jingleError === 'unknown-session') {
+                return session.end('gone', true);
+            }
+
             const isTieBreak = req.error && req.error.jingleError === 'tie-break';
             if (session && session.state === 'pending' && isTieBreak) {
                 return session.end('alternative-session', true);
