@@ -233,6 +233,7 @@ export default class SessionManager extends EventEmitter {
             return;
         }
         if (req.type === 'error') {
+            this._log('error', 'Received error response', req);
             if (session && req.error && req.error.jingleError === 'unknown-session') {
                 return session.end('gone', true);
             }
