@@ -7,7 +7,7 @@ declare module 'sdp' {
 
     export interface SDPIceCandidate {
         foundation: string;
-        component: number;
+        component: 'rtp' | 'rtcp' | number;
         protocol: 'tcp' | 'udp';
         priority: number;
         ip: string;
@@ -22,6 +22,7 @@ declare module 'sdp' {
     }
 
     export interface SDPIceParameters {
+        iceLite?: boolean;
         usernameFragment: string;
         password: string;
     }
@@ -190,7 +191,10 @@ declare module 'sdp' {
     export function writeRtpDescription(kind: string, caps: SDPRtpCapabilities): SDPSection;
 
     export function parseRtpEncodingParameters(mediaSection: SDPSection): SDPEncodingParameters[];
+
     export function parseRtcpParameters(mediaSection: SDPSection): SDPRtcpParameters;
+    export function writeRtcpParameters(params: SDPRtcpParameters): SDPLine;
+
     export function parseMsid(mediaSection: SDPSection): SDPMediaStreamId;
 
     export function parseSctpDescription(mediaSection: SDPSection): SDPSctpDescription;
@@ -205,12 +209,6 @@ declare module 'sdp' {
         sessVer?: number,
         sessUser?: string
     ): SDPBlob;
-    export function writeMediaSection(
-        transceiver: RTCRtpTransceiver,
-        caps: SDPRtpCapabilities,
-        type: 'offer' | 'answer',
-        stream: MediaStream
-    ): SDPSection;
 
     export function getDirection(mediaSection: SDPSection, sessionpart: SDPSection): SDPDirection;
     export function getKind(mediaSection: SDPSection): string;

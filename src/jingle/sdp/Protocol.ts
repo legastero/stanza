@@ -111,8 +111,16 @@ export function convertIntermediateToApplication(
 export function convertIntermediateToCandidate(
     candidate: IntermediateCandidate
 ): JingleIceCandidate {
+    let component: number;
+    if (candidate.component === 'rtp') {
+        component = 1;
+    } else if (candidate.component === 'rtcp') {
+        component = 2;
+    } else {
+        component = candidate.component;
+    }
     return {
-        component: candidate.component,
+        component,
         foundation: candidate.foundation,
         generation: undefined,
         id: undefined,
@@ -133,7 +141,12 @@ export function convertCandidateToIntermediate(
 ): IntermediateCandidate {
     return {
         address: candidate.ip,
-        component: candidate.component,
+        component:
+            candidate.component === 1
+                ? 'rtp'
+                : candidate.component === 2
+                ? 'rtcp'
+                : candidate.component,
         foundation: candidate.foundation,
         ip: candidate.ip,
         port: candidate.port,
@@ -161,7 +174,7 @@ export function convertIntermediateToTransport(
     if (ice) {
         transport.usernameFragment = ice.usernameFragment;
         transport.password = ice.password;
-        if (media.iceLite) {
+        if (ice.iceLite) {
             transport.iceLite = true;
         }
     }
@@ -329,7 +342,7 @@ export function convertContentToIntermediate(
                 usernameFragment: transport.usernameFragment
             };
             if (transport.iceLite) {
-                media.iceLite = true;
+                media.iceParameters.iceLite = true;
             }
         }
         if (transport.fingerprints && transport.fingerprints.length) {
