@@ -19,7 +19,7 @@
         "punycode": "^2.1.1",
         "react-native-randombytes": "^3.5.3",
         "readable-stream": "^2.3.6",
-        "sdp": "^2.10.0",
+        "sdp": "^3.0.2",
         "stanza-shims": "^1.1.1",
         "tslib": "^1.9.3",
         "ws": "^7.2.1"
@@ -41,7 +41,7 @@
         "ts-jest": "^25.5.1",
         "ts-node": "^8.5.4",
         "typedoc": "^0.17.6",
-        "typescript": "^3.7.3",
+        "typescript": "^3.8.3",
         "webpack": "^4.41.3",
         "webpack-bundle-analyzer": "^3.6.0",
         "webpack-cli": "^3.3.10"
