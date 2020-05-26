@@ -48,7 +48,11 @@ declare module '../' {
             node: string,
             id: string
         ): Promise<PubsubItem<T>>;
-        getItems(jid: string, node: string, opts?: Paging): Promise<PubsubFetch>;
+        getItems<T extends PubsubItemContent = PubsubItemContent>(
+            jid: string,
+            node: string,
+            opts?: Paging
+        ): Promise<PubsubFetch<T>>;
         retract(jid: string, node: string, id: string, notify: boolean): Promise<IQ>;
         purgeNode(jid: string, node: string): Promise<IQ>;
         deleteNode(jid: string, node: string): Promise<IQ>;
@@ -270,7 +274,7 @@ export default function (client: Agent) {
         });
     };
 
-    client.getItem = async (jid: string, node: string, id: string) => {
+    client.getItem = async <T extends PubsubItemContent>(jid: string, node: string, id: string) => {
         const resp = await client.sendIQ({
             pubsub: {
                 context: 'user',
@@ -282,10 +286,14 @@ export default function (client: Agent) {
             to: jid,
             type: 'get'
         });
-        return resp.pubsub.fetch.items[0];
+        return resp.pubsub.fetch.items[0] as PubsubItem<T>;
     };
 
-    client.getItems = async (jid: string, node: string, opts: Paging = {}) => {
+    client.getItems = async <T extends PubsubItemContent>(
+        jid: string,
+        node: string,
+        opts: Paging = {}
+    ) => {
         const resp = await client.sendIQ({
             pubsub: {
                 context: 'user',
@@ -298,7 +306,7 @@ export default function (client: Agent) {
             to: jid,
             type: 'get'
         });
-        return resp.pubsub.fetch;
+        return resp.pubsub.fetch as PubsubFetch<T>;
     };
 
     client.retract = (jid: string, node: string, id: string, notify: boolean) => {

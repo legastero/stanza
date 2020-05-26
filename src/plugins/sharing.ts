@@ -81,7 +81,7 @@ export default function (client: Agent) {
             httpUpload: {
                 type: 'request',
                 ...uploadRequest
-            },
+            } as HTTPUploadRequest,
             to: uploadService,
             type: 'get'
         });

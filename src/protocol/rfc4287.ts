@@ -16,19 +16,21 @@ import { NS_ATOM } from '../Namespaces';
 
 import { PubsubItemContent } from './';
 
-export interface AtomEntry extends PubsubItemContent {
-    itemType?: typeof NS_ATOM;
-    authors?: AtomPerson[];
-    categories?: AtomCategory[];
-    content?: AtomText;
-    contributors?: AtomPerson[];
-    id?: string;
-    links?: AtomLink[];
-    published?: Date;
-    rights?: AtomText;
-    summary?: AtomText;
-    title?: AtomText;
-    updated?: Date;
+declare module './' {
+    export interface AtomEntry extends PubsubItemContent {
+        itemType?: typeof NS_ATOM;
+        authors?: AtomPerson[];
+        categories?: AtomCategory[];
+        content?: AtomText;
+        contributors?: AtomPerson[];
+        id?: string;
+        links?: AtomLink[];
+        published?: Date;
+        rights?: AtomText;
+        summary?: AtomText;
+        title?: AtomText;
+        updated?: Date;
+    }
 }
 
 export interface AtomText {

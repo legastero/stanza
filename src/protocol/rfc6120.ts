@@ -37,7 +37,7 @@ import {
     NS_STREAMS
 } from '../Namespaces';
 
-import { IQ } from './';
+import { IQ, IQBase, Message, Presence } from './';
 
 declare module './' {
     export interface Stream {
@@ -72,37 +72,6 @@ declare module './' {
         gone?: string;
     }
 
-    export interface IQPayload {
-        bind?: Bind;
-    }
-
-    export interface IQBase {
-        to?: string;
-        from?: string;
-        id?: string;
-        type: IQType;
-        lang?: string;
-        streamType?: StreamType;
-        error?: StanzaError;
-        payloadType?: keyof IQPayload | 'invalid-payload-count' | 'unknown-payload';
-    }
-
-    export interface IQ extends IQBase, IQPayload {}
-
-    export interface ReceivedIQ extends IQ {
-        to: string;
-        from: string;
-        id: string;
-    }
-
-    export interface ReceivedIQGet extends ReceivedIQ {
-        type: typeof IQType.Get;
-    }
-
-    export interface ReceivedIQSet extends ReceivedIQ {
-        type: typeof IQType.Set;
-    }
-
     export interface Message {
         to?: string;
         from?: string;
@@ -111,11 +80,6 @@ declare module './' {
         streamType?: StreamType;
         type?: MessageType;
         error?: StanzaError;
-    }
-
-    export interface ReceivedMessage extends Message {
-        to: string;
-        from: string;
     }
 
     export interface Presence {
@@ -128,47 +92,81 @@ declare module './' {
         error?: StanzaError;
     }
 
-    export interface ReceivedPresence extends Presence {
-        to: string;
-        from: string;
+    export interface IQBase {
+        to?: string;
+        from?: string;
+        id?: string;
+        type: IQType;
+        lang?: string;
+        streamType?: StreamType;
+        error?: StanzaError;
+        payloadType?: Exclude<keyof IQ, keyof IQBase> | 'invalid-payload-count' | 'unknown-payload';
     }
 
-    export interface SASLFeature {
-        mechanisms: string[];
+    export interface IQ {
+        bind?: Bind;
     }
-    export interface SASLAbort {
-        type: 'abort';
-    }
-    export interface SASLChallengeResponse {
-        type: 'challenge' | 'response';
-        value?: Buffer;
-    }
-    export interface SASLSuccess {
-        type: 'success';
-        value?: Buffer;
-    }
-    export interface SASLAuth {
-        type: 'auth';
-        mechanism: string;
-        value?: Buffer;
-    }
-    export interface SASLFailure {
-        type: 'failure';
-        condition: SASLFailureCondition;
-        text?: string;
-        alternateLanguageText?: LanguageSet<string>;
-    }
-    export type SASL = SASLAbort | SASLChallengeResponse | SASLSuccess | SASLFailure | SASLAuth;
+}
 
-    export interface TLS {
-        type?: 'start' | 'proceed' | 'failure';
-        required?: boolean;
-    }
+export interface ReceivedIQ extends IQ {
+    to: string;
+    from: string;
+    id: string;
+}
 
-    export interface Bind {
-        jid?: string;
-        resource?: string;
-    }
+export interface ReceivedIQGet extends ReceivedIQ {
+    type: typeof IQType.Get;
+}
+
+export interface ReceivedIQSet extends ReceivedIQ {
+    type: typeof IQType.Set;
+}
+
+export interface ReceivedMessage extends Message {
+    to: string;
+    from: string;
+}
+
+export interface ReceivedPresence extends Presence {
+    to: string;
+    from: string;
+}
+
+export interface SASLFeature {
+    mechanisms: string[];
+}
+export interface SASLAbort {
+    type: 'abort';
+}
+export interface SASLChallengeResponse {
+    type: 'challenge' | 'response';
+    value?: Buffer;
+}
+export interface SASLSuccess {
+    type: 'success';
+    value?: Buffer;
+}
+export interface SASLAuth {
+    type: 'auth';
+    mechanism: string;
+    value?: Buffer;
+}
+export interface SASLFailure {
+    type: 'failure';
+    condition: SASLFailureCondition;
+    text?: string;
+    alternateLanguageText?: LanguageSet<string>;
+}
+export type SASL = SASLAbort | SASLChallengeResponse | SASLSuccess | SASLFailure | SASLAuth;
+
+export interface TLS {
+    type?: 'start' | 'proceed' | 'failure';
+    required?: boolean;
+}
+
+export interface Bind {
+    jid?: string;
+    resource?: string;
 }
 
 const _Stream: DefinitionOptions = {
@@ -235,7 +233,16 @@ const _StanzaError: DefinitionOptions[] = Object.values(StreamType).map(streamNS
 
 // --------------------------------------------------------------------
 
-const baseIQFields = new Set(['from', 'id', 'lang', 'to', 'type', 'payloadType', 'error']);
+const baseIQFields: Set<keyof IQBase> = new Set([
+    'from',
+    'id',
+    'lang',
+    'to',
+    'type',
+    'payloadType',
+    'error',
+    'streamType'
+]);
 const _IQ: DefinitionOptions[] = Object.values(StreamType).map(
     (streamNS: string): DefinitionOptions => ({
         childrenExportOrder: {
@@ -262,7 +269,7 @@ const _IQ: DefinitionOptions[] = Object.values(StreamType).map(
                         return 'invalid-payload-count';
                     }
                     const extensions = Object.keys(context.data!).filter(
-                        key => !baseIQFields.has(key)
+                        key => !baseIQFields.has(key as any)
                     );
                     if (extensions.length !== 1) {
                         return 'unknown-payload';
