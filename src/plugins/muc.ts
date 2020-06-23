@@ -296,6 +296,7 @@ export default function (client: Agent) {
 
         return new Promise((resolve, reject) => {
             const id = opts.id || uuid();
+            const allowed = JID.allowedResponders(room);
 
             function leave(pres: ReceivedMUCPresence) {
                 if (JID.equalBare(pres.from, room)) {
@@ -305,7 +306,7 @@ export default function (client: Agent) {
                 }
             }
             function leaveError(pres: Presence) {
-                if (pres.id === id && JID.allowedResponders(room)) {
+                if (pres.id === id && allowed.has(pres.from)) {
                     if (!client.joinedRooms.has(room)) {
                         client.leavingRooms.delete(room);
                     }
