@@ -1,6 +1,3 @@
-// eslint-disable-next-line
-/// <reference path="../../typings/sdp.d.ts" />
-
 import * as SDP from 'sdp';
 
 // ====================================================================
@@ -15,7 +12,6 @@ export interface IntermediateMediaDescription {
     protocol: string;
     mid: string;
     iceParameters?: SDP.SDPIceParameters;
-    iceLite?: boolean;
     dtlsParameters?: SDP.SDPDtlsParameters;
     setup?: string;
     rtpParameters?: SDP.SDPRtpCapabilities;
@@ -75,9 +71,6 @@ export function importFromSDP(sdp: SDP.SDPBlob): IntermediateSessionDescription 
         };
 
         if (!isRejected) {
-            if (session.iceLite) {
-                media.iceLite = true;
-            }
             media.iceParameters = SDP.getIceParameters(mediaSection, sessionPart);
             media.dtlsParameters = SDP.getDtlsParameters(mediaSection, sessionPart);
             media.setup = SDP.matchPrefix(mediaSection, 'a=setup:')[0].substr(8);
@@ -112,7 +105,10 @@ export function exportToSDP(session: IntermediateSessionDescription) {
         SDP.writeSessionBoilerplate(session.sessionId, session.sessionVersion),
         'a=msid-semantic:WMS *\r\n'
     );
-    if (session.iceLite || session.media.filter(m => m.iceLite).length > 0) {
+    if (
+        session.iceLite ||
+        session.media.filter(m => m.iceParameters && m.iceParameters.iceLite).length > 0
+    ) {
         output.push('a=ice-lite\r\n');
     }
 
@@ -137,13 +133,8 @@ export function exportToSDP(session: IntermediateSessionDescription) {
                 output.push(`a=msid:${stream.stream} ${stream.track}\r\n`);
             }
             if (media.rtcpParameters) {
-                if (media.rtcpParameters.reducedSize && mline.indexOf('a=rtcp-rsize') === -1) {
-                    output.push('a=rtcp-rsize\r\n');
-                }
+                output.push(SDP.writeRtcpParameters(media.rtcpParameters));
                 if (media.rtcpParameters.cname) {
-                    output.push(
-                        `a=ssrc:${media.rtcpParameters.ssrc} cname:${media.rtcpParameters.cname}\r\n`
-                    );
                     if (media.rtpEncodingParameters && media.rtpEncodingParameters[0].rtx) {
                         const params = media.rtpEncodingParameters[0];
                         output.push(`a=ssrc-group:FID ${params.ssrc} ${params.rtx!.ssrc}\r\n`);
@@ -159,7 +150,13 @@ export function exportToSDP(session: IntermediateSessionDescription) {
             output.push(`a=mid:${media.mid}\r\n`);
         }
         if (media.iceParameters) {
-            output.push(SDP.writeIceParameters(media.iceParameters));
+            output.push(
+                SDP.writeIceParameters({
+                    // Ignoring iceLite, since we already output ice-lite at session level
+                    usernameFragment: media.iceParameters.usernameFragment,
+                    password: media.iceParameters.password
+                })
+            );
         }
         if (media.dtlsParameters && media.setup) {
             output.push(SDP.writeDtlsParameters(media.dtlsParameters, media.setup));
