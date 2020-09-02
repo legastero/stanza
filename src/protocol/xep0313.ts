@@ -77,6 +77,7 @@ for (const [version, namespace] of Object.entries(versions)) {
             defaultVersion: '2',
             element: 'query',
             fields: {
+                node: attribute('node'),
                 queryId: attribute('queryid')
             },
             namespace,
