@@ -1,7 +1,7 @@
 {
     "name": "stanza",
     "description": "Modern XMPP in the browser, with a JSON API",
-    "version": "12.14.0",
+    "version": "12.14.1",
     "author": "Lance Stout <lancestout@gmail.com>",
     "bugs": "https://github.com/legastero/stanza/issues",
     "contributors": [
