@@ -137,14 +137,15 @@ export default class ICESession extends BaseSession {
             changes.contents[0] &&
             (changes.contents[0].transport! as JingleIce).gatheringComplete
         ) {
+            const candidate = { sdpMid: changes.contents[0].name, candidate: '' };
             try {
                 if (this.pc.signalingState === 'stable') {
-                    await this.pc.addIceCandidate(null!);
+                    await this.pc.addIceCandidate(candidate);
                 } else {
-                    this.candidateBuffer.push(null!);
+                    this.candidateBuffer.push(candidate);
                 }
             } catch (err) {
-                this._log('debug', 'Could not add null ICE candidate');
+                this._log('debug', 'Could not add null end-of-candidate');
             } finally {
                 cb();
             }
@@ -170,7 +171,10 @@ export default class ICESession extends BaseSession {
                 }
                 if (remoteDescription.type === 'offer') {
                     try {
-                        await this.pc.setRemoteDescription(remoteDescription);
+                        await this.pc.setRemoteDescription({
+                            type: 'offer',
+                            sdp: exportToSDP(remoteJSON)
+                        });
                         await this.processBufferedCandidates();
 
                         const answer = await this.pc.createAnswer();
