@@ -98,7 +98,7 @@ export class Factory {
         this.mechanisms.push({
             constructor,
             name: name.toUpperCase(),
-            priority: priority || this.mechanisms.length
+            priority: priority
         });
         // We want mechanisms with highest priority at the start of the list
         this.mechanisms.sort((a, b) => b.priority - a.priority);
