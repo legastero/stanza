@@ -74,6 +74,9 @@ export function importFromSDP(sdp: SDP.SDPBlob): IntermediateSessionDescription 
             media.iceParameters = SDP.getIceParameters(mediaSection, sessionPart);
             media.dtlsParameters = SDP.getDtlsParameters(mediaSection, sessionPart);
             media.setup = SDP.matchPrefix(mediaSection, 'a=setup:')[0].substr(8);
+            if (session.iceLite) {
+                media.iceParameters.iceLite = true;
+            }
         }
 
         if (kind === 'audio' || kind === 'video') {
