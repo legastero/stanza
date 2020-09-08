@@ -431,9 +431,14 @@ export default class Client extends EventEmitter {
 
         this.send('iq', iq);
 
-        return timeoutPromise<R>(request, (this.config.timeout || 15) * 1000, () => ({
+        const timeout = this.config.timeout || 15;
+        return timeoutPromise<R>(request, timeout * 1000, () => ({
+            ...iq,
+            to: undefined,
+            from: undefined,
             error: {
-                condition: 'timeout'
+                condition: 'timeout',
+                text: `Request timed out after ${timeout} seconds.`
             },
             id: iq.id,
             type: 'error'
