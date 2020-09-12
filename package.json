@@ -15,7 +15,7 @@
         "@types/readable-stream": "^2.3.5",
         "@types/ws": "^6.0.4",
         "async": "^3.0.1",
-        "node-fetch": "^2.6.0",
+        "node-fetch": "^2.6.1",
         "punycode": "^2.1.1",
         "react-native-randombytes": "^3.5.3",
         "readable-stream": "^2.3.6",
