@@ -6,6 +6,7 @@ dist
 coverage
 .nyc_output
 .vscode
+package-lock.json
 
 # ignore node_modules symlink
 node_modules
