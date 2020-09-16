@@ -143,11 +143,18 @@ export default class Client extends EventEmitter {
                     this.transport?.send('sm', { type: 'request' });
                 }
             } catch (err) {
-                if (!this.sm.started && ['message', 'presence', 'iq'].includes(kind)) {
-                    this.emit('stanza:failed', {
-                        kind,
-                        stanza
-                    });
+                if (['message', 'presence', 'iq'].includes(kind)) {
+                    if (!this.sm.started || !this.sm.resumable) {
+                        this.emit('stanza:failed', {
+                            kind,
+                            stanza
+                        });
+                    } else if (this.sm.resumable && !this.transport) {
+                        this.emit('stanza:hibernated', {
+                            kind,
+                            stanza
+                        });
+                    }
                 }
             }
 
@@ -167,10 +174,6 @@ export default class Client extends EventEmitter {
         });
 
         this.on('--transport-disconnected', async () => {
-            if (this.transport) {
-                delete this.transport;
-            }
-
             const drains: Array<Promise<void>> = [];
             if (!this.incomingDataQueue.idle()) {
                 drains.push(this.incomingDataQueue.drain());
@@ -181,6 +184,10 @@ export default class Client extends EventEmitter {
             await Promise.all(drains);
 
             await this.sm.hibernate();
+
+            if (this.transport) {
+                delete this.transport;
+            }
 
             this.emit('--reset-stream-features');
             this.emit('disconnected');
