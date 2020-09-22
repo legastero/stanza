@@ -1,7 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-    - name: StanzaJS Discussion Room
-      url: xmpp:discuss@stanzajs.org?join
-      about: Please ask and answer questions here.
-    - name: StanzaJS Discussion Logs
-      url: https://stanzajs.org/discuss/logs
+  - name: StanzaJS Discussion Room
+    url: xmpp:discuss@stanzajs.org?join
+    about: Please ask and answer questions here.
+  - name: StanzaJS Discussion Logs
+    url: https://stanzajs.org/discuss/logs
+    about: Discussion logs.
