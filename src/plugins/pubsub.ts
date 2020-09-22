@@ -16,6 +16,7 @@ import {
     PubsubEventPurge,
     PubsubEventSubscription,
     PubsubFetch,
+    PubsubFetchResult,
     PubsubItem,
     PubsubItemContent,
     PubsubSubscribe,
@@ -52,7 +53,7 @@ declare module '../' {
             jid: string,
             node: string,
             opts?: Paging
-        ): Promise<PubsubFetch<T>>;
+        ): Promise<PubsubFetchResult<T>>;
         retract(jid: string, node: string, id: string, notify: boolean): Promise<IQ>;
         purgeNode(jid: string, node: string): Promise<IQ>;
         deleteNode(jid: string, node: string): Promise<IQ>;
@@ -306,7 +307,9 @@ export default function (client: Agent) {
             to: jid,
             type: 'get'
         });
-        return resp.pubsub.fetch as PubsubFetch<T>;
+        const result = resp.pubsub.fetch as PubsubFetchResult<T>;
+        result.paging = resp.pubsub.paging;
+        return result;
     };
 
     client.retract = (jid: string, node: string, id: string, notify: boolean) => {

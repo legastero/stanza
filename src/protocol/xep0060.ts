@@ -174,6 +174,11 @@ export interface PubsubFetch<T extends PubsubItemContent = PubsubItemContent> {
     items?: PubsubItem<T>[];
 }
 
+export interface PubsubFetchResult<T extends PubsubItemContent = PubsubItemContent>
+    extends PubsubFetch<T> {
+    paging?: Paging;
+}
+
 export interface PubsubSubscriptionOptions {
     node?: string;
     jid?: JID;
