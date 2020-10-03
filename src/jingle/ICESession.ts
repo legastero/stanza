@@ -169,15 +169,17 @@ export default class ICESession extends BaseSession {
                     };
                     remoteJSON.media[idx].candidates = [];
                 }
-                if (remoteDescription.type === 'offer') {
-                    try {
-                        await this.pc.setRemoteDescription({
-                            type: 'offer',
-                            sdp: exportToSDP(remoteJSON)
-                        });
-                        await this.processBufferedCandidates();
+                try {
+                    await this.pc.setRemoteDescription({
+                        type: remoteDescription.type,
+                        sdp: exportToSDP(remoteJSON)
+                    });
+                    await this.processBufferedCandidates();
 
+                    if (remoteDescription.type === 'offer') {
                         const answer = await this.pc.createAnswer();
+                        await this.pc.setLocalDescription(answer);
+
                         const json = importFromSDP(answer.sdp!);
                         this.send(JingleAction.TransportInfo, {
                             contents: json.media.map(media => ({
@@ -187,29 +189,16 @@ export default class ICESession extends BaseSession {
                             })),
                             sid: this.sid
                         });
-                        await this.pc.setLocalDescription(answer);
-                        cb();
-                    } catch (err) {
-                        this._log('error', 'Could not do remote ICE restart', err);
-                        cb(err);
-
-                        this.end(JingleReasonCondition.FailedTransport);
+                    } else {
+                        this.restartingIce = false;
                     }
-                    return;
-                }
-
-                try {
-                    await this.pc.setRemoteDescription(remoteDescription);
-                    await this.processBufferedCandidates();
-
-                    cb();
                 } catch (err) {
-                    this._log('error', 'Could not do local ICE restart', err);
+                    this._log('error', 'Could not do remote ICE restart', err);
                     cb(err);
 
                     this.end(JingleReasonCondition.FailedTransport);
+                    return;
                 }
-                return;
             }
         }
 
@@ -318,7 +307,6 @@ export default class ICESession extends BaseSession {
             case 'completed':
             case 'connected':
                 this.connectionState = 'connected';
-                this.restartingIce = false;
                 break;
             case 'disconnected':
                 if (this.pc.signalingState === 'stable') {
