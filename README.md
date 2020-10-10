@@ -10,7 +10,7 @@
 
 ## What is this?
 
-StanzaJS is a library for using modern XMPP, and it does that by exposing everything as JSON. Unless you insist, you have no need to ever see or touch any XML when using StanzaJS.
+StanzaJS is a JavaScript/TypeScript library for using modern XMPP, and it does that by exposing everything as JSON. Unless you insist, you have no need to ever see or touch any XML when using StanzaJS.
 
 ## Installing
 
