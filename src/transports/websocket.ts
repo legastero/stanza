@@ -37,7 +37,9 @@ export default class WSConnection extends Duplex implements Transport {
         });
 
         this.on('end', () => {
-            this.client.emit('--transport-disconnected');
+            if (this.client.transport === this) {
+                this.client.emit('--transport-disconnected');
+            }
         });
     }
 
@@ -116,8 +118,8 @@ export default class WSConnection extends Duplex implements Transport {
         };
     }
 
-    public disconnect() {
-        if (this.socket && !this.closing && this.hasStream) {
+    public disconnect(clean = true) {
+        if (this.socket && !this.closing && this.hasStream && clean) {
             this.closing = true;
             this.write(this.closeHeader());
         } else {

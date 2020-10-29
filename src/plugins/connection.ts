@@ -152,6 +152,7 @@ export default function (client: Agent) {
                     client.features.negotiated.streamManagement = true;
                     client.features.negotiated.bind = true;
                     client.sessionStarted = true;
+                    client.sessionStarting = false;
                     client.off('sm', smHandler);
                     client.emit('stream:management:resumed', sm);
                     return done('break'); // Halt further processing of stream features

@@ -109,7 +109,9 @@ export default class BOSH extends Duplex implements Transport {
             this.isEnded = true;
             clearTimeout(this.idleTimeout);
 
-            this.client.emit('--transport-disconnected');
+            if (this.client.transport === this) {
+                this.client.emit('--transport-disconnected');
+            }
         });
     }
 
@@ -222,8 +224,8 @@ export default class BOSH extends Duplex implements Transport {
         });
     }
 
-    public disconnect() {
-        if (this.hasStream) {
+    public disconnect(clean = true) {
+        if (this.hasStream && clean) {
             this._send({
                 type: 'terminate'
             });

@@ -111,7 +111,9 @@ export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
     sasl: LibSASL.Factory;
     stanzas: JXT.Registry;
 
+    sessionStarting: boolean;
     sessionStarted: boolean;
+    sessionTerminating: boolean;
 
     use(plugin: (agent: Agent, registry: JXT.Registry, config: AgentConfig) => void): void;
 
@@ -141,6 +143,21 @@ export interface AgentConfig {
      * @default true
      */
     allowResumption?: boolean;
+
+    /**
+     * Allow for automatic reconnections.
+     *
+     * @default false
+     */
+    autoReconnect?: boolean;
+
+    /**
+     * Maximum delay between auto reconnect attempts, in seconds.
+     *
+     * @default 32
+     */
+    maxReconnectBackoff?: number;
+
     /**
      * User JID
      */
@@ -216,7 +233,7 @@ export interface Transport {
     authenticated?: boolean;
 
     connect(opts: TransportConfig): void;
-    disconnect(): void;
+    disconnect(cleanly?: boolean): void;
     restart(): void;
     send(name: string, data?: object): Promise<void>;
 }

@@ -24,7 +24,12 @@ export default class Client extends EventEmitter {
     public sm: StreamManagement;
     public transport?: Transport;
     public stanzas: JXT.Registry;
+
+    public sessionStarting?: boolean;
     public sessionStarted?: boolean;
+    public sessionTerminating?: boolean;
+    public reconnectAttempts: number = 0;
+
     public transports: {
         [key: string]: new (
             client: Agent,
@@ -35,6 +40,8 @@ export default class Client extends EventEmitter {
     public sasl: SASL.Factory;
     public incomingDataQueue: AsyncPriorityQueue<StreamData>;
     public outgoingDataQueue: AsyncPriorityQueue<StreamData>;
+
+    private reconnectTimer: any;
 
     constructor(opts: AgentConfig = {}) {
         super();
@@ -190,6 +197,15 @@ export default class Client extends EventEmitter {
             }
 
             this.emit('--reset-stream-features');
+
+            if (!this.sessionTerminating && this.config.autoReconnect) {
+                this.reconnectAttempts += 1;
+                clearTimeout(this.reconnectTimer);
+                this.reconnectTimer = setTimeout(() => {
+                    this.connect();
+                }, 1000 * Math.min(Math.pow(2, this.reconnectAttempts) + Math.random(), this.config.maxReconnectBackoff || 32));
+            }
+
             this.emit('disconnected');
         });
 
@@ -244,6 +260,14 @@ export default class Client extends EventEmitter {
                 presType = 'presence:error';
             }
             this.emit(presType as any, pres);
+        });
+
+        this.on('session:started', () => {
+            this.sessionStarting = false;
+            this.reconnectAttempts = 0;
+            if (this.reconnectTimer) {
+                clearTimeout(this.reconnectTimer);
+            }
         });
     }
 
@@ -306,7 +330,13 @@ export default class Client extends EventEmitter {
     }
 
     public async connect(): Promise<void> {
+        this.sessionTerminating = false;
+        this.sessionStarting = true;
         this.emit('--reset-stream-features');
+
+        if (this.transport) {
+            this.transport.disconnect(false);
+        }
 
         const transportPref = ['websocket', 'bosh'];
         let endpoints: { [key: string]: string[] } | undefined;
@@ -354,10 +384,11 @@ export default class Client extends EventEmitter {
         }
 
         console.error('No endpoints found for the requested transports.');
-        return this.disconnect();
+        this.emit('--transport-disconnected');
     }
 
     public async disconnect() {
+        this.sessionTerminating = true;
         this.outgoingDataQueue.pause();
         if (this.sessionStarted && !this.sm.started) {
             // Only emit session:end if we had a session, and we aren't using
