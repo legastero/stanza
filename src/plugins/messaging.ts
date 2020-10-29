@@ -114,7 +114,6 @@ function sendMarker(
     if (isMarkable(msg, client)) {
         const to = msg.type === 'groupchat' ? JID.toBare(msg.from) : msg.from;
         client.sendMessage({
-            body: '',
             marker: {
                 id: msg.id,
                 type: marker
