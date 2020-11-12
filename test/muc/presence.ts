@@ -59,7 +59,7 @@ test('MUC join', () => {
 
 test('MUC join failed', () => {
     const client = createClient({});
-    client.joiningRooms.set('room@rooms.test', 'self');
+    client.joiningRooms.set('room@rooms.test', { nick: 'self' });
 
     const incoming: ReceivedPresence = {
         from: 'room@rooms.test/self',
@@ -79,7 +79,7 @@ test('MUC join failed', () => {
 
 test('MUC error', () => {
     const client = createClient({});
-    client.joinedRooms.set('room@rooms.test', 'self');
+    client.joinedRooms.set('room@rooms.test', { nick: 'self' });
 
     const incoming: ReceivedPresence = {
         from: 'room@rooms.test/self',
@@ -99,7 +99,7 @@ test('MUC error', () => {
 
 test('MUC leave', () => {
     const client = createClient({});
-    client.joinedRooms.set('room@rooms.test', 'self');
+    client.joinedRooms.set('room@rooms.test', { nick: 'self' });
 
     const incoming: ReceivedPresence = {
         from: 'room@rooms.test/self',
@@ -120,7 +120,7 @@ test('MUC leave', () => {
 
 test('MUC destroyed', () => {
     const client = createClient({});
-    client.joinedRooms.set('room@rooms.test', 'self');
+    client.joinedRooms.set('room@rooms.test', { nick: 'self' });
 
     const incoming: ReceivedPresence = {
         from: 'room@rooms.test/self',
