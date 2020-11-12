@@ -127,6 +127,10 @@ export default class WSConnection extends Duplex implements Transport {
             this.stream = undefined;
             if (this.socket) {
                 this.end();
+                this.socket.close();
+                if (this.client.transport === this) {
+                    this.client.emit('--transport-disconnected');
+                }
             }
             this.socket = undefined;
         }

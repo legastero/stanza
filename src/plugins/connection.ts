@@ -119,7 +119,7 @@ export default function (client: Agent) {
                     });
                     if (client.transport) {
                         client.transport.hasStream = false;
-                        client.transport.disconnect();
+                        client.transport.disconnect(false);
                     }
                 }
             }
