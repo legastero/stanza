@@ -49,6 +49,9 @@ export interface AgentEvents {
     'stream:error': (streamError: Stanzas.StreamError, error?: Error) => void;
     'stream:data': (json: any, kind: string) => void;
 
+    // [VOWEL] custom event for capturing extra debug information
+    debug: (log: string) => void;
+
     'message:sent': (msg: Stanzas.Message, viaCarbon: boolean) => void;
     'message:error': Stanzas.Message;
     'message:failed': Stanzas.Message;

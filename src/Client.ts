@@ -201,9 +201,21 @@ export default class Client extends EventEmitter {
             if (!this.sessionTerminating && this.config.autoReconnect) {
                 this.reconnectAttempts += 1;
                 clearTimeout(this.reconnectTimer);
+                // [VOWEL]: extra debug
+                const delay =
+                    1000 *
+                    Math.min(
+                        Math.pow(2, this.reconnectAttempts) + Math.random(),
+                        this.config.maxReconnectBackoff || 32
+                    );
+
+                this.emit('debug', `scheduled reconnect timer in: ${delay}ms`);
+
                 this.reconnectTimer = setTimeout(() => {
+                    // [VOWEL]: extra debug
+                    this.emit('debug', 'reconnect timer - calling connect');
                     this.connect();
-                }, 1000 * Math.min(Math.pow(2, this.reconnectAttempts) + Math.random(), this.config.maxReconnectBackoff || 32));
+                }, delay);
             }
 
             this.emit('disconnected');
