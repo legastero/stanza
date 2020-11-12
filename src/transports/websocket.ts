@@ -32,11 +32,15 @@ export default class WSConnection extends Duplex implements Transport {
             this.client.emit('stream:data', e.stanza, e.kind);
         });
 
-        this.on('error', () => {
+        this.on('error', e => {
+            // [VOWEL]: extra debug
+            this.client.emit('debug', 'WS on error: ' + e);
             this.end();
         });
 
         this.on('end', () => {
+            // [VOWEL]: extra debug
+            this.client.emit('debug', 'WS on end');
             if (this.client.transport === this) {
                 this.client.emit('--transport-disconnected');
             }
@@ -114,11 +118,15 @@ export default class WSConnection extends Duplex implements Transport {
             }
         };
         this.socket.onclose = () => {
+            // [VOWEL]: extra debug
+            this.emit('debug', 'WS socket.onclose');
             this.push(null);
         };
     }
 
     public disconnect(clean = true) {
+        // [VOWEL]: extra debug
+        this.client.emit('debug', 'WS disconnect');
         if (this.socket && !this.closing && this.hasStream && clean) {
             this.closing = true;
             this.write(this.closeHeader());
@@ -127,6 +135,8 @@ export default class WSConnection extends Duplex implements Transport {
             this.stream = undefined;
             if (this.socket) {
                 this.end();
+                // [VOWEL]: extra debug
+                this.emit('debug', 'WS socket.close');
                 this.socket.close();
                 if (this.client.transport === this) {
                     this.client.emit('--transport-disconnected');
