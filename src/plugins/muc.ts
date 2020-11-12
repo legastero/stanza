@@ -128,7 +128,11 @@ export default function (client: Agent) {
         }
     }
     client.on('session:started', rejoinRooms);
-    client.on('stream:management:resumed', rejoinRooms);
+    // [VOWEL] There's no need to rejoin rooms on session resumed as the client should still be in all MUC that's been
+    // before resuming the session. That's the whole point of resuming the session - not having to restore back
+    // the state.
+    // FIXME push upstream?
+    // client.on('stream:management:resumed', rejoinRooms);
 
     client.on('message', msg => {
         if (msg.type === 'groupchat' && msg.hasSubject) {
