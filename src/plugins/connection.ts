@@ -17,6 +17,7 @@ export interface KeepAliveOptions {
 declare module '../' {
     export interface Agent {
         _keepAliveInterval: any;
+        _keepAliveOptions: KeepAliveOptions;
 
         markActive(): void;
         markInactive(): void;
@@ -24,6 +25,7 @@ declare module '../' {
         enableKeepAlive(opts?: KeepAliveOptions): void;
         disableKeepAlive(): void;
         ping(jid?: string): Promise<void>;
+        _stopKeepAliveInterval(): void;
     }
 
     export interface AgentEvents {
@@ -82,7 +84,7 @@ export default function (client: Agent) {
     });
 
     client.on('--reset-stream-features', () => {
-        client.disableKeepAlive();
+        client._stopKeepAliveInterval();
         client.features.negotiated.streamManagement = false;
         client.features.negotiated.clientStateIndication = false;
     });
@@ -99,6 +101,8 @@ export default function (client: Agent) {
     };
 
     client.enableKeepAlive = (opts: KeepAliveOptions = {}) => {
+        client._keepAliveOptions = opts;
+
         // Ping every 5 minutes
         const interval = opts.interval || 300;
 
@@ -125,15 +129,28 @@ export default function (client: Agent) {
             }
         }
 
+        clearInterval(client._keepAliveInterval);
         client._keepAliveInterval = setInterval(keepalive, interval * 1000);
     };
 
-    client.disableKeepAlive = () => {
+    client._stopKeepAliveInterval = () => {
         if (client._keepAliveInterval) {
             clearInterval(client._keepAliveInterval);
             delete client._keepAliveInterval;
         }
     };
+
+    client.disableKeepAlive = () => {
+        delete client._keepAliveOptions;
+        client._stopKeepAliveInterval();
+    };
+
+    client.on('stream:management:resumed', () => {
+        client._keepAliveOptions && client.enableKeepAlive(client._keepAliveOptions);
+    });
+    client.on('stream:start', () => {
+        client._keepAliveOptions && client.enableKeepAlive(client._keepAliveOptions);
+    });
 
     const smacks = async (features: StreamFeatures, done: (cmd?: string) => void) => {
         if (!client.config.useStreamManagement) {
