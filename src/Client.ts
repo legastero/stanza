@@ -389,6 +389,7 @@ export default class Client extends EventEmitter {
 
     public async disconnect() {
         this.sessionTerminating = true;
+        clearTimeout(this.reconnectTimer);
         this.outgoingDataQueue.pause();
         if (this.sessionStarted && !this.sm.started) {
             // Only emit session:end if we had a session, and we aren't using
