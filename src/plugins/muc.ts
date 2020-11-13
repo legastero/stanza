@@ -128,7 +128,6 @@ export default function (client: Agent) {
         }
     }
     client.on('session:started', rejoinRooms);
-    client.on('stream:management:resumed', rejoinRooms);
 
     client.on('message', msg => {
         if (msg.type === 'groupchat' && msg.hasSubject) {
