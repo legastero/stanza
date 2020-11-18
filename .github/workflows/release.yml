@@ -1,0 +1,32 @@
+name: Publish to GitHub Package Registry
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          registry-url: https://npm.pkg.github.com/
+          node-version: 12.x
+          scope: '@vowel-com'
+
+      - name: npm install and test
+        run: |
+          npm install
+          npm test
+    
+      - name: publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          npm run deploy
