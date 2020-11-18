@@ -1,9 +1,9 @@
 {
-    "name": "stanza",
+    "name": "@vowel-com/stanza",
     "description": "Modern XMPP in the browser, with a JSON API",
-    "version": "12.15.0",
+    "version": "0.1.1",
     "author": "Lance Stout <lancestout@gmail.com>",
-    "bugs": "https://github.com/legastero/stanza/issues",
+    "bugs": "https://github.com/vowel-com/stanza/issues",
     "contributors": [
         "Philipp Hancke <fippo@andyet.net>",
         "Steven Lloyd Watkin <lloyd@evilprofessor.co.uk>"
@@ -65,7 +65,8 @@
         "coverageReporters": [
             "text",
             "html"
-        ]
+        ],
+        "testTimeout": 10000
     },
     "keywords": [
         "jingle",
@@ -83,11 +84,10 @@
         "trailingComma": "none",
         "arrowParens": "avoid"
     },
-    "private": true,
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/legastero/stanza.git"
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
     },
+    "repository": "git://github.com/vowel-com/stanza.git",
     "scripts": {
         "build": "ts-node scripts/build",
         "build:docs": "ts-node scripts/build-docs",
@@ -96,6 +96,7 @@
         "compile:module": "tsc -p . --outDir ./dist/es --target es2015 --module es2015",
         "compile:rollup": "rollup -c rollup.config.js",
         "compile:webpack": "webpack --mode production",
+        "deploy": "npm run build && npm publish ./dist/npm",
         "license-check": "npx license-checker --production --excludePrivatePackages --summary",
         "lint": "eslint .",
         "test": "jest",

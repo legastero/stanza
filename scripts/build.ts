@@ -46,6 +46,8 @@ FS.writeFileSync(
     )
 );
 
+const [name] = Pkg.name.split('/').reverse();
+
 // Create package bundle
 Child('cd dist/npm && npm pack');
-Child(`mv dist/npm/*.tgz ${__dirname}/../dist/${Pkg.name}.tgz`);
+Child(`mv dist/npm/*.tgz ${__dirname}/../dist/${name}.tgz`);
