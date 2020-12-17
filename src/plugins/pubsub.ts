@@ -136,7 +136,7 @@ function isPubsubPurge(
 function isPubsubDelete(
     msg: PubsubEventMessage
 ): msg is PubsubEventMessage & { pubsub: PubsubEventDelete } {
-    return msg.pubsub.eventType === 'purge';
+    return msg.pubsub.eventType === 'delete';
 }
 function isPubsubSubscription(
     msg: PubsubEventMessage
