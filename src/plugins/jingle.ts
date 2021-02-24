@@ -43,6 +43,7 @@ declare module '../' {
         'jingle:created': Jingle.Session;
         'jingle:outgoing': Jingle.Session;
         'jingle:incoming': Jingle.Session;
+        'jingle:accepted': Jingle.Session;
         'jingle:terminated': (session: Jingle.Session, reason?: JingleRequest['reason']) => void;
         'jingle:mute': (session: Jingle.Session, info: JingleRequest['info']) => void;
         'jingle:unmute': (session: Jingle.Session, info: JingleRequest['info']) => void;
