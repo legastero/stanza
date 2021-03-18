@@ -117,9 +117,27 @@ export default class WSConnection extends Duplex implements Transport {
                 this.parser.write(data);
             }
         };
+        this.socket.onerror = event => {
+            // [VOWEL]: extra debug
+            let extraErrorMsg = '';
+            if (event.type === 'error') {
+                const errorEvent = event as ErrorEvent;
+                extraErrorMsg = JSON.stringify({
+                    message: errorEvent.message,
+                    filename: errorEvent.filename,
+                    lineno: errorEvent.lineno,
+                    colno: errorEvent.colno,
+                    error: errorEvent.error
+                });
+            }
+            this.client.emit('debug', 'WS socket.onerror: ' + extraErrorMsg);
+
+            // Close the connection and trigger a retry
+            this.push(null);
+        };
         this.socket.onclose = () => {
             // [VOWEL]: extra debug
-            this.emit('debug', 'WS socket.onclose');
+            this.client.emit('debug', 'WS socket.onclose');
             this.push(null);
         };
     }
