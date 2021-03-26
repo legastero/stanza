@@ -250,6 +250,7 @@ export interface TransportConfig {
     rid?: number;
     maxRetries?: number;
     wait?: number;
+    maxHoldOpen?: number;
 }
 
 export { Client, Constants, JXT, JID, Namespaces, Stanzas, Jingle, Utils, RTT, LibSASL as SASL };

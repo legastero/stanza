@@ -196,6 +196,9 @@ export default class BOSH extends Duplex implements Transport {
         if (opts.wait) {
             this.maxWaitTime = opts.wait;
         }
+        if (opts.maxHoldOpen) {
+            this.maxHoldOpen = opts.maxHoldOpen;
+        }
 
         if (this.sid) {
             this.hasStream = true;
