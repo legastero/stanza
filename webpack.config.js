@@ -1,4 +1,5 @@
 const Path = require('path');
+const Webpack = require('webpack');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
@@ -12,6 +13,10 @@ module.exports = {
     },
 
     plugins: [
+        new Webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+            process: 'process/browser.js'
+        }),
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',
             defaultSizes: 'gzip',

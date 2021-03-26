@@ -58,7 +58,7 @@ export default function (client: Agent) {
                     if (command) {
                         resolve({ command, message });
                     } else {
-                        resolve();
+                        resolve(null);
                     }
                 });
             });
