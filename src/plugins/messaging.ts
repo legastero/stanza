@@ -93,7 +93,7 @@ const isReceiptMessage = (msg: ReceivedMessage): msg is ReceiptMessage => !!msg.
 const hasRTT = (msg: Message): msg is RTTMessage => !!msg.rtt;
 const isCorrection = (msg: ReceivedMessage): msg is CorrectionMessage => !!msg.replace;
 const isMarkable = (msg: Message, client: Agent) =>
-    msg.marker && msg.marker.type === 'markable' && client.config.chatMarkers !== false;
+    msg.marker && msg.marker.type === 'markable';
 const isFormsMessage = (msg: ReceivedMessage): msg is FormsMessage =>
     !!msg.forms && msg.forms.length > 0;
 
@@ -179,7 +179,7 @@ export default function (client: Agent) {
         if (isChatState(msg) && ALLOWED_CHAT_STATE_TYPES.has(msg.type || 'normal')) {
             client.emit('chat:state', msg);
         }
-        if (isMarkable(msg, client)) {
+        if (isMarkable(msg, client) && client.config.chatMarkers !== false) {
             client.markReceived(msg);
         }
         if (msg.marker && msg.marker.type !== 'markable') {
