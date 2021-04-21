@@ -129,6 +129,22 @@ export default class Client extends EventEmitter {
             }
         }, 1);
 
+
+        const handleFailedSend = (kind: string, stanza: any) => {
+            if (['message', 'presence', 'iq'].includes(kind)) {
+                if (!this.sm.started || !this.sm.resumable) {
+                    this.emit('stanza:failed', {
+                        kind,
+                        stanza
+                    });
+                } else if (this.sm.resumable && !this.transport) {
+                    this.emit('stanza:hibernated', {
+                        kind,
+                        stanza
+                    });
+                }
+            }
+        };
         this.outgoingDataQueue = priorityQueue<StreamData>(async (task, done) => {
             const { kind, stanza, replay } = task;
             const ackRequest = replay || (await this.sm.track(kind, stanza));
@@ -141,28 +157,18 @@ export default class Client extends EventEmitter {
                 }
             }
 
-            try {
-                if (!this.transport) {
-                    throw new Error('Missing transport');
-                }
-                await this.transport.send(kind, stanza);
-                if (ackRequest) {
-                    this.transport?.send('sm', { type: 'request' });
-                }
-            } catch (err) {
-                if (['message', 'presence', 'iq'].includes(kind)) {
-                    if (!this.sm.started || !this.sm.resumable) {
-                        this.emit('stanza:failed', {
-                            kind,
-                            stanza
-                        });
-                    } else if (this.sm.resumable && !this.transport) {
-                        this.emit('stanza:hibernated', {
-                            kind,
-                            stanza
-                        });
+            if (this.transport) {
+                try {
+                    await this.transport.send(kind, stanza);
+                    if (ackRequest) {
+                        this.transport?.send('sm', { type: 'request' });
                     }
+                } catch (err) {
+                    console.error(err);
+                    handleFailedSend(kind, stanza);
                 }
+            } else {
+                handleFailedSend(kind, stanza);
             }
 
             if (done) {
