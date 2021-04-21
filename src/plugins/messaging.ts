@@ -43,13 +43,13 @@ declare module '../' {
          *
          * When enabled, chat markers for MUC messages will use the stanza ID stamped by the MUC,
          * if one is present.
-         * 
+         *
          * This option is intended to allow interop with some servers that stamp stanza IDs, but
          * also still rely on the plain message ID for tracking marker states.
          *
          * @default true
          */
-         groupchatMarkersUseStanzaID?: boolean;
+        groupchatMarkersUseStanzaID?: boolean;
 
         /**
          * Send Message Delivery Receipts
@@ -127,7 +127,9 @@ const isReceiptRequest = (msg: ReceivedMessage): msg is ReceiptMessage =>
 const hasRTT = (msg: Message): msg is RTTMessage => !!msg.rtt;
 const isCorrection = (msg: ReceivedMessage): msg is CorrectionMessage => !!msg.replace;
 const isMarkable = (msg: Message, marker: ChatMarkerLabel) =>
-    msg.marker && (MARKER_RANK.get(msg.marker.type)! < MARKER_RANK.get(marker)! || msg.marker?.type === 'markable');
+    msg.marker &&
+    (MARKER_RANK.get(msg.marker.type)! < MARKER_RANK.get(marker)! ||
+        msg.marker?.type === 'markable');
 const isFormsMessage = (msg: ReceivedMessage): msg is FormsMessage =>
     !!msg.forms && msg.forms.length > 0;
 
@@ -168,14 +170,16 @@ export default function (client: Agent) {
             return;
         }
 
+        const useStanzaID = client.config.groupchatMarkersUseStanzaID !== false;
+
         let id = msg.id;
-        if (msg.type === 'groupchat' && msg.stanzaIds) {
+        if (msg.type === 'groupchat' && msg.stanzaIds && useStanzaID) {
             const mucStanzaId = msg.stanzaIds.find(s => JID.equalBare(s.by, msg.from));
             if (mucStanzaId) {
                 id = mucStanzaId.id;
             }
         }
-        
+
         client.sendMessage({
             marker: {
                 id,
@@ -226,8 +230,9 @@ export default function (client: Agent) {
 
         const isReceipt = isReceiptRequest(msg);
         const isReceivedMarkable = isMarkable(msg, 'received');
-        
-        const canSendReceipt = isReceipt && sendReceipts && (msg.type === 'groupchat' ? sendMUCReceipts : true);
+
+        const canSendReceipt =
+            isReceipt && sendReceipts && (msg.type === 'groupchat' ? sendMUCReceipts : true);
 
         if (canSendReceipt || (sendMarkers && isReceivedMarkable)) {
             const to = msg.type === 'groupchat' ? JID.toBare(msg.from) : msg.from;
@@ -241,14 +246,19 @@ export default function (client: Agent) {
 
             client.sendMessage({
                 id: msg.id,
-                receipt: canSendReceipt ? {
-                    id: msg.id,
-                    type: 'received'
-                } : undefined,
-                marker: sendMarkers && isReceivedMarkable ? {
-                    id: markerId,
-                    type: 'received'
-                } : undefined,
+                receipt: canSendReceipt
+                    ? {
+                          id: msg.id,
+                          type: 'received'
+                      }
+                    : undefined,
+                marker:
+                    sendMarkers && isReceivedMarkable
+                        ? {
+                              id: markerId,
+                              type: 'received'
+                          }
+                        : undefined,
                 to,
                 type: msg.type
             });
