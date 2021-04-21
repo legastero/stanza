@@ -480,7 +480,7 @@ export default class Translator {
                 let items: JSONData[];
 
                 if (multiple) {
-                    items = value;
+                    items = value ?? [];
                 } else {
                     items = [value];
                 }
