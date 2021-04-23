@@ -240,7 +240,6 @@ export default function (client: Agent) {
             }
 
             client.sendMessage({
-                id: msg.id,
                 receipt: canSendReceipt ? {
                     id: msg.id,
                     type: 'received'

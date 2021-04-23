@@ -28,7 +28,7 @@ export default class Client extends EventEmitter {
     public sessionStarting?: boolean;
     public sessionStarted?: boolean;
     public sessionTerminating?: boolean;
-    public reconnectAttempts: number = 0;
+    public reconnectAttempts = 0;
 
     public transports: {
         [key: string]: new (
