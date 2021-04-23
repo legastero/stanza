@@ -50,7 +50,7 @@ declare module '../' {
     }
 }
 
-export default function (client: Agent) {
+export default function (client: Agent): void {
     client.disco.addFeature('jid\\20escaping');
 
     client.disco.addFeature(NS_DELAY);

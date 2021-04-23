@@ -45,7 +45,7 @@ export interface UserLocationEvent {
     jid: string;
 }
 
-export default function (client: Agent) {
+export default function (client: Agent): void {
     client.disco.addFeature(NS_ACTIVITY);
     client.disco.addFeature(NS_GEOLOC);
     client.disco.addFeature(NS_MOOD);

@@ -208,7 +208,7 @@ const Protocol: DefinitionOptions[] = [
                     xml: XMLElement,
                     data: DataFormFieldValueType,
                     context: TranslationContext
-                ) {
+                ): void {
                     const converter = multipleChildText(null, 'value');
                     let outputData: string[] = [];
                     const rawData =

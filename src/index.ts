@@ -235,7 +235,7 @@ export interface Transport {
     connect(opts: TransportConfig): void;
     disconnect(cleanly?: boolean): void;
     restart(): void;
-    send(name: string, data?: object): Promise<void>;
+    send(name: string, data?: JXT.JSONData): Promise<void>;
 }
 
 export interface TransportConfig {

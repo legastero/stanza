@@ -47,18 +47,18 @@ export default class StreamManagement extends EventEmitter {
         this._reset();
     }
 
-    get started() {
+    get started(): boolean {
         return this.outboundStarted && this.inboundStarted;
     }
 
-    set started(value) {
+    set started(value: boolean) {
         if (!value) {
             this.outboundStarted = false;
             this.inboundStarted = false;
         }
     }
 
-    get resumable() {
+    get resumable(): boolean {
         return this.started && this.allowResume;
     }
 
@@ -72,23 +72,23 @@ export default class StreamManagement extends EventEmitter {
         this.emit('prebound', opts.jid);
     }
 
-    public cache(handler: (data: SMState) => void) {
+    public cache(handler: (data: SMState) => void): void {
         this.cacheHandler = handler;
     }
 
-    public async bind(jid: string) {
+    public async bind(jid: string): Promise<void> {
         this.jid = jid;
         await this._cache();
     }
 
-    public async enable() {
+    public async enable(): Promise<void> {
         this.emit('send', {
             allowResumption: this.allowResume,
             type: 'enable'
         });
     }
 
-    public async resume() {
+    public async resume(): Promise<void> {
         this.emit('send', {
             handled: this.handled,
             previousSession: this.id!,
@@ -96,7 +96,7 @@ export default class StreamManagement extends EventEmitter {
         });
     }
 
-    public async enabled(resp: StreamManagementEnabled) {
+    public async enabled(resp: StreamManagementEnabled): Promise<void> {
         this.id = resp.id;
         this.handled = 0;
         this.inboundStarted = true;
@@ -104,7 +104,7 @@ export default class StreamManagement extends EventEmitter {
         await this._cache();
     }
 
-    public async resumed(resp: StreamManagementResume) {
+    public async resumed(resp: StreamManagementResume): Promise<void> {
         this.id = resp.previousSession;
         this.inboundStarted = true;
 
@@ -113,7 +113,7 @@ export default class StreamManagement extends EventEmitter {
         await this._cache();
     }
 
-    public async failed(resp: StreamManagementFailed) {
+    public async failed(resp: StreamManagementFailed): Promise<void> {
         // Resumption might fail, but the server can still tell us how far
         // the old session progressed.
         await this.process(resp);
@@ -128,14 +128,14 @@ export default class StreamManagement extends EventEmitter {
         await this._cache();
     }
 
-    public ack() {
+    public ack(): void {
         this.emit('send', {
             handled: this.handled,
             type: 'ack'
         });
     }
 
-    public request() {
+    public request(): void {
         this.emit('send', {
             type: 'request'
         });
@@ -144,7 +144,7 @@ export default class StreamManagement extends EventEmitter {
     public async process(
         ack: StreamManagementAck | StreamManagementResume | StreamManagementFailed,
         resend = false
-    ) {
+    ): Promise<void> {
         if (ack.handled === undefined) {
             return;
         }
@@ -195,14 +195,14 @@ export default class StreamManagement extends EventEmitter {
         return true;
     }
 
-    public async handle() {
+    public async handle(): Promise<void> {
         if (this.inboundStarted) {
             this.handled = mod(this.handled + 1, MAX_SEQ);
             await this._cache();
         }
     }
 
-    public async hibernate() {
+    public async hibernate(): Promise<void> {
         if (!this.resumable) {
             return this.shutdown();
         }
@@ -212,11 +212,11 @@ export default class StreamManagement extends EventEmitter {
         }
     }
 
-    public async shutdown() {
+    public async shutdown(): Promise<void> {
         return this.failed({ type: 'failed' });
     }
 
-    private async _cache() {
+    private async _cache(): Promise<void> {
         try {
             await this.cacheHandler({
                 allowResume: this.allowResume,
@@ -233,7 +233,7 @@ export default class StreamManagement extends EventEmitter {
         }
     }
 
-    private _reset() {
+    private _reset(): void {
         this.id = '';
         this.inboundStarted = false;
         this.outboundStarted = false;

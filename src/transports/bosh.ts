@@ -6,7 +6,7 @@ import { StreamErrorCondition } from '../Constants';
 import StreamManagement from '../helpers/StreamManagement';
 import { Stream } from '../protocol';
 
-import { ParsedData, Registry, StreamParser } from '../jxt';
+import { JSONData, ParsedData, Registry, StreamParser } from '../jxt';
 
 import { sleep, timeoutPromise } from '../Utils';
 
@@ -115,12 +115,12 @@ export default class BOSH extends Duplex implements Transport {
         });
     }
 
-    public _write(chunk: any, encoding: string, done: (err?: Error) => void) {
+    public _write(chunk: string, encoding: string, done: (err?: Error) => void): void {
         this.queue.push([chunk, done]);
         this.scheduleRequests();
     }
 
-    public _writev(chunks: Array<{ chunk: any; encoding: any }>, done: (err?: Error) => void) {
+    public _writev(chunks: Array<{ chunk: string; encoding: string }>, done: (err?: Error) => void): void {
         this.queue.push([chunks.map(c => c.chunk).join(''), done]);
         this.scheduleRequests();
     }
@@ -227,7 +227,7 @@ export default class BOSH extends Duplex implements Transport {
         });
     }
 
-    public disconnect(clean = true) {
+    public disconnect(clean = true): void {
         if (this.hasStream && clean) {
             this._send({
                 type: 'terminate'
@@ -240,7 +240,7 @@ export default class BOSH extends Duplex implements Transport {
         }
     }
 
-    public async send(dataOrName: string, data?: object): Promise<void> {
+    public async send(dataOrName: string, data?: JSONData): Promise<void> {
         let output: string | undefined;
         if (data) {
             output = this.stanzas.export(dataOrName, data)?.toString();

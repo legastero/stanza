@@ -55,7 +55,7 @@ export default class Translator {
         multiple = false,
         selector?: string,
         implicit?: string
-    ) {
+    ): void {
         const child: ChildTranslator = {
             multiple: multiple || false,
             name,
@@ -162,7 +162,7 @@ export default class Translator {
         return this.childrenIndex.get(`{${xml.getNamespace()}}${xml.getName()}`);
     }
 
-    public updateDefinition(opts: DefinitionUpdateOptions) {
+    public updateDefinition(opts: DefinitionUpdateOptions): void {
         const xid = `{${opts.namespace}}${opts.element}`;
         const type = opts.type || this.defaultType;
         const version = opts.version || this.defaultVersion;

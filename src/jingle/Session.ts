@@ -164,7 +164,7 @@ export default class JingleSession {
     public get state(): string {
         return this._sessionState;
     }
-    public set state(value) {
+    public set state(value: string) {
         if (value !== this._sessionState) {
             this._log('info', 'Changing session state to: ' + value);
             this._sessionState = value;
@@ -177,7 +177,7 @@ export default class JingleSession {
     public get connectionState(): string {
         return this._connectionState;
     }
-    public set connectionState(value) {
+    public set connectionState(value: string) {
         if (value !== this._connectionState) {
             this._log('info', 'Changing connection state to: ' + value);
             this._connectionState = value;
@@ -187,7 +187,7 @@ export default class JingleSession {
         }
     }
 
-    public send(action: JingleAction, data: Partial<Jingle>) {
+    public send(action: JingleAction, data: Partial<Jingle>): void {
         data = data || {};
         data.sid = this.sid;
         data.action = action;
@@ -234,7 +234,7 @@ export default class JingleSession {
         });
     }
 
-    public process(action: JingleAction, changes: Jingle, cb: ActionCallback) {
+    public process(action: JingleAction, changes: Jingle, cb: ActionCallback): void {
         this.processingQueue.push(
             {
                 action,
@@ -247,26 +247,26 @@ export default class JingleSession {
     }
 
     public start(_next?: ActionCallback): void;
-    public start(_opts: any, _next?: ActionCallback): void {
+    public start(_opts: unknown, _next?: ActionCallback): void {
         this._log('error', 'Can not start base sessions');
         this.end('unsupported-applications', true);
     }
 
     public accept(_next?: ActionCallback): void;
-    public accept(_opts?: any, _next?: ActionCallback): void {
+    public accept(_opts?: unknown, _next?: ActionCallback): void {
         this._log('error', 'Can not accept base sessions');
         this.end('unsupported-applications');
     }
 
-    public cancel() {
+    public cancel(): void {
         this.end('cancel');
     }
 
-    public decline() {
+    public decline(): void {
         this.end('decline');
     }
 
-    public end(reason: JingleReasonCondition | JingleReason = 'success', silent = false) {
+    public end(reason: JingleReasonCondition | JingleReason = 'success', silent = false): void {
         this.state = 'ended';
 
         this.processingQueue.kill();
@@ -287,7 +287,7 @@ export default class JingleSession {
         this.parent.forgetSession(this);
     }
 
-    protected _log(level: string, message: string, ...data: any[]) {
+    protected _log(level: string, message: string, ...data: any[]): void {
         if (this.parent) {
             message = this.sid + ': ' + message;
             this.parent.emit('log', level, message, ...data);
@@ -295,15 +295,15 @@ export default class JingleSession {
         }
     }
 
-    protected onSessionInitiate(changes: Jingle, cb: ActionCallback) {
+    protected onSessionInitiate(changes: Jingle, cb: ActionCallback): void {
         cb();
     }
 
-    protected onSessionAccept(changes: Jingle, cb: ActionCallback) {
+    protected onSessionAccept(changes: Jingle, cb: ActionCallback): void {
         cb();
     }
 
-    protected onSessionTerminate(changes: Jingle, cb: ActionCallback) {
+    protected onSessionTerminate(changes: Jingle, cb: ActionCallback): void {
         this.end(changes.reason, true);
         cb();
     }
@@ -313,7 +313,7 @@ export default class JingleSession {
     //
     // However, a session-info action with no associated payload
     // is acceptable (works like a ping).
-    protected onSessionInfo(changes: Jingle, cb: ActionCallback) {
+    protected onSessionInfo(changes: Jingle, cb: ActionCallback): void {
         if (!changes.info) {
             cb();
         } else {
@@ -323,25 +323,25 @@ export default class JingleSession {
 
     // It is mandatory to reply to a security-info action with
     // an unsupported-info error if the info isn't recognized.
-    protected onSecurityInfo(changes: Jingle, cb: ActionCallback) {
+    protected onSecurityInfo(changes: Jingle, cb: ActionCallback): void {
         cb(unsupportedInfo);
     }
 
     // It is mandatory to reply to a description-info action with
     // an unsupported-info error if the info isn't recognized.
-    protected onDescriptionInfo(changes: Jingle, cb: ActionCallback) {
+    protected onDescriptionInfo(changes: Jingle, cb: ActionCallback): void {
         cb(unsupportedInfo);
     }
 
     // It is mandatory to reply to a transport-info action with
     // an unsupported-info error if the info isn't recognized.
-    protected onTransportInfo(changes: Jingle, cb: ActionCallback) {
+    protected onTransportInfo(changes: Jingle, cb: ActionCallback): void {
         cb(unsupportedInfo);
     }
 
     // It is mandatory to reply to a content-add action with either
     // a content-accept or content-reject.
-    protected onContentAdd(changes: Jingle, cb: ActionCallback) {
+    protected onContentAdd(changes: Jingle, cb: ActionCallback): void {
         // Allow ack for the content-add to be sent.
         cb();
 
@@ -353,25 +353,25 @@ export default class JingleSession {
         });
     }
 
-    protected onContentAccept(changes: Jingle, cb: ActionCallback) {
+    protected onContentAccept(changes: Jingle, cb: ActionCallback): void {
         cb(badRequest);
     }
 
-    protected onContentReject(changes: Jingle, cb: ActionCallback) {
+    protected onContentReject(changes: Jingle, cb: ActionCallback): void {
         cb(badRequest);
     }
 
-    protected onContentModify(changes: Jingle, cb: ActionCallback) {
+    protected onContentModify(changes: Jingle, cb: ActionCallback): void {
         cb(badRequest);
     }
 
-    protected onContentRemove(changes: Jingle, cb: ActionCallback) {
+    protected onContentRemove(changes: Jingle, cb: ActionCallback): void {
         cb(badRequest);
     }
 
     // It is mandatory to reply to a transport-add action with either
     // a transport-accept or transport-reject.
-    protected onTransportReplace(changes: Jingle, cb: ActionCallback) {
+    protected onTransportReplace(changes: Jingle, cb: ActionCallback): void {
         // Allow ack for the transport-replace be sent.
         cb();
 
@@ -383,11 +383,11 @@ export default class JingleSession {
         });
     }
 
-    protected onTransportAccept(changes: Jingle, cb: ActionCallback) {
+    protected onTransportAccept(changes: Jingle, cb: ActionCallback): void {
         cb(badRequest);
     }
 
-    protected onTransportReject(changes: Jingle, cb: ActionCallback) {
+    protected onTransportReject(changes: Jingle, cb: ActionCallback): void {
         cb(badRequest);
     }
 }

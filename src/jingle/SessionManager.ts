@@ -19,19 +19,14 @@ function isICEServer(val: any): val is RTCIceServer {
 export interface SessionManagerConfig {
     debug?: boolean;
     selfID?: string;
-    bundlePolicy?: string;
-    iceTransportPolicy?: string;
-    rtcpMuxPolicy?: string;
+    bundlePolicy?: RTCConfiguration['bundlePolicy'];
+    iceTransportPolicy?: RTCConfiguration['iceTransportPolicy'];
+    rtcpMuxPolicy?: RTCConfiguration['rtcpMuxPolicy'];
     iceServers?: RTCIceServer[];
-    sdpSemantics?: string;
-    peerConnectionConfig?: {
-        bundlePolicy?: string;
-        iceTransportPolicy?: string;
-        rtcpMuxPolicy?: string;
-        sdpSemantics?: string;
-    };
+    sdpSemantics?: 'unified-plan' | 'plan-b';
+    peerConnectionConfig?: RTCConfiguration;
     hasRTCPeerConnection?: boolean;
-    peerConnectionConstraints?: any;
+    peerConnectionConstraints?: unknown;
     performTieBreak?: (session: BaseSession, req: IQ & { jingle: Jingle }) => boolean;
     prepareSession?: (opts: any, req?: IQ & { jingle: Jingle }) => BaseSession | undefined;
     createPeerConnection?: (
@@ -106,8 +101,8 @@ export default class SessionManager extends EventEmitter {
                 bundlePolicy: conf.bundlePolicy || 'balanced',
                 iceTransportPolicy: conf.iceTransportPolicy || 'all',
                 rtcpMuxPolicy: conf.rtcpMuxPolicy || 'require',
-                sdpSemantics: conf.sdpSemantics || 'plan-b'
-            },
+                sdpSemantics: conf.sdpSemantics
+            } as RTCConfiguration,
             peerConnectionConstraints: {
                 optional: [{ DtlsSrtpKeyAgreement: true }, { RtpDataChannels: false }]
             },
@@ -208,7 +203,7 @@ export default class SessionManager extends EventEmitter {
         peer: string,
         reason?: JingleReasonCondition | JingleReason,
         silent = false
-    ) {
+    ): void {
         const sessions = this.peers[peer] || [];
         delete this.peers[peer];
         for (const session of sessions) {
@@ -216,7 +211,7 @@ export default class SessionManager extends EventEmitter {
         }
     }
 
-    public endAllSessions(reason?: JingleReasonCondition | JingleReason, silent = false) {
+    public endAllSessions(reason?: JingleReasonCondition | JingleReason, silent = false): void {
         for (const peer of Object.keys(this.peers)) {
             this.endPeerSessions(peer, reason, silent);
         }

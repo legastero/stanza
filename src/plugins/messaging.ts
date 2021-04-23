@@ -142,7 +142,7 @@ async function toggleCarbons(client: Agent, action: 'enable' | 'disable') {
     });
 }
 
-export default function (client: Agent) {
+export default function (client: Agent): void {
     client.disco.addFeature(NS_ATTENTION_0);
     client.disco.addFeature(NS_CHAT_MARKERS_0);
     client.disco.addFeature(NS_CHAT_STATES);

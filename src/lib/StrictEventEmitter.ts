@@ -7,6 +7,7 @@
  * - strict-event-emitter-types, Copyright 2018 Brian Terlson
  */
 
+/* eslint-disable */
 // tslint:disable
 
 // the overridden signatures need to be assignment compatible, but

@@ -446,13 +446,13 @@ export const childIntegerAttribute = createChildAttributeType<number>(integerPar
 export const childFloatAttribute = createChildAttributeType<number>(floatParser);
 export const childDateAttribute = createChildAttributeType<Date, string>(dateParser);
 
-export const text = (defaultValue?: string) =>
+export const text = (defaultValue?: string): FieldDefinition<string, string> =>
     createTextField<string>({
         staticDefault: defaultValue,
         ...stringParser
     });
-export const textJSON = () => createTextField<JSONData>({ ...jsonParser });
-export const textBuffer = (encoding: BufferEncoding = 'utf8') =>
+export const textJSON = (): FieldDefinition<JSONData> => createTextField<JSONData>({ ...jsonParser });
+export const textBuffer = (encoding: BufferEncoding = 'utf8'): FieldDefinition<Buffer, string> =>
     createTextField<Buffer, string>({
         ...bufferParser(encoding)
     });
@@ -472,7 +472,7 @@ export function languageAttribute(): FieldDefinition<string> {
     };
 }
 
-export const childLanguageAttribute = (namespace: string | null, element: string) =>
+export const childLanguageAttribute = (namespace: string | null, element: string): FieldDefinition<string> =>
     createChildAttributeField<string>({
         converter: languageAttribute(),
         element,
@@ -486,7 +486,7 @@ export const childText = (
     element: string,
     defaultValue?: string,
     emitEmpty = false
-) =>
+): FieldDefinition<string> =>
     createChildTextField({
         element,
         emitEmpty,
@@ -500,7 +500,7 @@ export const childTextBuffer = (
     namespace: string | null,
     element: string,
     encoding: BufferEncoding = 'utf8'
-) =>
+): FieldDefinition<Buffer, string> =>
     createChildTextField({
         element,
         matchLanguage: true,
@@ -508,14 +508,14 @@ export const childTextBuffer = (
         ...bufferParser(encoding)
     });
 
-export const childDate = (namespace: string | null, element: string) =>
+export const childDate = (namespace: string | null, element: string): FieldDefinition<Date, string> =>
     createChildTextField({
         element,
         namespace,
         ...dateParser
     });
 
-export const childInteger = (namespace: string | null, element: string, defaultValue?: number) =>
+export const childInteger = (namespace: string | null, element: string, defaultValue?: number): FieldDefinition<number> =>
     createChildTextField({
         element,
         namespace,
@@ -523,7 +523,7 @@ export const childInteger = (namespace: string | null, element: string, defaultV
         ...integerParser
     });
 
-export const childFloat = (namespace: string | null, element: string, defaultValue?: number) =>
+export const childFloat = (namespace: string | null, element: string, defaultValue?: number): FieldDefinition<number> =>
     createChildTextField({
         element,
         namespace,
@@ -531,7 +531,7 @@ export const childFloat = (namespace: string | null, element: string, defaultVal
         ...floatParser
     });
 
-export const childJSON = (namespace: string | null, element: string) =>
+export const childJSON = (namespace: string | null, element: string): FieldDefinition<any> =>
     createChildTextField({
         element,
         namespace,

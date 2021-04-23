@@ -45,7 +45,7 @@ declare module '../' {
     }
 }
 
-export default function (client: Agent) {
+export default function (client: Agent): void {
     client.disco = new Disco();
 
     client.disco.addFeature(NS_DISCO_INFO);

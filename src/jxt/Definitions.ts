@@ -184,17 +184,17 @@ function unescapeXMLReplaceChar(match: string) {
     throw JXTError.restrictedXML('Prohibited entity: ' + match);
 }
 
-export function escapeXML(text: string) {
+export function escapeXML(text: string): string {
     return text.replace(NEED_ESCAPING, escapeXMLReplaceChar);
 }
 
-export function unescapeXML(text: string) {
+export function unescapeXML(text: string): string {
     return text.replace(ESCAPE_SEQUENCE, match => {
         return unescapeXMLReplaceChar(match);
     });
 }
 
-export function escapeXMLText(text: string) {
+export function escapeXMLText(text: string): string {
     return text.replace(NEED_ESCAPING_TEXT, escapeXMLReplaceChar);
 }
 

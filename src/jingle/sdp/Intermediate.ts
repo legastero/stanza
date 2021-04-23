@@ -101,7 +101,7 @@ export function importFromSDP(sdp: SDP.SDPBlob): IntermediateSessionDescription 
 // Export Intermediary to SDP
 // ====================================================================
 
-export function exportToSDP(session: IntermediateSessionDescription) {
+export function exportToSDP(session: IntermediateSessionDescription): string {
     const output: string[] = [];
 
     output.push(

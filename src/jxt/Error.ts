@@ -11,28 +11,28 @@ export interface JXTErrorOptions {
 }
 
 export default class JXTError extends Error {
-    public static notWellFormed(text?: string) {
+    public static notWellFormed(text?: string): JXTError {
         return new JXTError({
             condition: JXTErrorCondition.NotWellFormed,
             text
         });
     }
 
-    public static restrictedXML(text?: string) {
+    public static restrictedXML(text?: string): JXTError {
         return new JXTError({
             condition: JXTErrorCondition.RestrictedXML,
             text
         });
     }
 
-    public static alreadyClosed(text?: string) {
+    public static alreadyClosed(text?: string): JXTError {
         return new JXTError({
             condition: JXTErrorCondition.AlreadyClosed,
             text
         });
     }
 
-    public static unknownRoot(text?: string) {
+    public static unknownRoot(text?: string): JXTError {
         return new JXTError({
             condition: JXTErrorCondition.UnknownRoot,
             text

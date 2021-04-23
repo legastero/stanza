@@ -52,7 +52,7 @@ const Protocol: DefinitionOptions[] = [
                     const stanza = attribute('stanza', 'iq').importer(xml, context);
                     return stanza !== 'message';
                 },
-                exporter(xml: XMLElement, data: boolean, context: TranslationContext) {
+                exporter(xml: XMLElement, data: boolean, context: TranslationContext): void {
                     attribute('stanza').exporter(xml, data ? 'iq' : 'message', context);
                 }
             },

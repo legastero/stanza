@@ -38,7 +38,7 @@ import Roster from './roster';
 import SASL from './sasl';
 import Sharing from './sharing';
 
-export function core(client: Agent) {
+export function core(client: Agent): void {
     client.use(Features);
     client.use(Disco);
 
@@ -48,7 +48,7 @@ export function core(client: Agent) {
     client.use(SASL);
 }
 
-export default function (client: Agent) {
+export default function (client: Agent): void {
     client.use(Account);
     client.use(Messaging);
     client.use(Avatar);

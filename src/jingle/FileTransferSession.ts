@@ -12,7 +12,7 @@ import {
     JingleIce
 } from '../protocol';
 
-import ICESession from './ICESession';
+import ICESession, { ICESessionOpts } from './ICESession';
 import { exportToSDP, importFromSDP } from './sdp/Intermediate';
 import { convertIntermediateToRequest, convertRequestToIntermediate } from './sdp/Protocol';
 import { ActionCallback } from './Session';
@@ -41,7 +41,7 @@ export class Sender extends EventEmitter {
         this.hash = Hashes.createHash(this.config.hash);
     }
 
-    public send(file: File, channel: RTCDataChannel) {
+    public send(file: File, channel: RTCDataChannel): void {
         if (this.file && this.channel) {
             return;
         }
@@ -127,7 +127,7 @@ export class Receiver extends EventEmitter {
         this.hash = Hashes.createHash(this.config.hash);
     }
 
-    public receive(metadata: ReceiverMetadata, channel: RTCDataChannel) {
+    public receive(metadata: ReceiverMetadata, channel: RTCDataChannel): void {
         this.metadata = metadata;
 
         this.channel = channel;
@@ -164,7 +164,7 @@ export default class FileTransferSession extends ICESession {
     private channel?: RTCDataChannel;
     private contentName?: string;
 
-    constructor(opts: any) {
+    constructor(opts: ICESessionOpts) {
         super(opts);
 
         this.sender = undefined;
@@ -172,7 +172,7 @@ export default class FileTransferSession extends ICESession {
         this.file = undefined;
     }
 
-    public async start(file?: File | ActionCallback, next?: ActionCallback) {
+    public async start(file?: File | ActionCallback, next?: ActionCallback): Promise<void> {
         next = next || (() => undefined);
         if (!file || typeof file === 'function') {
             throw new Error('File object required');
@@ -256,7 +256,7 @@ export default class FileTransferSession extends ICESession {
         }
     }
 
-    public async accept(next?: ActionCallback) {
+    public async accept(next?: ActionCallback): Promise<void> {
         this._log('info', 'Accepted incoming session');
 
         this.role = 'responder';
@@ -289,7 +289,7 @@ export default class FileTransferSession extends ICESession {
         }
     }
 
-    protected async onSessionInitiate(changes: Jingle, cb: ActionCallback) {
+    protected async onSessionInitiate(changes: Jingle, cb: ActionCallback): Promise<void> {
         this._log('info', 'Initiating incoming session');
 
         this.role = 'responder';
@@ -327,7 +327,7 @@ export default class FileTransferSession extends ICESession {
         }
     }
 
-    protected onSessionInfo(changes: Jingle, cb: ActionCallback) {
+    protected onSessionInfo(changes: Jingle, cb: ActionCallback): void {
         const info = changes.info as FileTransferInfo;
         if (!info || !info.file || !info.file.hashes) {
             return;
@@ -339,7 +339,7 @@ export default class FileTransferSession extends ICESession {
         cb();
     }
 
-    private _maybeReceivedFile() {
+    private _maybeReceivedFile(): void {
         if (!this.receiver!.metadata.hashes || !this.receiver!.metadata.hashes.length) {
             // unknown hash, file transfer not completed
             return;

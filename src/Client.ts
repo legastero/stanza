@@ -5,9 +5,10 @@ import { Agent, AgentConfig, Transport } from './';
 import StreamManagement from './helpers/StreamManagement';
 import * as JID from './JID';
 import * as JXT from './jxt';
+import { JSONData } from './jxt';
 import * as SASL from './lib/sasl';
 import { core as corePlugins } from './plugins';
-import Protocol, { IQ, Message, Presence, StreamError } from './protocol';
+import Protocol, { IQ, Message, Presence, StreamError, Stream } from './protocol';
 import BOSH from './transports/bosh';
 import WebSocket from './transports/websocket';
 import { timeoutPromise, uuid } from './Utils';
@@ -128,7 +129,6 @@ export default class Client extends EventEmitter {
                 done();
             }
         }, 1);
-
 
         const handleFailedSend = (kind: string, stanza: any) => {
             if (['message', 'presence', 'iq'].includes(kind)) {
@@ -277,7 +277,7 @@ export default class Client extends EventEmitter {
         });
     }
 
-    public updateConfig(opts: AgentConfig = {}) {
+    public updateConfig(opts: AgentConfig = {}): void {
         const currConfig = this.config || {};
         this.config = {
             allowResumption: true,
@@ -301,7 +301,7 @@ export default class Client extends EventEmitter {
         }
     }
 
-    get stream() {
+    get stream(): Stream | undefined {
         return this.transport ? this.transport.stream : undefined;
     }
 
@@ -320,14 +320,14 @@ export default class Client extends EventEmitter {
 
     public use(
         pluginInit: boolean | ((agent: Agent, registry: JXT.Registry, config: AgentConfig) => void)
-    ) {
+    ): void {
         if (typeof pluginInit !== 'function') {
             return;
         }
         pluginInit((this as unknown) as Agent, this.stanzas, this.config);
     }
 
-    public nextId() {
+    public nextId(): string {
         return uuid();
     }
 
@@ -393,7 +393,7 @@ export default class Client extends EventEmitter {
         this.emit('--transport-disconnected');
     }
 
-    public async disconnect() {
+    public async disconnect(): Promise<void> {
         this.sessionTerminating = true;
         clearTimeout(this.reconnectTimer);
         this.outgoingDataQueue.pause();
@@ -416,7 +416,7 @@ export default class Client extends EventEmitter {
         await this.sm.shutdown();
     }
 
-    public async send(kind: string, stanza: object, replay = false): Promise<void> {
+    public async send(kind: string, stanza: JSONData, replay = false): Promise<void> {
         return new Promise((resolve, reject) => {
             this.outgoingDataQueue.push({ kind, stanza, replay }, replay ? 0 : 1, err =>
                 err ? reject(err) : resolve()
@@ -508,7 +508,7 @@ export default class Client extends EventEmitter {
         });
     }
 
-    public sendStreamError(error: StreamError) {
+    public sendStreamError(error: StreamError): void {
         this.emit('stream:error', error);
         this.send('error', error);
         this.disconnect();

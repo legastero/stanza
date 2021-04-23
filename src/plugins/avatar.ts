@@ -27,7 +27,7 @@ export interface AvatarsEvent {
     source: 'pubsub' | 'vcard';
 }
 
-export default function (client: Agent) {
+export default function (client: Agent): void {
     client.disco.addFeature(NS_PEP_NOTIFY(NS_AVATAR_METADATA));
 
     client.on('pubsub:published', msg => {

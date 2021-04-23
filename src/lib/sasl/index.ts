@@ -132,7 +132,7 @@ export function createClientNonce(length = 32): string {
 }
 
 // tslint:disable no-bitwise
-export function XOR(a: Buffer, b: Buffer) {
+export function XOR(a: Buffer, b: Buffer): Buffer {
     const res: number[] = [];
     for (let i = 0; i < a.length; i++) {
         res.push(a[i] ^ b[i]);
@@ -149,7 +149,7 @@ export function HMAC(key: Buffer, msg: Buffer, alg: string): Buffer {
     return Hashes.createHmac(alg, key).update(msg).digest() as Buffer;
 }
 
-export function Hi(text: Buffer, salt: Buffer, iterations: number, alg: string) {
+export function Hi(text: Buffer, salt: Buffer, iterations: number, alg: string): Buffer {
     let ui1 = HMAC(text, Buffer.concat([salt, Buffer.from('00000001', 'hex')]), alg);
     let ui = ui1;
     for (let i = 0; i < iterations - 1; i++) {

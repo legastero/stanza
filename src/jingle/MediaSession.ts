@@ -18,7 +18,7 @@ import {
     JingleRtpDescription
 } from '../protocol';
 
-import ICESession from './ICESession';
+import ICESession, { ICESessionOpts } from './ICESession';
 import { exportToSDP, importFromSDP } from './sdp/Intermediate';
 import { convertIntermediateToRequest, convertRequestToIntermediate } from './sdp/Protocol';
 import { ActionCallback } from './Session';
@@ -47,6 +47,10 @@ function applyStreamsCompatibility(content: JingleContent) {
     }
 }
 
+export interface MediaSessionOpts extends ICESessionOpts {
+    stream?: MediaStream;
+}
+
 export default class MediaSession extends ICESession {
     public offerOptions: any;
 
@@ -55,7 +59,7 @@ export default class MediaSession extends ICESession {
 
     private _ringing = false;
 
-    constructor(opts: any) {
+    constructor(opts: MediaSessionOpts) {
         super(opts);
 
         this.pc.addEventListener('track', (e: RTCTrackEvent) => {
@@ -72,7 +76,7 @@ export default class MediaSession extends ICESession {
     public get ringing(): boolean {
         return this._ringing;
     }
-    public set ringing(value) {
+    public set ringing(value: boolean) {
         if (value !== this._ringing) {
             this._ringing = value;
         }
@@ -89,7 +93,7 @@ export default class MediaSession extends ICESession {
     // Session control methods
     // ----------------------------------------------------------------
 
-    public async start(opts?: RTCOfferOptions | ActionCallback, next?: ActionCallback) {
+    public async start(opts?: RTCOfferOptions | ActionCallback, next?: ActionCallback): Promise<void> {
         this.state = 'pending';
 
         if (arguments.length === 1 && typeof opts === 'function') {
@@ -125,7 +129,7 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    public async accept(opts?: RTCAnswerOptions | ActionCallback, next?: ActionCallback) {
+    public async accept(opts?: RTCAnswerOptions | ActionCallback, next?: ActionCallback): Promise<void> {
         // support calling with accept(next) or accept(opts, next)
         if (arguments.length === 1 && typeof opts === 'function') {
             next = opts;
@@ -163,7 +167,7 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    public end(reason: JingleReasonCondition | JingleReason = 'success', silent = false) {
+    public end(reason: JingleReasonCondition | JingleReason = 'success', silent = false): void {
         for (const receiver of this.pc.getReceivers()) {
             this.onRemoveTrack(receiver.track);
         }
@@ -235,7 +239,7 @@ export default class MediaSession extends ICESession {
     // Track control methods
     // ----------------------------------------------------------------
 
-    public addTrack(track: MediaStreamTrack, stream: MediaStream, cb?: ActionCallback) {
+    public addTrack(track: MediaStreamTrack, stream: MediaStream, cb?: ActionCallback): Promise<void> {
         if (track.kind === 'audio') {
             this.includesAudio = true;
         }
@@ -254,7 +258,7 @@ export default class MediaSession extends ICESession {
         });
     }
 
-    public async removeTrack(sender: RTCRtpSender, cb?: ActionCallback) {
+    public async removeTrack(sender: RTCRtpSender, cb?: ActionCallback): Promise<void> {
         return this.processLocal('removetrack', async () => {
             this.pc.removeTrack(sender);
             if (cb) {
@@ -281,7 +285,7 @@ export default class MediaSession extends ICESession {
     // Jingle action handers
     // ----------------------------------------------------------------
 
-    protected async onSessionInitiate(changes: Jingle, cb: ActionCallback) {
+    protected async onSessionInitiate(changes: Jingle, cb: ActionCallback): Promise<void> {
         this._log('info', 'Initiating incoming session');
 
         this.state = 'pending';
@@ -313,14 +317,14 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    protected onSessionTerminate(changes: Jingle, cb: ActionCallback) {
+    protected onSessionTerminate(changes: Jingle, cb: ActionCallback): void {
         for (const receiver of this.pc.getReceivers()) {
             this.onRemoveTrack(receiver.track);
         }
         super.onSessionTerminate(changes, cb);
     }
 
-    protected onSessionInfo(changes: Jingle, cb: ActionCallback) {
+    protected onSessionInfo(changes: Jingle, cb: ActionCallback): void {
         const info: JingleInfo = changes.info || { infoType: '' };
 
         switch (info.infoType) {

@@ -11,14 +11,22 @@ import {
     convertIntermediateToTransport,
     convertRequestToIntermediate
 } from './sdp/Protocol';
-import BaseSession, { ActionCallback } from './Session';
+import BaseSession, { ActionCallback, SessionOpts } from './Session';
+import { SessionManagerConfig } from './SessionManager';
+
+export interface ICESessionOpts extends SessionOpts {
+    maxRelayBandwidth?: number;
+    iceServers?: RTCIceServer[];
+    config?: SessionManagerConfig['peerConnectionConfig'];
+    constraints?: SessionManagerConfig['peerConnectionConstraints']
+}
 
 export default class ICESession extends BaseSession {
     public pc!: RTCPeerConnection;
     public bitrateLimit = 0;
     public maximumBitrate?: number;
     public currentBitrate?: number;
-    public maxRelayBandwidth: number;
+    public maxRelayBandwidth?: number;
     public candidateBuffer: Array<{
         sdpMid: string;
         candidate: string;
@@ -29,7 +37,7 @@ export default class ICESession extends BaseSession {
 
     private _maybeRestartingIce: any;
 
-    constructor(opts: any) {
+    constructor(opts: ICESessionOpts) {
         super(opts);
 
         this.maxRelayBandwidth = opts.maxRelayBandwidth;
@@ -54,13 +62,13 @@ export default class ICESession extends BaseSession {
         this.restrictRelayBandwidth();
     }
 
-    public end(reason: JingleReasonCondition | JingleReason = 'success', silent = false) {
+    public end(reason: JingleReasonCondition | JingleReason = 'success', silent = false): void {
         this.pc.close();
         super.end(reason, silent);
     }
 
     /* actually do an ice restart */
-    public async restartIce() {
+    public async restartIce(): Promise<void> {
         // only initiators do an ice-restart to avoid conflicts.
         if (!this.isInitiator) {
             return;
@@ -94,7 +102,7 @@ export default class ICESession extends BaseSession {
     }
 
     // set the maximum bitrate. Only supported in Chrome and Firefox right now.
-    public async setMaximumBitrate(maximumBitrate: number) {
+    public async setMaximumBitrate(maximumBitrate: number): Promise<void> {
         if (this.maximumBitrate) {
             // potentially take into account bandwidth restrictions due to using TURN.
             maximumBitrate = Math.min(maximumBitrate, this.maximumBitrate);
@@ -131,7 +139,7 @@ export default class ICESession extends BaseSession {
     // Jingle action handers
     // ----------------------------------------------------------------
 
-    protected async onTransportInfo(changes: Jingle, cb: ActionCallback) {
+    protected async onTransportInfo(changes: Jingle, cb: ActionCallback): Promise<void> {
         if (
             changes.contents &&
             changes.contents[0] &&
@@ -228,7 +236,7 @@ export default class ICESession extends BaseSession {
         }
     }
 
-    protected async onSessionAccept(changes: Jingle, cb: ActionCallback) {
+    protected async onSessionAccept(changes: Jingle, cb: ActionCallback): Promise<void> {
         this.state = 'active';
 
         const json = convertRequestToIntermediate(changes, this.peerRole);
@@ -245,7 +253,7 @@ export default class ICESession extends BaseSession {
         }
     }
 
-    protected onSessionTerminate(changes: Jingle, cb: ActionCallback) {
+    protected onSessionTerminate(changes: Jingle, cb: ActionCallback): void {
         this._log('info', 'Terminating session');
         this.pc.close();
         super.end(changes.reason, true);
@@ -256,7 +264,7 @@ export default class ICESession extends BaseSession {
     // ICE action handers
     // ----------------------------------------------------------------
 
-    protected onIceCandidate(e: RTCPeerConnectionIceEvent) {
+    protected onIceCandidate(e: RTCPeerConnectionIceEvent): void {
         if (!e.candidate || !e.candidate.candidate) {
             return;
         }
@@ -279,7 +287,7 @@ export default class ICESession extends BaseSession {
         this.send(JingleAction.TransportInfo, jingle);
     }
 
-    protected onIceEndOfCandidates() {
+    protected onIceEndOfCandidates(): void {
         this._log('info', 'ICE end of candidates');
         const json = importFromSDP(this.pc.localDescription!.sdp);
         const firstMedia = json.media[0];
@@ -299,7 +307,7 @@ export default class ICESession extends BaseSession {
         });
     }
 
-    protected onIceStateChange() {
+    protected onIceStateChange(): void {
         switch (this.pc.iceConnectionState) {
             case 'checking':
                 this.connectionState = 'connecting';
@@ -339,7 +347,7 @@ export default class ICESession extends BaseSession {
         }
     }
 
-    protected async processBufferedCandidates() {
+    protected async processBufferedCandidates(): Promise<void> {
         for (const candidate of this.candidateBuffer) {
             try {
                 await this.pc.addIceCandidate(candidate!);
@@ -355,7 +363,7 @@ export default class ICESession extends BaseSession {
      * in order to prevent sending excessive traffic through
      * the TURN server.
      */
-    private restrictRelayBandwidth() {
+    private restrictRelayBandwidth(): void {
         this.pc.addEventListener('iceconnectionstatechange', async () => {
             if (
                 this.pc.iceConnectionState !== 'completed' &&
@@ -413,7 +421,7 @@ export default class ICESession extends BaseSession {
                 remoteCandidateType
             });
 
-            if (isRelay) {
+            if (isRelay && this.maxRelayBandwidth !== undefined) {
                 this.maximumBitrate = this.maxRelayBandwidth;
                 if (this.currentBitrate) {
                     this.setMaximumBitrate(Math.min(this.currentBitrate, this.maximumBitrate));
@@ -430,7 +438,7 @@ export default class ICESession extends BaseSession {
      * 'maybe check if bytes are sent/received' by comparing
      *   getStats measurements
      */
-    private maybeRestartIce() {
+    private maybeRestartIce(): void {
         // only initiators do an ice-restart to avoid conflicts.
         if (!this.isInitiator) {
             return;

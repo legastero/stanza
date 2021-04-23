@@ -76,7 +76,7 @@ function sendCSI(client: Agent, type: 'active' | 'inactive') {
     }
 }
 
-export default function (client: Agent) {
+export default function (client: Agent): void {
     client.disco.addFeature(NS_PING);
 
     client.on('iq:get:ping', iq => {

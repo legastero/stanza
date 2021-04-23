@@ -156,7 +156,7 @@ function isPubsubAffiliation(
     return (!msg.pubsub.context || msg.pubsub.context === 'user') && !!msg.pubsub.affiliations;
 }
 
-export default function (client: Agent) {
+export default function (client: Agent): void {
     client.disco.addFeature(`${NS_SHIM}#SubID`, NS_SHIM);
 
     client.on('message', msg => {

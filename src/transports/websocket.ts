@@ -4,7 +4,7 @@ import { WebSocket } from 'stanza-shims';
 import { Agent, Transport, TransportConfig } from '../';
 import { StreamErrorCondition } from '../Constants';
 import StreamManagement from '../helpers/StreamManagement';
-import { ParsedData, Registry, StreamParser } from '../jxt';
+import { JSONData, ParsedData, Registry, StreamParser } from '../jxt';
 import { Stream } from '../protocol';
 
 const WS_OPEN = 1;
@@ -43,11 +43,11 @@ export default class WSConnection extends Duplex implements Transport {
         });
     }
 
-    public _read() {
+    public _read(): void {
         return;
     }
 
-    public _write(chunk: any, encoding: any, done: (err?: Error) => void) {
+    public _write(chunk: string, encoding: string, done: (err?: Error) => void): void {
         if (!this.socket || this.socket.readyState !== WS_OPEN) {
             return done(new Error('Socket closed'));
         }
@@ -58,7 +58,7 @@ export default class WSConnection extends Duplex implements Transport {
         done();
     }
 
-    public connect(opts: TransportConfig) {
+    public connect(opts: TransportConfig): void {
         this.config = opts;
         this.hasStream = false;
         this.closing = false;
@@ -118,7 +118,7 @@ export default class WSConnection extends Duplex implements Transport {
         };
     }
 
-    public disconnect(clean = true) {
+    public disconnect(clean = true): void {
         if (this.socket && !this.closing && this.hasStream && clean) {
             this.closing = true;
             this.write(this.closeHeader());
@@ -136,7 +136,7 @@ export default class WSConnection extends Duplex implements Transport {
         }
     }
 
-    public async send(dataOrName: string, data?: object): Promise<void> {
+    public async send(dataOrName: string, data?: JSONData): Promise<void> {
         let output: string | undefined;
         if (data) {
             output = this.stanzas.export(dataOrName, data)?.toString();
@@ -150,12 +150,12 @@ export default class WSConnection extends Duplex implements Transport {
         });
     }
 
-    public restart() {
+    public restart(): void {
         this.hasStream = false;
         this.write(this.startHeader());
     }
 
-    private startHeader() {
+    private startHeader(): string {
         const header = this.stanzas.export('stream', {
             action: 'open',
             lang: this.config.lang,
@@ -165,7 +165,7 @@ export default class WSConnection extends Duplex implements Transport {
         return header.toString();
     }
 
-    private closeHeader() {
+    private closeHeader(): string {
         const header = this.stanzas.export('stream', {
             action: 'close'
         })!;

@@ -63,14 +63,14 @@ interface JinglePluginConfig {
     advertiseFileTransfer?: boolean;
     hasRTCPeerConnection?: boolean;
     trickleIce: boolean;
-    bundlePolicy?: string;
-    iceTransportPolicy?: string;
-    rtcpMuxPolicy?: string;
+    bundlePolicy?: RTCConfiguration['bundlePolicy'];
+    iceTransportPolicy?: RTCConfiguration['iceTransportPolicy'];
+    rtcpMuxPolicy?: RTCConfiguration['rtcpMuxPolicy'];
     iceServers?: RTCIceServer[];
-    sdpSemantics?: string;
+    sdpSemantics?: 'unified-plan' | 'plan-b';
 }
 
-export default function (client: Agent) {
+export default function (client: Agent): void {
     const hasNativePeerConnection = !!RTCPeerConnection;
     const defaultConfig: JinglePluginConfig = {
         advertiseAudio: hasNativePeerConnection,

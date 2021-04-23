@@ -170,7 +170,7 @@ class Parser extends EventEmitter {
         }
     }
 
-    public write(data: string) {
+    public write(data: string): void {
         for (const char of data) {
             const c = char.codePointAt(0)!;
 
@@ -558,7 +558,7 @@ class Parser extends EventEmitter {
         }
     }
 
-    public end(data?: string) {
+    public end(data?: string): void {
         if (data) {
             this.write(data);
         }

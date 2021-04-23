@@ -20,7 +20,7 @@ export async function timeoutPromise<T>(
     target: Promise<T>,
     delay: number,
     rejectValue: () => any = () => undefined
-) {
+): Promise<T> {
     let timeoutRef: any;
     const result = await Promise.race([
         target,
@@ -45,7 +45,7 @@ export function octetCompare(str1: string | Buffer, str2: string | Buffer): numb
     return b1.compare(b2);
 }
 
-export function uuid() {
+export function uuid(): string {
     const buf = randomBytes(16);
 
     // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
@@ -91,17 +91,17 @@ const DATE_FIELDS = new Set([
 ]);
 
 const ISO_DT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:Z|((\+|-)([\d|:]*)))?$/;
-export function reviveData(key: string, value: any): any {
+export function reviveData(key: string, value: unknown): unknown {
     if (DATE_FIELDS.has(key) && value && typeof value === 'string' && ISO_DT.test(value)) {
         return new Date(value);
     }
     if (
         value &&
         typeof value === 'object' &&
-        value.type === 'Buffer' &&
-        Array.isArray(value.data)
+        (value as any).type === 'Buffer' &&
+        Array.isArray((value as any).data)
     ) {
-        return Buffer.from(value);
+        return Buffer.from(value as any);
     }
     return value;
 }

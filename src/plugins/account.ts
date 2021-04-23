@@ -19,7 +19,7 @@ declare module '../' {
     }
 }
 
-export default function (client: Agent) {
+export default function (client: Agent): void {
     client.getAccountInfo = async (jid?: string) => {
         const resp = await client.sendIQ({
             account: {} as AccountManagement,

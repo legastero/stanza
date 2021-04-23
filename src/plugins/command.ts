@@ -8,7 +8,7 @@ declare module '../' {
     }
 }
 
-export default function (client: Agent) {
+export default function (client: Agent): void {
     client.disco.addFeature(NS_ADHOC_COMMANDS);
     client.disco.addItem({
         name: 'Ad-Hoc Commands',

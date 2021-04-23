@@ -3,6 +3,7 @@ import { fetch } from 'stanza-shims';
 import { Agent } from '../';
 import * as JXT from '../jxt';
 import { NS_ALT_CONNECTIONS_WEBSOCKET, NS_ALT_CONNECTIONS_XBOSH } from '../Namespaces';
+import { XRD } from '../protocol/xrd';
 
 declare module '../' {
     export interface Agent {
@@ -29,7 +30,7 @@ async function promiseAny(promises: Array<Promise<any>>) {
 export async function getHostMeta(
     registry: JXT.Registry,
     opts: string | { host?: string; json?: boolean; ssl?: boolean; xrd?: boolean }
-) {
+): Promise<XRD> {
     if (typeof opts === 'string') {
         opts = { host: opts };
     }
@@ -65,7 +66,7 @@ export async function getHostMeta(
     ]);
 }
 
-export default function (client: Agent, stanzas: JXT.Registry) {
+export default function (client: Agent, stanzas: JXT.Registry): void {
     client.discoverBindings = async (server: string) => {
         try {
             const data = await getHostMeta(stanzas, server);

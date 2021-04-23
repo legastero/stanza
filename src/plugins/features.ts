@@ -22,7 +22,7 @@ declare module '../' {
 
 type FeatureHandler = (data: StreamFeatures, done: (cmd?: string, msg?: string) => void) => void;
 
-export default function (client: Agent) {
+export default function (client: Agent): void {
     client.features = {
         handlers: Object.create(null),
         negotiated: Object.create(null),
