@@ -73,7 +73,7 @@ export interface DefinitionUpdateOptions {
     typeOrder?: number;
 }
 
-export interface DefinitionOptions {
+export interface DefinitionOptions<DT extends object = any> {
     namespace: string;
     element: string;
     typeField?: string;
@@ -83,7 +83,7 @@ export interface DefinitionOptions {
     version?: string;
     defaultVersion?: string;
     versionField?: string;
-    fields?: { [key: string]: FieldDefinition };
+    fields?: { [K in keyof DT]: FieldDefinition<Exclude<DT[K], undefined>> };
     path?: string;
     aliases?: Array<string | LinkPath>;
     childrenExportOrder?: { [key: string]: number };
