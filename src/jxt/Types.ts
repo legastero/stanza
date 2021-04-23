@@ -451,7 +451,8 @@ export const text = (defaultValue?: string): FieldDefinition<string, string> =>
         staticDefault: defaultValue,
         ...stringParser
     });
-export const textJSON = (): FieldDefinition<JSONData> => createTextField<JSONData>({ ...jsonParser });
+export const textJSON = (): FieldDefinition<JSONData> =>
+    createTextField<JSONData>({ ...jsonParser });
 export const textBuffer = (encoding: BufferEncoding = 'utf8'): FieldDefinition<Buffer, string> =>
     createTextField<Buffer, string>({
         ...bufferParser(encoding)
@@ -472,7 +473,10 @@ export function languageAttribute(): FieldDefinition<string> {
     };
 }
 
-export const childLanguageAttribute = (namespace: string | null, element: string): FieldDefinition<string> =>
+export const childLanguageAttribute = (
+    namespace: string | null,
+    element: string
+): FieldDefinition<string> =>
     createChildAttributeField<string>({
         converter: languageAttribute(),
         element,
@@ -508,14 +512,21 @@ export const childTextBuffer = (
         ...bufferParser(encoding)
     });
 
-export const childDate = (namespace: string | null, element: string): FieldDefinition<Date, string> =>
+export const childDate = (
+    namespace: string | null,
+    element: string
+): FieldDefinition<Date, string> =>
     createChildTextField({
         element,
         namespace,
         ...dateParser
     });
 
-export const childInteger = (namespace: string | null, element: string, defaultValue?: number): FieldDefinition<number> =>
+export const childInteger = (
+    namespace: string | null,
+    element: string,
+    defaultValue?: number
+): FieldDefinition<number> =>
     createChildTextField({
         element,
         namespace,
@@ -523,7 +534,11 @@ export const childInteger = (namespace: string | null, element: string, defaultV
         ...integerParser
     });
 
-export const childFloat = (namespace: string | null, element: string, defaultValue?: number): FieldDefinition<number> =>
+export const childFloat = (
+    namespace: string | null,
+    element: string,
+    defaultValue?: number
+): FieldDefinition<number> =>
     createChildTextField({
         element,
         namespace,

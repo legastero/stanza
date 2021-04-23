@@ -93,7 +93,10 @@ export default class MediaSession extends ICESession {
     // Session control methods
     // ----------------------------------------------------------------
 
-    public async start(opts?: RTCOfferOptions | ActionCallback, next?: ActionCallback): Promise<void> {
+    public async start(
+        opts?: RTCOfferOptions | ActionCallback,
+        next?: ActionCallback
+    ): Promise<void> {
         this.state = 'pending';
 
         if (arguments.length === 1 && typeof opts === 'function') {
@@ -129,7 +132,10 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    public async accept(opts?: RTCAnswerOptions | ActionCallback, next?: ActionCallback): Promise<void> {
+    public async accept(
+        opts?: RTCAnswerOptions | ActionCallback,
+        next?: ActionCallback
+    ): Promise<void> {
         // support calling with accept(next) or accept(opts, next)
         if (arguments.length === 1 && typeof opts === 'function') {
             next = opts;
@@ -239,7 +245,11 @@ export default class MediaSession extends ICESession {
     // Track control methods
     // ----------------------------------------------------------------
 
-    public addTrack(track: MediaStreamTrack, stream: MediaStream, cb?: ActionCallback): Promise<void> {
+    public addTrack(
+        track: MediaStreamTrack,
+        stream: MediaStream,
+        cb?: ActionCallback
+    ): Promise<void> {
         if (track.kind === 'audio') {
             this.includesAudio = true;
         }

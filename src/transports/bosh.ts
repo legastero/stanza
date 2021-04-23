@@ -120,7 +120,10 @@ export default class BOSH extends Duplex implements Transport {
         this.scheduleRequests();
     }
 
-    public _writev(chunks: Array<{ chunk: string; encoding: string }>, done: (err?: Error) => void): void {
+    public _writev(
+        chunks: Array<{ chunk: string; encoding: string }>,
+        done: (err?: Error) => void
+    ): void {
         this.queue.push([chunks.map(c => c.chunk).join(''), done]);
         this.scheduleRequests();
     }

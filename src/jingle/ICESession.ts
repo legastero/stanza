@@ -18,7 +18,7 @@ export interface ICESessionOpts extends SessionOpts {
     maxRelayBandwidth?: number;
     iceServers?: RTCIceServer[];
     config?: SessionManagerConfig['peerConnectionConfig'];
-    constraints?: SessionManagerConfig['peerConnectionConstraints']
+    constraints?: SessionManagerConfig['peerConnectionConstraints'];
 }
 
 export default class ICESession extends BaseSession {
