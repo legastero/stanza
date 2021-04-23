@@ -42,35 +42,38 @@ test('XRD', () => {
 });
 
 test('retrieve JSON only', done => {
-    expect.assertions(1);
+    expect.assertions(2);
 
     getHostMeta(registry, {
         host: 'lance.im',
         json: true,
         xrd: false
     }).then(hostmeta => {
-        expect(hostmeta.links.length > 0).toBeTruthy();
+        expect(hostmeta.links).toBeTruthy();
+        expect(hostmeta.links!.length > 0).toBeTruthy();
         done();
     });
 });
 
 test('retrieve XRD only', done => {
-    expect.assertions(1);
+    expect.assertions(2);
 
     getHostMeta(registry, {
         host: 'lance.im',
         json: false,
         xrd: true
     }).then(hostmeta => {
-        expect(hostmeta.links.length > 0).toBeTruthy();
+        expect(hostmeta.links).toBeTruthy();
+        expect(hostmeta.links!.length > 0).toBeTruthy();
         done();
     });
 });
 
 test('retrieve either', done => {
-    expect.assertions(1);
+    expect.assertions(2);
     getHostMeta(registry, 'lance.im').then(hostmeta => {
-        expect(hostmeta.links.length > 0).toBeTruthy();
+        expect(hostmeta.links).toBeTruthy();
+        expect(hostmeta.links!.length > 0).toBeTruthy();
         done();
     });
 });
