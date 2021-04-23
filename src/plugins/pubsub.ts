@@ -15,7 +15,6 @@ import {
     PubsubEventItems,
     PubsubEventPurge,
     PubsubEventSubscription,
-    PubsubFetch,
     PubsubFetchResult,
     PubsubItem,
     PubsubItemContent,
