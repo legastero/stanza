@@ -253,7 +253,23 @@ export interface TransportConfig {
     maxHoldOpen?: number;
 }
 
-export { Client, Constants, JXT, JID, Namespaces, Stanzas, Jingle, Utils, RTT, LibSASL as SASL };
+import * as RSM from './helpers/RSM';
+import * as DataForms from './helpers/DataForms';
+
+export {
+    Client,
+    Constants,
+    DataForms,
+    JXT,
+    JID,
+    Namespaces,
+    Stanzas,
+    Jingle,
+    Utils,
+    RSM,
+    RTT,
+    LibSASL as SASL
+};
 
 export const VERSION = Constants.VERSION;
 
