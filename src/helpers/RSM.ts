@@ -5,6 +5,7 @@ type RSMQuery<T> = (page: Paging) => Promise<{ results: T[]; paging: Paging }>;
 interface RSMOptions<T> {
     pageSize?: number;
     direction?: 'forward' | 'backward';
+    reverse?: boolean;
     before?: string;
     after?: string;
     max?: number;
@@ -15,12 +16,14 @@ export class ResultSetPager<T> {
     private query: RSMQuery<T>;
     private cursor: Paging;
     private direction: 'forward' | 'backward';
+    private reverse: boolean;
     private pageSize: number;
 
     constructor(opts: RSMOptions<T>) {
         this.cursor = { first: opts.before, last: opts.after };
         this.query = opts.query;
         this.direction = opts.direction ?? 'forward';
+        this.reverse = opts.reverse ?? this.direction === 'backward';
         this.pageSize = opts.pageSize ?? 20;
     }
 
@@ -46,6 +49,9 @@ export class ResultSetPager<T> {
             max: this.pageSize
         });
         this.cursor = paging;
+        if (this.reverse) {
+            results.reverse();
+        }
         return results;
     }
 }
