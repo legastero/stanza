@@ -73,6 +73,7 @@ export interface DefinitionUpdateOptions {
     typeOrder?: number;
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export interface DefinitionOptions<DT extends object = any> {
     namespace: string;
     element: string;
