@@ -109,12 +109,16 @@ export class Factory {
         this.mechanisms = this.mechanisms.filter(mech => mech.name !== mechName);
     }
 
-    public createMechanism(names: string[]): Mechanism | null {
+    public createMechanism(names: string[], credentials: Credentials): Mechanism | null {
         const availableNames = names.map(name => name.toUpperCase());
         for (const knownMech of this.mechanisms) {
             for (const availableMechName of availableNames) {
                 if (availableMechName === knownMech.name) {
-                    return new knownMech.constructor(knownMech.name);
+                    const mech = new knownMech.constructor(knownMech.name);
+                    const requiredCredentials = mech.getExpectedCredentials().required as (keyof Credentials)[];
+                    if (requiredCredentials.every(req => credentials[req] !== undefined)) {
+                        return mech;
+                    }
                 }
             }
         }
@@ -235,6 +239,29 @@ export class PLAIN extends SimpleMech implements Mechanism {
                 credentials.username +
                 '\x00' +
                 (credentials.password || credentials.token)
+        );
+    }
+}
+
+// ====================================================================
+// X-OAUTH2
+// ====================================================================
+
+export class X_OAUTH2 extends SimpleMech implements Mechanism {
+    public getExpectedCredentials(): ExpectedCredentials {
+        return {
+            optional: ['authzid'],
+            required: ['username', 'token'],
+        };
+    }
+
+    public createResponse(credentials: Credentials): Buffer {
+        return Buffer.from(
+            (credentials.authzid || '') +
+                '\x00' +
+                credentials.username +
+                '\x00' +
+                credentials.token
         );
     }
 }

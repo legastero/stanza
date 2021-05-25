@@ -27,7 +27,7 @@ declare module '../' {
 
 export default function (client: Agent): void {
     client.registerFeature('sasl', 100, async (features, done) => {
-        const mech = client.sasl.createMechanism(features.sasl!.mechanisms);
+        const mech = client.sasl.createMechanism(features.sasl!.mechanisms, (await client.getCredentials()) as Credentials);
 
         const saslHandler = async (sasl: SASL) => {
             if (!mech) {
