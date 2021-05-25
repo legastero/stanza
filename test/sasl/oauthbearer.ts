@@ -4,7 +4,10 @@ test('SASL - OAUTHBEARER', () => {
     const factory = new SASL.Factory();
     factory.register('OAUTHBEARER', SASL.OAUTH, 10);
 
-    const mech = factory.createMechanism(['OAUTHBEARER'])!;
+    const creds: SASL.Credentials = {
+        token: 'bearer-token'
+    };
+    const mech = factory.createMechanism(['OAUTHBEARER'], creds)!;
 
     expect(mech.name).toBe('OAUTHBEARER');
     expect(mech.providesMutualAuthentication).toBeFalsy();
@@ -12,12 +15,8 @@ test('SASL - OAUTHBEARER', () => {
     const neededCreds = mech.getExpectedCredentials();
     expect(neededCreds).toStrictEqual({
         optional: ['authzid'],
-        required: ['token']
+        required: [['token']]
     });
-
-    const creds: SASL.Credentials = {
-        token: 'bearer-token'
-    };
 
     const response = mech.createResponse(creds)!;
     expect(response.toString('utf8')).toBe('n,,\u0001auth=Bearer bearer-token\u0001\u0001');
@@ -38,7 +37,10 @@ test('SASL - OAUTHBEARER, failed', () => {
     const factory = new SASL.Factory();
     factory.register('OAUTHBEARER', SASL.OAUTH, 10);
 
-    const mech = factory.createMechanism(['OAUTHBEARER'])!;
+    const creds: SASL.Credentials = {
+        token: 'bearer-token'
+    };
+    const mech = factory.createMechanism(['OAUTHBEARER'], creds)!;
 
     expect(mech.name).toBe('OAUTHBEARER');
     expect(mech.providesMutualAuthentication).toBeFalsy();
@@ -46,12 +48,8 @@ test('SASL - OAUTHBEARER, failed', () => {
     const neededCreds = mech.getExpectedCredentials();
     expect(neededCreds).toStrictEqual({
         optional: ['authzid'],
-        required: ['token']
+        required: [['token']]
     });
-
-    const creds: SASL.Credentials = {
-        token: 'bearer-token'
-    };
 
     const response = mech.createResponse(creds)!;
     expect(response.toString('utf8')).toBe('n,,\u0001auth=Bearer bearer-token\u0001\u0001');
