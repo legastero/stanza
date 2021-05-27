@@ -201,7 +201,7 @@ export interface AgentConfig {
      * If a transport is set to an object, it MUST include a <code>url</code> value for
      * the connection URL.
      *
-     * @default { websocket: true, bosh: true }
+     * @default { websocket: true, bosh: true, tcp: true }
      */
     transports?: { [key: string]: boolean | string | Partial<TransportConfig> };
 
@@ -251,6 +251,10 @@ export interface TransportConfig {
     maxRetries?: number;
     wait?: number;
     maxHoldOpen?: number;
+
+    // TCP/TLS settings
+    directTLS?: boolean,
+    port?: number,
 }
 
 import * as RSM from './helpers/RSM';
