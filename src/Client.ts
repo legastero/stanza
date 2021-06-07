@@ -104,8 +104,10 @@ export default class Client extends EventEmitter {
         this.transports = {
             bosh: BOSH,
             websocket: WebSocket,
-            tcp: TCP,
         };
+        if (typeof window === 'undefined') {
+            this.transports.tcp = TCP;
+        }
 
         this.incomingDataQueue = priorityQueue<StreamData>(async (task, done) => {
             const { kind, stanza } = task;
@@ -287,7 +289,7 @@ export default class Client extends EventEmitter {
             transports: {
                 bosh: true,
                 websocket: true,
-                tcp: true,
+                tcp: false,
             },
             useStreamManagement: true,
             ...currConfig,
@@ -351,7 +353,7 @@ export default class Client extends EventEmitter {
         let endpoints: { [key: string]: string[] } | undefined;
         for (const name of transportPref) {
             let conf = this.config.transports![name];
-            if (!conf) {
+            if (!conf || !this.transports[name]) {
                 continue;
             }
             if (typeof conf === 'string') {

@@ -6,6 +6,7 @@ export default {
         'crypto',
         'events',
         'net',
+        'tls',
         'node-fetch',
         'punycode',
         'sdp',

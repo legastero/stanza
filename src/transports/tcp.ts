@@ -124,7 +124,7 @@ export default class TCP extends Duplex implements Transport {
     
     public _read(): void { return; }
     
-    public disconnect(cleanly: boolean = true): void {
+    public disconnect(cleanly = true): void {
         if (cleanly) this.write(`</stream:stream>`);
         setTimeout(() => {
             this.hasStream = false;
@@ -164,7 +164,7 @@ export default class TCP extends Duplex implements Transport {
         this.initParser();
         this.tlssocket.on('secureConnect', () => this.openStream());
         this.tlssocket.on('data', chunk => {
-            let data = chunk.toString('utf8');
+            const data = chunk.toString('utf8');
             this.client.emit('raw', 'incoming', data);
             this.parser!.write(data);
         });
