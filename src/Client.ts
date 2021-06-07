@@ -289,7 +289,7 @@ export default class Client extends EventEmitter {
             transports: {
                 bosh: true,
                 websocket: true,
-                tcp: false,
+                tcp: true,
             },
             useStreamManagement: true,
             ...currConfig,
