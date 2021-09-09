@@ -369,9 +369,24 @@ export default class Client extends EventEmitter {
                         continue;
                     }
                 }
-                endpoints[name] = (endpoints[name] || []).filter(
-                    url => url.startsWith('wss:') || url.startsWith('https:')
-                );
+                endpoints[name] = endpoints[name] || [];
+                switch (name) {
+                    case 'tcp': {
+                        // default to raw TCP host:port
+                        endpoints[name].push(this.config.server + ':5222');
+                        break;
+                    };
+                    case 'websocket': {
+                        endpoints[name] = endpoints[name].filter(
+                            url => url.startsWith('wss:')
+                        );
+                    };
+                    case 'bosh': {
+                        endpoints[name] = endpoints[name].filter(
+                            url => url.startsWith('https:')
+                        );
+                    };
+                }
                 if (!endpoints[name] || !endpoints[name].length) {
                     continue;
                 }
@@ -391,6 +406,7 @@ export default class Client extends EventEmitter {
                 url: conf.url!,
                 ...conf
             });
+            console.log(`Using endpoint '${name}' on endpoint ${conf.url}`);
             return;
         }
 
