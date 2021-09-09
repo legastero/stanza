@@ -94,8 +94,8 @@ export default class TCP extends Duplex implements Transport {
 
         this.initParser();
 
-        const host: string = this.config.url.split(":")[0];
-        const port: number = this.config.port || parseInt(this.config.url.split(":")![1] || '-1');
+        let host: string = this.config.url.split(":")[0];
+        let port: number = this.config.port || parseInt(this.config.url.split(":")![1] || '-1');
 
         if (port < 0 || port > 65535) {
             console.error("Invalid or nonexistent port");
@@ -103,6 +103,8 @@ export default class TCP extends Duplex implements Transport {
         }
 
         if (port === 5223 || this.config.directTLS) {
+            port ||= 5223;
+            
             // direct TLS connection
             this.socket = net.connect({ host, port }, () => {
                 this.emit('connect');

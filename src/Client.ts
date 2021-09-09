@@ -372,7 +372,6 @@ export default class Client extends EventEmitter {
                 endpoints[name] = endpoints[name] || [];
                 switch (name) {
                     case 'tcp': {
-                        // default to raw TCP host:port
                         endpoints[name].push(this.config.server + ':5222');
                         break;
                     };
@@ -380,17 +379,21 @@ export default class Client extends EventEmitter {
                         endpoints[name] = endpoints[name].filter(
                             url => url.startsWith('wss:')
                         );
+                        break;
                     };
                     case 'bosh': {
                         endpoints[name] = endpoints[name].filter(
                             url => url.startsWith('https:')
                         );
+                        break;
                     };
                 }
                 if (!endpoints[name] || !endpoints[name].length) {
                     continue;
                 }
                 conf = { url: endpoints[name][0] };
+            } else if (name === 'tcp') {
+                conf.url ??= this.config.server + (conf.directTLS ? ":5223" : ":5222");
             }
 
             this.transport = new this.transports[name](
