@@ -39,7 +39,7 @@ test('Connect using BOSH', done => {
     client.connect();
 });
 
-test('Connect using TCP', done => {
+test('Connect using TCP (STARTLS)', done => {
     expect.assertions(1);
 
     const client = stanza.createClient({
