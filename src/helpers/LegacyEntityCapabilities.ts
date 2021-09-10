@@ -1,4 +1,4 @@
-import * as Hashes from 'stanza-shims';
+import * as Hashes from '../platform';
 import { octetCompare } from '../Utils';
 
 import { DataForm, DataFormField, DiscoInfo, DiscoInfoIdentity } from '../protocol';

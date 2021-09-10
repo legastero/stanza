@@ -1,9 +1,9 @@
 import { Duplex } from 'readable-stream';
-import { fetch } from 'stanza-shims';
 
 import { Agent, Transport, TransportConfig } from '../';
 import { StreamErrorCondition } from '../Constants';
 import StreamManagement from '../helpers/StreamManagement';
+import { fetch } from '../platform';
 import { Stream } from '../protocol';
 
 import { JSONData, ParsedData, Registry, StreamParser } from '../jxt';

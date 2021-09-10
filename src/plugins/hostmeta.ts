@@ -1,8 +1,7 @@
-import { fetch } from 'stanza-shims';
-
 import { Agent } from '../';
 import * as JXT from '../jxt';
 import { NS_ALT_CONNECTIONS_WEBSOCKET, NS_ALT_CONNECTIONS_XBOSH } from '../Namespaces';
+import { fetch } from '../platform';
 import { XRD } from '../protocol/xrd';
 
 declare module '../' {
@@ -11,7 +10,7 @@ declare module '../' {
     }
 }
 
-async function promiseAny<T>(promises: Array<Promise<T>>) {
+async function promiseAny<T>(promises: Array<Promise<T>>): Promise<T> {
     try {
         const errors = await Promise.all(
             promises.map(p => {
@@ -44,13 +43,13 @@ export async function getHostMeta(
 
     const scheme = config.ssl ? 'https://' : 'http://';
 
-    return promiseAny([
+    return promiseAny<XRD>([
         fetch(`${scheme}${config.host}/.well-known/host-meta.json`).then(async res => {
             if (!res.ok) {
                 throw new Error('could-not-fetch-json');
             }
 
-            return res.json();
+            return res.json() as Promise<XRD>;
         }),
         fetch(`${scheme}${config.host}/.well-known/host-meta`).then(async res => {
             if (!res.ok) {
@@ -60,7 +59,9 @@ export async function getHostMeta(
             const data = await res.text();
             const xml = JXT.parse(data);
             if (xml) {
-                return registry.import(xml);
+                return registry.import(xml) as XRD;
+            } else {
+                throw new Error('could-not-import-xml');
             }
         })
     ]);

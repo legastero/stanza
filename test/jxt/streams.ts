@@ -32,6 +32,8 @@ function setupRegistry(): Registry {
 }
 
 test('[Streams] Unwrapped streams', done => {
+    expect.assertions(2);
+
     const registry = setupRegistry();
     const parser = new StreamParser({
         registry
@@ -65,13 +67,13 @@ test('[Streams] Wrapped streams', done => {
         }
         if (data.event === 'stream-end') {
             expect(data.kind).toBe('stream');
+            done();
         }
         if (!data.event) {
             expect(data.kind).toBe('message');
             const msg = data.stanza as Message;
             expect(msg.body).toBe('test');
         }
-        done();
     });
 
     parser.write(

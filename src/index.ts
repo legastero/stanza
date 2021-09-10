@@ -23,6 +23,7 @@ import {
     StreamManagement
 } from './protocol';
 import * as Utils from './Utils';
+import * as Platform from './platform';
 
 export * from './helpers/StreamManagement';
 
@@ -282,7 +283,8 @@ export {
     Utils,
     RSM,
     RTT,
-    LibSASL as SASL
+    LibSASL as SASL,
+    Platform
 };
 
 export const VERSION = Constants.VERSION;
@@ -294,5 +296,5 @@ export function createClient(opts: AgentConfig): Agent {
     const client = new Client(opts);
     client.use(Plugins);
 
-    return (client as unknown) as Agent;
+    return client as unknown as Agent;
 }

@@ -1,10 +1,10 @@
 import { Duplex } from 'readable-stream';
-import { WebSocket } from 'stanza-shims';
 
 import { Agent, Transport, TransportConfig } from '../';
 import { StreamErrorCondition } from '../Constants';
 import StreamManagement from '../helpers/StreamManagement';
 import { JSONData, ParsedData, Registry, StreamParser } from '../jxt';
+import { WebSocket } from '../platform';
 import { Stream } from '../protocol';
 
 const WS_OPEN = 1;

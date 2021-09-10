@@ -17,13 +17,10 @@ Child('npm run compile:module');
 fileReplace('dist/cjs/Constants.js', '__STANZAJS_VERSION__', Pkg.version);
 fileReplace('dist/es/Constants.js', '__STANZAJS_VERSION__', Pkg.version);
 
-Child('npm run compile:rollup');
-
 Child('mkdir dist/npm');
 Child('cp -r dist/cjs/* dist/npm/');
-Child('cp dist/es/index.module.js dist/npm/module.js');
+Child('cp dist/es/index.js dist/npm/index.module.js');
 Child(`cp ${__dirname}/../*.md dist/npm`);
-Child('npm run compile:webpack');
 
 // Create package.json file
 FS.writeFileSync(
@@ -31,12 +28,16 @@ FS.writeFileSync(
     JSON.stringify(
         {
             ...Pkg,
-            browser: './module.js',
+            browser: {
+                './platform': './platform/browser.js'
+            },
             devDependencies: undefined,
             main: './index.js',
             module: './module.js',
             private: false,
-            'react-native': './index.js',
+            'react-native': {
+                './platform': './platform/react-native.js'
+            },
             scripts: undefined,
             sideEffects: false,
             typings: './index'
@@ -45,6 +46,8 @@ FS.writeFileSync(
         2
     )
 );
+
+Child('npm run compile:webpack');
 
 // Create package bundle
 Child('cd dist/npm && npm pack');
