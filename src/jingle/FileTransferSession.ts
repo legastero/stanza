@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import * as Hashes from 'stanza-shims';
+import * as Hashes from '../platform';
 
 import { JINGLE_INFO_CHECKSUM_5, JingleAction, JingleSessionRole } from '../Constants';
 import { NS_JINGLE_FILE_TRANSFER_5 } from '../Namespaces';

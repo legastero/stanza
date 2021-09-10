@@ -1,5 +1,3 @@
-import * as hashes from 'stanza-shims';
-
 import { Agent } from '../';
 import { VERSION } from '../Constants';
 import {
@@ -22,6 +20,7 @@ import {
     NS_TIME,
     NS_VERSION
 } from '../Namespaces';
+import * as hashes from '../platform';
 import { EntityTime, IQ, LastActivity, ReceivedIQGet, SoftwareVersion } from '../protocol';
 
 declare module '../' {

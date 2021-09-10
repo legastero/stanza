@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
-import { RTCPeerConnection } from 'stanza-shims';
 
 import { JingleAction, JingleReasonCondition } from '../Constants';
 import { NS_JINGLE_FILE_TRANSFER_5, NS_JINGLE_RTP_1 } from '../Namespaces';
+import { RTCPeerConnection } from '../platform';
 import { IQ, Jingle, JingleReason, StanzaError, ExternalService } from '../protocol';
 import { octetCompare } from '../Utils';
 

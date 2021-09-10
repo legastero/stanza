@@ -3,7 +3,7 @@ const Webpack = require('webpack');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-    entry: './dist/npm/module.js',
+    entry: './dist/npm/index.js',
 
     output: {
         filename: 'stanza.browser.js',

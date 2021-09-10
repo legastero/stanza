@@ -9,7 +9,7 @@
 
 // tslint:disable no-bitwise
 
-import { randomBytes } from 'stanza-shims';
+import { randomBytes } from './platform';
 
 const bth: string[] = [];
 for (let i = 0; i < 256; ++i) {
@@ -90,7 +90,8 @@ const DATE_FIELDS = new Set([
     'utc'
 ]);
 
-const ISO_DT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:Z|((\+|-)([\d|:]*)))?$/;
+const ISO_DT =
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:Z|((\+|-)([\d|:]*)))?$/;
 export function reviveData(key: string, value: unknown): unknown {
     if (DATE_FIELDS.has(key) && value && typeof value === 'string' && ISO_DT.test(value)) {
         return new Date(value);

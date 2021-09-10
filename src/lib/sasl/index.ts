@@ -1,5 +1,5 @@
-import * as Hashes from 'stanza-shims';
 import { saslprep } from '../stringprep';
+import * as Hashes from '../../platform';
 
 export interface Credentials {
     username?: string;

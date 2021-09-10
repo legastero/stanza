@@ -69,14 +69,6 @@ client.connect();
 
 MUC Room: [discuss@stanzajs.org](https://stanzajs.org/discuss/logs) / [Logs](https://stanzajs.org/discuss/logs)
 
-## Related Modules
-
-These are related modules that form part of StanzaJS:
-
-| Name                                                   | Description                                                          | Source                                              |
-| ------------------------------------------------------ | -------------------------------------------------------------------- | --------------------------------------------------- |
-| [stanza-shims](https://npmjs.org/package/stanza-shims) | Runtime shims used by StanzaJS for node, browsers, and React Native. | [Source](https://github.com/legastero/stanza-shims) |
-
 ## Recommended Modules
 
 These are some additional modules that are highly recommended for use with StanzaJS:

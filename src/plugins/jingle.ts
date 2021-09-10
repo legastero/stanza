@@ -1,5 +1,5 @@
-import { RTCPeerConnection } from 'stanza-shims';
 import { Agent } from '../';
+import { RTCPeerConnection } from '../platform';
 import * as Jingle from '../jingle';
 import {
     NS_JINGLE_1,
