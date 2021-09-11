@@ -57,12 +57,15 @@ const Protocol: DefinitionOptions[] = [
         typeField: 'itemType'
     },
     {
-        aliases: pubsubItemContentAliases(),
+        aliases: [{ path: 'avatar', impliedType: true }, ...pubsubItemContentAliases()],
         element: 'metadata',
         namespace: NS_AVATAR_METADATA,
-        path: 'avatar',
         type: NS_AVATAR_METADATA,
-        typeField: 'itemType'
+        typeField: 'itemType',
+        childrenExportOrder: {
+            versions: 1,
+            pointers: 2
+        }
     },
     {
         aliases: [
@@ -97,7 +100,6 @@ const Protocol: DefinitionOptions[] = [
             height: integerAttribute('height'),
             id: attribute('id'),
             mediaType: attribute('type'),
-            uri: attribute('url'),
             width: integerAttribute('width')
         },
         namespace: NS_AVATAR_METADATA

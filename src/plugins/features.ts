@@ -77,7 +77,7 @@ export default function (client: Agent): void {
                     cmd = res.command;
                     msg = res.message || '';
                 }
-            } catch (err) {
+            } catch (err: any) {
                 cmd = 'disconnect';
                 msg = err.message;
                 console.error(err);

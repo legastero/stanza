@@ -18,6 +18,10 @@ export class ResultSetPager<T> {
     private direction: 'forward' | 'backward';
     private reverse: boolean;
     private pageSize: number;
+    private resultCount?: number;
+    private resultComplete = false;
+    private fetchedCount = 0;
+    private yieldedCount = 0;
 
     constructor(opts: RSMOptions<T>) {
         this.cursor = { first: opts.before, last: opts.after };
@@ -32,14 +36,27 @@ export class ResultSetPager<T> {
         do {
             currentResults = await this.fetchPage();
             for (const item of currentResults) {
+                this.yieldedCount += 1;
                 yield item;
             }
         } while (currentResults.length > 0);
     }
 
     public async size(): Promise<number | undefined> {
+        if (this.resultCount !== undefined) {
+            return this.resultCount;
+        }
         const { paging } = await this.query({ max: 0 });
+        this.resultCount = paging.count;
         return paging.count;
+    }
+
+    public queryCompleted(): boolean {
+        return this.resultComplete;
+    }
+
+    public finished(): boolean {
+        return this.resultComplete && this.yieldedCount === this.fetchedCount;
     }
 
     private async fetchPage(): Promise<T[]> {
@@ -48,7 +65,15 @@ export class ResultSetPager<T> {
             after: this.direction === 'forward' ? this.cursor.last : undefined,
             max: this.pageSize
         });
+
         this.cursor = paging;
+        this.resultCount = paging.count;
+        this.fetchedCount += results.length;
+
+        if ((this.pageSize && results.length < this.pageSize) || (this.resultCount && this.fetchedCount === this.resultCount)) {
+            this.resultComplete = true;
+        }
+
         if (this.reverse) {
             results.reverse();
         }

@@ -100,7 +100,7 @@ export default class MediaSession extends ICESession {
         this.state = 'pending';
 
         if (arguments.length === 1 && typeof opts === 'function') {
-            next = opts;
+            next = opts as ActionCallback;
             opts = {};
         }
         next = next || (() => undefined);
@@ -138,7 +138,7 @@ export default class MediaSession extends ICESession {
     ): Promise<void> {
         // support calling with accept(next) or accept(opts, next)
         if (arguments.length === 1 && typeof opts === 'function') {
-            next = opts;
+            next = opts as ActionCallback;
             opts = {};
         }
         next = next || (() => undefined);

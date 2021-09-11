@@ -1,7 +1,7 @@
 {
     "name": "stanza",
     "description": "Modern XMPP in the browser, with a JSON API",
-    "version": "12.17.1",
+    "version": "12.17.2",
     "author": "Lance Stout <lancestout@gmail.com>",
     "bugs": "https://github.com/legastero/stanza/issues",
     "contributors": [
@@ -23,8 +23,8 @@
         "react-native-randombytes": "^3.6.0",
         "readable-stream": "^2.3.6",
         "sdp": "^3.0.2",
-        "stanza-shims": "^1.1.1",
         "tls": "^0.0.1",
+        "stanza-shims": "^1.1.2",
         "tslib": "^2.2.0",
         "ws": "^7.4.4"
     },

@@ -88,14 +88,20 @@ export default class TCP extends Duplex implements Transport {
         });
     }
 
+    async discoverBindings(server: string): Promise<TransportConfig> {
+        return {
+            url: server + ":5222"
+        } as TransportConfig;
+    }
+
     public connect(opts: TransportConfig): void {
         this.config = opts;
         this.hasStream = false;
 
         this.initParser();
 
-        let host: string = this.config.url.split(":")[0];
-        let port: number = this.config.port || parseInt(this.config.url.split(":")![1] || '-1');
+        let host: string = this.config.url!.split(":")[0];
+        let port: number = this.config.port || parseInt(this.config.url!.split(":")![1] || '-1');
 
         if (port < 0 || port > 65535) {
             console.error("Invalid or nonexistent port");

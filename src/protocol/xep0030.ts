@@ -87,7 +87,9 @@ const Protocol: DefinitionOptions[] = [
     {
         aliases: ['iq.disco', 'message.disco', 'features.disco'],
         childrenExportOrder: {
-            identities: 100
+            identities: 1,
+            features: 2,
+            extensions: 3
         },
         element: 'query',
         fields: {
