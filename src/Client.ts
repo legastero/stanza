@@ -357,7 +357,7 @@ export default class Client extends EventEmitter {
         let endpoints: { [key: string]: string[] } | undefined;
         for (const name of transportPref) {
             const settings = this.config.transports![name];
-            if (!settings) {
+            if (!settings || !this.transports[name]) {
                 continue;
             }
 
