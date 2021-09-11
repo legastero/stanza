@@ -105,7 +105,7 @@ test('Wait for comment', () => {
         parser.write('-- --><test />');
         parser.end();
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 });
 

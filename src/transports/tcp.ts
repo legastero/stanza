@@ -170,7 +170,6 @@ export default class TCP extends Duplex implements Transport {
         });
         this.initParser();
         this.tlssocket.on('secureConnect', () => {
-            console.log('TLS negotiation successful');
             this.openStream()
         });
         this.tlssocket.on('data', chunk => {

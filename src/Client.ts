@@ -409,7 +409,6 @@ export default class Client extends EventEmitter {
                 url: conf.url!,
                 ...conf
             });
-            console.log(`Using endpoint '${name}' on endpoint ${conf.url}`);
             return;
         }
 
