@@ -328,7 +328,7 @@ export default class Client extends EventEmitter {
         if (typeof pluginInit !== 'function') {
             return;
         }
-        pluginInit((this as unknown) as Agent, this.stanzas, this.config);
+        pluginInit(this as unknown as Agent, this.stanzas, this.config);
     }
 
     public nextId(): string {
@@ -351,7 +351,7 @@ export default class Client extends EventEmitter {
         const transportPref = this.config.transportPreferenceOrder ?? [];
         let endpoints: { [key: string]: string[] } | undefined;
         for (const name of transportPref) {
-            let settings = this.config.transports![name];
+            const settings = this.config.transports![name];
             if (!settings) {
                 continue;
             }
@@ -360,10 +360,10 @@ export default class Client extends EventEmitter {
                 acceptLanguages: this.config.acceptLanguages || [this.config.lang ?? 'en'],
                 jid: this.config.jid!,
                 lang: this.config.lang ?? 'en',
-                server: this.config.server!,
+                server: this.config.server!
             };
             const transport = new this.transports[name](
-                (this as unknown) as Agent,
+                this as unknown as Agent,
                 this.sm,
                 this.stanzas
             );
@@ -383,7 +383,7 @@ export default class Client extends EventEmitter {
                 } else {
                     if (!endpoints) {
                         try {
-                            endpoints = await ((this as unknown) as Agent).discoverBindings(
+                            endpoints = await (this as unknown as Agent).discoverBindings(
                                 this.config.server!
                             );
                         } catch (err) {
