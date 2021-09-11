@@ -162,7 +162,7 @@ export default function (client: Agent): void {
             if (data.type === 'error') {
                 client.sendIQError({ type: 'set', id: data.id, from: data.to }, data);
             }
-        } catch (err) {
+        } catch (err: any) {
             if (!err.jingle) {
                 err.jingle = data.jingle;
             }

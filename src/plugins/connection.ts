@@ -59,7 +59,7 @@ async function checkConnection(client: Agent): Promise<void> {
     }
     try {
         await client.ping();
-    } catch (err) {
+    } catch (err: any) {
         if (err.error && err.error.condition !== 'timeout') {
             return;
         } else {
