@@ -11,6 +11,7 @@ import { core as corePlugins } from './plugins';
 import Protocol, { IQ, Message, Presence, StreamError, Stream } from './protocol';
 import BOSH from './transports/bosh';
 import WebSocket from './transports/websocket';
+import TCP from './transports/tcp';
 import { timeoutPromise, uuid } from './Utils';
 
 interface StreamData {
@@ -102,8 +103,11 @@ export default class Client extends EventEmitter {
 
         this.transports = {
             bosh: BOSH,
-            websocket: WebSocket
+            websocket: WebSocket,
         };
+        if (typeof window === 'undefined') {
+            this.transports.tcp = TCP;
+        }
 
         this.incomingDataQueue = priorityQueue<StreamData>(async (task, done) => {
             const { kind, stanza } = task;
@@ -284,10 +288,11 @@ export default class Client extends EventEmitter {
             jid: '',
             transports: {
                 bosh: true,
-                websocket: true
+                websocket: true,
+                tcp: true,
             },
             useStreamManagement: true,
-            transportPreferenceOrder: ['websocket', 'bosh'],
+            transportPreferenceOrder: ['tcp', 'websocket', 'bosh'],
             ...currConfig,
             ...opts
         };

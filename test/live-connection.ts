@@ -39,14 +39,39 @@ test('Connect using BOSH', done => {
     client.connect();
 });
 
+test('Connect using TCP (STARTLS)', done => {
+    expect.assertions(1);
+
+    const client = stanza.createClient({
+        jid: 'anon@anon.stanzajs.org',
+        transports: {
+            tcp: true
+        }
+    });
+
+    client.on('session:started', () => {
+        client.disconnect();
+        expect(true).toBe(true);
+        done();
+    });
+
+    client.connect();
+});
+
 test('End to end', done => {
     expect.assertions(2);
 
     const client1 = stanza.createClient({
-        jid: 'anon@anon.stanzajs.org'
+        jid: 'anon@anon.stanzajs.org',
+        transports: {
+            websocket: 'wss://anon.stanzajs.org/xmpp-websocket'
+        }
     });
     const client2 = stanza.createClient({
-        jid: 'anon@anon.stanzajs.org'
+        jid: 'anon@anon.stanzajs.org',
+        transports: {
+            websocket: 'wss://anon.stanzajs.org/xmpp-websocket'
+        }
     });
 
     client1.on('session:started', async () => {
