@@ -11,7 +11,7 @@ declare module '../' {
     }
 }
 
-async function promiseAny(promises: Array<Promise<any>>) {
+async function promiseAny<T>(promises: Array<Promise<T>>) {
     try {
         const errors = await Promise.all(
             promises.map(p => {
@@ -23,7 +23,7 @@ async function promiseAny(promises: Array<Promise<any>>) {
         );
         return Promise.reject(errors);
     } catch (val) {
-        return Promise.resolve(val);
+        return Promise.resolve(val as T);
     }
 }
 

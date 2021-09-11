@@ -1,7 +1,7 @@
 import { AsyncPriorityQueue, priorityQueue } from 'async';
 import { EventEmitter } from 'events';
 
-import { Agent, AgentConfig, Transport } from './';
+import { Agent, AgentConfig, Transport, TransportConfig } from './';
 import StreamManagement from './helpers/StreamManagement';
 import * as JID from './JID';
 import * as JXT from './jxt';
@@ -287,6 +287,7 @@ export default class Client extends EventEmitter {
                 websocket: true
             },
             useStreamManagement: true,
+            transportPreferenceOrder: ['websocket', 'bosh'],
             ...currConfig,
             ...opts
         };
@@ -298,6 +299,9 @@ export default class Client extends EventEmitter {
             this.config.credentials = this.config.credentials || {};
             this.config.credentials.password = this.config.password;
             delete this.config.password;
+        }
+        if (!this.config.transportPreferenceOrder) {
+            this.config.transportPreferenceOrder = Object.keys(this.config.transports ?? {});
         }
     }
 
@@ -344,48 +348,61 @@ export default class Client extends EventEmitter {
             this.transport.disconnect(false);
         }
 
-        const transportPref = ['websocket', 'bosh'];
+        const transportPref = this.config.transportPreferenceOrder ?? [];
         let endpoints: { [key: string]: string[] } | undefined;
         for (const name of transportPref) {
-            let conf = this.config.transports![name];
-            if (!conf) {
+            let settings = this.config.transports![name];
+            if (!settings) {
                 continue;
             }
-            if (typeof conf === 'string') {
-                conf = { url: conf };
-            } else if (conf === true) {
-                if (!endpoints) {
-                    try {
-                        endpoints = await ((this as unknown) as Agent).discoverBindings(
-                            this.config.server!
-                        );
-                    } catch (err) {
-                        console.error(err);
-                        continue;
-                    }
-                }
-                endpoints[name] = (endpoints[name] || []).filter(
-                    url => url.startsWith('wss:') || url.startsWith('https:')
-                );
-                if (!endpoints[name] || !endpoints[name].length) {
-                    continue;
-                }
-                conf = { url: endpoints[name][0] };
-            }
 
-            this.transport = new this.transports[name](
+            let config: TransportConfig = {
+                acceptLanguages: this.config.acceptLanguages || [this.config.lang ?? 'en'],
+                jid: this.config.jid!,
+                lang: this.config.lang ?? 'en',
+                server: this.config.server!,
+            };
+            const transport = new this.transports[name](
                 (this as unknown) as Agent,
                 this.sm,
                 this.stanzas
             );
-            this.transport.connect({
-                acceptLanguages: this.config.acceptLanguages || ['en'],
-                jid: this.config.jid!,
-                lang: this.config.lang || 'en',
-                server: this.config.server!,
-                url: conf.url!,
-                ...conf
-            });
+
+            if (typeof settings === 'string') {
+                config.url = settings;
+            } else if (settings == true) {
+                if (transport.discoverBindings) {
+                    const discovered = await transport.discoverBindings(this.config.server!);
+                    if (!discovered) {
+                        continue;
+                    }
+                    config = {
+                        ...config,
+                        ...discovered
+                    };
+                } else {
+                    if (!endpoints) {
+                        try {
+                            endpoints = await ((this as unknown) as Agent).discoverBindings(
+                                this.config.server!
+                            );
+                        } catch (err) {
+                            console.error(err);
+                            continue;
+                        }
+                    }
+                    endpoints[name] = (endpoints[name] || []).filter(
+                        url => url.startsWith('wss:') || url.startsWith('https:')
+                    );
+                    if (!endpoints[name] || !endpoints[name].length) {
+                        continue;
+                    }
+                    config.url = endpoints[name][0];
+                }
+            }
+
+            this.transport = transport;
+            this.transport.connect(config);
             return;
         }
 

@@ -115,6 +115,8 @@ export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
     sessionStarted: boolean;
     sessionTerminating: boolean;
 
+    transports: {[key: string]: new (client: Agent, sm: StreamManagement, registry: JXT.Registry) => Transport};
+
     use(plugin: (agent: Agent, registry: JXT.Registry, config: AgentConfig) => void): void;
 
     nextId(): string;
@@ -198,12 +200,20 @@ export interface AgentConfig {
      *
      * If a transport is set to a string, that will be used as the connection URL.
      *
-     * If a transport is set to an object, it MUST include a <code>url</code> value for
-     * the connection URL.
-     *
      * @default { websocket: true, bosh: true }
      */
     transports?: { [key: string]: boolean | string | Partial<TransportConfig> };
+
+    /**
+     * Transport Preference Order
+     *
+     * Specify the order in which transports should be tried when connecting.
+     * 
+     * If a configured transport type is not listed, it will be skipped.
+     *
+     * @default ['websocket', 'bosh']
+     */
+     transportPreferenceOrder?: string[];
 
     /**
      * Account Password
@@ -232,6 +242,8 @@ export interface Transport {
     stream?: Stream;
     authenticated?: boolean;
 
+    discoverBindings?(host: string): Promise<Partial<TransportConfig> | null>;
+
     connect(opts: TransportConfig): void;
     disconnect(cleanly?: boolean): void;
     restart(): void;
@@ -239,11 +251,13 @@ export interface Transport {
 }
 
 export interface TransportConfig {
+    server: string;
+    jid: string;
     lang?: string;
     acceptLanguages?: string[];
-    server: string;
-    url: string;
-    jid: string;
+
+    // WebSocket & BOSH settings
+    url?: string;
 
     // BOSH settings
     sid?: string;

@@ -189,7 +189,7 @@ export default class BOSH extends Duplex implements Transport {
     public connect(opts: TransportConfig): void {
         this.config = opts;
 
-        this.url = opts.url;
+        this.url = opts.url!;
         if (opts.rid) {
             this.rid = opts.rid;
         }
