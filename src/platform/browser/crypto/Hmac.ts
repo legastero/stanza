@@ -54,7 +54,11 @@ export default class Hmac extends Transform {
         this._hash = createHash(alg).update(this._ipad);
     }
 
-    public _transform(data: Buffer | string, enc: string | undefined, next: (err?: Error) => void) {
+    public _transform(
+        data: Buffer | string,
+        enc: string | undefined,
+        next: (err?: Error) => void
+    ): void {
         let err: any;
         try {
             this.update(data, enc);
@@ -65,7 +69,7 @@ export default class Hmac extends Transform {
         }
     }
 
-    public _flush(done: (err?: Error) => void) {
+    public _flush(done: (err?: Error) => void): void {
         let err: any;
         try {
             this.push(this._final());
@@ -76,7 +80,7 @@ export default class Hmac extends Transform {
         done(err);
     }
 
-    public _final() {
+    public _final(): Buffer {
         const h = this._hash.digest();
         return createHash(this._alg).update(this._opad).update(h).digest();
     }
@@ -86,7 +90,7 @@ export default class Hmac extends Transform {
         return this;
     }
 
-    public digest(outputEnc?: BufferEncoding) {
+    public digest(outputEnc?: BufferEncoding): Buffer | string {
         const outData = this._final() || Buffer.alloc(0);
         if (outputEnc) {
             return outData.toString(outputEnc);

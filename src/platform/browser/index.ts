@@ -3,7 +3,7 @@
 import createHash, { Hash } from './crypto/createHash';
 import Hmac from './crypto/Hmac';
 
-export function randomBytes(size: number) {
+export function randomBytes(size: number): Buffer {
     const rawBytes = new Uint8Array(size);
     if (size > 0) {
         (globalThis.crypto || (globalThis as any).msCrypto).getRandomValues(rawBytes);
@@ -11,7 +11,7 @@ export function randomBytes(size: number) {
     return Buffer.from(rawBytes.buffer);
 }
 
-export function getHashes() {
+export function getHashes(): string[] {
     return ['sha-1', 'sha-256', 'sha-512', 'md5'];
 }
 
