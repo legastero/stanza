@@ -21,19 +21,19 @@ const ianaNames = new Map([
     ['sha-512', 'sha512']
 ]);
 
-export function getHashes() {
+export function getHashes(): string[] {
     return ['sha-1', 'sha-256', 'sha-384', 'sha-512', 'md5'];
 }
 
-export function createHash(alg: string) {
+export function createHash(alg: string): Hash {
     return nodeCreateHash(ianaNames.get(alg.toLowerCase()) || alg);
 }
 
-export function createHmac(alg: string, key: string | Buffer) {
+export function createHmac(alg: string, key: string | Buffer): Hmac {
     return nodeCreateHmac(ianaNames.get(alg.toLowerCase()) || alg, key);
 }
 
-export function randomBytes(size: number) {
+export function randomBytes(size: number): Buffer {
     return nodeRandomBytes(size);
 }
 

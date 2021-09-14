@@ -128,7 +128,7 @@ export default class NetworkDiscovery {
         srvType: string,
         srvTypeSecure?: string
     ): Promise<SRVResult> {
-        let [records, secureRecords] = await Promise.all([
+        const [records, secureRecords] = await Promise.all([
             this.resolveSRV(domain, srvType),
             srvTypeSecure
                 ? this.resolveSRV(domain, srvTypeSecure, true)

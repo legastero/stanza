@@ -36,7 +36,7 @@ export default abstract class Hash extends Transform {
         chunk: Buffer | string,
         encoding: string | undefined,
         callback: (err?: Error) => void
-    ) {
+    ): void {
         let error: any = null;
         try {
             this.update(chunk, encoding as BufferEncoding);
@@ -47,7 +47,7 @@ export default abstract class Hash extends Transform {
         callback(error);
     }
 
-    public _flush(callback: (err?: Error) => void) {
+    public _flush(callback: (err?: Error) => void): void {
         let error: any = null;
         try {
             this.push(this.digest());
@@ -134,7 +134,7 @@ export default abstract class Hash extends Transform {
         return enc ? hash.toString(enc) : hash;
     }
 
-    public _update(block: Buffer | Uint8Array): void {
+    public _update(_block: Buffer | Uint8Array): void {
         throw new Error('_update must be implemented by subclass');
     }
 

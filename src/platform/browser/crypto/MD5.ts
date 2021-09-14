@@ -131,7 +131,7 @@ export default class MD5 extends Hash {
         this._d = (this._d + d) | 0;
     }
 
-    public _hash() {
+    public _hash(): Buffer {
         const H = Buffer.allocUnsafe(16);
 
         H.writeInt32LE(this._a, 0);
