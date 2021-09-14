@@ -19,6 +19,11 @@ export function createHmac(alg: string, key: string | Buffer): Hmac {
     return new Hmac(alg.toLowerCase(), key);
 }
 
+export function createResolver() {
+    return undefined;
+}
+export type Resolver = undefined;
+
 const nativeFetch = globalThis.fetch.bind(globalThis);
 const nativeWS = globalThis.WebSocket;
 
@@ -26,12 +31,11 @@ const nativeRTCPeerConnection: RTCPeerConnection | undefined = (globalThis as an
     .RTCPeerConnection;
 
 export const name = 'browser';
-
 export {
     createHash,
     Hash,
     Hmac,
     nativeFetch as fetch,
-    nativeWS as WebSocket,
-    nativeRTCPeerConnection as RTCPeerConnection
+    nativeRTCPeerConnection as RTCPeerConnection,
+    nativeWS as WebSocket
 };

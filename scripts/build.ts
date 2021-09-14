@@ -29,14 +29,13 @@ FS.writeFileSync(
         {
             ...Pkg,
             browser: {
-                './platform': './platform/browser.js'
+                './platform': './platform/browser/index.js'
             },
             devDependencies: undefined,
             main: './index.js',
-            module: './module.js',
             private: false,
             'react-native': {
-                './platform': './platform/react-native.js'
+                './platform': './platform/react-native/index.js'
             },
             scripts: undefined,
             sideEffects: false,
