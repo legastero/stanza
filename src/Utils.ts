@@ -32,6 +32,35 @@ export async function timeoutPromise<T>(
     return result;
 }
 
+export async function promiseAny<T>(promises: Array<Promise<T>>): Promise<T> {
+    try {
+        const errors = await Promise.all(
+            promises.map(p => {
+                return p.then(
+                    val => Promise.reject(val),
+                    err => Promise.resolve(err)
+                );
+            })
+        );
+        return Promise.reject(errors);
+    } catch (val) {
+        return Promise.resolve(val as T);
+    }
+}
+
+export function shuffle<T>(array: T[]): T[] {
+    let end = array.length;
+    while (end > 0) {
+        const selected = Math.floor(Math.random() * end);
+        end -= 1;
+
+        const tmp = array[end];
+        array[end] = array[selected];
+        array[selected] = tmp;
+    }
+    return array;
+}
+
 export async function sleep(time: number): Promise<void> {
     return new Promise<void>(resolve => {
         setTimeout(() => resolve(), time);
@@ -90,8 +119,7 @@ const DATE_FIELDS = new Set([
     'utc'
 ]);
 
-const ISO_DT =
-    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:Z|((\+|-)([\d|:]*)))?$/;
+const ISO_DT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:Z|((\+|-)([\d|:]*)))?$/;
 export function reviveData(key: string, value: unknown): unknown {
     if (DATE_FIELDS.has(key) && value && typeof value === 'string' && ISO_DT.test(value)) {
         return new Date(value);

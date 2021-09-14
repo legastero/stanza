@@ -19,10 +19,10 @@ export function createHmac(alg: string, key: string | Buffer): Hmac {
     return new Hmac(alg.toLowerCase(), key);
 }
 
-export function createResolver() {
+export type Resolver = undefined;
+export function createResolver(): Resolver | undefined {
     return undefined;
 }
-export type Resolver = undefined;
 
 const nativeFetch = globalThis.fetch.bind(globalThis);
 const nativeWS = globalThis.WebSocket;

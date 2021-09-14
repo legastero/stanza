@@ -12,6 +12,7 @@ import Protocol, { IQ, Message, Presence, StreamError, Stream } from './protocol
 import BOSH from './transports/bosh';
 import WebSocket from './transports/websocket';
 import { timeoutPromise, uuid } from './Utils';
+import NetworkDiscovery from './helpers/NetworkDiscovery';
 
 interface StreamData {
     kind: string;
@@ -25,6 +26,7 @@ export default class Client extends EventEmitter {
     public sm: StreamManagement;
     public transport?: Transport;
     public stanzas: JXT.Registry;
+    public resolver: NetworkDiscovery;
 
     public sessionStarting?: boolean;
     public sessionStarted?: boolean;
@@ -68,6 +70,9 @@ export default class Client extends EventEmitter {
 
         this.stanzas = new JXT.Registry();
         this.stanzas.define(Protocol);
+
+        this.resolver = new NetworkDiscovery();
+
         this.use(corePlugins);
 
         this.sm = new StreamManagement();

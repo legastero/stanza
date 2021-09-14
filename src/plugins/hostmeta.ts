@@ -1,94 +1,53 @@
 import { Agent } from '../';
-import * as JXT from '../jxt';
 import { NS_ALT_CONNECTIONS_WEBSOCKET, NS_ALT_CONNECTIONS_XBOSH } from '../Namespaces';
-import { fetch } from '../platform';
-import { XRD } from '../protocol/xrd';
+
 
 declare module '../' {
     export interface Agent {
-        discoverBindings(server: string): Promise<{ [key: string]: string[] }>;
+        discoverBindings(server: string): Promise<{ [key: string]: any[] }>;
     }
 }
 
-async function promiseAny<T>(promises: Array<Promise<T>>): Promise<T> {
-    try {
-        const errors = await Promise.all(
-            promises.map(p => {
-                return p.then(
-                    val => Promise.reject(val),
-                    err => Promise.resolve(err)
-                );
-            })
-        );
-        return Promise.reject(errors);
-    } catch (val) {
-        return Promise.resolve(val as T);
-    }
-}
-
-export async function getHostMeta(
-    registry: JXT.Registry,
-    opts: string | { host?: string; json?: boolean; ssl?: boolean; xrd?: boolean }
-): Promise<XRD> {
-    if (typeof opts === 'string') {
-        opts = { host: opts };
-    }
-
-    const config = {
-        json: true,
-        ssl: true,
-        xrd: true,
-        ...opts
-    };
-
-    const scheme = config.ssl ? 'https://' : 'http://';
-
-    return promiseAny<XRD>([
-        fetch(`${scheme}${config.host}/.well-known/host-meta.json`).then(async res => {
-            if (!res.ok) {
-                throw new Error('could-not-fetch-json');
-            }
-
-            return res.json() as Promise<XRD>;
-        }),
-        fetch(`${scheme}${config.host}/.well-known/host-meta`).then(async res => {
-            if (!res.ok) {
-                throw new Error('could-not-fetch-xml');
-            }
-
-            const data = await res.text();
-            const xml = JXT.parse(data);
-            if (xml) {
-                return registry.import(xml) as XRD;
-            } else {
-                throw new Error('could-not-import-xml');
-            }
-        })
-    ]);
-}
-
-export default function (client: Agent, stanzas: JXT.Registry): void {
+export default function (client: Agent): void {
     client.discoverBindings = async (server: string) => {
-        try {
-            const data = await getHostMeta(stanzas, server);
-            const results: { [key: string]: string[] } = {
-                bosh: [],
-                websocket: []
-            };
-            const links = data.links || [];
+        const bosh = new Set<string>();
+        const websocket = new Set<string>();
 
-            for (const link of links) {
+        const discoverHostMeta = client.resolver.getHostMeta(server).then(xrd => {
+            for (const link of xrd.links ?? []) {
                 if (link.href && link.rel === NS_ALT_CONNECTIONS_WEBSOCKET) {
-                    results.websocket.push(link.href);
+                    websocket.add(link.href);
                 }
                 if (link.href && link.rel === NS_ALT_CONNECTIONS_XBOSH) {
-                    results.bosh.push(link.href);
+                    bosh.add(link.href);
                 }
             }
+        }).catch(() => {});
 
-            return results;
-        } catch (err) {
-            return {};
-        }
+        const discoverDNS = client.resolver.resolveTXT(`_xmppconnect.${server}`).then(txtRecords => {
+            for (const group of txtRecords) {
+                for (const value of group) {
+                    if (value.startsWith('_xmpp-client-websocket=')) {
+                        const url = value.substr(value.indexOf('=') + 1)
+                        if (url) {
+                            websocket.add(url);
+                        }
+                    }
+                    if (value.startsWith('_xmpp-client-xbosh=')) {
+                        const url = value.substr(value.indexOf('=') + 1)
+                        if (url) {
+                            bosh.add(url);
+                        }
+                    }
+                }
+            }
+        }).catch(() => {});
+
+        await Promise.all([discoverHostMeta, discoverDNS]).catch(() => {});
+
+        return {
+            bosh: [...bosh].filter(url => url.startsWith('https://')),
+            websocket: [...websocket].filter(url => url.startsWith('wss://'))
+        };
     };
 }
