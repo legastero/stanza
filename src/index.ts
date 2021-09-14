@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 import Client from './Client';
 import * as Constants from './Constants';
 import * as RTT from './helpers/RTT';
+import NetworkDiscovery from './helpers/NetworkDiscovery';
 import SM from './helpers/StreamManagement';
 import * as JID from './JID';
 import * as Jingle from './jingle';
@@ -111,6 +112,7 @@ export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
     sm: SM;
     sasl: LibSASL.Factory;
     stanzas: JXT.Registry;
+    resolver: NetworkDiscovery;
 
     sessionStarting: boolean;
     sessionStarted: boolean;

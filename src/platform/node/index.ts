@@ -37,10 +37,10 @@ export function randomBytes(size: number) {
     return nodeRandomBytes(size);
 }
 
-export function createResolver(opts?: dns.ResolverOptions): dns.promises.Resolver | undefined {
+export type Resolver = dns.promises.Resolver;
+export function createResolver(opts?: dns.ResolverOptions): Resolver | undefined {
     return new dns.promises.Resolver(opts);
 }
-export type Resolver = dns.promises.Resolver;
 
 const nativeRTCPeerConnection: RTCPeerConnection | undefined = undefined;
 
