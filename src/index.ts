@@ -99,6 +99,8 @@ export interface AgentEvents {
     // Any "--" prefixed events are for internal use only
     '--reset-stream-features': void;
     '--transport-disconnected': void;
+    '--transport-connected': void;
+    '--transport-error': Error;
 
     '*': (...args: any[]) => void;
 }
@@ -214,9 +216,23 @@ export interface AgentConfig {
      * 
      * If a configured transport type is not listed, it will be skipped.
      *
-     * @default ['websocket', 'bosh']
+     * @default ['tcp', 'websocket', 'bosh']
      */
      transportPreferenceOrder?: string[];
+
+    /**
+     * Require Secure Transport
+     * 
+     * Guarantees that any transport chosen will use TLS or equivalent. If
+     * no secure transport is available, connection will fail.
+     * 
+     * If a transport is specified which is not secure, this option will
+     * prevent it from being used. If ws:// and https:// is available, but
+     * websocket is higher priority than BOSH, BOSH will still be used.
+     * 
+     * @default true
+     */
+    requireSecureTransport?: boolean;
 
     /**
      * Account Password
@@ -245,9 +261,9 @@ export interface Transport {
     stream?: Stream;
     authenticated?: boolean;
 
-    discoverBindings?(host: string): Promise<Partial<TransportConfig> | null>;
+    discoverBindings?(host: string): Promise<Array<Partial<TransportConfig>> | null>;
 
-    connect(opts: TransportConfig): void;
+    connect(opts: TransportConfig): Promise<void>;
     disconnect(cleanly?: boolean): void;
     restart(): void;
     send(name: string, data?: JXT.JSONData): Promise<void>;
@@ -272,6 +288,7 @@ export interface TransportConfig {
     // TCP/TLS settings
     directTLS?: boolean,
     port?: number,
+    pubkey?: Buffer,
 }
 
 import * as RSM from './helpers/RSM';
@@ -295,6 +312,7 @@ export {
 export const VERSION = Constants.VERSION;
 
 import Plugins from './plugins';
+import { TlsOptions } from 'tls';
 export * from './plugins';
 
 export function createClient(opts: AgentConfig): Agent {

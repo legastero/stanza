@@ -24,11 +24,11 @@ fileReplace('dist/es/Constants.js', '__STANZAJS_VERSION__', Pkg.version);
 
 Child('npm run compile:rollup');
 
-if (!FS.existsSync("dist")) {
-    FS.mkdirSync("dist");
+if (!FS.existsSync('dist')) {
+    FS.mkdirSync('dist');
 }
-if (!FS.existsSync("dist/npm")) {
-    FS.mkdirSync("dist/npm");
+if (!FS.existsSync('dist/npm')) {
+    FS.mkdirSync('dist/npm');
 }
 Child('cp -r dist/cjs/* dist/npm/');
 Child('cp dist/es/index.module.js dist/npm/module.js');

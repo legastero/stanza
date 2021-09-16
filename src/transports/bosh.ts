@@ -147,6 +147,7 @@ export default class BOSH extends Duplex implements Transport {
                 condition: StreamErrorCondition.InvalidXML
             };
             this.client.emit('stream:error', streamError, err);
+            this.client.emit('--transport-error', err);
             this.send('error', streamError);
             return this.disconnect();
         });
@@ -170,6 +171,7 @@ export default class BOSH extends Duplex implements Transport {
                     this.sid = e.stanza.sid || this.sid;
                     this.maxWaitTime = e.stanza.maxWaitTime || this.maxWaitTime;
 
+                    this.client.emit('--transport-connected');
                     this.client.emit('stream:start', e.stanza);
                 }
                 return;
@@ -186,41 +188,47 @@ export default class BOSH extends Duplex implements Transport {
         this.scheduleRequests();
     }
 
-    public connect(opts: TransportConfig): void {
-        this.config = opts;
-
-        this.url = opts.url!;
-        if (opts.rid) {
-            this.rid = opts.rid;
-        }
-        if (opts.sid) {
-            this.sid = opts.sid;
-        }
-        if (opts.wait) {
-            this.maxWaitTime = opts.wait;
-        }
-        if (opts.maxHoldOpen) {
-            this.maxHoldOpen = opts.maxHoldOpen;
-        }
-
-        if (this.sid) {
-            this.hasStream = true;
-            this.stream = {};
-            this.client.emit('connected');
-            this.client.emit('session:prebind', this.config.jid);
-            this.client.emit('session:started');
-            return;
-        }
-
-        this._send({
-            lang: opts.lang,
-            maxHoldOpen: this.maxHoldOpen,
-            maxWaitTime: this.maxWaitTime,
-            to: opts.server,
-            version: '1.6',
-            xmppVersion: '1.0'
+    public async connect(opts: TransportConfig): Promise<void> {
+        return await new Promise(async (resolve, reject) => {
+            this.config = opts;
+    
+            this.url = opts.url!;
+            if (opts.rid) {
+                this.rid = opts.rid;
+            }
+            if (opts.sid) {
+                this.sid = opts.sid;
+            }
+            if (opts.wait) {
+                this.maxWaitTime = opts.wait;
+            }
+            if (opts.maxHoldOpen) {
+                this.maxHoldOpen = opts.maxHoldOpen;
+            }
+    
+            if (this.sid) {
+                this.hasStream = true;
+                this.stream = {};
+                this.client.emit('connected');
+                this.client.emit('session:prebind', this.config.jid);
+                this.client.emit('session:started');
+                return;
+            }
+    
+            await this._send({
+                lang: opts.lang,
+                maxHoldOpen: this.maxHoldOpen,
+                maxWaitTime: this.maxWaitTime,
+                to: opts.server,
+                version: '1.6',
+                xmppVersion: '1.0'
+            });
+            
+            this.client.once('--transport-connected', () => resolve());
+            this.client.once('--transport-error', err => reject(err));
         });
     }
+        
 
     public restart(): void {
         this.hasStream = false;
@@ -252,7 +260,7 @@ export default class BOSH extends Duplex implements Transport {
             return;
         }
 
-        return new Promise<void>((resolve, reject) => {
+        return await new Promise<void>((resolve, reject) => {
             this.write(output, 'utf8', err => (err ? reject(err) : resolve()));
         });
     }
@@ -295,6 +303,7 @@ export default class BOSH extends Duplex implements Transport {
                 this.process(result);
             })
             .catch(err => {
+                this.client.emit('--transport-error', err);
                 this.end(err);
             });
         this.toggleChannel();
