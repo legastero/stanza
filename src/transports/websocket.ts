@@ -123,8 +123,6 @@ export default class WSConnection extends Duplex implements Transport {
                 this.push(null);
             };
             this.socket.onerror = (err) => {
-                // console.error(err);
-                // this.client.once('--transport-error', err);
                 this.push(null);
             };
             this.client.once('--transport-connected', () => resolve());
