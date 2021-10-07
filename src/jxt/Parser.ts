@@ -206,7 +206,7 @@ class Parser extends EventEmitter {
                     }
                     if (c === Character.Question) {
                         if (this.haveDeclaration) {
-                            this.restrictedXML();
+                            return this.restrictedXML();
                         }
 
                         this.transition(State.START_PROCESSING_INSTRUCTION);
@@ -410,7 +410,7 @@ class Parser extends EventEmitter {
                 case State.START_INSTRUCTION: {
                     if (c === Character.Dash) {
                         if (!this.allowComments) {
-                            this.restrictedXML();
+                            return this.restrictedXML();
                         }
                         this.transition(State.START_COMMENT_DASH);
                         continue;
