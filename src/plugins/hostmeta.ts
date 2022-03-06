@@ -2,6 +2,22 @@ import { Agent } from '../';
 import { NS_ALT_CONNECTIONS_WEBSOCKET, NS_ALT_CONNECTIONS_XBOSH } from '../Namespaces';
 
 declare module '../' {
+    export interface AgentConfig {
+        /**
+         * Allow using DNS TXT records for discovering alternate connection methods.
+         * 
+         * **Security Considerations:**
+         * 
+         * Connection methods discovered via DNS TXT Records do not have a chain of
+         * trust, and could be poisoned by a malicious actor.
+         * 
+         * It is NOT RECOMMENDED to enable this feature.
+         * 
+         * @default false
+         */
+        allowAlternateDNSDiscovery?: boolean;
+    }
+
     export interface Agent {
         discoverBindings(server: string): Promise<{ [key: string]: any[] }>;
     }
@@ -26,19 +42,19 @@ export default function (client: Agent): void {
             })
             .catch(err => console.error(err));
 
-        const discoverDNS = client.resolver
+        const discoverDNS = !client.config.allowAlternateDNSDiscovery ? Promise.resolve() : client.resolver
             .resolveTXT(`_xmppconnect.${server}`)
             .then(txtRecords => {
                 for (const group of txtRecords) {
                     for (const value of group) {
                         if (value.startsWith('_xmpp-client-websocket=')) {
-                            const url = value.substr(value.indexOf('=') + 1);
+                            const url = value.substring(value.indexOf('=') + 1);
                             if (url) {
                                 websocket.add(url);
                             }
                         }
                         if (value.startsWith('_xmpp-client-xbosh=')) {
-                            const url = value.substr(value.indexOf('=') + 1);
+                            const url = value.substring(value.indexOf('=') + 1);
                             if (url) {
                                 bosh.add(url);
                             }
