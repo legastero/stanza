@@ -40,6 +40,32 @@ test('MUC subject', () => {
     client.emit('message', incoming);
 });
 
+test('MUC message with body and subject', () => {
+    const client = createClient({});
+
+    const incoming: ReceivedMessage = {
+        body: 'Message body.',
+        hasSubject: true,
+        from: 'room@rooms.test/admin',
+        to: 'tester@localhost',
+        subject: 'Message subject',
+        type: 'groupchat'
+    };
+
+    // XEP-0045 section 7.2.15: "Note: In accordance with the core definition of XML stanzas, any
+    // message can contain a <subject/> element; only a message that contains a <subject/> but no
+    // <body/> element shall be considered a subject change for MUC purposes.
+    const callback = jest.fn()
+    client.on('muc:topic', callback);
+
+    client.on('groupchat', msg => {
+        expect(msg).toStrictEqual(incoming);
+    });
+
+    client.emit('message', incoming);
+    expect(callback).not.toHaveBeenCalled();
+});
+
 test('MUC empty subject', () => {
     const client = createClient({});
 

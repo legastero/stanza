@@ -130,7 +130,7 @@ export default function (client: Agent): void {
     client.on('session:started', rejoinRooms);
 
     client.on('message', msg => {
-        if (msg.type === 'groupchat' && msg.hasSubject) {
+        if (msg.type === 'groupchat' && msg.hasSubject && !msg.body) {
             client.emit('muc:topic', {
                 from: msg.from,
                 room: JID.toBare(msg.from),
