@@ -4,21 +4,20 @@ test('SASL - PLAIN', () => {
     const factory = new SASL.Factory();
     factory.register('PLAIN', SASL.PLAIN, 10);
 
-    const mech = factory.createMechanism(['PLAIN'])!;
+    const creds: SASL.Credentials = {
+        username: 'user',
+        password: 'hunter2'
+    };
+    const mech = factory.createMechanism(['PLAIN'], creds)!;
 
     expect(mech.name).toBe('PLAIN');
     expect(mech.providesMutualAuthentication).toBeFalsy();
 
     const neededCreds = mech.getExpectedCredentials();
     expect(neededCreds).toStrictEqual({
-        required: ['username', 'password'],
-        optional: ['authzid']
+        optional: ['authzid'],
+        required: [['username', 'password']]
     });
-
-    const creds: SASL.Credentials = {
-        username: 'user',
-        password: 'hunter2'
-    };
 
     const response = mech.createResponse(creds)!;
     expect(response.toString('utf8')).toBe('\x00user\x00hunter2');
@@ -39,22 +38,21 @@ test('SASL - PLAIN with authzid', () => {
     const factory = new SASL.Factory();
     factory.register('PLAIN', SASL.PLAIN, 10);
 
-    const mech = factory.createMechanism(['PLAIN'])!;
+    const creds: SASL.Credentials = {
+        authzid: 'authorize-as@domain',
+        username: 'user',
+        password: 'hunter2'
+    };
+    const mech = factory.createMechanism(['PLAIN'], creds)!;
 
     expect(mech.name).toBe('PLAIN');
     expect(mech.providesMutualAuthentication).toBeFalsy();
 
     const neededCreds = mech.getExpectedCredentials();
     expect(neededCreds).toStrictEqual({
-        required: ['username', 'password'],
-        optional: ['authzid']
+        optional: ['authzid'],
+        required: [['username', 'password']]
     });
-
-    const creds: SASL.Credentials = {
-        authzid: 'authorize-as@domain',
-        username: 'user',
-        password: 'hunter2'
-    };
 
     const response = mech.createResponse(creds)!;
     expect(response.toString('utf8')).toBe('authorize-as@domain\x00user\x00hunter2');

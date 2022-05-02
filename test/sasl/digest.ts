@@ -4,17 +4,6 @@ test('SASL - DIGEST-MD5', () => {
     const factory = new SASL.Factory();
     factory.register('DIGEST-MD5', SASL.DIGEST, 10);
 
-    const mech = factory.createMechanism(['DIGEST-MD5'])!;
-
-    expect(mech.name).toBe('DIGEST-MD5');
-    expect(mech.providesMutualAuthentication).toBe(false);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce', 'realm'],
-        required: ['host', 'password', 'serviceName', 'serviceType', 'username']
-    });
-
     const clientNonce = 'random-client-nonce';
     const creds: SASL.Credentials = {
         clientNonce: clientNonce,
@@ -24,6 +13,17 @@ test('SASL - DIGEST-MD5', () => {
         serviceType: 'xmpp',
         username: 'user'
     };
+    const mech = factory.createMechanism(['DIGEST-MD5'], creds)!;
+
+    expect(mech.name).toBe('DIGEST-MD5');
+    expect(mech.providesMutualAuthentication).toBe(false);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce', 'realm'],
+        required: [['host', 'password', 'serviceName', 'serviceType', 'username']]
+    });
+
 
     const response1 = mech.createResponse(creds)!;
     expect(response1).toBeNull();
@@ -56,17 +56,6 @@ test('SASL - DIGEST-MD5 with authzid', () => {
     const factory = new SASL.Factory();
     factory.register('DIGEST-MD5', SASL.DIGEST, 10);
 
-    const mech = factory.createMechanism(['DIGEST-MD5'])!;
-
-    expect(mech.name).toBe('DIGEST-MD5');
-    expect(mech.providesMutualAuthentication).toBe(false);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce', 'realm'],
-        required: ['host', 'password', 'serviceName', 'serviceType', 'username']
-    });
-
     const clientNonce = 'random-client-nonce';
     const creds: SASL.Credentials = {
         authzid: 'authorize-as',
@@ -77,6 +66,16 @@ test('SASL - DIGEST-MD5 with authzid', () => {
         serviceType: 'xmpp',
         username: 'user'
     };
+    const mech = factory.createMechanism(['DIGEST-MD5'], creds)!;
+
+    expect(mech.name).toBe('DIGEST-MD5');
+    expect(mech.providesMutualAuthentication).toBe(false);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce', 'realm'],
+        required: [['host', 'password', 'serviceName', 'serviceType', 'username']]
+    });
 
     const response1 = mech.createResponse(creds)!;
     expect(response1).toBeNull();
@@ -109,17 +108,6 @@ test('SASL - DIGEST-MD5 with different service name and host', () => {
     const factory = new SASL.Factory();
     factory.register('DIGEST-MD5', SASL.DIGEST, 10);
 
-    const mech = factory.createMechanism(['DIGEST-MD5'])!;
-
-    expect(mech.name).toBe('DIGEST-MD5');
-    expect(mech.providesMutualAuthentication).toBe(false);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce', 'realm'],
-        required: ['host', 'password', 'serviceName', 'serviceType', 'username']
-    });
-
     const clientNonce = 'random-client-nonce';
     const creds: SASL.Credentials = {
         authzid: 'authorize-as',
@@ -130,6 +118,16 @@ test('SASL - DIGEST-MD5 with different service name and host', () => {
         serviceType: 'xmpp',
         username: 'user'
     };
+    const mech = factory.createMechanism(['DIGEST-MD5'], creds)!;
+
+    expect(mech.name).toBe('DIGEST-MD5');
+    expect(mech.providesMutualAuthentication).toBe(false);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce', 'realm'],
+        required: [['host', 'password', 'serviceName', 'serviceType', 'username']]
+    });
 
     const response1 = mech.createResponse(creds)!;
     expect(response1).toBeNull();

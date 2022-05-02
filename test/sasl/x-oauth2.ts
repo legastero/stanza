@@ -1,23 +1,26 @@
 import * as SASL from '../../src/lib/sasl';
 
-test('SASL - ANONYMOUS', () => {
+test('SASL - X-OAUTH2', () => {
     const factory = new SASL.Factory();
-    factory.register('ANONYMOUS', SASL.ANONYMOUS, 10);
+    factory.register('X-OAUTH2', SASL.X_OAUTH2, 50);
 
-    const creds: SASL.Credentials = {};
-    const mech = factory.createMechanism(['ANONYMOUS'], creds)!;
+    const creds = {
+        username: 'user',
+        token: 'oauth-token'
+    };
+    const mech = factory.createMechanism(['X-OAUTH2'], creds)!;
 
-    expect(mech.name).toBe('ANONYMOUS');
+    expect(mech.name).toBe('X-OAUTH2');
     expect(mech.providesMutualAuthentication).toBeFalsy();
 
     const neededCreds = mech.getExpectedCredentials();
     expect(neededCreds).toStrictEqual({
-        optional: ['trace'],
-        required: [[]]
+        optional: ['authzid'],
+        required: [['username', 'token']]
     });
 
     const response = mech.createResponse(creds)!;
-    expect(response.toString('base64')).toBe('');
+    expect(response.toString("utf8")).toBe('\x00user\x00oauth-token');
 
     mech.processSuccess();
 
@@ -26,29 +29,33 @@ test('SASL - ANONYMOUS', () => {
         authenticated: true,
         mutuallyAuthenticated: false
     });
+
+    const cacheable = mech.getCacheableCredentials()!;
+    expect(cacheable).toBeNull();
 });
 
-test('SASL - ANONYMOUS with trace', () => {
+test('SASL - X-OAUTH2 with authzid', () => {
     const factory = new SASL.Factory();
-    factory.register('ANONYMOUS', SASL.ANONYMOUS, 10);
+    factory.register('X-OAUTH2', SASL.X_OAUTH2, 50);
 
-    const mech = factory.createMechanism(['ANONYMOUS'], {})!;
+    const creds = {
+        authzid: 'authorize-as@domain',
+        username: 'user',
+        token: 'oauth-token'
+    };
+    const mech = factory.createMechanism(['X-OAUTH2'], creds)!;
 
-    expect(mech.name).toBe('ANONYMOUS');
+    expect(mech.name).toBe('X-OAUTH2');
     expect(mech.providesMutualAuthentication).toBeFalsy();
 
     const neededCreds = mech.getExpectedCredentials();
     expect(neededCreds).toStrictEqual({
-        optional: ['trace'],
-        required: [[]]
+        optional: ['authzid'],
+        required: [['username', 'token']]
     });
 
-    const creds: SASL.Credentials = {
-        trace: 'trace-identifier'
-    };
-
     const response = mech.createResponse(creds)!;
-    expect(response.toString('utf8')).toBe('trace-identifier');
+    expect(response.toString("utf8")).toBe('authorize-as@domain\x00user\x00oauth-token');
 
     mech.processSuccess();
 

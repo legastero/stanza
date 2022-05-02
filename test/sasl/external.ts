@@ -4,7 +4,8 @@ test('SASL - EXTERNAL', () => {
     const factory = new SASL.Factory();
     factory.register('EXTERNAL', SASL.EXTERNAL, 10);
 
-    const mech = factory.createMechanism(['EXTERNAL'])!;
+    const creds: SASL.Credentials = {};
+    const mech = factory.createMechanism(['EXTERNAL'], creds)!;
 
     expect(mech.name).toBe('EXTERNAL');
     expect(mech.providesMutualAuthentication).toBeFalsy();
@@ -12,10 +13,8 @@ test('SASL - EXTERNAL', () => {
     const neededCreds = mech.getExpectedCredentials();
     expect(neededCreds).toStrictEqual({
         optional: ['authzid'],
-        required: []
+        required: [[]]
     });
-
-    const creds: SASL.Credentials = {};
 
     const response = mech.createResponse(creds)!;
     expect(response.toString('base64')).toBe('');
@@ -36,7 +35,7 @@ test('SASL - EXTERNAL with authzid', () => {
     const factory = new SASL.Factory();
     factory.register('EXTERNAL', SASL.EXTERNAL, 10);
 
-    const mech = factory.createMechanism(['EXTERNAL'])!;
+    const mech = factory.createMechanism(['EXTERNAL'], {})!;
 
     expect(mech.name).toBe('EXTERNAL');
     expect(mech.providesMutualAuthentication).toBeFalsy();
@@ -44,7 +43,7 @@ test('SASL - EXTERNAL with authzid', () => {
     const neededCreds = mech.getExpectedCredentials();
     expect(neededCreds).toStrictEqual({
         optional: ['authzid'],
-        required: []
+        required: [[]]
     });
 
     const creds: SASL.Credentials = {

@@ -8,7 +8,7 @@ test('SASL - Factory.register should sort by priority', () => {
     factory.register('SCRAM-SHA-256-PLUS', SASL.SCRAM, 350);
     factory.register('SCRAM-SHA-256', SASL.SCRAM, 300);
     factory.register('SCRAM-SHA-1', SASL.SCRAM, 200);
-    factory.register('X-OAUTH2', SASL.PLAIN, 50);
+    factory.register('X-OAUTH2', SASL.X_OAUTH2, 50);
     factory.register('DIGEST-MD5', SASL.DIGEST, 100);
     factory.register('ANONYMOUS', SASL.ANONYMOUS, 0);
     factory.register('OAUTHBEARER', SASL.OAUTH, 100);

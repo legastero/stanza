@@ -6,7 +6,7 @@ test('Mech selection', () => {
     factory.register('PLAIN', SASL.PLAIN, 100);
     factory.register('SUPER-PLAIN', SASL.PLAIN, 200);
 
-    const mech = factory.createMechanism(['SUPER-PLAIN'])!;
+    const mech = factory.createMechanism(['SUPER-PLAIN'], { username: "", password: "" })!;
 
     expect(mech.name).toBe('SUPER-PLAIN');
 });
@@ -17,7 +17,7 @@ test('Mech selection', () => {
     factory.register('PLAIN', SASL.PLAIN, 100);
     factory.register('SUPER-PLAIN', SASL.PLAIN, 200);
 
-    const mech = factory.createMechanism(['SUPER-PLAIN', 'BASIC-PLAIN'])!;
+    const mech = factory.createMechanism(['SUPER-PLAIN', 'BASIC-PLAIN'], { username: "", password: "" })!;
 
     expect(mech.name).toBe('SUPER-PLAIN');
 });
@@ -28,7 +28,7 @@ test('Mech selection', () => {
     factory.register('PLAIN', SASL.PLAIN, 100);
     factory.register('SUPER-PLAIN', SASL.PLAIN, 200);
 
-    const mech = factory.createMechanism(['BASIC-PLAIN', 'SUPER-PLAIN'])!;
+    const mech = factory.createMechanism(['BASIC-PLAIN', 'SUPER-PLAIN'], { username: "", password: "" })!;
 
     expect(mech.name).toBe('SUPER-PLAIN');
 });
@@ -39,7 +39,7 @@ test('Mech selection', () => {
     factory.register('PLAIN', SASL.PLAIN, 100);
     factory.register('SUPER-PLAIN', SASL.PLAIN, 200);
 
-    const mech = factory.createMechanism(['UNKNOWN', 'SUPER-PLAIN'])!;
+    const mech = factory.createMechanism(['UNKNOWN', 'SUPER-PLAIN'], { username: "", password: "" })!;
 
     expect(mech.name).toBe('SUPER-PLAIN');
 });
@@ -50,7 +50,7 @@ test('Mech selection', () => {
     factory.register('PLAIN', SASL.PLAIN, 100);
     factory.register('SUPER-PLAIN', SASL.PLAIN, 200);
 
-    const mech = factory.createMechanism(['UNKNOWN'])!;
+    const mech = factory.createMechanism(['UNKNOWN'], { username: "", password: "" })!;
 
     expect(mech).toBeNull();
 });
@@ -63,7 +63,7 @@ test('Mech disabled', () => {
 
     factory.disable('SUPER-PLAIN');
 
-    const mech = factory.createMechanism(['BASIC-PLAIN', 'PLAIN', 'SUPER-PLAIN'])!;
+    const mech = factory.createMechanism(['BASIC-PLAIN', 'PLAIN', 'SUPER-PLAIN'], { username: "", password: "" })!;
 
     expect(mech.name).toBe('PLAIN');
 });

@@ -24,7 +24,7 @@ export interface CacheableCredentials extends Credentials {
 }
 
 export interface ExpectedCredentials {
-    required: string[];
+    required: string[][];
     optional: string[];
 }
 
@@ -109,12 +109,17 @@ export class Factory {
         this.mechanisms = this.mechanisms.filter(mech => mech.name !== mechName);
     }
 
-    public createMechanism(names: string[]): Mechanism | null {
+    public createMechanism(names: string[], credentials: Credentials): Mechanism | null {
         const availableNames = names.map(name => name.toUpperCase());
         for (const knownMech of this.mechanisms) {
             for (const availableMechName of availableNames) {
                 if (availableMechName === knownMech.name) {
-                    return new knownMech.constructor(knownMech.name);
+                    const mech = new knownMech.constructor(knownMech.name);
+                    for (const requiredCredentials of mech.getExpectedCredentials().required as (keyof Credentials)[][]) {
+                        if (requiredCredentials.every(req => credentials[req] !== undefined)) {
+                            return mech;
+                        }
+                    }
                 }
             }
         }
@@ -194,7 +199,7 @@ function escapeUsername(name: string): string {
 
 export class ANONYMOUS extends SimpleMech implements Mechanism {
     public getExpectedCredentials(): ExpectedCredentials {
-        return { optional: ['trace'], required: [] };
+        return { optional: ['trace'], required: [[]] };
     }
 
     public createResponse(credentials: Credentials): Buffer {
@@ -208,7 +213,7 @@ export class ANONYMOUS extends SimpleMech implements Mechanism {
 
 export class EXTERNAL extends SimpleMech implements Mechanism {
     public getExpectedCredentials(): ExpectedCredentials {
-        return { optional: ['authzid'], required: [] };
+        return { optional: ['authzid'], required: [[]] };
     }
 
     public createResponse(credentials: Credentials): Buffer {
@@ -224,7 +229,7 @@ export class PLAIN extends SimpleMech implements Mechanism {
     public getExpectedCredentials(): ExpectedCredentials {
         return {
             optional: ['authzid'],
-            required: ['username', 'password']
+            required: [['username', 'password']]
         };
     }
 
@@ -235,6 +240,29 @@ export class PLAIN extends SimpleMech implements Mechanism {
                 credentials.username +
                 '\x00' +
                 (credentials.password || credentials.token)
+        );
+    }
+}
+
+// ====================================================================
+// X-OAUTH2
+// ====================================================================
+
+export class X_OAUTH2 extends SimpleMech implements Mechanism {
+    public getExpectedCredentials(): ExpectedCredentials {
+        return {
+            optional: ['authzid'],
+            required: [['username', 'token']],
+        };
+    }
+
+    public createResponse(credentials: Credentials): Buffer {
+        return Buffer.from(
+            (credentials.authzid || '') +
+                '\x00' +
+                credentials.username +
+                '\x00' +
+                credentials.token
         );
     }
 }
@@ -254,7 +282,7 @@ export class OAUTH extends SimpleMech implements Mechanism {
     public getExpectedCredentials(): ExpectedCredentials {
         return {
             optional: ['authzid'],
-            required: ['token']
+            required: [['token']]
         };
     }
 
@@ -311,7 +339,7 @@ export class DIGEST extends SimpleMech implements Mechanism {
     public getExpectedCredentials(): ExpectedCredentials {
         return {
             optional: ['authzid', 'clientNonce', 'realm'],
-            required: ['host', 'password', 'serviceName', 'serviceType', 'username']
+            required: [['host', 'password', 'serviceName', 'serviceType', 'username']]
         };
     }
 
@@ -412,9 +440,9 @@ export class SCRAM implements Mechanism {
 
     public getExpectedCredentials(): ExpectedCredentials {
         const optional = ['authzid', 'clientNonce'];
-        const required = ['username', 'password'];
+        const required = [['username', 'password'], ['username', 'saltedPassword'], ['clientKey', 'serverKey']];
         if (this.useChannelBinding) {
-            required.push('tlsUnique');
+            required.forEach(x => x.push('tlsUnique'));
         }
         return {
             optional,

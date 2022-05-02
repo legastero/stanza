@@ -5,17 +5,6 @@ test('SASL - SCRAM-SHA-1', () => {
     const factory = new SASL.Factory();
     factory.register('SCRAM-SHA-1', SASL.SCRAM, 10);
 
-    const mech = factory.createMechanism(['SCRAM-SHA-1'])!;
-
-    expect(mech.name).toBe('SCRAM-SHA-1');
-    expect(mech.providesMutualAuthentication).toBe(true);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce'],
-        required: ['username', 'password']
-    });
-
     const salt = Buffer.from('salt').toString('base64');
     const serverNonce = Buffer.from('client-random-noncerandom-server-nonce').toString('base64');
     const clientNonce = Buffer.from('random-client-nonce').toString('base64');
@@ -25,6 +14,16 @@ test('SASL - SCRAM-SHA-1', () => {
         password: 'hunter2',
         clientNonce: clientNonce
     };
+    const mech = factory.createMechanism(['SCRAM-SHA-1'], creds)!;
+
+    expect(mech.name).toBe('SCRAM-SHA-1');
+    expect(mech.providesMutualAuthentication).toBe(true);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce'],
+        required: [['username', 'password'], ['username', 'saltedPassword'], ['clientKey', 'serverKey']]
+    });
 
     const saltedPassword = SASL.Hi(
         Buffer.from(saslprep(creds.password || '')),
@@ -76,17 +75,6 @@ test('SASL - SCRAM-SHA-1 (with tlsUnique available)', () => {
     const factory = new SASL.Factory();
     factory.register('SCRAM-SHA-1', SASL.SCRAM, 10);
 
-    const mech = factory.createMechanism(['SCRAM-SHA-1'])!;
-
-    expect(mech.name).toBe('SCRAM-SHA-1');
-    expect(mech.providesMutualAuthentication).toBe(true);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce'],
-        required: ['username', 'password']
-    });
-
     const salt = Buffer.from('salt').toString('base64');
     const serverNonce = Buffer.from('client-random-noncerandom-server-nonce').toString('base64');
     const clientNonce = Buffer.from('random-client-nonce').toString('base64');
@@ -97,6 +85,16 @@ test('SASL - SCRAM-SHA-1 (with tlsUnique available)', () => {
         clientNonce: clientNonce,
         tlsUnique: Buffer.from('tls-unique-data')
     };
+    const mech = factory.createMechanism(['SCRAM-SHA-1'], creds)!;
+
+    expect(mech.name).toBe('SCRAM-SHA-1');
+    expect(mech.providesMutualAuthentication).toBe(true);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce'],
+        required: [['username', 'password'], ['username', 'saltedPassword'], ['clientKey', 'serverKey']]
+    });
 
     const saltedPassword = SASL.Hi(
         Buffer.from(saslprep(creds.password || '')),
@@ -149,17 +147,6 @@ test('SASL - SCRAM-SHA-1-PLUS', () => {
     const factory = new SASL.Factory();
     factory.register('SCRAM-SHA-1-PLUS', SASL.SCRAM, 10);
 
-    const mech = factory.createMechanism(['SCRAM-SHA-1-PLUS'])!;
-
-    expect(mech.name).toBe('SCRAM-SHA-1-PLUS');
-    expect(mech.providesMutualAuthentication).toBe(true);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce'],
-        required: ['username', 'password', 'tlsUnique']
-    });
-
     const salt = Buffer.from('salt').toString('base64');
     const serverNonce = Buffer.from('client-random-noncerandom-server-nonce').toString('base64');
     const clientNonce = Buffer.from('random-client-nonce').toString('base64');
@@ -170,6 +157,16 @@ test('SASL - SCRAM-SHA-1-PLUS', () => {
         clientNonce: clientNonce,
         tlsUnique: Buffer.from('tls-unique-data')
     };
+    const mech = factory.createMechanism(['SCRAM-SHA-1-PLUS'], creds)!;
+
+    expect(mech.name).toBe('SCRAM-SHA-1-PLUS');
+    expect(mech.providesMutualAuthentication).toBe(true);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce'],
+        required: [['username', 'password', 'tlsUnique'], ['username', 'saltedPassword', 'tlsUnique'], ['clientKey', 'serverKey', 'tlsUnique']]
+    });
 
     const saltedPassword = SASL.Hi(
         Buffer.from(saslprep(creds.password || '')),
@@ -222,17 +219,6 @@ test('SASL - SCRAM-SHA-1, with escaped username', () => {
     const factory = new SASL.Factory();
     factory.register('SCRAM-SHA-1', SASL.SCRAM, 10);
 
-    const mech = factory.createMechanism(['SCRAM-SHA-1'])!;
-
-    expect(mech.name).toBe('SCRAM-SHA-1');
-    expect(mech.providesMutualAuthentication).toBe(true);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce'],
-        required: ['username', 'password']
-    });
-
     const salt = Buffer.from('salt').toString('base64');
     const serverNonce = Buffer.from('client-random-noncerandom-server-nonce').toString('base64');
     const clientNonce = Buffer.from('random-client-nonce').toString('base64');
@@ -242,6 +228,16 @@ test('SASL - SCRAM-SHA-1, with escaped username', () => {
         password: 'hunter2',
         clientNonce: clientNonce
     };
+    const mech = factory.createMechanism(['SCRAM-SHA-1'], creds)!;
+
+    expect(mech.name).toBe('SCRAM-SHA-1');
+    expect(mech.providesMutualAuthentication).toBe(true);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce'],
+        required: [['username', 'password'], ['username', 'saltedPassword'], ['clientKey', 'serverKey']]
+    });
 
     const saltedPassword = SASL.Hi(
         Buffer.from(saslprep(creds.password || '')),
@@ -293,21 +289,10 @@ test('SASL - SCRAM-SHA-1 with salted password', () => {
     const factory = new SASL.Factory();
     factory.register('SCRAM-SHA-1', SASL.SCRAM, 10);
 
-    const mech = factory.createMechanism(['SCRAM-SHA-1'])!;
-
-    expect(mech.name).toBe('SCRAM-SHA-1');
-    expect(mech.providesMutualAuthentication).toBe(true);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce'],
-        required: ['username', 'password']
-    });
-
     const salt = Buffer.from('salt').toString('base64');
     const serverNonce = Buffer.from('client-random-noncerandom-server-nonce').toString('base64');
     const clientNonce = Buffer.from('random-client-nonce').toString('base64');
-
+    
     const saltedPassword = SASL.Hi(
         Buffer.from(saslprep('hunter2')),
         Buffer.from(salt, 'base64'),
@@ -326,6 +311,16 @@ test('SASL - SCRAM-SHA-1 with salted password', () => {
         salt: Buffer.from(salt, 'base64'),
         saltedPassword
     };
+    const mech = factory.createMechanism(['SCRAM-SHA-1'], creds)!;
+
+    expect(mech.name).toBe('SCRAM-SHA-1');
+    expect(mech.providesMutualAuthentication).toBe(true);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce'],
+        required: [['username', 'password'], ['username', 'saltedPassword'], ['clientKey', 'serverKey']]
+    });
 
     const response1 = mech.createResponse(creds)!;
     expect(response1.toString('utf8')).toBe(`n,,n=user,r=${clientNonce}`);
@@ -364,17 +359,6 @@ test('SASL - SCRAM-SHA-1 with client and server keys', () => {
     const factory = new SASL.Factory();
     factory.register('SCRAM-SHA-1', SASL.SCRAM, 10);
 
-    const mech = factory.createMechanism(['SCRAM-SHA-1'])!;
-
-    expect(mech.name).toBe('SCRAM-SHA-1');
-    expect(mech.providesMutualAuthentication).toBe(true);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce'],
-        required: ['username', 'password']
-    });
-
     const salt = Buffer.from('salt').toString('base64');
     const serverNonce = Buffer.from('client-random-noncerandom-server-nonce').toString('base64');
     const clientNonce = Buffer.from('random-client-nonce').toString('base64');
@@ -398,6 +382,16 @@ test('SASL - SCRAM-SHA-1 with client and server keys', () => {
         salt: Buffer.from(salt, 'base64'),
         serverKey: Buffer.from(serverKey, 'base64')
     };
+    const mech = factory.createMechanism(['SCRAM-SHA-1'], creds)!;
+
+    expect(mech.name).toBe('SCRAM-SHA-1');
+    expect(mech.providesMutualAuthentication).toBe(true);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce'],
+        required: [['username', 'password'], ['username', 'saltedPassword'], ['clientKey', 'serverKey']]
+    });
 
     const response1 = mech.createResponse(creds)!;
     expect(response1.toString('utf8')).toBe(`n,,n=user,r=${clientNonce}`);
@@ -433,17 +427,6 @@ test('SASL - SCRAM-SHA-1 with authzid', () => {
     const factory = new SASL.Factory();
     factory.register('SCRAM-SHA-1', SASL.SCRAM, 10);
 
-    const mech = factory.createMechanism(['SCRAM-SHA-1'])!;
-
-    expect(mech.name).toBe('SCRAM-SHA-1');
-    expect(mech.providesMutualAuthentication).toBe(true);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce'],
-        required: ['username', 'password']
-    });
-
     const salt = Buffer.from('salt').toString('base64');
     const serverNonce = Buffer.from('client-random-noncerandom-server-nonce').toString('base64');
     const clientNonce = Buffer.from('random-client-nonce').toString('base64');
@@ -454,6 +437,16 @@ test('SASL - SCRAM-SHA-1 with authzid', () => {
         password: 'hunter2',
         clientNonce: clientNonce
     };
+    const mech = factory.createMechanism(['SCRAM-SHA-1'], creds)!;
+
+    expect(mech.name).toBe('SCRAM-SHA-1');
+    expect(mech.providesMutualAuthentication).toBe(true);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce'],
+        required: [['username', 'password'], ['username', 'saltedPassword'], ['clientKey', 'serverKey']]
+    });
 
     const saltedPassword = SASL.Hi(
         Buffer.from(saslprep(creds.password || '')),
@@ -506,17 +499,6 @@ test('SASL - SCRAM-SHA-256', () => {
     const factory = new SASL.Factory();
     factory.register('SCRAM-SHA-256', SASL.SCRAM, 10);
 
-    const mech = factory.createMechanism(['SCRAM-SHA-256'])!;
-
-    expect(mech.name).toBe('SCRAM-SHA-256');
-    expect(mech.providesMutualAuthentication).toBe(true);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce'],
-        required: ['username', 'password']
-    });
-
     const salt = Buffer.from('salt').toString('base64');
     const serverNonce = Buffer.from('client-random-noncerandom-server-nonce').toString('base64');
     const clientNonce = Buffer.from('random-client-nonce').toString('base64');
@@ -526,6 +508,16 @@ test('SASL - SCRAM-SHA-256', () => {
         password: 'hunter2',
         clientNonce: clientNonce
     };
+    const mech = factory.createMechanism(['SCRAM-SHA-256'], creds)!;
+
+    expect(mech.name).toBe('SCRAM-SHA-256');
+    expect(mech.providesMutualAuthentication).toBe(true);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce'],
+        required: [['username', 'password'], ['username', 'saltedPassword'], ['clientKey', 'serverKey']]
+    });
 
     const saltedPassword = SASL.Hi(
         Buffer.from(saslprep(creds.password || '')),
@@ -578,17 +570,6 @@ test('SASL - SCRAM-SHA-1 server error', () => {
     const factory = new SASL.Factory();
     factory.register('SCRAM-SHA-1', SASL.SCRAM, 10);
 
-    const mech = factory.createMechanism(['SCRAM-SHA-1'])!;
-
-    expect(mech.name).toBe('SCRAM-SHA-1');
-    expect(mech.providesMutualAuthentication).toBe(true);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce'],
-        required: ['username', 'password']
-    });
-
     const salt = Buffer.from('salt').toString('base64');
     const serverNonce = Buffer.from('client-random-noncerandom-server-nonce').toString('base64');
     const clientNonce = Buffer.from('random-client-nonce').toString('base64');
@@ -598,6 +579,16 @@ test('SASL - SCRAM-SHA-1 server error', () => {
         password: 'hunter2',
         clientNonce: clientNonce
     };
+    const mech = factory.createMechanism(['SCRAM-SHA-1'], creds)!;
+
+    expect(mech.name).toBe('SCRAM-SHA-1');
+    expect(mech.providesMutualAuthentication).toBe(true);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce'],
+        required: [['username', 'password'], ['username', 'saltedPassword'], ['clientKey', 'serverKey']]
+    });
 
     const response1 = mech.createResponse(creds)!;
     expect(response1.toString('utf8')).toBe(`n,,n=user,r=${clientNonce}`);
@@ -623,17 +614,6 @@ test('SASL - SCRAM-SHA-1 invalid signature', () => {
     const factory = new SASL.Factory();
     factory.register('SCRAM-SHA-1', SASL.SCRAM, 10);
 
-    const mech = factory.createMechanism(['SCRAM-SHA-1'])!;
-
-    expect(mech.name).toBe('SCRAM-SHA-1');
-    expect(mech.providesMutualAuthentication).toBe(true);
-
-    const neededCreds = mech.getExpectedCredentials();
-    expect(neededCreds).toStrictEqual({
-        optional: ['authzid', 'clientNonce'],
-        required: ['username', 'password']
-    });
-
     const salt = Buffer.from('salt').toString('base64');
     const serverNonce = Buffer.from('client-random-noncerandom-server-nonce').toString('base64');
     const clientNonce = Buffer.from('random-client-nonce').toString('base64');
@@ -643,6 +623,16 @@ test('SASL - SCRAM-SHA-1 invalid signature', () => {
         password: 'hunter2',
         clientNonce: clientNonce
     };
+    const mech = factory.createMechanism(['SCRAM-SHA-1'], creds)!;
+
+    expect(mech.name).toBe('SCRAM-SHA-1');
+    expect(mech.providesMutualAuthentication).toBe(true);
+
+    const neededCreds = mech.getExpectedCredentials();
+    expect(neededCreds).toStrictEqual({
+        optional: ['authzid', 'clientNonce'],
+        required: [['username', 'password'], ['username', 'saltedPassword'], ['clientKey', 'serverKey']]
+    });
 
     const response1 = mech.createResponse(creds)!;
     expect(response1.toString('utf8')).toBe(`n,,n=user,r=${clientNonce}`);
