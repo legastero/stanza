@@ -72,6 +72,14 @@
 
 <p></p>
 
+<h3 id="createMediaSession">createNode</h3>
+
+```
+(peer: string, sid?: string, stream?: MediaStream) => Promise
+```
+
+<p></p>
+
 <h3 id="declineInvite">declineInvite</h3>
 
 ```
