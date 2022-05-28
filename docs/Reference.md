@@ -72,7 +72,7 @@
 
 <p></p>
 
-<h3 id="createMediaSession">createNode</h3>
+<h3 id="createMediaSession">createMediaSession</h3>
 
 ```
 (peer: string, sid?: string, stream?: MediaStream) => Promise
