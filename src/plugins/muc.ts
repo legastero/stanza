@@ -21,10 +21,15 @@ import {
 } from '../protocol';
 import { uuid } from '../Utils';
 
+type RoomState = {
+    nick: string;
+    presence?: MUCPresence;
+};
+
 declare module '../' {
     export interface Agent {
-        joinedRooms: Map<string, string>;
-        joiningRooms: Map<string, string>;
+        joinedRooms: Map<string, RoomState>;
+        joiningRooms: Map<string, RoomState>;
         leavingRooms: Map<string, string>;
 
         joinRoom(jid: string, nick: string, opts?: Presence): Promise<ReceivedMUCPresence>;
@@ -117,14 +122,14 @@ export default function (client: Agent): void {
     function rejoinRooms() {
         const oldJoiningRooms = client.joiningRooms;
         client.joiningRooms = new Map();
-        for (const [room, nick] of oldJoiningRooms) {
-            client.joinRoom(room, nick);
+        for (const [room, roomState] of oldJoiningRooms) {
+            client.joinRoom(room, roomState.nick, roomState.presence);
         }
 
         const oldJoinedRooms = client.joinedRooms;
         client.joinedRooms = new Map();
-        for (const [room, nick] of oldJoinedRooms) {
-            client.joinRoom(room, nick);
+        for (const [room, roomState] of oldJoinedRooms) {
+            client.joinRoom(room, roomState.nick, roomState.presence);
         }
     }
     client.on('session:started', rejoinRooms);
@@ -207,7 +212,7 @@ export default function (client: Agent): void {
             client.emit('muc:unavailable', pres);
             if (isSelf) {
                 if (isNickChange) {
-                    client.joinedRooms.set(room, pres.muc.nick!);
+                    client.joinedRooms.get(room)!.nick = pres.muc.nick!;
                 } else {
                     client.emit('muc:leave', pres);
                     client.joinedRooms.delete(room);
@@ -228,7 +233,10 @@ export default function (client: Agent): void {
         client.emit('muc:available', pres);
         const isJoin = client.joiningRooms.has(room) || !client.joinedRooms.has(room);
         if (isSelf) {
-            client.joinedRooms.set(room, JID.getResource(pres.from)!);
+            const roomState =
+                client.joiningRooms.get(room) || client.joinedRooms.get(room) || ({} as RoomState);
+            roomState.nick = JID.getResource(pres.from)!;
+            client.joinedRooms.set(room, roomState);
             if (isJoin) {
                 client.joiningRooms.delete(room);
                 client.emit('muc:join', pres);
@@ -242,12 +250,15 @@ export default function (client: Agent): void {
         opts: MUCPresence = {}
     ): Promise<ReceivedMUCPresence> => {
         room = JID.toBare(room);
-        client.joiningRooms.set(room, nick || '');
+        client.joiningRooms.set(room, {
+            nick: nick || '',
+            presence: opts
+        });
 
         if (!nick) {
             try {
                 nick = await client.getReservedNick(room);
-                client.joiningRooms.set(room, nick!);
+                client.joiningRooms.get(room)!.nick = nick!;
             } catch (err) {
                 throw new Error('Room nick required');
             }
@@ -289,7 +300,7 @@ export default function (client: Agent): void {
         opts: Presence = {}
     ): Promise<ReceivedPresence> => {
         room = JID.toBare(room);
-        nick = nick || client.joinedRooms.get(room)!;
+        nick = nick || client.joinedRooms.get(room)!.nick;
 
         client.leavingRooms.set(room, nick);
 
