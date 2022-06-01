@@ -6,8 +6,8 @@
 // ====================================================================
 
 import { attribute, DefinitionOptions, staticValue, textBuffer } from '../jxt';
-
 import { NS_HASHES_1, NS_HASHES_2 } from '../Namespaces';
+import { Buffer } from '../platform';
 
 export interface Hash {
     version?: '2' | '1';

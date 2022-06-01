@@ -1,5 +1,5 @@
+import { Buffer, createHash, createHmac, randomBytes } from '../../platform';
 import { saslprep } from '../stringprep';
-import * as Hashes from '../../platform';
 
 export interface Credentials {
     username?: string;
@@ -128,7 +128,7 @@ export class Factory {
 
 // istanbul ignore next
 export function createClientNonce(length = 32): string {
-    return Hashes.randomBytes(length).toString('hex');
+    return randomBytes(length).toString('hex');
 }
 
 // tslint:disable no-bitwise
@@ -142,11 +142,11 @@ export function XOR(a: Buffer, b: Buffer): Buffer {
 // tslint:enable no-bitwise
 
 export function H(text: Buffer, alg: string): Buffer {
-    return Hashes.createHash(alg).update(text).digest();
+    return createHash(alg).update(text).digest();
 }
 
 export function HMAC(key: Buffer, msg: Buffer, alg: string): Buffer {
-    return Hashes.createHmac(alg, key).update(msg).digest() as Buffer;
+    return createHmac(alg, key).update(msg).digest() as Buffer;
 }
 
 export function Hi(text: Buffer, salt: Buffer, iterations: number, alg: string): Buffer {
@@ -337,14 +337,14 @@ export class DIGEST extends SimpleMech implements Mechanism {
         str += ',nc=' + nc;
         str += ',qop=' + qop;
         str += ',digest-uri="' + uri + '"';
-        const base = Hashes.createHash('md5')
+        const base = createHash('md5')
             .update(credentials.username!)
             .update(':')
             .update(realm)
             .update(':')
             .update(credentials.password!)
             .digest();
-        const ha1 = Hashes.createHash('md5')
+        const ha1 = createHash('md5')
             .update(base)
             .update(':')
             .update(this.nonce!)
@@ -354,9 +354,9 @@ export class DIGEST extends SimpleMech implements Mechanism {
             ha1.update(':').update(credentials.authzid);
         }
         const dha1 = ha1.digest('hex');
-        const ha2 = Hashes.createHash('md5').update('AUTHENTICATE:').update(uri);
+        const ha2 = createHash('md5').update('AUTHENTICATE:').update(uri);
         const dha2 = ha2.digest('hex');
-        const digest = Hashes.createHash('md5')
+        const digest = createHash('md5')
             .update(dha1)
             .update(':')
             .update(this.nonce!)

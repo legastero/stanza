@@ -6,7 +6,7 @@
  * Derived from: ltx, Copyright © 2010 Stephan Maka
  */
 
-import { Transform } from 'readable-stream';
+import { Transform } from '../platform';
 
 import { JSONData } from './Definitions';
 import XMLElement from './Element';

@@ -13,6 +13,7 @@ import {
     textBuffer
 } from '../jxt';
 import { NS_AVATAR_DATA, NS_AVATAR_METADATA } from '../Namespaces';
+import { Buffer } from '../platform';
 
 import { PubsubItemContent } from './';
 

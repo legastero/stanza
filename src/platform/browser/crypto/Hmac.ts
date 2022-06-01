@@ -15,7 +15,8 @@
 
 /* istanbul ignore file */
 
-import { Transform } from 'readable-stream';
+import { Buffer } from '../buffer';
+import { Transform } from '../stream';
 
 import createHash, { Hash } from './createHash';
 

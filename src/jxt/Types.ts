@@ -1,3 +1,5 @@
+import { Buffer } from '../platform';
+
 import { FieldDefinition, JSONData, LanguageSet, TranslationContext } from './Definitions';
 import XMLElement, { JSONElement } from './Element';
 import { parse } from './Parser';

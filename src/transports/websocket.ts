@@ -1,10 +1,8 @@
-import { Duplex } from 'readable-stream';
-
 import { Agent, Transport, TransportConfig } from '../';
 import { StreamErrorCondition } from '../Constants';
 import StreamManagement from '../helpers/StreamManagement';
 import { JSONData, ParsedData, Registry, StreamParser } from '../jxt';
-import { WebSocket } from '../platform';
+import { Buffer, Duplex, WebSocket } from '../platform';
 import { Stream } from '../protocol';
 
 const WS_OPEN = 1;
@@ -116,7 +114,7 @@ export default class WSConnection extends Duplex implements Transport {
         this.socket.onclose = () => {
             this.push(null);
         };
-        this.socket.onerror = (err) => {
+        this.socket.onerror = err => {
             console.error(err);
             this.push(null);
         };

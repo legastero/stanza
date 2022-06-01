@@ -1,7 +1,9 @@
 /* istanbul ignore file */
 
+import { Buffer } from './buffer';
 import createHash, { Hash } from './crypto/createHash';
 import Hmac from './crypto/Hmac';
+import { Readable, Writable, Transform, PassThrough, Duplex } from './stream';
 
 export function randomBytes(size: number): Buffer {
     const rawBytes = new Uint8Array(size);
@@ -32,10 +34,16 @@ const nativeRTCPeerConnection: RTCPeerConnection | undefined = (globalThis as an
 
 export const name = 'browser';
 export {
+    Buffer,
     createHash,
     Hash,
     Hmac,
     nativeFetch as fetch,
     nativeRTCPeerConnection as RTCPeerConnection,
-    nativeWS as WebSocket
+    nativeWS as WebSocket,
+    Readable,
+    Writable,
+    Transform,
+    Duplex,
+    PassThrough
 };

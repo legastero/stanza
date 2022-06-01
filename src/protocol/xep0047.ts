@@ -13,8 +13,8 @@ import {
     TranslationContext,
     XMLElement
 } from '../jxt';
-
 import { NS_IBB } from '../Namespaces';
+import { Buffer } from '../platform';
 
 declare module './' {
     export interface Message {

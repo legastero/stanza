@@ -13,10 +13,6 @@ module.exports = {
     },
 
     plugins: [
-        new Webpack.ProvidePlugin({
-            Buffer: ['buffer', 'Buffer'],
-            process: 'process/browser.js'
-        }),
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',
             defaultSizes: 'gzip',

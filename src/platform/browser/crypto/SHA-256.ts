@@ -21,6 +21,8 @@
 
 /* istanbul ignore file */
 
+import { Buffer } from '../buffer';
+
 import Hash from './Hash';
 
 const K = [

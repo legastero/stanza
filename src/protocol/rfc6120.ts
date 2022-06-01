@@ -4,6 +4,8 @@
 // Source: https://tools.ietf.org/html/rfc6120
 // ====================================================================
 
+import { Buffer } from '../platform';
+
 import {
     IQType,
     MessageType,

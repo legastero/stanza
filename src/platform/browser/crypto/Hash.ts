@@ -13,7 +13,8 @@
 
 /* istanbul ignore file */
 
-import { Transform } from 'readable-stream';
+import { Buffer } from '../buffer';
+import { Transform } from '../stream';
 
 export default abstract class Hash extends Transform {
     protected _block: Buffer;

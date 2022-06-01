@@ -333,7 +333,7 @@ export default class Client extends EventEmitter {
         if (typeof pluginInit !== 'function') {
             return;
         }
-        pluginInit(this as unknown as Agent, this.stanzas, this.config);
+        pluginInit((this as unknown) as Agent, this.stanzas, this.config);
     }
 
     public nextId(): string {
@@ -368,7 +368,7 @@ export default class Client extends EventEmitter {
                 server: this.config.server!
             };
             const transport = new this.transports[name](
-                this as unknown as Agent,
+                (this as unknown) as Agent,
                 this.sm,
                 this.stanzas
             );
@@ -388,7 +388,7 @@ export default class Client extends EventEmitter {
                 } else {
                     if (!endpoints) {
                         try {
-                            endpoints = await (this as unknown as Agent).discoverBindings(
+                            endpoints = await ((this as unknown) as Agent).discoverBindings(
                                 this.config.server!
                             );
                         } catch (err) {

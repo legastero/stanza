@@ -70,7 +70,10 @@ export class ResultSetPager<T> {
         this.resultCount = paging.count;
         this.fetchedCount += results.length;
 
-        if ((this.pageSize && results.length < this.pageSize) || (this.resultCount && this.fetchedCount === this.resultCount)) {
+        if (
+            (this.pageSize && results.length < this.pageSize) ||
+            (this.resultCount && this.fetchedCount === this.resultCount)
+        ) {
             this.resultComplete = true;
         }
 

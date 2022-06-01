@@ -9,7 +9,7 @@
 
 // tslint:disable no-bitwise
 
-import { randomBytes } from './platform';
+import { Buffer, randomBytes } from './platform';
 
 const bth: string[] = [];
 for (let i = 0; i < 256; ++i) {

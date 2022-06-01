@@ -1,9 +1,7 @@
-import { Duplex } from 'readable-stream';
-
 import { Agent, Transport, TransportConfig } from '../';
 import { StreamErrorCondition } from '../Constants';
 import StreamManagement from '../helpers/StreamManagement';
-import { fetch } from '../platform';
+import { fetch, Duplex } from '../platform';
 import { Stream } from '../protocol';
 
 import { JSONData, ParsedData, Registry, StreamParser } from '../jxt';

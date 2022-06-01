@@ -118,7 +118,13 @@ export interface Agent extends StrictEventEmitter<EventEmitter, AgentEvents> {
     sessionStarted: boolean;
     sessionTerminating: boolean;
 
-    transports: {[key: string]: new (client: Agent, sm: StreamManagement, registry: JXT.Registry) => Transport};
+    transports: {
+        [key: string]: new (
+            client: Agent,
+            sm: StreamManagement,
+            registry: JXT.Registry
+        ) => Transport;
+    };
 
     use(plugin: (agent: Agent, registry: JXT.Registry, config: AgentConfig) => void): void;
 
@@ -211,12 +217,12 @@ export interface AgentConfig {
      * Transport Preference Order
      *
      * Specify the order in which transports should be tried when connecting.
-     * 
+     *
      * If a configured transport type is not listed, it will be skipped.
      *
      * @default ['websocket', 'bosh']
      */
-     transportPreferenceOrder?: string[];
+    transportPreferenceOrder?: string[];
 
     /**
      * Account Password
@@ -298,5 +304,5 @@ export function createClient(opts: AgentConfig): Agent {
     const client = new Client(opts);
     client.use(Plugins);
 
-    return client as unknown as Agent;
+    return (client as unknown) as Agent;
 }

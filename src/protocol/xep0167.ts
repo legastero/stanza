@@ -66,6 +66,7 @@ import {
     NS_JINGLE_RTP_RTCP_FB_0,
     NS_JINGLE_RTP_SSMA_0
 } from '../Namespaces';
+import { Buffer } from '../platform';
 
 import { JingleApplication, JingleDtlsFingerprint, Thumbnail } from './';
 

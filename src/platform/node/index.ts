@@ -10,6 +10,8 @@ import {
     Hmac
 } from 'crypto';
 import * as dns from 'dns';
+import { Buffer } from 'buffer';
+import { Readable, Writable, Transform, PassThrough, Duplex } from 'stream';
 
 const ianaNames = new Map([
     ['md2', 'md2'],
@@ -45,4 +47,16 @@ export function createResolver(opts?: dns.ResolverOptions): Resolver | undefined
 const nativeRTCPeerConnection: RTCPeerConnection | undefined = undefined;
 
 export const name = 'node';
-export { fetch, Hash, Hmac, nativeRTCPeerConnection as RTCPeerConnection, WebSocket };
+export {
+    Buffer,
+    fetch,
+    Hash,
+    Hmac,
+    nativeRTCPeerConnection as RTCPeerConnection,
+    WebSocket,
+    Readable,
+    Writable,
+    Transform,
+    Duplex,
+    PassThrough
+};

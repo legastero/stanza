@@ -15,12 +15,12 @@ import {
     splicePath,
     textBuffer
 } from '../jxt';
-
 import {
     NS_OMEMO_AXOLOTL,
     NS_OMEMO_AXOLOTL_BUNDLES,
     NS_OMEMO_AXOLOTL_DEVICELIST
 } from '../Namespaces';
+import { Buffer } from '../platform';
 
 declare module './' {
     export interface Message {

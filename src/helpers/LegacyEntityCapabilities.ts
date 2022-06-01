@@ -1,4 +1,4 @@
-import * as Hashes from '../platform';
+import { Buffer, createHash } from '../platform';
 import { octetCompare } from '../Utils';
 
 import { DataForm, DataFormField, DiscoInfo, DiscoInfoIdentity } from '../protocol';
@@ -160,7 +160,7 @@ export function generate(info: DiscoInfo, hashName: string): string | null {
         append(form);
     }
 
-    return Hashes.createHash(hashName).update(Buffer.concat(S)).digest('base64');
+    return createHash(hashName).update(Buffer.concat(S)).digest('base64');
 }
 
 export function verify(info: DiscoInfo, hashName: string, check: string): boolean {

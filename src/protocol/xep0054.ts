@@ -15,6 +15,7 @@ import {
     text
 } from '../jxt';
 import { NS_VCARD_TEMP } from '../Namespaces';
+import { Buffer } from '../platform';
 
 declare module './' {
     export interface IQPayload {

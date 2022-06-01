@@ -22,6 +22,8 @@
 
 /* istanbul ignore file */
 
+import { Buffer } from '../buffer';
+
 import Hash from './Hash';
 
 const K = [0x5a827999, 0x6ed9eba1, 0x8f1bbcdc | 0, 0xca62c1d6 | 0];

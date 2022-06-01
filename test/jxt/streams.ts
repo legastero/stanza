@@ -95,7 +95,7 @@ test('[Stream Errors] Unknown Root', done => {
         wrappedStream: true
     });
 
-    parser.on('error', err => {
+    parser.on('error', (err: any) => {
         expect(err.isJXTError).toBeTruthy();
         expect(err.condition).toBe(JXTErrorCondition.UnknownRoot);
         done();
@@ -112,7 +112,7 @@ test('[Stream Errors] Not well-formed', done => {
         registry
     });
 
-    parser.on('error', err => {
+    parser.on('error', (err: any) => {
         expect(err.isJXTError).toBeTruthy();
         expect(err.condition).toBe(JXTErrorCondition.NotWellFormed);
         done();
@@ -132,7 +132,7 @@ test('[Stream Errors] Not well-formed: close unopened stream', done => {
         wrappedStream: true
     });
 
-    parser.on('error', err => {
+    parser.on('error', (err: any) => {
         expect(err.isJXTError).toBeTruthy();
         expect(err.condition).toBe(JXTErrorCondition.NotWellFormed);
         done();
@@ -151,7 +151,7 @@ test('[Stream Errors] Already closed', done => {
         wrappedStream: true
     });
 
-    parser.on('error', err => {
+    parser.on('error', (err: any) => {
         expect(err.isJXTError).toBeTruthy();
         expect(err.condition).toBe(JXTErrorCondition.AlreadyClosed);
         done();
@@ -172,7 +172,7 @@ test('[Stream Errors] Unknown root element', done => {
         wrappedStream: true
     });
 
-    parser.on('error', err => {
+    parser.on('error', (err: any) => {
         expect(err.isJXTError).toBeTruthy();
         expect(err.condition).toBe(JXTErrorCondition.NotWellFormed);
         done();
@@ -205,7 +205,7 @@ test('[Stream Errors] Restricted XML', done => {
         wrappedStream: true
     });
 
-    parser.on('error', err => {
+    parser.on('error', (err: any) => {
         expect(err.isJXTError).toBeTruthy();
         expect(err.condition).toBe(JXTErrorCondition.RestrictedXML);
         done();
