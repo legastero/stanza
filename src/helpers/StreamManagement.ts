@@ -175,8 +175,13 @@ export default class StreamManagement extends EventEmitter {
         kind: string,
         stanza: StreamManagementEnable | StreamManagementResume | Message | Presence | IQ
     ): Promise<boolean> {
-        if (kind === 'sm' && (stanza.type === 'enable' || stanza.type === 'resume')) {
-            this.handled = 0;
+        const isStanzaEnable = stanza.type === 'enable';
+
+        if (kind === 'sm' && (isStanzaEnable || stanza.type === 'resume')) {
+            if (isStanzaEnable) {
+                this.handled = 0;
+            }
+
             this.outboundStarted = true;
 
             await this._cache();
