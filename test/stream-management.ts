@@ -1,5 +1,41 @@
 import StreamManagement from '../src/helpers/StreamManagement';
 
+test('Failed response to enable request', async () => {
+    const sm = new StreamManagement();
+    await sm.enable();
+    await sm.track('sm', { type: 'enable' });
+    await sm.failed( { type: 'failed'});
+    expect(sm.started).toStrictEqual(false);
+    expect(sm.resumable).toStrictEqual(false);
+});
+
+test('Enabled response without resume attribute', async () => {
+    const sm = new StreamManagement();
+    await sm.enable();
+    await sm.track('sm', { type: 'enable' });
+    await sm.enabled({ id: 'test', type: 'enabled' });
+    expect(sm.started).toStrictEqual(true);
+    expect(sm.resumable).toStrictEqual(false);
+});
+
+test('Enabled response with positive resume attribute', async () => {
+    const sm = new StreamManagement();
+    await sm.enable();
+    await sm.track('sm', { type: 'enable' });
+    await sm.enabled({ id: 'test', resume: true, type: 'enabled' });
+    expect(sm.started).toStrictEqual(true);
+    expect(sm.resumable).toStrictEqual(true);
+});
+
+test('Enabled response with negative resume attribute', async () => {
+    const sm = new StreamManagement();
+    await sm.enable();
+    await sm.track('sm', { type: 'enable' });
+    await sm.enabled({ id: 'test', resume: false, type: 'enabled' });
+    expect(sm.started).toStrictEqual(true);
+    expect(sm.resumable).toStrictEqual(false);
+});
+
 test('Handled unacked on resume', async () => {
     let cache: any;
     const acked: any[] = [];
