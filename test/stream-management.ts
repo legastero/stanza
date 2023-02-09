@@ -134,3 +134,35 @@ test('Handled failed with unknown handled', async () => {
         { kind: 'message', stanza: { body: 'message 4' } }
     ]);
 });
+
+test('Report previously handled on resume', async () => {
+    const handledCount = 2;
+    let cache: any;
+
+    const sm1 = new StreamManagement();
+    sm1.cache(data => {
+        cache = data;
+    });
+
+    sm1.bind('test-jid');
+    await sm1.enable();
+    await sm1.track('sm', { type: 'enable' });
+
+    await sm1.enabled({ id: 'test', resume: true, type: 'enabled' });
+
+    for (let i = 0; i < handledCount; i++) {
+        await sm1.handle();
+    }
+    // -- sm1 disconnect --
+
+    // -- resume with sm2 --
+    const sm2 = new StreamManagement();
+    sm2.load(cache);
+
+    sm2.on('send', data => { if (data.type === 'resume') { expect(data.handled).toStrictEqual(handledCount); }});
+
+    await sm2.resume();
+    await sm2.track('sm', { type: 'resume', previousSession: 'test', handled: 2 })
+    await sm2.resumed( { type: 'resumed', previousSession: 'test', handled: 0 });
+    expect(sm2.handled).toStrictEqual(handledCount);
+});
