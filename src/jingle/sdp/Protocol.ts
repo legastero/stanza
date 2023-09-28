@@ -330,7 +330,8 @@ export function convertContentToIntermediate(
             media.rtpParameters.headerExtensions.push({
                 direction: sendersToDirection(role, ext.senders || 'both'),
                 id: ext.id,
-                uri: ext.uri
+                uri: ext.uri,
+                atrributes: undefined
             });
         }
     }
