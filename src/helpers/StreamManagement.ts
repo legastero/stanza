@@ -98,6 +98,7 @@ export default class StreamManagement extends EventEmitter {
 
     public async enabled(resp: StreamManagementEnabled): Promise<void> {
         this.id = resp.id;
+        this.allowResume = resp.resume || false;
         this.handled = 0;
         this.inboundStarted = true;
 
