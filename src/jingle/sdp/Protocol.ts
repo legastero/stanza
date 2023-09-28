@@ -331,7 +331,7 @@ export function convertContentToIntermediate(
                 direction: sendersToDirection(role, ext.senders || 'both'),
                 id: ext.id,
                 uri: ext.uri,
-                atrributes: undefined
+                attributes: undefined
             });
         }
     }
