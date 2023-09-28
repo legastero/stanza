@@ -8,7 +8,7 @@ jobs:
 
         strategy:
             matrix:
-                node-version: [12.x, 14.x, 16.x]
+                node-version: [lts/Erbium, lts/Fermium, lts/Gallium]
 
         steps:
             - uses: actions/checkout@v4
@@ -16,6 +16,7 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node-version }}
+                  check-latest: true
             - run: npm install
             - run: npm run lint
             - run: npm run compile
