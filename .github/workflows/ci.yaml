@@ -1,6 +1,6 @@
 name: Tests
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
     build:
@@ -8,14 +8,15 @@ jobs:
 
         strategy:
             matrix:
-                node-version: [12.x, 14.x, 16.x]
+                node-version: [lts/Erbium, lts/Fermium, lts/Gallium, lts/Hydrogen]
 
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v1
+              uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node-version }}
+                  check-latest: true
             - run: npm install
             - run: npm run lint
             - run: npm run compile
