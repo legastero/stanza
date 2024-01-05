@@ -68,6 +68,7 @@
 | [XEP-0215](https://xmpp.org/extensions/xep-0215.html) | External Service Discovery                         | 0.7     | [Source](../src/protocol/xep0215.ts) | [Test Cases](../test/protocol-cases/xep0215) |
 | [XEP-0221](https://xmpp.org/extensions/xep-0221.html) | Data Forms Media Element                           | 1.0     | [Source](../src/protocol/xep0221.ts) |                                              |
 | [XEP-0224](https://xmpp.org/extensions/xep-0224.html) | Attention                                          | 1.0     | [Source](../src/protocol/xep0224.ts) |                                              |
+| [XEP-295](https://xmpp.org/extensions/xep-0295.html)  | JSON Encodings for XMPP                            | 1.0     |                                      |                                              |
 | [XEP-0231](https://xmpp.org/extensions/xep-0231.html) | Bits of Binary                                     | 1.0     | [Source](../src/protocol/xep0231.ts) |                                              |
 | [XEP-0234](https://xmpp.org/extensions/xep-0234.html) | Jingle File Transfer                               | 0.18.3  | [Source](../src/protocol/xep0234.ts) | [Test Cases](../test/protocol-cases/xep0234) |
 | [XEP-0247](https://xmpp.org/extensions/xep-0247.html) | Jingle XML Streams                                 | 0.2     | [Source](../src/protocol/xep247.ts)  |                                              |
