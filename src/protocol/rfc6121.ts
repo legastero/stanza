@@ -65,7 +65,8 @@ export interface RosterItem {
     jid: string;
     name?: string;
     subscription: RosterSubscription;
-    approved?: boolean;
+    pending?: 'subscribe';
+    preApproved?: boolean;
     ask?: boolean;
     groups?: string[];
 }
