@@ -31,7 +31,7 @@ function drainQueue() {
     if (draining) {
         return;
     }
-    var timeout = setTimeout(cleanUpNextTick, 0);
+    var timeout = queueMicrotask(cleanUpNextTick, 0);
     draining = true;
 
     var len = queue.length;
@@ -60,6 +60,6 @@ exports.nextTick = function (fun) {
     }
     queue.push(new Item(fun, args));
     if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
+        queueMicrotask(drainQueue, 0);
     }
 };
