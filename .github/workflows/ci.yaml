@@ -8,7 +8,7 @@ jobs:
 
         strategy:
             matrix:
-                node-version: [lts/Erbium, lts/Fermium, lts/Gallium, lts/Hydrogen]
+                node-version: [lts/Erbium, lts/Fermium, lts/Gallium, lts/Hydrogen, lts/Iron]
 
         steps:
             - uses: actions/checkout@v4
