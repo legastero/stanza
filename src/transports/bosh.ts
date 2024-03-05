@@ -286,10 +286,12 @@ export default class BOSH extends Duplex implements Transport {
         }
 
         this.client.emit('raw', 'outgoing', body);
+        this.client.emit('raw:outgoing:*', rid.toString(), body);
 
         this.sendingChannel
             .send(rid, body)
             .then(result => {
+                this.client.emit('raw:incoming:*', rid.toString(), body);
                 this.process(result);
             })
             .catch(err => {
@@ -312,10 +314,12 @@ export default class BOSH extends Duplex implements Transport {
             .toString();
 
         this.client.emit('raw', 'outgoing', body);
+        this.client.emit('raw:outgoing:*', rid.toString(), body);
 
         this.pollingChannel
             .send(rid, body)
             .then(result => {
+                this.client.emit('raw:incoming:*', rid.toString(), body);
                 this.process(result);
             })
             .catch(err => {
