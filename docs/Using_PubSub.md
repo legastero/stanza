@@ -47,7 +47,15 @@ import MyContentPlugin from 'mycontentplugin';
 client.use(MyContentPlugin);
 ```
 
-## 2. Publishing our new content
+## 2. Creating our new node
+
+On some servers (OpenFire) a node much be created before it can be published to.
+
+```javascript
+client.create('pubsub.example.com', 'ournode');
+```
+
+## 3. Publishing our new content
 
 ```javascript
 client.publish('pubsub.example.com', 'ournode', {
@@ -56,7 +64,7 @@ client.publish('pubsub.example.com', 'ournode', {
 });
 ```
 
-## 3. Subscribing to our content
+## 4. Subscribing to our content
 
 ```javascript
 client.subscribeToNode('pubsub.example.com', 'ournode');
@@ -71,7 +79,7 @@ client.subscribeToNode('pubsub.example.com', {
 });
 ```
 
-## 4. Receiving publish events
+## 5. Receiving publish events
 
 ```javascript
     client.on('pubsub:published', msg => {
@@ -96,7 +104,7 @@ client.subscribeToNode('pubsub.example.com', {
     });
 ```
 
-## 5. Unsubscribing
+## 6. Unsubscribing
 
 ```javascript
 client.unsubscribeFromNode('pubsub.example.com', 'ournode');
@@ -109,4 +117,11 @@ client.unsubscribeFromNode('pubsub.example.com', {
     node: 'ournode',
     useBareJID: true
 });
+```
+
+## 7. Deleting our node
+
+
+```javascript
+client.deleteNode('pubsub.example.com', 'ournode');
 ```
