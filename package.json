@@ -11,6 +11,7 @@
     "dependencies": {
         "@types/async": "^3.2.5",
         "@types/node": "^14.14.36",
+        "@types/node-fetch": "^2.6.11",
         "@types/punycode": "^2.1.0",
         "@types/ws": "^7.4.0",
         "async": "^3.2.1",
