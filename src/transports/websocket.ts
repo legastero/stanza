@@ -18,6 +18,7 @@ export default class WSConnection extends Duplex implements Transport {
     private closing: boolean;
     private parser?: StreamParser;
     private socket?: WebSocket;
+    private disconnectTimeoutId?: ReturnType<typeof setTimeout>;
 
     constructor(client: Agent, sm: StreamManagement, stanzas: Registry) {
         super({ objectMode: true });
@@ -124,7 +125,13 @@ export default class WSConnection extends Duplex implements Transport {
         if (this.socket && !this.closing && this.hasStream && clean) {
             this.closing = true;
             this.write(this.closeHeader());
+            this.disconnectTimeoutId = setTimeout(() => {
+                if (this.socket) {
+                    this.disconnect(false);
+                }
+            }, 1000);
         } else {
+            clearTimeout(this.disconnectTimeoutId);
             this.hasStream = false;
             this.stream = undefined;
             if (this.socket) {
