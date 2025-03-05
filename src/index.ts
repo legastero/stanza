@@ -244,6 +244,14 @@ export interface AgentConfig {
      * A list of language codes acceptable to the user.
      */
     acceptLanguages?: string[];
+
+    /**
+     * Janus WebRTC Gateway Configuration
+     */
+    janus?: {
+        enabled: boolean;
+        url: string;
+    };
 }
 
 export interface Transport {

@@ -22,6 +22,8 @@ import ICESession, { ICESessionOpts } from './ICESession';
 import { exportToSDP, importFromSDP } from './sdp/Intermediate';
 import { convertIntermediateToRequest, convertRequestToIntermediate } from './sdp/Protocol';
 import { ActionCallback } from './Session';
+import { JanusService } from '../services/JanusService';
+import { JanusError, MediaError } from '../types/errors';
 
 function applyStreamsCompatibility(content: JingleContent) {
     const application = content.application as JingleRtpDescription;
@@ -49,6 +51,8 @@ function applyStreamsCompatibility(content: JingleContent) {
 
 export interface MediaSessionOpts extends ICESessionOpts {
     stream?: MediaStream;
+    useJanus?: boolean;
+    janusUrl?: string;
 }
 
 export default class MediaSession extends ICESession {
@@ -59,8 +63,16 @@ export default class MediaSession extends ICESession {
 
     private _ringing = false;
 
+    private janusService?: JanusService;
+
+    protected localStream?: MediaStream;
+
     constructor(opts: MediaSessionOpts) {
         super(opts);
+
+        if (opts.useJanus && opts.janusUrl) {
+            this.janusService = new JanusService(this.parent, opts.janusUrl);
+        }
 
         this.pc.addEventListener('track', (e: RTCTrackEvent) => {
             this.onAddTrack(e.track, e.streams[0]);
@@ -173,9 +185,12 @@ export default class MediaSession extends ICESession {
         }
     }
 
-    public end(reason: JingleReasonCondition | JingleReason = 'success', silent = false): void {
-        for (const receiver of this.pc.getReceivers()) {
-            this.onRemoveTrack(receiver.track);
+    public async end(reason: JingleReasonCondition | JingleReason = 'success', silent = false): Promise<void> {
+        if (this.janusService) {
+            await this.janusService.cleanup();
+        }
+        if (this.localStream) {
+            this.localStream.getTracks().forEach(track => track.stop());
         }
         super.end(reason, silent);
     }
@@ -256,6 +271,7 @@ export default class MediaSession extends ICESession {
         if (track.kind === 'video') {
             this.includesVideo = true;
         }
+        this.localStream = stream;
         return this.processLocal('addtrack', async () => {
             if (this.pc.addTrack) {
                 this.pc.addTrack(track, stream);
@@ -363,5 +379,59 @@ export default class MediaSession extends ICESession {
             default:
         }
         return cb();
+    }
+
+    private handleJanusError(error: Error): void {
+        this._log('error', 'Janus error:', error);
+        if (error instanceof JanusError) {
+            this.emit('error', error);
+        } else {
+            this.emit('error', new JanusError(error.message));
+        }
+    }
+
+    public async startWithJanus(
+        roomId?: string,
+        displayName?: string
+    ): Promise<void> {
+        if (!this.janusService) {
+            throw new Error('Janus not configured for this session');
+        }
+
+        try {
+            // Create or join room
+            const actualRoomId = roomId || await this.janusService.createVideoRoom({
+                publishers: 6,
+                bitrate: 512000
+            });
+
+            // Join the room
+            await this.janusService.joinRoom(actualRoomId, displayName || 'anonymous');
+
+            // Publish our stream if we have one
+            if (this.localStream) {
+                await this.janusService.publishStream(this.localStream);
+            }
+
+            this.state = 'active';
+            
+        } catch (err) {
+            this.handleJanusError(err);
+            this.end('failed-application', true);
+        }
+    }
+
+    // Add method to subscribe to other participants
+    public async subscribeToParticipant(publisherId: string): Promise<void> {
+        if (!this.janusService) {
+            throw new Error('Janus not configured for this session');
+        }
+
+        try {
+            const remoteStream = await this.janusService.subscribeToFeed(publisherId);
+            this.onAddTrack(remoteStream.getTracks()[0], remoteStream);
+        } catch (err) {
+            this._log('error', 'Could not subscribe to participant', err);
+        }
     }
 }

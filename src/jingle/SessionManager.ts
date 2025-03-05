@@ -432,4 +432,8 @@ export default class SessionManager extends EventEmitter {
         this.emit('log', level, message, ...args);
         this.emit('log:' + level, message, ...args);
     }
+
+    public emit(event: string, ...args: any[]): boolean {
+        return super.emit(event, ...args);
+    }
 }
