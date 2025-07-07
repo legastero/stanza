@@ -1,4 +1,5 @@
 import { AsyncPriorityQueue, priorityQueue } from 'async';
+import { EventEmitter } from 'events';
 
 import {
     JingleAction,
@@ -44,7 +45,7 @@ const unsupportedInfo = {
     type: 'modify'
 };
 
-export default class JingleSession {
+export default class JingleSession extends EventEmitter {
     public parent: SessionManager;
     public sid: string;
     public peerID: string;
@@ -58,6 +59,7 @@ export default class JingleSession {
     private _connectionState: string;
 
     constructor(opts: SessionOpts) {
+        super();
         this.parent = opts.parent;
         this.sid = opts.sid || uuid();
         this.peerID = opts.peerID;

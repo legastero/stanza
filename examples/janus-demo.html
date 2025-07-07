@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Janus Video Room Demo</title>
+    <!-- Required dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/8.2.3/adapter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/janus-gateway/1.1.5/janus.min.js"></script>
+    <script src="../dist/stanza.browser.js"></script>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .video-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        video {
+            width: 320px;
+            height: 240px;
+            background: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background: #ccc;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Janus Video Room Demo</h1>
+        
+        <!-- Connection Settings -->
+        <div id="connectionSettings">
+            <h2>Connection Settings</h2>
+            <form id="settingsForm">
+                <div class="form-group">
+                    <label>XMPP JID:</label>
+                    <input type="text" id="jid" placeholder="user@example.com" required />
+                </div>
+                <div class="form-group">
+                    <label>XMPP Password:</label>
+                    <input type="password" id="password" required />
+                </div>
+                <div class="form-group">
+                    <label>XMPP WebSocket URL:</label>
+                    <input type="text" id="wsUrl" placeholder="wss://xmpp.example.com/ws" required />
+                </div>
+                <div class="form-group">
+                    <label>Janus Server URL:</label>
+                    <input type="text" id="janusUrl" placeholder="wss://janus.example.com/ws" required />
+                </div>
+                <button type="submit">Connect</button>
+            </form>
+        </div>
+
+        <div id="status" class="status" style="display: none;"></div>
+
+        <!-- Room Controls (initially hidden) -->
+        <div id="roomControls" style="display: none;">
+            <h2>Video Room</h2>
+            <form id="roomForm">
+                <div class="form-group">
+                    <label>Room ID (leave empty for new room):</label>
+                    <input type="text" id="roomId" placeholder="Optional - Enter room ID to join existing room" />
+                </div>
+                <div class="form-group">
+                    <label>Display Name:</label>
+                    <input type="text" id="displayName" placeholder="Your display name" required />
+                </div>
+                <button type="submit" id="joinButton">Create/Join Room</button>
+            </form>
+        </div>
+
+        <!-- Video Elements -->
+        <div class="video-container">
+            <div>
+                <h3>Local Video</h3>
+                <video id="localVideo" autoplay muted playsinline></video>
+            </div>
+            <div>
+                <h3>Remote Videos</h3>
+                <div id="remoteVideos"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let client;
+        let mediaSession;
+        let localStream;
+
+        // Add to script section
+        let cleanup = false;
+
+        async function cleanupSession() {
+            if (cleanup) return;
+            cleanup = true;
+
+            try {
+                if (mediaSession) {
+                    await mediaSession.end();
+                }
+                if (client) {
+                    await client.disconnect();
+                }
+                if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
+                }
+            } catch (err) {
+                console.error('Cleanup error:', err);
+            }
+        }
+
+        window.addEventListener('beforeunload', cleanupSession);
+        window.addEventListener('unload', cleanupSession);
+
+        // Handle initial connection
+        document.getElementById('settingsForm').onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const status = document.getElementById('status');
+            try {
+                // Create XMPP client with Janus support
+                client = XMPP.createClient({
+                    jid: document.getElementById('jid').value,
+                    password: document.getElementById('password').value,
+                    transports: {
+                        websocket: document.getElementById('wsUrl').value
+                    },
+                    janus: {
+                        enabled: true,
+                        url: document.getElementById('janusUrl').value
+                    }
+                });
+
+                // Handle connection events
+                client.on('session:started', () => {
+                    status.textContent = 'Connected to XMPP server';
+                    status.className = 'status success';
+                    status.style.display = 'block';
+                    
+                    // Show room controls
+                    document.getElementById('roomControls').style.display = 'block';
+                    document.getElementById('settingsForm').style.display = 'none';
+                });
+
+                client.on('disconnected', () => {
+                    status.textContent = 'Disconnected from server';
+                    status.className = 'status error';
+                });
+
+                // Connect to server
+                await client.connect();
+            } catch (err) {
+                status.textContent = 'Connection failed: ' + err.message;
+                status.className = 'status error';
+                status.style.display = 'block';
+            }
+        };
+
+        // Handle room joining
+        document.getElementById('roomForm').onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const status = document.getElementById('status');
+            try {
+                // Get local media stream
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: true
+                });
+
+                // Display local video
+                const localVideo = document.getElementById('localVideo');
+                localVideo.srcObject = localStream;
+
+                // Create media session with Janus support
+                mediaSession = client.jingle.createMediaSession(null, {
+                    useJanus: true,
+                    janusUrl: document.getElementById('janusUrl').value
+                });
+
+                // Add local stream
+                for (const track of localStream.getTracks()) {
+                    await mediaSession.addTrack(track, localStream);
+                }
+
+                // Join or create room
+                await mediaSession.startWithJanus(
+                    document.getElementById('roomId').value || undefined,
+                    document.getElementById('displayName').value
+                );
+
+                status.textContent = 'Successfully joined video room';
+                status.className = 'status success';
+
+                // Disable form
+                document.getElementById('joinButton').disabled = true;
+
+            } catch (err) {
+                status.textContent = 'Failed to join room: ' + err.message;
+                status.className = 'status error';
+            }
+        };
+
+        // Handle incoming streams
+        client.on('peerTrackAdded', (session, track, stream) => {
+            if (track.kind === 'video') {
+                const videoEl = document.createElement('video');
+                videoEl.autoplay = true;
+                videoEl.playsinline = true;
+                videoEl.srcObject = stream;
+                
+                const container = document.createElement('div');
+                container.className = 'remote-video';
+                container.appendChild(videoEl);
+                
+                document.getElementById('remoteVideos').appendChild(container);
+            }
+        });
+
+        // Cleanup when peer leaves
+        client.on('peerTrackRemoved', (session, track) => {
+            // Find and remove the corresponding video element
+            const videos = document.getElementById('remoteVideos').getElementsByTagName('video');
+            for (const video of videos) {
+                const stream = video.srcObject;
+                if (stream.getTracks().includes(track)) {
+                    video.parentElement.remove();
+                    break;
+                }
+            }
+        });
+
+        // Add to the script section
+        function handleError(error) {
+            const status = document.getElementById('status');
+            let message = error.message;
+            
+            if (error instanceof JanusError) {
+                message = `Janus Error (${error.code}): ${error.message}`;
+            } else if (error instanceof MediaError) {
+                message = `Media Error (${error.constraint}): ${error.message}`;
+            }
+            
+            status.textContent = message;
+            status.className = 'status error';
+            status.style.display = 'block';
+            console.error(error);
+        }
+
+        // Add event listeners
+        if (mediaSession?.janusService) {
+            mediaSession.janusService.on('error', handleError);
+            mediaSession.janusService.on('participant-joined', (id, name) => {
+                console.log(`Participant joined: ${name} (${id})`);
+            });
+            mediaSession.janusService.on('participant-left', (id) => {
+                console.log(`Participant left: ${id}`);
+            });
+        }
+
+        // Add to script section
+        async function cleanupResources() {
+            try {
+                // Stop all tracks
+                if (localStream) {
+                    localStream.getTracks().forEach(track => {
+                        track.stop();
+                    });
+                }
+
+                // Remove all remote videos
+                const remoteVideos = document.getElementById('remoteVideos');
+                while (remoteVideos.firstChild) {
+                    remoteVideos.removeChild(remoteVideos.firstChild);
+                }
+
+                // Clear local video
+                const localVideo = document.getElementById('localVideo');
+                localVideo.srcObject = null;
+
+                // End media session
+                if (mediaSession) {
+                    await mediaSession.end();
+                    mediaSession = null;
+                }
+
+                // Disconnect client
+                if (client) {
+                    await client.disconnect();
+                    client = null;
+                }
+
+            } catch (err) {
+                console.error('Error during cleanup:', err);
+            }
+        }
+
+        // Update window event listeners
+        window.addEventListener('beforeunload', cleanupResources);
+        window.addEventListener('unload', cleanupResources);
+    </script>
+</body>
+</html> 
