@@ -90,6 +90,8 @@ export interface AgentEvents {
 
     'raw:incoming': string;
     'raw:outgoing': string;
+    'raw:incoming:*': (rid: string, data: string) => void;
+    'raw:outgoing:*': (rid: string, data: string) => void;
     'raw:*': (direction: 'incoming' | 'outgoing', data: string) => void;
     raw: (direction: 'incoming' | 'outgoing', data: string) => void;
 
