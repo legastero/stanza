@@ -1,0 +1,67 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+    "assist": { "actions": { "source": { "organizeImports": "on" } } },
+    "formatter": {
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 100
+    },
+    "javascript": {
+        "formatter": {
+            "semicolons": "always",
+            "quoteStyle": "single",
+            "trailingCommas": "none",
+            "arrowParentheses": "asNeeded"
+        }
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "style": {
+                "noNonNullAssertion": "off",
+                "useNodejsImportProtocol": "off",
+                "useTemplate": "off",
+                "useExplicitLengthCheck": "off",
+                "useDefaultParameterLast": "off",
+                "noParameterAssign": "off",
+                "useImportType": "off",
+                "useExponentiationOperator": "error"
+            },
+            "complexity": {
+                "noForEach": "off",
+                "noUselessSwitchCase": "off",
+                "useOptionalChain": "error",
+                "noArguments": "off",
+                "noBannedTypes": "off",
+                "useLiteralKeys": "error",
+                "noUselessConstructor": "error"
+            },
+            "correctness": {
+                "noUnusedVariables": "error",
+                "noUnusedImports": "error",
+                "noUnusedFunctionParameters": "off",
+                "noVoidTypeReturn": "off"
+            },
+            "suspicious": {
+                "noExplicitAny": "off",
+                "noDoubleEquals": "error",
+                "noShadowRestrictedNames": "off",
+                "noAssignInExpressions": "error",
+                "noConfusingVoidType": "off",
+                "noImplicitAnyLet": "off",
+                "useIterableCallbackReturn": "error"
+            }
+        }
+    },
+    "files": {
+        "maxSize": 3000000,
+        "includes": [
+            "src/**",
+            "test/**",
+            "scripts/**",
+            "!src/platform/browser/buffer",
+            "!src/platform/browser/stream"
+        ]
+    }
+}

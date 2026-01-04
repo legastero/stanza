@@ -1,17 +1,16 @@
 {
     "compilerOptions": {
         "allowJs": true,
-        "allowSyntheticDefaultImports": true,
         "declaration": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "importHelpers": true,
-        "lib": ["dom", "es2018"],
+        "lib": ["dom", "es2022"],
         "module": "commonjs",
         "moduleResolution": "node",
         "outDir": "./dist/cjs",
+        "skipLibCheck": true,
         "strict": true,
-        "target": "es2018"
+        "target": "es2022"
     },
     "include": ["src", "typings"],
     "exclude": ["dist"]

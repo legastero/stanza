@@ -1,4 +1,3 @@
-import expect from 'expect';
 import * as FS from 'fs';
 
 import { parse, Registry, XMLElement } from '../src/jxt';

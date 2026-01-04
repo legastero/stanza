@@ -1,4 +1,3 @@
-import expect from 'expect';
 
 import { attribute, parse, Registry } from '../../../src/jxt';
 

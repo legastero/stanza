@@ -16,7 +16,7 @@ declare class StringDecoder {
     end(buffer?: Buffer): string;
 }
 
-declare class _Readable extends stream.Readable {
+declare class _Readable {
     // static ReadableState: _Readable.ReadableState;
     _readableState: _Readable.ReadableState;
     destroyed: boolean;
@@ -83,7 +83,7 @@ declare namespace _Readable {
             ): void;
         };
 
-    class Duplex extends Writable implements /*extends*/ _Readable, stream.Duplex {
+    class Duplex extends Writable implements /*extends*/ _Readable {
         /**
          * This is a dummy function required to retain type compatibility to node.
          * @deprecated DO NOT USE
@@ -126,7 +126,7 @@ declare namespace _Readable {
     }
 
     // ==== _stream_passthrough ====
-    class PassThrough extends Transform implements stream.PassThrough {
+    class PassThrough extends Transform {
         constructor(options?: TransformOptions);
 
         _transform<T>(
@@ -214,7 +214,7 @@ declare namespace _Readable {
         flush?(this: Transform, callback: (er: any, data: any) => void): void;
     };
 
-    class Transform extends Duplex implements stream.Transform {
+    class Transform extends Duplex {
         _transformState: {
             afterTransform: (this: Transform, er: any, data: any) => void | boolean;
             needTransform: boolean;

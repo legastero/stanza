@@ -1,4 +1,3 @@
-import expect from 'expect';
 import { Session as GenericSession, SessionManager } from '../../src/jingle';
 
 // tslint:disable no-identical-functions

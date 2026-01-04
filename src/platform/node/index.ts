@@ -1,6 +1,5 @@
 /* istanbul ignore file */
 
-import fetch from 'node-fetch';
 import WebSocket from 'ws';
 import {
     createHash as nodeCreateHash,
@@ -45,11 +44,12 @@ export function createResolver(opts?: dns.ResolverOptions): Resolver | undefined
 }
 
 const nativeRTCPeerConnection: RTCPeerConnection | undefined = undefined;
+const nativeFetch = globalThis.fetch.bind(globalThis);
 
 export const name = 'node';
 export {
     Buffer,
-    fetch,
+    nativeFetch as fetch,
     Hash,
     Hmac,
     nativeRTCPeerConnection as RTCPeerConnection,

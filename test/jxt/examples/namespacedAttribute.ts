@@ -1,4 +1,3 @@
-import expect from 'expect';
 
 import { namespacedAttribute, parse, Registry } from '../../../src/jxt';
 

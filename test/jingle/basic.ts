@@ -1,55 +1,56 @@
-import expect from 'expect';
 import { Session as GenericSession, SessionManager } from '../../src/jingle';
 
 const selfID = 'zuser@example.com';
 const peerID = 'peer@example.com';
 const turnServer = 'turn:example.com';
 
-test('Test session-initiate', done => {
+test('Test session-initiate', () => {
     expect.assertions(2);
 
     const jingle = new SessionManager({
         selfID
     });
 
-    jingle.on('send', data => {
-        expect(data).toEqual({
-            id: '123',
-            to: peerID,
-            type: 'result'
+    return new Promise<void>(resolve => {
+        jingle.on('send', data => {
+            expect(data).toEqual({
+                id: '123',
+                to: peerID,
+                type: 'result'
+            });
+            resolve();
         });
-        done();
-    });
 
-    jingle.on('incoming', session => {
-        expect(session).toBeTruthy();
-    });
+        jingle.on('incoming', session => {
+            expect(session).toBeTruthy();
+        });
 
-    jingle.process({
-        from: peerID,
-        id: '123',
-        jingle: {
-            action: 'session-initiate',
-            contents: [
-                {
-                    application: {
-                        applicationType: 'test'
-                    },
-                    creator: 'initiator',
-                    name: 'test',
-                    transport: {
-                        transportType: 'test'
+        jingle.process({
+            from: peerID,
+            id: '123',
+            jingle: {
+                action: 'session-initiate',
+                contents: [
+                    {
+                        application: {
+                            applicationType: 'test'
+                        },
+                        creator: 'initiator',
+                        name: 'test',
+                        transport: {
+                            transportType: 'test'
+                        }
                     }
-                }
-            ],
-            sid: 'sid123'
-        },
-        to: selfID,
-        type: 'set'
+                ],
+                sid: 'sid123'
+            },
+            to: selfID,
+            type: 'set'
+        });
     });
 });
 
-test('Test ending sessions for peer', done => {
+test('Test ending sessions for peer', () => {
     expect.assertions(2);
 
     const jingle = new SessionManager({
@@ -79,15 +80,17 @@ test('Test ending sessions for peer', done => {
 
     let terminatedCount = 0;
 
-    jingle.on('terminated', session => {
-        terminatedCount++;
-        expect(session.peerID).toBe(peerID);
+    return new Promise<void>(resolve => {
+        jingle.on('terminated', session => {
+            terminatedCount++;
+            expect(session.peerID).toBe(peerID);
 
-        if (terminatedCount == 2) {
-            done();
-        }
+            if (terminatedCount == 2) {
+                resolve();
+            }
+        });
+        jingle.endPeerSessions(peerID);
     });
-    jingle.endPeerSessions(peerID);
 });
 
 test('Test ending sessions for peer with no sessions', () => {
@@ -100,7 +103,7 @@ test('Test ending sessions for peer with no sessions', () => {
     expect(jingle.peers[peerID]).toBeFalsy();
 });
 
-test('Test ending sessions for all peers', done => {
+test('Test ending sessions for all peers', () => {
     expect.assertions(3);
 
     const jingle = new SessionManager({
@@ -129,16 +132,19 @@ test('Test ending sessions for all peers', done => {
     jingle.addSession(sess3);
 
     let terminatedCount = 0;
-    jingle.on('terminated', session => {
-        terminatedCount++;
-        expect(session).toBeTruthy();
 
-        if (terminatedCount === 3) {
-            done();
-        }
+    return new Promise<void>(resolve => {
+        jingle.on('terminated', session => {
+            terminatedCount++;
+            expect(session).toBeTruthy();
+
+            if (terminatedCount === 3) {
+                resolve();
+            }
+        });
+
+        jingle.endAllSessions();
     });
-
-    jingle.endAllSessions();
 });
 
 test('Prepare session', () => {

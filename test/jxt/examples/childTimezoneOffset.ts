@@ -1,4 +1,3 @@
-import expect from 'expect';
 
 import { childTimezoneOffset, parse, Registry } from '../../../src/jxt';
 

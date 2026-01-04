@@ -1,4 +1,4 @@
-import Punycode from 'punycode';
+import Punycode from 'punycode/';
 import { TABLE_DATA } from './Tables';
 
 export class Table {

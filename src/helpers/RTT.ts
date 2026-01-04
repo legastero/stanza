@@ -1,4 +1,4 @@
-import { AsyncPriorityQueue, priorityQueue } from 'async';
+import { AsyncPriorityQueue, priorityQueue } from '../lib/AsyncPriorityQueue';
 import Punycode from 'punycode';
 
 import { RTT, RTTAction } from '../protocol';

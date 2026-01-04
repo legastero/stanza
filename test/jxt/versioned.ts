@@ -1,4 +1,3 @@
-import expect from 'expect';
 import { attribute, Registry } from '../../src/jxt';
 
 function setupRegistry() {

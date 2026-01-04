@@ -1,4 +1,3 @@
-import expect from 'expect';
 
 import { childAlternateLanguageText, LanguageSet, parse, Registry } from '../../../src/jxt';
 

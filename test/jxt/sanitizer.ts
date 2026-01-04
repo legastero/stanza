@@ -1,4 +1,3 @@
-import expect from 'expect';
 
 import * as JXT from '../../src/jxt';
 import { NS_XHTML } from '../../src/Namespaces';

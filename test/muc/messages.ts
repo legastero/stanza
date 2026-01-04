@@ -55,7 +55,7 @@ test('MUC message with body and subject', () => {
     // XEP-0045 section 7.2.15: "Note: In accordance with the core definition of XML stanzas, any
     // message can contain a <subject/> element; only a message that contains a <subject/> but no
     // <body/> element shall be considered a subject change for MUC purposes.
-    const callback = jest.fn()
+    const callback = vi.fn()
     client.on('muc:topic', callback);
 
     client.on('groupchat', msg => {
