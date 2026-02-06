@@ -45,7 +45,7 @@ export default function (client: Agent): void {
     });
 
     client.on('presence', pres => {
-        if (pres.vcardAvatar && typeof pres.vcardAvatar === 'string') {
+        if (pres.type !== 'error' && pres.vcardAvatar && typeof pres.vcardAvatar === 'string') {
             client.emit('avatar', {
                 avatars: [
                     {
