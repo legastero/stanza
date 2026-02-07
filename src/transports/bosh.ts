@@ -11,10 +11,10 @@ import { sleep, timeoutPromise } from '../Utils';
 class RequestChannel {
     public rid!: number;
     public maxTimeout: number;
+    public maxRetries = 5;
     public active = false;
 
     private stream: BOSH;
-    private maxRetries = 5;
 
     constructor(stream: BOSH) {
         this.stream = stream;
@@ -50,7 +50,7 @@ class RequestChannel {
 
                 return result;
             } catch (err) {
-                if (attempts === 1) {
+                if (this.maxRetries !== 0 && attempts === 1) {
                     continue;
                 } else if (attempts < this.maxRetries) {
                     const backoff = Math.min(this.maxTimeout, Math.pow(attempts, 2) * 1000);
@@ -76,6 +76,7 @@ export default class BOSH extends Duplex implements Transport {
     public sid?: string = '';
     public maxHoldOpen = 2;
     public maxWaitTime = 30;
+    public maxRetries = 5;
     public contentType = 'text/xml; charset=utf-8';
 
     private channels: RequestChannel[] = [new RequestChannel(this), new RequestChannel(this)];
@@ -200,6 +201,12 @@ export default class BOSH extends Duplex implements Transport {
         if (opts.maxHoldOpen) {
             this.maxHoldOpen = opts.maxHoldOpen;
         }
+        if (opts.maxRetries !== undefined) {
+            this.maxRetries = opts.maxRetries;
+            this.channels.forEach(channel => {
+                channel.maxRetries = this.maxRetries;
+            });
+        }
 
         if (this.sid) {
             this.hasStream = true;
@@ -293,7 +300,7 @@ export default class BOSH extends Duplex implements Transport {
                 this.process(result);
             })
             .catch(err => {
-                this.end(err);
+                this.destroy(err);
             });
         this.toggleChannel();
     }
@@ -319,7 +326,7 @@ export default class BOSH extends Duplex implements Transport {
                 this.process(result);
             })
             .catch(err => {
-                this.end(err);
+                this.destroy(err);
             });
     }
 
