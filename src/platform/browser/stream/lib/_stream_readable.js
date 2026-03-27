@@ -49,7 +49,7 @@ var Stream = require('events').EventEmitter;
 /*<replacement>*/
 
 var Buffer = require('../../buffer').Buffer;
-var OurUint8Array = global.Uint8Array || function () {};
+var OurUint8Array = typeof Uint8Array !== 'undefined' ? Uint8Array : function () {};
 function _uint8ArrayToBuffer(chunk) {
     return Buffer.from(chunk);
 }
