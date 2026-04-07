@@ -321,6 +321,14 @@ export default class Client extends EventEmitter {
             super.emit(`raw:${args[0]}`, args[1]);
             super.emit('raw:*', `raw:${args[0]}`, args[1]);
             super.emit('*', `raw:${args[0]}`, args[1]);
+        } else if (name === 'raw:incoming:*') {
+            super.emit(`raw:incoming:${args[0]}`, args[1]);
+            super.emit('raw:*', `raw:incoming:${args[0]}`, args[1]);
+            super.emit('*', `raw:incoming:${args[0]}`, args[1]);
+        } else if (name === 'raw:outgoing:*') {
+            super.emit(`raw:outgoing:${args[0]}`, args[1]);
+            super.emit('raw:*', `raw:outgoing:${args[0]}`, args[1]);
+            super.emit('*', `raw:outgoing:${args[0]}`, args[1]);
         } else {
             super.emit('*', name, ...args);
         }
@@ -404,6 +412,11 @@ export default class Client extends EventEmitter {
                     }
                     config.url = endpoints[name][0];
                 }
+            } else if (typeof settings === "object") {
+                config = {
+                    ...config,
+                    ...settings,
+                };
             }
 
             this.transport = transport;
